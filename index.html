@@ -566,14 +566,14 @@ function qSpell(t) {
   const mon = G.mon, e = EL[mon.el], bank = t >= 8 ? PHRASE : SPELL;
   const eff = bank.filter(w => e.weak.includes(w.el)), heal = bank.filter(w => e.heal.includes(w.el));
   const neu = bank.filter(w => !e.weak.includes(w.el) && !e.heal.includes(w.el));
-  const target = wpick(eff, w => 'W:' + w.he, G.lastKey), n = t === 6 ? 3 : 4, opts = [target];
-  if (heal.length && Math.random() < (t === 6 ? .45 : .75)) opts.push(rnd(heal));
-  for (const w of shuffle(neu)) { if (opts.length >= n) break; opts.push(w); }
+  // Always exactly three spells: one that hurts it, one that does nothing, one with the opposite effect (heals it).
+  const target = wpick(eff, w => 'W:' + w.he, G.lastKey);
+  const opts = [target, rnd(heal), rnd(neu)];
   const txt = w => t === 6 ? w.nk : w.he;
-  return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
+  return { kind: 'choice', soft: true, key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: `A ${e.badge} ${e.label} monster blocks the way!`, big: `${mon.name}`, bigSm: true,
-    sub: 'Read the spells. Which one hurts it the most?',
-    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 8 ? 'p' : 'w', ok: w === target, fx: e.heal.includes(w.el) ? 'heal' : '', em: w.em,
+    sub: 'Read the spells. One hurts it, one does nothing, one makes it stronger!',
+    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 8 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em,
       note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em} — ${reasonFor(w, mon)}`, say: txt(w) })),
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}. ${e.why}`, say: txt(target) };
 }
@@ -750,7 +750,12 @@ async function pickOption(i, btn) {
     let tr = '';
     if (first) { G.combo = 0; tr = record(q.key, false); }
     $('#fb').innerHTML = `❌ ${o.note || ''}`;
-    if (battle) {
+    if (battle && q.soft && o.fx) {
+      // word spells: "nothing" and "opposite" picks never hurt the hero, they just don't help. Try again!
+      if (o.fx === 'heal') { G.mon.hp = Math.min(G.mon.max, G.mon.hp + 1); floatText('+1 💚', '#7dffb0'); $('#fb').innerHTML += '<br>The monster got stronger. Try another spell!'; }
+      else { floatText('0', '#d6d6e6'); $('#fb').innerHTML += '<br>Nothing happens. Try another spell!'; }
+      after(tr); updateBars();
+    } else if (battle) {
       G.locked = true;
       document.querySelectorAll('.opt').forEach((b, k) => { b.disabled = true; if (q.options[k].ok) b.classList.add('good'); });
       if (o.fx === 'heal') { G.mon.hp = Math.min(G.mon.max, G.mon.hp + 1); floatText('+1 💚', '#ff8b99'); }
