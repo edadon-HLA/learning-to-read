@@ -51,6 +51,10 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .top .grow{flex:1;min-width:0}
 .top .who{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top .small{font-size:.8rem;opacity:.8}
+.vctl{display:flex;align-items:center;gap:6px}
+.vslider{width:84px;accent-color:#ffd166;cursor:pointer}
+.vslider.off{opacity:.35}
+@media (max-width:560px){.vslider{width:62px}}
 .ib{background:#fff1;border:1px solid #fff3;border-radius:10px;padding:6px 10px;font-size:1.1rem}
 .stage{position:relative;display:grid;grid-template-columns:1fr 1.1fr 1fr;align-items:end;gap:6px;min-height:230px;border-radius:20px;padding:12px;
   background:linear-gradient(#0000,#0006),linear-gradient(180deg,#2b2060,#3f2a7a 55%,#2a1f4f);border:1px solid #fff2;overflow:hidden}
@@ -105,6 +109,10 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .opt{background:linear-gradient(#fff,#e8e4ff);color:#2a2050;border:0;border-radius:18px;padding:12px 8px;box-shadow:0 5px 0 #6b5ca8;font-size:3rem;font-weight:700;min-height:92px;line-height:1.15;transition:transform .08s}
 .opts>.opt:last-child:nth-child(odd){grid-column:span 2}
 .opt.w{font-size:2.4rem}.opt.p{font-size:1.9rem}
+.syl{display:inline-block;margin:0 .14em}
+.hearBtn{background:linear-gradient(#ffd166,#f4a93a);color:#3a2300;border:0;border-radius:999px;padding:10px 30px;font-size:1.7rem;font-weight:600;box-shadow:0 5px 0 #9b6411;animation:hearPulse 1.6s ease-in-out infinite}
+.hearBtn:active{transform:translateY(4px);box-shadow:0 1px 0 #9b6411}
+@keyframes hearPulse{0%,100%{box-shadow:0 5px 0 #9b6411,0 0 0 0 #ffd16688}50%{box-shadow:0 5px 0 #9b6411,0 0 0 12px #ffd16600}}
 .opt:active{transform:translateY(4px);box-shadow:0 1px 0 #6b5ca8}
 .opt.good{background:linear-gradient(#b8ffd9,#6fe6a8);box-shadow:0 5px 0 #22875a}
 .opt.bad{background:linear-gradient(#ffc0c8,#ff8b99);box-shadow:0 5px 0 #a8384a;opacity:.75}
@@ -179,7 +187,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div id="menuHero"></div>
     <div class="grow"><div class="who" id="menuWho" style="font-size:1.5rem"></div><div id="menuRank" class="small"></div>
       <div class="pbar" style="margin-top:6px"><i id="menuXp"></i></div></div>
-    <button class="ib" id="menuMute">🔊</button>
+    <div class="vctl"><button class="ib" id="menuMute" title="Sound on/off">🔊</button><input type="range" class="vslider" min="10" max="100" step="5" aria-label="Volume"></div>
   </div>
   <div class="stat">
     <span>📖 <b id="menuTier"></b></span>
@@ -200,7 +208,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="ib" id="homeBtn" title="Back to map">🗺️</button>
     <div class="grow"><div class="who" id="who"></div><div class="small" id="tierLbl"></div><div class="pbar" style="height:8px;margin-top:4px"><i id="xpFill"></i></div></div>
     <span id="cloud" class="small"></span>
-    <button class="ib" id="muteBtn">🔊</button>
+    <div class="vctl"><button class="ib" id="muteBtn" title="Sound on/off">🔊</button><input type="range" class="vslider" min="10" max="100" step="5" aria-label="Volume"></div>
   </div>
   <div class="stage" id="stage">
     <div class="side hero" id="heroBox"><div id="heroSvg"></div><div class="hearts" id="hearts"></div></div>
@@ -222,6 +230,8 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="center"><button class="btn hidden" id="nextBtn">Continue ▶</button></div>
   </div>
 </section>
+
+
 
 <div id="modal"><div class="box"><h2 id="mTitle"></h2><div id="mBody"></div><div class="row" id="mBtns" style="margin-top:14px"></div></div></div>
 
@@ -318,8 +328,8 @@ const VILL = [
  {he:'שעון',nk:'שָׁעוֹן',en:'clock',em:'⏰',need:"I'm late! What tells me the time?"}
 ];
 const FOLK = ['🧓','👩‍🌾','👨‍🌾','🧑‍🍳','👵','👴','🧒','👧','🧑‍🔧','👩‍🎤'];
-const TIERS = ['','Letter sounds I','Letter sounds II','Letter sounds III','Syllables I','Syllables II',
-  'Words I','Words II','Phrases & tricky words','Writing words','Writing spells'];
+const TIERS = ['','Hear "a" syllables I','Hear "a" syllables II','Hear "a" syllables III','Hear new vowels I','Hear new vowels II',
+  'Sound chains (2 syllables)','Sound chains (3 syllables)','Words I','Words II','Phrases & tricky words','Writing words','Writing spells'];
 const RANKS = ['Apprentice','Spark Mage','Rune Reader','Spell Scribe','Sage','Archmage','Letter Legend'];
 const COLORS = ['#e74c3c','#3498db','#2ecc71','#9b59b6','#f39c12','#1abc9c','#ff6fb5','#34495e'];
 const FINAL = {'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
@@ -355,12 +365,14 @@ function wpick(items, keyFn, avoid) {
 
 /* ====================== AUDIO ====================== */
 let muted = lsGet('aq_mute') === '1', AC = null;
+// Volume for everything (spoken sounds and game effects). Soft by default; the slider on the map screen changes it.
+let vol = Math.min(1, Math.max(.1, Number(lsGet('aq_vol')) || .5));
 function tone(f, d, type = 'sine', g = 0.07, delay = 0) {
   if (muted) return;
   try {
     AC = AC || new (window.AudioContext || window.webkitAudioContext)();
     const o = AC.createOscillator(), n = AC.createGain(), t = AC.currentTime + delay;
-    o.type = type; o.frequency.value = f; n.gain.setValueAtTime(g, t); n.gain.exponentialRampToValueAtTime(0.001, t + d);
+    o.type = type; o.frequency.value = f; n.gain.setValueAtTime(g * vol / .7, t); n.gain.exponentialRampToValueAtTime(0.001, t + d);
     o.connect(n); n.connect(AC.destination); o.start(t); o.stop(t + d);
   } catch (e) {}
 }
@@ -371,16 +383,75 @@ const sfx = {
   win: () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, .25, 'triangle', .08, i * .12)); },
   up: () => { [440, 554, 659, 880, 1109].forEach((f, i) => tone(f, .2, 'triangle', .08, i * .09)); }
 };
-function speakHe(text) {
+/* ---- listening levels: the student HEARS the sound instead of reading it ---- */
+let heVoice = null;
+function findHeVoice() { try { heVoice = speechSynthesis.getVoices().find(v => /^(he|iw)/i.test(v.lang)) || null; } catch (e) { heVoice = null; } return heVoice; }
+try { speechSynthesis.addEventListener('voiceschanged', findHeVoice); findHeVoice(); } catch (e) {}
+function speakHe(text, rate = .8) {
   try {
-    if (muted || !window.speechSynthesis) return;
-    const v = speechSynthesis.getVoices().find(v => /^(he|iw)/i.test(v.lang));
-    if (!v) return;
-    const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = .8;
-    speechSynthesis.cancel(); speechSynthesis.speak(u);
-  } catch (e) {}
+    if (muted || !window.speechSynthesis) return false;
+    const v = heVoice || findHeVoice(); if (!v) return false;
+    const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = rate; u.volume = vol;
+    speechSynthesis.cancel(); speechSynthesis.speak(u); return true;
+  } catch (e) { return false; }
 }
-function setMute(m) { muted = m; lsSet('aq_mute', m ? '1' : '0'); $('#muteBtn').textContent = $('#menuMute').textContent = m ? '🔇' : '🔊'; }
+// Every sound is a real spoken syllable from the Hebrew voice. The easiest levels use only the "a" vowel (ba, ga, da, ...).
+const SAY_OF = { 'כ': 'כַּ', 'פ': 'פַּ', 'ב': 'בַּ' };
+const sylA = c => SAY_OF[c] || (c + VOW.a);           // the written + spoken form of a consonant with "a"
+// Levels 1-5 play pre-recorded syllables (audio/XXXXv.wav: letter code + vowel) where the vowel is held a little ("baaa").
+// They work on every device. If a file can't be loaded, the device's Hebrew voice says it instead.
+const sylFile = (c, v) => 'audio/' + c.codePointAt(0).toString(16).padStart(4, '0') + v + '.wav';
+const soundFor = c => ({ file: sylFile(c, 'a'), say: sylA(c) });
+// All recorded syllables live in ONE file (syllables.wav) with an index (syllables.json): loaded once, then played from memory.
+let sprite = null, spritePromise = null, spriteFailed = false, curSrc = null;
+function loadSprite() {
+  if (!spritePromise) {
+    spritePromise = (async () => {
+      const [wavBuf, idx] = await Promise.all([
+        fetch('syllables.wav?v=1').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
+        fetch('syllables.json?v=1').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
+      ]);
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      sprite = { buf: await AC.decodeAudioData(wavBuf), idx };
+    })().catch(e => { spriteFailed = true; spritePromise = null; throw e; });
+  }
+  return spritePromise;
+}
+async function playFile(spec) {
+  const name = (spec.file.match(/([0-9a-f]{4}[aeiou])\.wav$/) || [])[1];
+  try {
+    try { speechSynthesis.cancel(); } catch (e) {}
+    if (curSrc) { try { curSrc.stop(); } catch (e) {} curSrc = null; }
+    if (!sprite) await loadSprite();
+    if (AC.state === 'suspended') await AC.resume();
+    const e = sprite.idx[name]; if (!e) throw new Error('no clip ' + name);
+    const src = AC.createBufferSource(); src.buffer = sprite.buf;
+    const g = AC.createGain(); g.gain.value = vol; src.connect(g); g.connect(AC.destination);
+    src.start(0, e[0], e[1] + 0.03); curSrc = src;
+  } catch (err) { speakHe(spec.say, .7); }
+}
+function playSound(spec) {
+  if (muted) { toast('🔇 The sound is off. Tap the speaker at the top.'); return; }
+  if (spec.file) playFile(spec); else speakHe(spec.say, .7);
+}
+const canPlay = spec => spec.file ? (!spriteFailed || !!findHeVoice()) : !!findHeVoice();
+try { loadSprite().catch(() => {}); } catch (e) {}   // start loading the sounds right away
+// One sound control (speaker button + volume slider) in the game bar AND on the map screen, always in sync.
+// Tap the speaker to mute/unmute; drag the slider to change the volume (dragging also unmutes). A sample plays when you let go.
+function refreshVolUI() {
+  const icon = muted ? '🔇' : vol < .35 ? '🔈' : vol < .7 ? '🔉' : '🔊';
+  $('#muteBtn').textContent = $('#menuMute').textContent = icon;
+  document.querySelectorAll('.vslider').forEach(s => { s.value = Math.round(vol * 100); s.classList.toggle('off', muted); });
+}
+document.querySelectorAll('.vslider').forEach(s => {
+  s.addEventListener('input', () => {
+    vol = Math.min(1, Math.max(.1, s.value / 100)); lsSet('aq_vol', String(vol));
+    if (muted) { muted = false; lsSet('aq_mute', '0'); }
+    refreshVolUI();
+  });
+  s.addEventListener('change', () => { if (!muted) playSound(soundFor('ב')); });
+});
+function setMute(m) { muted = m; lsSet('aq_mute', m ? '1' : '0'); refreshVolUI(); }
 
 /* ====================== HERO ART ====================== */
 function heroSVG(g, color) {
@@ -550,20 +621,36 @@ function distinctSoundOptions(target, pool, n, sndOf) {
   for (const c of shuffle(pool)) { if (opts.length >= n) break; const s = sndOf(c); if (!used.has(s)) { used.add(s); opts.push(c); } }
   return opts;
 }
+// Sounds that are easy to mix up when you only HEAR them.
+const SIMILAR = [['m', 'n'], ['s', 'sh', 'z'], ['b', 'p', 'v'], ['d', 't'], ['g', 'k'], ['kh', 'h', 'k']];
+const similarSnd = (a, b) => SIMILAR.some(g => g.includes(a) && g.includes(b));
+function listenOptions(c, pool, n, avoidSimilar) {
+  const opts = [c], snd = x => LET[x][0];
+  for (const x of shuffle(pool)) {
+    if (opts.length >= n) break;
+    if (opts.every(o => snd(o) !== snd(x) && !(avoidSimilar && similarSnd(snd(o), snd(x))))) opts.push(x);
+  }
+  for (const x of shuffle(pool)) {   // safety net: relax the "confusable" rule if the pool is too small
+    if (opts.length >= n) break;
+    if (!opts.includes(x) && opts.every(o => snd(o) !== snd(x))) opts.push(x);
+  }
+  return opts;
+}
 function qLetter(t, battle) {
   const pool = t === 1 ? L1 : t === 2 ? L2 : L3, n = t === 3 ? 4 : 3;
-  const c = wpick(pool, x => 'L:' + x, G.lastKey), snd = LET[c][0];
-  const opts = shuffle(distinctSoundOptions(c, pool, n, x => LET[x][0]));
-  return { kind: 'choice', key: 'L:' + c, lastKey: 'L:' + c,
-    title: battle ? `${G.mon.name} is scared of this sound:` : 'The magic gate only opens to this sound:',
-    big: `“${snd}”`, sub: `like in “${LET[c][1]}”. Pick the letter that says it!`,
-    options: opts.map(x => ({ html: x, cls: '', ok: x === c, em: '✨', note: `${x} says “${LET[x][0]}”` })),
-    explain: `${c} says “${snd}”` };
+  // Easiest levels: always the "a" vowel (ba, ga, da...). The student hears one syllable and picks how it is written.
+  const c = wpick(pool, x => 'L:' + x, G.lastKey), snd = LET[c][0] + 'a';
+  const opts = shuffle(listenOptions(c, pool, n, t <= 2));   // first two levels: never put easily-confused sounds together
+  return { kind: 'choice', key: 'L:' + c, lastKey: 'L:' + c, audio: soundFor(c), translit: `“${snd}”`,
+    title: battle ? `The spell that beats the ${G.mon.name} is…` : 'The magic gate only opens to the sound…',
+    big: '', sub: 'Listen, then pick the syllable you hear!',
+    options: opts.map(x => ({ html: sylA(x), cls: '', ok: x === c, em: '✨', note: `${sylA(x)} says “${LET[x][0]}a”` })),
+    explain: `${sylA(c)} says “${snd}”` };
 }
 function qSyl(t, battle) {
   const cons = t === 4 ? S1 : S2, vows = t === 4 ? ['a', 'i', 'o'] : ['a', 'e', 'i', 'o', 'u'];
   const all = []; cons.forEach(c => vows.forEach(v => all.push({ c, v })));
-  const mk = x => ({ he: x.c + VOW[x.v], snd: LET[x.c][0] + x.v, key: 'S:' + x.c + x.v });
+  const mk = x => ({ c: x.c, v: x.v, he: x.c + VOW[x.v], snd: LET[x.c][0] + x.v, key: 'S:' + x.c + x.v });
   const tgt = wpick(all, x => 'S:' + x.c + x.v, G.lastKey);
   const target = mk(tgt), opts = [target], used = new Set([target.snd]);
   const near = shuffle(all.filter(x => (x.c === tgt.c) !== (x.v === tgt.v)));   // share exactly one part
@@ -571,11 +658,32 @@ function qSyl(t, battle) {
     if (opts.length >= (t === 4 ? 3 : 4)) break;
     const m = mk(x); if (!used.has(m.snd)) { used.add(m.snd); opts.push(m); }
   }
-  return { kind: 'choice', key: target.key, lastKey: target.key,
-    title: battle ? `${G.mon.name} is scared of this sound:` : 'The bridge troll only lets you pass if you say:',
-    big: `“${target.snd}”`, sub: 'Read the letters and their vowel marks. Which spell says it?',
+  return { kind: 'choice', key: target.key, lastKey: target.key, audio: { file: sylFile(target.c, target.v), say: target.he + (target.v === 'i' ? 'י' : '') }, translit: `“${target.snd}”`,
+    title: battle ? `The spell that beats the ${G.mon.name} is…` : 'The bridge troll only lets you pass if you say…',
+    big: '', sub: 'Listen, then pick the letters that make this sound!',
     options: shuffle(opts).map(x => ({ html: x.he, cls: '', ok: x === target, em: '✨', note: `${x.he} says “${x.snd}”` })),
     explain: `${target.he} says “${target.snd}”` };
+}
+// Sound chains: 2-3 made-up syllables glued together (like "ramo"). The student hears it and picks how it is written.
+function qChain(t, battle) {
+  const len = t === 6 ? 2 : 3, cons = S2, vows = ['a', 'e', 'i', 'o', 'u'];
+  const syl = () => ({ c: rnd(cons), v: rnd(vows) });
+  const sylTxt = s => s.c + VOW[s.v], sylSnd = s => LET[s.c][0] + s.v;
+  const sylSay = s => sylTxt(s) + (s.v === 'i' ? 'י' : '');   // spoken with a yod so the voice says a clear "ee"
+  const wSnd = w => w.map(sylSnd).join(''), wKey = w => 'C:' + w.map(s => s.c + s.v).join('');
+  const target = wpick(Array.from({ length: 14 }, () => Array.from({ length: len }, syl)), wKey, G.lastKey);
+  const opts = [target], used = new Set([wSnd(target)]), want = t === 6 ? 3 : 4;
+  for (let guard = 0; opts.length < want && guard < 80; guard++) {
+    const w = target.map(s => ({ ...s })), i = Math.floor(Math.random() * len);
+    if (Math.random() < .5) w[i].c = rnd(cons.filter(c => c !== w[i].c)); else w[i].v = rnd(vows.filter(v => v !== w[i].v));
+    const sn = wSnd(w); if (!used.has(sn)) { used.add(sn); opts.push(w); }
+  }
+  const show = w => w.map(s => `<span class="syl">${sylTxt(s)}</span>`).join('');
+  return { kind: 'choice', key: wKey(target), lastKey: wKey(target), audio: { say: target.map(sylSay).join('') }, translit: `“${wSnd(target)}”`,
+    title: battle ? `The spell that beats the ${G.mon.name} is…` : 'The old gate opens only to the word…',
+    big: '', sub: 'Listen carefully, then pick how it is written!',
+    options: shuffle(opts).map(w => ({ html: show(w), cls: 'w', ok: w === target, em: '✨', note: `${show(w)} says “${wSnd(w)}”` })),
+    explain: `${show(target)} says “${wSnd(target)}”` };
 }
 function reasonFor(w, mon) {
   const e = EL[mon.el];
@@ -592,7 +700,7 @@ function distinctSpells(set) {
   return true;
 }
 function qSpell(t) {
-  const mon = G.mon, e = EL[mon.el], bank = t >= 8 ? PHRASE : SPELL;
+  const mon = G.mon, e = EL[mon.el], bank = t >= 10 ? PHRASE : SPELL;
   const eff = bank.filter(w => e.weak.includes(w.el)), heal = bank.filter(w => e.heal.includes(w.el));
   const neu = bank.filter(w => !e.weak.includes(w.el) && !e.heal.includes(w.el));
   // Always four spells: one that hurts it, one with the opposite effect (heals it), and two that do nothing.
@@ -606,7 +714,7 @@ function qSpell(t) {
   return { kind: 'choice', soft: true, key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: `A ${e.badge} ${e.label} monster blocks the way!`, big: `${mon.name}`, bigSm: true,
     sub: 'Read the spells. One hurts it, one makes it stronger, two do nothing. A wrong spell lets the monster attack!',
-    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 8 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em,
+    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 10 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em,
       note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em} — ${reasonFor(w, mon)}`, say: txt(w) })),
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}. ${e.why}`, say: txt(target) };
 }
@@ -619,15 +727,15 @@ const VTAGS = { 'מים': ['drink'], 'לחם': ['food'], 'חתול': ['pet', 'an
   'גשר': ['cross'], 'ירח': ['sky', 'light'], 'כוכב': ['sky', 'light'], 'דלת': ['home'], 'חלב': ['drink', 'food'],
   'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'] };
 function qHelp(t) {
-  const target = wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 6 ? 3 : 4;
+  const target = wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 8 ? 3 : 4;
   let others = VILL.filter(w => w !== target);
   // tricky levels: prefer signs that LOOK similar; otherwise random. Either way, no two signs may mean similar things
   // (e.g. cat + dog are both pets, water + milk are both drinks), so exactly one sign fits what the villager needs.
-  others = t >= 8 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he) || Math.random() - .5).slice(0, 10) : shuffle(others);
+  others = t >= 10 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he) || Math.random() - .5).slice(0, 10) : shuffle(others);
   const opts = [target];
   for (const w of others) { if (opts.length >= n) break; if (opts.every(x => !VTAGS[x.he].some(g => VTAGS[w.he].includes(g)))) opts.push(w); }
   for (const w of shuffle(VILL)) { if (opts.length >= n) break; if (!opts.includes(w)) opts.push(w); }   // safety net, normally unused
-  const txt = w => t === 6 ? w.nk : w.he;
+  const txt = w => t === 8 ? w.nk : w.he;
   return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?',
     speech: target.need,
@@ -636,7 +744,7 @@ function qHelp(t) {
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}`, say: txt(target), reveal: target.em };
 }
 function qWriteSpell(t) {
-  const mon = G.mon, e = EL[mon.el], bank = t === 9 ? SPELL : PHRASE;
+  const mon = G.mon, e = EL[mon.el], bank = t === 11 ? SPELL : PHRASE;
   const eff = bank.filter(w => e.weak.includes(w.el)), first = wpick(eff, w => 'W:' + w.he, G.lastKey);
   return { kind: 'write', key: 'W:' + first.he, lastKey: 'W:' + first.he, accept: eff.map(w => w.he), keyOf: s => 'W:' + s,
     title: `A ${e.badge} ${e.label} monster! Write a spell in Hebrew that beats it.`, big: mon.name, bigSm: true,
@@ -644,7 +752,7 @@ function qWriteSpell(t) {
     ref: eff.map(w => `${w.em} ${w.en}`), explain: eff.map(w => `<span class="he">${w.he}</span> (${w.en})`).join(' · '), say: first.he };
 }
 function qWriteHelp(t) {
-  const pool = VILL.filter(w => t === 9 ? w.he.length <= 3 : w.he.length >= 4);
+  const pool = VILL.filter(w => t === 11 ? w.he.length <= 3 : w.he.length >= 4);
   const w = wpick(pool, x => 'W:' + x.he, G.lastKey);
   return { kind: 'write', key: 'W:' + w.he, lastKey: 'W:' + w.he, accept: [w.he], keyOf: s => 'W:' + s,
     title: 'Write this word on the sign:', big: w.em, sub: `${w.en} — ${w.need}`, ref: [],
@@ -654,7 +762,8 @@ function makeQ() {
   const t = P.tier, b = G.quest === 'battle';
   if (t <= 3) return qLetter(t, b);
   if (t <= 5) return qSyl(t, b);
-  if (t <= 8) return b ? qSpell(t) : qHelp(t);
+  if (t <= 7) return qChain(t, b);
+  if (t <= 10) return b ? qSpell(t) : qHelp(t);
   return b ? qWriteSpell(t) : qWriteHelp(t);
 }
 
@@ -736,6 +845,17 @@ function nextQuestion() {
   $('#qBig').innerHTML = q.big ? `<span class="${q.bigSm ? '' : ''}">${esc(q.big)}</span>` : '';
   $('#qBig').classList.toggle('sm', !!q.bigSm || (q.big && q.big.length > 6));
   $('#qSub').textContent = q.sub || '';
+  if (q.audio) {   // listening question: a big Listen button (it plays by itself too)
+    if (canPlay(q.audio)) {
+      $('#qBig').innerHTML = '<button class="hearBtn" id="hearBtn">🔊 Listen</button>';
+      $('#qBig').classList.remove('sm');
+      $('#hearBtn').onclick = () => playSound(q.audio);
+      setTimeout(() => { if (G.q === q) playSound(q.audio); }, 350);
+    } else {   // no Hebrew voice on this device: fall back to writing the sound
+      $('#qBig').innerHTML = `<span>${esc(q.translit)}</span>`;
+      $('#qSub').textContent += ' (This device has no Hebrew voice, so the sound is written.)';
+    }
+  }
   $('#fb').innerHTML = ''; $('#nextBtn').classList.add('hidden');
   const bub = $('#bubble'); if (bub) { bub.style.visibility = q.speech ? 'visible' : 'hidden'; bub.textContent = q.speech || ''; }
   const opts = $('#opts');
@@ -758,7 +878,7 @@ function record(key, ok) {
   P.n++; if (ok) P.ok++;
   P.hist.push(ok ? 1 : 0); if (P.hist.length > CFG.MAX_WINDOW) P.hist.shift();
   const len = P.hist.length, acc = P.hist.reduce((a, b) => a + b, 0) / len;
-  if (len >= CFG.MIN_WINDOW && acc >= CFG.UP_ACC && P.tier < 10) { P.tier++; P.hist = []; return 'up'; }
+  if (len >= CFG.MIN_WINDOW && acc >= CFG.UP_ACC && P.tier < 12) { P.tier++; P.hist = []; return 'up'; }
   if (len >= CFG.MIN_WINDOW && acc <= CFG.DOWN_ACC && P.tier > 1) { P.tier--; P.hist = []; return 'down'; }
   return '';
 }
@@ -803,7 +923,7 @@ async function pickOption(i, btn) {
     let tr = '';
     if (first) { G.combo++; tr = record(q.key, true); }
     const xp = first ? gainXp(true) : 0;
-    sfx.ok(); if (q.say && P.tier >= 6) speakHe(q.say);
+    sfx.ok(); if (q.say && P.tier >= 8) speakHe(q.say);
     $('#fb').innerHTML = `✅ ${q.explain}`;
     if (battle) {
       await flySpell(o.em || '✨'); sfx.hit(); burst(o.em || '✨', 9); burst('💥', 3);
