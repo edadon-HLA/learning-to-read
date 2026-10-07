@@ -59,6 +59,27 @@ body.peace .stage{background:linear-gradient(#0000,#0005),linear-gradient(180deg
 .side svg{height:150px;max-width:100%}
 .foeBody{font-size:5.2rem;line-height:1;transition:transform .15s;filter:drop-shadow(0 6px 8px #0008)}
 .foeBody.boss{font-size:6.6rem}
+/* ---- elemental monsters: glowing aura, floating particles, themed battlefield ---- */
+.foeWrap{position:relative;display:inline-block;padding:4px 10px}
+.foeWrap .foeBody{position:relative;z-index:2;animation:bob 2.6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.aura{position:absolute;inset:-26px -22px;pointer-events:none}
+.aura::before{content:'';position:absolute;inset:0;z-index:1;border-radius:50%;background:radial-gradient(circle,var(--aura,transparent) 0,transparent 68%);animation:pulse 1.7s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.55;transform:scale(.92)}50%{opacity:1;transform:scale(1.08)}}
+.pt{position:absolute;z-index:3;font-size:1.9rem;opacity:0;animation-duration:var(--d,2.4s);animation-delay:var(--dl,0s);animation-iteration-count:infinite;animation-timing-function:ease-in-out;left:var(--x);top:var(--y);filter:drop-shadow(0 0 6px var(--aura,#fff))}
+.pt.up{animation-name:ptUp}.pt.drift{animation-name:ptDrift}.pt.down{animation-name:ptDown}
+@keyframes ptUp{0%{opacity:0;transform:translateY(14px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-52px) scale(1.15)}}
+@keyframes ptDown{0%{opacity:0;transform:translateY(-30px) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translateY(46px) rotate(200deg)}}
+@keyframes ptDrift{0%{opacity:0;transform:translate(0,10px) rotate(0)}25%{opacity:.95}100%{opacity:0;transform:translate(var(--dx,20px),-40px) rotate(160deg)}}
+.stage.el-fire{--aura:#ff7a2ecc;background:linear-gradient(#0000,#0007),linear-gradient(180deg,#3a0c0c,#7e2610 58%,#3a0e08);box-shadow:inset 0 -46px 60px -26px #ff6a1a99}
+.stage.el-ice{--aura:#7fdcffcc;background:linear-gradient(#0000,#0006),linear-gradient(180deg,#0d2747,#2b6798 58%,#16334f);box-shadow:inset 0 -46px 60px -26px #aeeaff88}
+.stage.el-dark{--aura:#a070ffcc;background:linear-gradient(#0000,#0008),linear-gradient(180deg,#0b061c,#27144d 58%,#0a0516);box-shadow:inset 0 -46px 60px -26px #7a4dff77}
+.stage.el-plant{--aura:#6ee06ecc;background:linear-gradient(#0000,#0007),linear-gradient(180deg,#0b2812,#217035 58%,#0d2a15);box-shadow:inset 0 -46px 60px -26px #62d96288}
+.stage.flash::after{content:'';position:absolute;inset:0;background:radial-gradient(circle,#ff2a4a00 30%,#ff2a4aaa);animation:flash .45s forwards;pointer-events:none;z-index:6;border-radius:20px}
+@keyframes flash{from{opacity:1}to{opacity:0}}
+.heroGlow svg{filter:drop-shadow(0 0 12px #ffd166) drop-shadow(0 0 22px #ffb703)}
+.burstP{position:absolute;pointer-events:none;z-index:7;font-size:1.6rem}
+.foeBody.boss{filter:drop-shadow(0 0 18px var(--aura,#fff)) drop-shadow(0 6px 8px #0008)}
 .foeBody.hit{animation:shake .4s}
 .foeBody.atk{animation:lunge .5s}
 .foeBody.die{animation:die .7s forwards}
@@ -184,7 +205,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="stage" id="stage">
     <div class="side hero" id="heroBox"><div id="heroSvg"></div><div class="hearts" id="hearts"></div></div>
     <div class="mid" id="mid"></div>
-    <div class="side foe"><div id="foeName" class="small"></div><div class="hpbar"><i id="hpFill"></i></div><div class="foeBody" id="foeBody"></div></div>
+    <div class="side foe"><div id="foeName" class="small"></div><div class="hpbar"><i id="hpFill"></i></div><div class="foeWrap"><div class="aura" id="aura"></div><div class="foeBody" id="foeBody"></div></div></div>
   </div>
   <div class="panel card">
     <div class="qtitle" id="qTitle"></div>
@@ -242,18 +263,18 @@ const SPELL = [
  {he:'אבן',nk:'אֶבֶן',en:'stone',em:'🪨',el:'stone'}
 ];
 const PHRASE = [
- {he:'חץ מים',en:'water arrow',em:'💧🏹',el:'water'},
- {he:'סופת גשם',en:'rain storm',em:'🌧️',el:'rain'},
- {he:'כדור שלג',en:'snowball',em:'❄️',el:'snow'},
- {he:'חנית קרח',en:'ice spear',em:'🧊',el:'ice'},
- {he:'כדור אש',en:'fireball',em:'🔥',el:'fire'},
- {he:'חץ אש',en:'fire arrow',em:'🔥🏹',el:'fire'},
- {he:'קרני שמש',en:'sun rays',em:'☀️',el:'sun'},
- {he:'קרן אור',en:'light beam',em:'💡',el:'light'},
- {he:'ענן חושך',en:'dark cloud',em:'🌑',el:'dark'},
- {he:'חץ ברק',en:'lightning arrow',em:'⚡',el:'lightning'},
- {he:'סערת רוח',en:'wind storm',em:'💨',el:'wind'},
- {he:'סלע כבד',en:'heavy rock',em:'🪨',el:'stone'}
+ {he:'חץ מים',nk:'חֵץ מַיִם',en:'water arrow',em:'💧🏹',el:'water'},
+ {he:'סופת גשם',nk:'סוּפַת גֶּשֶׁם',en:'rain storm',em:'🌧️',el:'rain'},
+ {he:'כדור שלג',nk:'כַּדּוּר שֶׁלֶג',en:'snowball',em:'❄️',el:'snow'},
+ {he:'חנית קרח',nk:'חֲנִית קֶרַח',en:'ice spear',em:'🧊',el:'ice'},
+ {he:'כדור אש',nk:'כַּדּוּר אֵשׁ',en:'fireball',em:'🔥',el:'fire'},
+ {he:'חץ אש',nk:'חֵץ אֵשׁ',en:'fire arrow',em:'🔥🏹',el:'fire'},
+ {he:'קרני שמש',nk:'קַרְנֵי שֶׁמֶשׁ',en:'sun rays',em:'☀️',el:'sun'},
+ {he:'קרן אור',nk:'קֶרֶן אוֹר',en:'light beam',em:'💡',el:'light'},
+ {he:'ענן חושך',nk:'עָנָן חֹשֶׁךְ',en:'dark cloud',em:'🌑',el:'dark'},
+ {he:'חץ ברק',nk:'חֵץ בָּרָק',en:'lightning arrow',em:'⚡',el:'lightning'},
+ {he:'סערת רוח',nk:'סַעֲרַת רוּחַ',en:'wind storm',em:'💨',el:'wind'},
+ {he:'סלע כבד',nk:'סֶלַע כָּבֵד',en:'heavy rock',em:'🪨',el:'stone'}
 ];
 const EL = {
  fire:{label:'FIRE',badge:'🔥',weak:['water','rain','snow','ice'],heal:['fire','sun','wind'],why:'Fire monsters hate water and cold!'},
@@ -262,7 +283,7 @@ const EL = {
  plant:{label:'PLANT',badge:'🌿',weak:['fire','lightning'],heal:['water','rain','sun'],why:'Plants burn, but water and sun help them grow!'}
 };
 const MONS = [
- {el:'fire',body:'👹',name:'Ember Imp'},{el:'fire',body:'🦎',name:'Flame Lizard'},
+ {el:'fire',body:'👹',name:'Ember Imp'},{el:'fire',body:'🦎',name:'Flame Lizard',tint:'hue-rotate(-105deg) saturate(1.8) brightness(1.1)'},
  {el:'ice',body:'🐻‍❄️',name:'Frost Bear'},{el:'ice',body:'🐧',name:'Icy Penguin'},
  {el:'dark',body:'👻',name:'Shadow Ghost'},{el:'dark',body:'🦇',name:'Night Bat'},
  {el:'plant',body:'🌵',name:'Thorn Cactus'},{el:'plant',body:'🍄',name:'Spore Shroom'}
@@ -298,7 +319,7 @@ const VILL = [
 ];
 const FOLK = ['🧓','👩‍🌾','👨‍🌾','🧑‍🍳','👵','👴','🧒','👧','🧑‍🔧','👩‍🎤'];
 const TIERS = ['','Letter sounds I','Letter sounds II','Letter sounds III','Syllables I','Syllables II',
-  'Words with vowels','Words','Tricky words & phrases','Writing words','Writing spells'];
+  'Words I','Words II','Phrases & tricky words','Writing words','Writing spells'];
 const RANKS = ['Apprentice','Spark Mage','Rune Reader','Spell Scribe','Sage','Archmage','Letter Legend'];
 const COLORS = ['#e74c3c','#3498db','#2ecc71','#9b59b6','#f39c12','#1abc9c','#ff6fb5','#34495e'];
 const FINAL = {'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
@@ -581,7 +602,7 @@ function qSpell(t) {
   let opts = null;
   for (let k = 0; k < 80 && !opts; k++) { const c = pickSet(); if (distinctSpells(c)) opts = c; }
   if (!opts) opts = pickSet();
-  const txt = w => t === 6 ? w.nk : w.he;
+  const txt = w => w.nk;   // fight spells are always shown with their vowel marks
   return { kind: 'choice', soft: true, key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: `A ${e.badge} ${e.label} monster blocks the way!`, big: `${mon.name}`, bigSm: true,
     sub: 'Read the spells. One hurts it, one makes it stronger, two do nothing. A wrong spell lets the monster attack!',
@@ -592,11 +613,20 @@ function qSpell(t) {
 function similarity(a, b) {
   let s = a.length === b.length ? 2 : 0; for (const ch of new Set(a)) if (b.includes(ch)) s++; return s + (a[0] === b[0] ? 1 : 0);
 }
+// What each village word is about. Two signs that share a tag are never shown together.
+const VTAGS = { 'מים': ['drink'], 'לחם': ['food'], 'חתול': ['pet', 'animal'], 'כלב': ['pet', 'animal'], 'דג': ['animal', 'food'],
+  'ספר': ['read'], 'בית': ['home'], 'עץ': ['plant'], 'פרח': ['plant'], 'נר': ['light'], 'מפתח': ['home'], 'כובע': ['wear'],
+  'גשר': ['cross'], 'ירח': ['sky', 'light'], 'כוכב': ['sky', 'light'], 'דלת': ['home'], 'חלב': ['drink', 'food'],
+  'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'] };
 function qHelp(t) {
   const target = wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 6 ? 3 : 4;
   let others = VILL.filter(w => w !== target);
-  others = t >= 8 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he)).slice(0, 7) : others;
-  const opts = [target, ...shuffle(others).slice(0, n - 1)];
+  // tricky levels: prefer signs that LOOK similar; otherwise random. Either way, no two signs may mean similar things
+  // (e.g. cat + dog are both pets, water + milk are both drinks), so exactly one sign fits what the villager needs.
+  others = t >= 8 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he) || Math.random() - .5).slice(0, 10) : shuffle(others);
+  const opts = [target];
+  for (const w of others) { if (opts.length >= n) break; if (opts.every(x => !VTAGS[x.he].some(g => VTAGS[w.he].includes(g)))) opts.push(w); }
+  for (const w of shuffle(VILL)) { if (opts.length >= n) break; if (!opts.includes(w)) opts.push(w); }   // safety net, normally unused
   const txt = w => t === 6 ? w.nk : w.he;
   return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?',
@@ -645,9 +675,40 @@ function newEncounter() {
   } else { G.folk = rnd(FOLK); G.mon = null; }
   drawScene(); nextQuestion();
 }
+// Each element has its own battlefield colours, glow and drifting particles (flames, snowflakes, wisps, leaves).
+const AURA = { fire: { em: ['🔥', '🔥', '✨', '🔥'], mode: 'up', y: [38, 85] }, ice: { em: ['❄️', '❄️', '✨', '🧊'], mode: 'down', y: [0, 35] },
+  dark: { em: ['🌫️', '💜', '✨', '🌑'], mode: 'drift', y: [25, 80] }, plant: { em: ['🍃', '🌿', '🍃', '🌸'], mode: 'drift', y: [25, 80] } };
+function setAura(el) {
+  const a = $('#aura'); a.innerHTML = ''; a.style.display = '';
+  const c = AURA[el]; if (!c) return;
+  for (let i = 0; i < 15; i++) {
+    const p = document.createElement('span'); p.className = 'pt ' + c.mode; p.textContent = c.em[i % c.em.length];
+    p.style.setProperty('--x', (Math.random() * 82) + '%'); p.style.setProperty('--y', (c.y[0] + Math.random() * (c.y[1] - c.y[0])) + '%');
+    p.style.setProperty('--d', (1.8 + Math.random() * 1.8) + 's'); p.style.setProperty('--dl', (-Math.random() * 3) + 's');
+    p.style.setProperty('--dx', ((Math.random() - .5) * 60) + 'px'); a.appendChild(p);
+  }
+}
+function burst(emoji, n = 8) {
+  try {
+    const f = $('#foeBody').getBoundingClientRect(), s = $('#stage').getBoundingClientRect();
+    const cx = f.left - s.left + f.width / 2, cy = f.top - s.top + f.height / 2;
+    for (let i = 0; i < n; i++) {
+      const e = document.createElement('div'); e.className = 'burstP'; e.textContent = emoji; e.style.left = cx + 'px'; e.style.top = cy + 'px';
+      $('#stage').appendChild(e);
+      const ang = Math.PI * 2 * i / n, d = 42 + Math.random() * 34;
+      e.animate([{ transform: 'translate(-50%,-50%) scale(.4)', opacity: 1 }, { transform: `translate(calc(-50% + ${Math.cos(ang) * d}px),calc(-50% + ${Math.sin(ang) * d}px)) scale(1.25)`, opacity: 0 }], { duration: 620, easing: 'ease-out' });
+      setTimeout(() => e.remove(), 680);
+    }
+  } catch (e) {}
+}
+function flashStage() { const s = $('#stage'); s.classList.remove('flash'); void s.offsetWidth; s.classList.add('flash'); setTimeout(() => s.classList.remove('flash'), 500); }
 function drawScene() {
   const qs = P.quest[G.quest], b = G.quest === 'battle';
+  $('#stage').className = 'stage' + (b ? ' el-' + G.mon.el : '');
+  setAura(b ? G.mon.el : null);
   $('#foeBody').className = 'foeBody' + (b && G.mon.boss ? ' boss' : '');
+  // element-coloured glow around every monster; the fire lizard is also tinted orange-red
+  $('#foeBody').style.filter = b ? `${G.mon.tint || ''} drop-shadow(0 0 14px var(--aura)) drop-shadow(0 0 28px var(--aura)) drop-shadow(0 6px 8px #0008)` : '';
   $('#heroBox').classList.remove('hurt');
   if (b) {
     $('#foeBody').textContent = G.mon.body;
@@ -663,6 +724,7 @@ function drawScene() {
 function updateBars() {
   const b = G.quest === 'battle';
   $('#hearts').textContent = b ? '❤️'.repeat(G.hearts) + '🖤'.repeat(3 - G.hearts) : '😊';
+  $('#heroBox').classList.toggle('heroGlow', b && G.combo >= 3);   // on a hot streak the hero glows
   $('#hpFill').style.width = (b ? G.mon.hp / G.mon.max * 100 : G.helped / 3 * 100) + '%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`;
   $('#xpFill').style.width = ((P.xp % 400) / 4) + '%';
@@ -713,7 +775,7 @@ function floatText(txt, color) {
 async function flySpell(emoji) {
   try {
     const h = $('#heroSvg').getBoundingClientRect(), f = $('#foeBody').getBoundingClientRect(), s = $('#stage').getBoundingClientRect();
-    const e = document.createElement('div'); e.textContent = emoji; e.style.cssText = `position:absolute;font-size:2.4rem;left:${h.left - s.left + h.width / 2}px;top:${h.top - s.top + h.height / 3}px;z-index:5;pointer-events:none`;
+    const e = document.createElement('div'); e.textContent = emoji; e.style.cssText = `position:absolute;font-size:3rem;left:${h.left - s.left + h.width / 2}px;top:${h.top - s.top + h.height / 3}px;z-index:5;pointer-events:none;filter:drop-shadow(0 0 10px #ffd166) drop-shadow(0 0 20px #fff8)`;
     $('#stage').appendChild(e);
     const a = e.animate([{ transform: 'translate(0,0) scale(.6)' }, { transform: `translate(${f.left - h.left}px,${f.top - h.top + 10}px) scale(1.4) rotate(360deg)` }], { duration: 450, easing: 'ease-in' });
     await Promise.race([a.finished, new Promise(r => setTimeout(r, 700))]); e.remove();
@@ -744,7 +806,7 @@ async function pickOption(i, btn) {
     sfx.ok(); if (q.say && P.tier >= 6) speakHe(q.say);
     $('#fb').innerHTML = `✅ ${q.explain}`;
     if (battle) {
-      await flySpell(o.em || '✨'); sfx.hit();
+      await flySpell(o.em || '✨'); sfx.hit(); burst(o.em || '✨', 9); burst('💥', 3);
       const dmg = 1 + (G.combo >= 3 ? 1 : 0);
       G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400);
       floatText('-' + dmg + (xp ? '  +' + xp + 'xp' : ''), '#ffd166');
@@ -766,10 +828,11 @@ async function pickOption(i, btn) {
       // A wrong spell passes the turn: it does nothing (or even heals the monster), then the monster attacks for 1.
       G.locked = true;
       document.querySelectorAll('.opt').forEach(b => { b.disabled = true; });
-      if (o.fx === 'heal') { G.mon.hp = Math.min(G.mon.max, G.mon.hp + 1); floatText('+1 💚', '#7dffb0'); $('#fb').innerHTML += '<br>The monster got stronger!'; }
-      else if (o.fx === 'none') { floatText('0', '#d6d6e6'); $('#fb').innerHTML += '<br>Nothing happens.'; }
+      await flySpell(o.em || '✨');
+      if (o.fx === 'heal') { G.mon.hp = Math.min(G.mon.max, G.mon.hp + 1); floatText('+1 💚', '#7dffb0'); burst('💚', 8); $('#fb').innerHTML += '<br>The monster got stronger!'; }
+      else if (o.fx === 'none') { floatText('0', '#d6d6e6'); burst('💨', 5); $('#fb').innerHTML += '<br>Nothing happens.'; }
       updateBars(); await sleep(500);
-      G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); $('#heroBox').classList.add('hurt');
+      G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); flashStage(); $('#heroBox').classList.add('hurt');
       setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
       $('#fb').innerHTML += '<br>💥 The monster attacks! −1 ❤️';
       after(tr); updateBars();
@@ -811,7 +874,7 @@ $('#castBtn').onclick = async () => {
     if (first) { G.combo++; tr = record(q.keyOf(hit), true); xp = gainXp(true) + 5; P.xp += 5; }
     sfx.ok(); speakHe(hit);
     $('#fb').innerHTML = `✅ Perfect! ${q.explain}`;
-    if (battle) { await flySpell('✨'); sfx.hit(); const dmg = 2; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
+    if (battle) { await flySpell('✨'); sfx.hit(); burst('✨', 10); burst('💥', 3); const dmg = 2; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
     else { G.helped++; floatText('+' + xp + 'xp', '#ffd166'); if (q.reveal) $('#foeName').textContent = q.reveal + ' Thank you!'; }
     after(tr); updateBars(); await sleep(battle ? 1000 : 1600);
     if (battle && G.mon.hp <= 0) return victory();
@@ -823,7 +886,7 @@ $('#castBtn').onclick = async () => {
     if (battle) {
       // wrong spell: the monster attacks, then it's the player's turn again with the same question
       $('#fb').innerHTML = `❌ Not quite. ${nearMsg}`;
-      G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); $('#heroBox').classList.add('hurt');
+      G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); flashStage(); $('#heroBox').classList.add('hurt');
       setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
       $('#fb').innerHTML += '💥 The monster attacks! −1 ❤️';
       after(tr); updateBars();
@@ -846,7 +909,7 @@ function advanceQuest() {
   return chapterDone;
 }
 function victory() {
-  const boss = G.mon.boss; $('#foeBody').classList.add('die'); sfx.win(); confetti();
+  const boss = G.mon.boss; $('#foeBody').classList.add('die'); $('#aura').style.display = 'none'; burst('✨', 14); sfx.win(); confetti();
   const bonus = boss ? 80 : 30; P.xp += bonus;
   const done = advanceQuest(); saveSoon(true);
   modal(boss ? '👑 Boss defeated!' : '🎉 Victory!',
