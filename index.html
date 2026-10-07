@@ -952,10 +952,14 @@ async function sha256(s) {
 }
 async function tryGate(code) { try { return (await sha256('rtr-adventure:' + code)) === GATE_HASH; } catch (e) { return false; } }
 function openGate() { show('login'); }
+// The unlock is remembered only for this browser tab (so a refresh doesn't ask again), never across visits.
+const ssGet = k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
+const ssSet = (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} };
+try { localStorage.removeItem('aq_gate'); } catch (e) {}   // forget the old always-unlocked setting
 (async () => {
-  if (!GATE_HASH || lsGet('aq_gate') === GATE_HASH) return openGate();
+  if (!GATE_HASH || ssGet('aq_gate') === GATE_HASH) return openGate();
   $('#gateBtn').onclick = async () => {
-    if (await tryGate($('#pass').value.trim())) { lsSet('aq_gate', GATE_HASH); openGate(); }
+    if (await tryGate($('#pass').value.trim())) { ssSet('aq_gate', GATE_HASH); openGate(); }
     else { $('#gateMsg').textContent = 'That passcode is not right.'; $('#pass').value = ''; }
   };
   $('#pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gateBtn').click(); });
