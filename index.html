@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Learning to Read</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Noto+Sans+Hebrew:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg1:#1b1340;--bg2:#3a1c71;--glow:#5b3aa8;--gold:#ffd166;--good:#3ddc97;--bad:#ff5d73;--accent:#8f7bff;--panel:rgba(255,255,255,.09)}
+body.peace{--bg1:#0e3b2c;--bg2:#2d6a4f;--glow:#3f9b6e;--accent:#ffd166}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;font-family:'Fredoka',system-ui,sans-serif;color:#fff;
+  background:radial-gradient(1100px 560px at 50% -10%,var(--glow) 0,transparent 62%),linear-gradient(160deg,var(--bg1),var(--bg2));background-attachment:fixed}
+button{font:inherit;color:inherit;cursor:pointer}
+.hidden{display:none!important}
+.screen{display:none;max-width:860px;margin:0 auto;padding:16px}
+.screen.on{display:block}
+.heb{font-family:'Noto Sans Hebrew','Arial Hebrew',Arial,sans-serif;direction:rtl;unicode-bidi:isolate}
+h1{font-size:2.6rem;margin:.2em 0;text-align:center;letter-spacing:.02em;text-shadow:0 3px 0 #0006}
+h2{margin:.2em 0}
+.sub{opacity:.85;text-align:center}
+.card{background:var(--panel);border:1px solid #fff2;border-radius:18px;padding:16px;backdrop-filter:blur(4px)}
+.btn{background:linear-gradient(#ffd166,#f4a93a);color:#3a2300;border:0;border-radius:14px;padding:12px 22px;font-weight:600;font-size:1.1rem;box-shadow:0 4px 0 #9b6411;transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #9b6411}
+.btn.ghost{background:#fff1;color:#fff;box-shadow:none;border:1px solid #fff3}
+.btn:disabled{opacity:.5}
+input[type=text]{width:100%;padding:14px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.3rem;text-align:center}
+.center{text-align:center}
+.row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
+.msg{min-height:1.4em;color:#ffd0d6;text-align:center;margin:8px 0}
+/* creator */
+.swatches{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.sw{width:42px;height:42px;border-radius:50%;border:3px solid #fff5}
+.sw.sel{border-color:#fff;transform:scale(1.18);box-shadow:0 0 14px #fff8}
+.gbtn{background:#fff1;border:2px solid #fff3;border-radius:14px;padding:8px 18px;font-size:1.1rem}
+.gbtn.sel{border-color:var(--gold);background:#ffd16622}
+#prevHero svg{height:200px}
+/* menu */
+.questcard{flex:1 1 300px;text-align:left;border:2px solid #fff3;border-radius:20px;padding:18px;background:var(--panel);min-height:150px}
+.questcard:hover{border-color:var(--gold);transform:translateY(-2px)}
+.questcard b{font-size:1.5rem;display:block;margin-bottom:6px}
+.pbar{height:12px;border-radius:8px;background:#0005;overflow:hidden}
+.pbar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3ddc97,#ffd166);transition:width .5s}
+.stat{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin:8px 0}
+.stat span{background:#0004;border-radius:10px;padding:6px 12px}
+/* game */
+.top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.top .grow{flex:1;min-width:0}
+.top .who{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .small{font-size:.8rem;opacity:.8}
+.ib{background:#fff1;border:1px solid #fff3;border-radius:10px;padding:6px 10px;font-size:1.1rem}
+.stage{position:relative;display:grid;grid-template-columns:1fr 1.1fr 1fr;align-items:end;gap:6px;min-height:230px;border-radius:20px;padding:12px;
+  background:linear-gradient(#0000,#0006),linear-gradient(180deg,#2b2060,#3f2a7a 55%,#2a1f4f);border:1px solid #fff2;overflow:hidden}
+body.peace .stage{background:linear-gradient(#0000,#0005),linear-gradient(180deg,#5db7e8,#9fe0b8 60%,#4f9d5f)}
+.side{text-align:center}
+.side svg{height:150px;max-width:100%}
+.foeBody{font-size:5.2rem;line-height:1;transition:transform .15s;filter:drop-shadow(0 6px 8px #0008)}
+.foeBody.boss{font-size:6.6rem}
+.foeBody.hit{animation:shake .4s}
+.foeBody.atk{animation:lunge .5s}
+.foeBody.die{animation:die .7s forwards}
+.hero.hurt svg{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-12px) rotate(-4deg)}40%{transform:translateX(12px) rotate(4deg)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+@keyframes lunge{0%{transform:translateX(0)}40%{transform:translateX(-90px) scale(1.15)}100%{transform:translateX(0)}}
+@keyframes die{to{transform:scale(.1) rotate(200deg);opacity:0}}
+.mid{text-align:center;font-size:.95rem;align-self:start;padding-top:4px}
+.mid .houses{font-size:1.5rem;letter-spacing:2px}
+.bubble{background:#fff;color:#2a2340;border-radius:16px;padding:8px 10px;margin:6px auto 0;font-size:.95rem;position:relative;max-width:230px}
+.hpbar{height:12px;border-radius:8px;background:#0006;overflow:hidden;margin:4px auto;width:80%}
+.hpbar>i{display:block;height:100%;background:linear-gradient(90deg,#ff5d73,#ff9966);width:100%;transition:width .4s}
+body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
+.hearts{font-size:1.4rem;letter-spacing:2px}
+.float{position:absolute;font-weight:700;font-size:1.6rem;pointer-events:none;animation:up 1s forwards;text-shadow:0 2px 0 #000a}
+@keyframes up{to{transform:translateY(-60px);opacity:0}}
+.panel{margin-top:10px}
+.qtitle{text-align:center;font-size:1.15rem;margin:6px 0}
+.big{text-align:center;font-size:3.2rem;font-weight:700;margin:4px 0;color:var(--gold);text-shadow:0 3px 0 #0006;line-height:1.1}
+.big.sm{font-size:1.7rem}
+.qsub{text-align:center;opacity:.85;margin-bottom:8px;min-height:1.2em}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{background:linear-gradient(#fff,#e8e4ff);color:#2a2050;border:0;border-radius:18px;padding:12px 8px;box-shadow:0 5px 0 #6b5ca8;font-size:3rem;font-weight:700;min-height:92px;line-height:1.15;transition:transform .08s}
+.opts>.opt:last-child:nth-child(odd){grid-column:span 2}
+.opt.w{font-size:2.4rem}.opt.p{font-size:1.9rem}
+.opt:active{transform:translateY(4px);box-shadow:0 1px 0 #6b5ca8}
+.opt.good{background:linear-gradient(#b8ffd9,#6fe6a8);box-shadow:0 5px 0 #22875a}
+.opt.bad{background:linear-gradient(#ffc0c8,#ff8b99);box-shadow:0 5px 0 #a8384a;opacity:.75}
+.opt:disabled{cursor:default}
+.fb{min-height:2.6em;text-align:center;margin-top:10px;font-size:1.05rem}
+.fb .he{font-weight:700;font-size:1.3rem}
+#typed{min-height:70px;font-size:2.6rem;text-align:center;background:#fff;color:#2a2050;border-radius:16px;margin:8px 0;padding:6px;border:3px solid #6b5ca8;font-family:'Noto Sans Hebrew',Arial,sans-serif;direction:rtl;letter-spacing:2px}
+#kb{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;direction:rtl}
+#kb button{background:#fff;color:#2a2050;border:0;border-radius:10px;padding:8px 0;font-size:1.5rem;font-family:'Noto Sans Hebrew',Arial,sans-serif;box-shadow:0 3px 0 #6b5ca8}
+#kb button:active{transform:translateY(2px)}
+#kb .wide{grid-column:span 3;font-size:1.1rem;font-family:inherit}
+.writeref{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.writeref span{background:#0004;border-radius:10px;padding:4px 10px}
+/* modal */
+#modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+#modal.on{display:flex}
+#modal .box{background:linear-gradient(160deg,#2a1d5e,#4b2a8c);border:2px solid var(--gold);border-radius:22px;padding:22px;max-width:440px;width:100%;text-align:center;animation:pop .3s}
+@keyframes pop{from{transform:scale(.7);opacity:0}}
+#modal h2{font-size:1.8rem}
+.confetti{position:fixed;top:-30px;font-size:1.8rem;pointer-events:none;animation:fall linear forwards;z-index:60}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (max-width:560px){
+ .opt{font-size:2.4rem;min-height:80px}.opt.w{font-size:1.9rem}.opt.p{font-size:1.45rem}
+ .foeBody{font-size:3.8rem}.side svg{height:110px}.big{font-size:2.4rem}
+ #kb{gap:4px}#kb button{font-size:1.2rem;padding:6px 0}
+}
+</style>
+</head>
+<body>
+
+<section id="gate" class="screen on">
+  <h1>🔒 Learning to Read</h1>
+  <p class="sub">This game is in private testing. Enter the passcode to continue.</p>
+  <div class="card center" style="max-width:380px;margin:24px auto">
+    <input id="pass" type="password" inputmode="numeric" placeholder="Passcode" autocomplete="off">
+    <div class="msg" id="gateMsg"></div>
+    <button class="btn" id="gateBtn">Open ▶</button>
+  </div>
+</section>
+
+<section id="login" class="screen">
+  <h1>✨ Learning to Read ✨</h1>
+  <p class="sub">An adventure game: learn to read and write Hebrew, one spell at a time!</p>
+  <div class="card center" style="max-width:420px;margin:24px auto">
+    <h2>Welcome, hero!</h2>
+    <p>Type your <b>student number</b> to begin.</p>
+    <input id="sid" type="text" placeholder="Your number" autocomplete="off" autocapitalize="characters" maxlength="20">
+    <div class="msg" id="loginMsg"></div>
+    <button class="btn" id="loginBtn">Let's go! ▶</button>
+  </div>
+</section>
+
+<section id="creator" class="screen">
+  <h1>Create your hero</h1>
+  <div class="card center" style="max-width:520px;margin:12px auto">
+    <div id="prevHero"></div>
+    <div class="row" style="margin:8px 0">
+      <button class="gbtn" data-g="m">🧙‍♂️ Wizard</button>
+      <button class="gbtn" data-g="f">🧙‍♀️ Witch</button>
+    </div>
+    <div>Pick a robe color:</div>
+    <div class="swatches" id="swatches"></div>
+    <div>Choose a fun nickname <small>(not your real name)</small>:</div>
+    <input id="nick" type="text" maxlength="12" placeholder="Nickname" autocomplete="off" style="margin:8px 0">
+    <div class="msg" id="creatorMsg"></div>
+    <button class="btn" id="createBtn">Start my adventure ▶</button>
+  </div>
+</section>
+
+<section id="menu" class="screen">
+  <div class="top">
+    <div id="menuHero"></div>
+    <div class="grow"><div class="who" id="menuWho" style="font-size:1.5rem"></div><div id="menuRank" class="small"></div>
+      <div class="pbar" style="margin-top:6px"><i id="menuXp"></i></div></div>
+    <button class="ib" id="menuMute">🔊</button>
+  </div>
+  <div class="stat">
+    <span>📖 <b id="menuTier"></b></span>
+    <span>⏱️ Today: <b id="menuToday"></b></span>
+    <span>🔥 Streak: <b id="menuStreak"></b></span>
+    <span id="menuCloud">☁️</span>
+  </div>
+  <h2 class="center">Choose your quest</h2>
+  <div class="row" style="align-items:stretch">
+    <button class="questcard" id="qBattle"><b>⚔️ Monster Hunter</b>Fight monsters with word magic! Read the spells and pick the one that works.<div class="pbar" style="margin-top:10px"><i id="pbBattle"></i></div><div class="small" id="ptBattle"></div></button>
+    <button class="questcard" id="qPeace"><b>🌿 Village Helper</b>Help the villagers with your reading and writing skills. No fighting!<div class="pbar" style="margin-top:10px"><i id="pbPeace"></i></div><div class="small" id="ptPeace"></div></button>
+  </div>
+  <div class="row" style="margin-top:18px"><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
+</section>
+
+<section id="game" class="screen">
+  <div class="top">
+    <button class="ib" id="homeBtn" title="Back to map">🗺️</button>
+    <div class="grow"><div class="who" id="who"></div><div class="small" id="tierLbl"></div><div class="pbar" style="height:8px;margin-top:4px"><i id="xpFill"></i></div></div>
+    <span id="cloud" class="small"></span>
+    <button class="ib" id="muteBtn">🔊</button>
+  </div>
+  <div class="stage" id="stage">
+    <div class="side hero" id="heroBox"><div id="heroSvg"></div><div class="hearts" id="hearts"></div></div>
+    <div class="mid" id="mid"></div>
+    <div class="side foe"><div id="foeName" class="small"></div><div class="hpbar"><i id="hpFill"></i></div><div class="foeBody" id="foeBody"></div></div>
+  </div>
+  <div class="panel card">
+    <div class="qtitle" id="qTitle"></div>
+    <div class="big" id="qBig"></div>
+    <div class="qsub" id="qSub"></div>
+    <div class="opts" id="opts"></div>
+    <div id="write" class="hidden">
+      <div class="writeref" id="writeRef"></div>
+      <div id="typed"></div>
+      <div id="kb"></div>
+      <div class="center" style="margin-top:10px"><button class="btn" id="castBtn">✨ Cast it!</button></div>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="center"><button class="btn hidden" id="nextBtn">Continue ▶</button></div>
+  </div>
+</section>
+
+<div id="modal"><div class="box"><h2 id="mTitle"></h2><div id="mBody"></div><div class="row" id="mBtns" style="margin-top:14px"></div></div></div>
+
+<script>
+'use strict';
+/* ====================== CONFIG ====================== */
+const CFG = {
+  // Paste the Apps Script web app URL here to save progress to the school Google Sheet.
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby_WgFcze8lH_KTjGD1oI_m5BTocs8REMrOJwYrs6fkX5Pir_C1BzRGQJIkX-kG3ESN/exec',
+  DAILY_SEC: 600,           // 10 minutes a day
+  CHAPTER_LEN: 5,           // encounters per chapter (last one is a boss / grand finale)
+  UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10
+};
+
+/* ====================== CONTENT ====================== */
+// letter -> [sound, example English word]
+const LET = {'מ':['m','mom'],'ש':['sh','shoe'],'ל':['l','lion'],'נ':['n','nose'],'ס':['s','sun'],'ב':['b','ball'],
+  'ד':['d','dog'],'ג':['g','go'],'ז':['z','zoo'],'ת':['t','tea'],'ה':['h','hat'],'י':['y','yes'],
+  'ר':['r','rain'],'ק':['k','kite'],'ט':['t','top'],'צ':['ts','cats'],'פ':['p','pig'],'כ':['k','key'],
+  'ח':['kh','Bach'],'ו':['v','van'],'א':['a','ah'],'ע':['a','ah']};
+const L1 = [...'משלנסב'];
+const L2 = [...L1, ...'דגזתהי'];
+const L3 = Object.keys(LET);
+const S1 = [...'משלנסד'];
+const S2 = [...S1, ...'גזתהרקטצ'];
+const VOW = {a:'ַ', e:'ֶ', i:'ִ', o:'ֹ', u:'ֻ'};
+
+const SPELL = [
+ {he:'מים',nk:'מַיִם',en:'water',em:'💧',el:'water'},
+ {he:'גשם',nk:'גֶּשֶׁם',en:'rain',em:'🌧️',el:'rain'},
+ {he:'שלג',nk:'שֶׁלֶג',en:'snow',em:'🌨️',el:'snow'},
+ {he:'קרח',nk:'קֶרַח',en:'ice',em:'🧊',el:'ice'},
+ {he:'אש',nk:'אֵשׁ',en:'fire',em:'🔥',el:'fire'},
+ {he:'שמש',nk:'שֶׁמֶשׁ',en:'sun',em:'☀️',el:'sun'},
+ {he:'אור',nk:'אוֹר',en:'light',em:'💡',el:'light'},
+ {he:'חושך',nk:'חֹשֶׁךְ',en:'darkness',em:'🌑',el:'dark'},
+ {he:'ברק',nk:'בָּרָק',en:'lightning',em:'⚡',el:'lightning'},
+ {he:'רוח',nk:'רוּחַ',en:'wind',em:'💨',el:'wind'},
+ {he:'אבן',nk:'אֶבֶן',en:'stone',em:'🪨',el:'stone'}
+];
+const PHRASE = [
+ {he:'חץ מים',en:'water arrow',em:'💧🏹',el:'water'},
+ {he:'סופת גשם',en:'rain storm',em:'🌧️',el:'rain'},
+ {he:'כדור שלג',en:'snowball',em:'❄️',el:'snow'},
+ {he:'חנית קרח',en:'ice spear',em:'🧊',el:'ice'},
+ {he:'כדור אש',en:'fireball',em:'🔥',el:'fire'},
+ {he:'חץ אש',en:'fire arrow',em:'🔥🏹',el:'fire'},
+ {he:'קרני שמש',en:'sun rays',em:'☀️',el:'sun'},
+ {he:'קרן אור',en:'light beam',em:'💡',el:'light'},
+ {he:'ענן חושך',en:'dark cloud',em:'🌑',el:'dark'},
+ {he:'חץ ברק',en:'lightning arrow',em:'⚡',el:'lightning'},
+ {he:'סערת רוח',en:'wind storm',em:'💨',el:'wind'},
+ {he:'סלע כבד',en:'heavy rock',em:'🪨',el:'stone'}
+];
+const EL = {
+ fire:{label:'FIRE',badge:'🔥',weak:['water','rain','snow','ice'],heal:['fire','sun','wind'],why:'Fire monsters hate water and cold!'},
+ ice:{label:'ICE',badge:'❄️',weak:['fire','sun'],heal:['ice','snow'],why:'Ice melts in the heat!'},
+ dark:{label:'SHADOW',badge:'🌑',weak:['light','sun','lightning'],heal:['dark'],why:'Shadows are scared of light!'},
+ plant:{label:'PLANT',badge:'🌿',weak:['fire','lightning'],heal:['water','rain','sun'],why:'Plants burn, but water and sun help them grow!'}
+};
+const MONS = [
+ {el:'fire',body:'👹',name:'Ember Imp'},{el:'fire',body:'🦎',name:'Flame Lizard'},
+ {el:'ice',body:'🐻‍❄️',name:'Frost Bear'},{el:'ice',body:'🐧',name:'Icy Penguin'},
+ {el:'dark',body:'👻',name:'Shadow Ghost'},{el:'dark',body:'🦇',name:'Night Bat'},
+ {el:'plant',body:'🌵',name:'Thorn Cactus'},{el:'plant',body:'🍄',name:'Spore Shroom'}
+];
+const BOSSES = [
+ {el:'fire',body:'🐲',name:'Fire Dragon'},{el:'ice',body:'🦣',name:'Ice Mammoth'},
+ {el:'dark',body:'💀',name:'Night Wraith'},{el:'plant',body:'🌳',name:'Giant Treant'}
+];
+const AREAS = ['Whispering Woods','Crystal Caves','Sunken Ruins','Sky Citadel','Dragon Peak','Moonlit Marsh'];
+const VILLAGES = ['Little Brook','Sunny Hill','Maple Bridge','Starlight Bay','Golden Fields','Cloud Meadow'];
+const VILL = [
+ {he:'מים',nk:'מַיִם',en:'water',em:'💧',need:"I'm so thirsty! I need something to drink."},
+ {he:'לחם',nk:'לֶחֶם',en:'bread',em:'🍞',need:"I'm hungry! I'd love something freshly baked."},
+ {he:'חתול',nk:'חָתוּל',en:'cat',em:'🐱',need:'My pet says "meow"! Where did it go?'},
+ {he:'כלב',nk:'כֶּלֶב',en:'dog',em:'🐶',need:'My pet says "woof"! Where did it go?'},
+ {he:'דג',nk:'דָּג',en:'fish',em:'🐟',need:'I want to catch something that swims in the river.'},
+ {he:'ספר',nk:'סֵפֶר',en:'book',em:'📖',need:'I want to read a wonderful story!'},
+ {he:'בית',nk:'בַּיִת',en:'house',em:'🏠',need:'I have no place to live. I need a home!'},
+ {he:'עץ',nk:'עֵץ',en:'tree',em:'🌳',need:'I need some shade from the hot sun!'},
+ {he:'פרח',nk:'פֶּרַח',en:'flower',em:'🌸',need:"It's grandma's birthday! I need something pretty."},
+ {he:'נר',nk:'נֵר',en:'candle',em:'🕯️',need:"It's so dark in here! I need a little light."},
+ {he:'מפתח',nk:'מַפְתֵּחַ',en:'key',em:'🔑',need:"I'm locked out of my house!"},
+ {he:'כובע',nk:'כּוֹבַע',en:'hat',em:'🎩',need:'The sun is burning my head!'},
+ {he:'גשר',nk:'גֶּשֶׁר',en:'bridge',em:'🌉',need:"I can't cross the river!"},
+ {he:'ירח',nk:'יָרֵחַ',en:'moon',em:'🌙',need:'What round, white thing glows in the night sky?'},
+ {he:'כוכב',nk:'כּוֹכָב',en:'star',em:'⭐',need:'I want to make a wish on something twinkling at night!'},
+ {he:'דלת',nk:'דֶּלֶת',en:'door',em:'🚪',need:'Someone is knocking! I need to open the...'},
+ {he:'חלב',nk:'חָלָב',en:'milk',em:'🥛',need:'The baby needs a white drink.'},
+ {he:'ביצה',nk:'בֵּיצָה',en:'egg',em:'🥚',need:'I want to make an omelet!'},
+ {he:'אריה',nk:'אַרְיֵה',en:'lion',em:'🦁',need:'A big brave king of the jungle is visiting!'},
+ {he:'תפוח',nk:'תַּפּוּחַ',en:'apple',em:'🍎',need:'I want a crunchy red fruit.'},
+ {he:'שעון',nk:'שָׁעוֹן',en:'clock',em:'⏰',need:"I'm late! What tells me the time?"}
+];
+const FOLK = ['🧓','👩‍🌾','👨‍🌾','🧑‍🍳','👵','👴','🧒','👧','🧑‍🔧','👩‍🎤'];
+const TIERS = ['','Letter sounds I','Letter sounds II','Letter sounds III','Syllables I','Syllables II',
+  'Words with vowels','Words','Tricky words & phrases','Writing words','Writing spells'];
+const RANKS = ['Apprentice','Spark Mage','Rune Reader','Spell Scribe','Sage','Archmage','Letter Legend'];
+const COLORS = ['#e74c3c','#3498db','#2ecc71','#9b59b6','#f39c12','#1abc9c','#ff6fb5','#34495e'];
+const FINAL = {'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
+const KEYS = [...'אבגדהוזחטיכךלמםנןסעפףצץקרשת'];
+
+/* ====================== HELPERS ====================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const sleep = ms => new Promise(r => setTimeout(r, window.__fast ? 1 : ms));
+const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const lsGet = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+function shade(hex, amt) {
+  const n = parseInt(hex.slice(1), 16);
+  const c = v => Math.max(0, Math.min(255, v + amt));
+  return '#' + [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => c(v).toString(16).padStart(2, '0')).join('');
+}
+function wpick(items, keyFn, avoid) {
+  let list = items.filter(x => keyFn(x) !== avoid);
+  if (!list.length) list = items;
+  const w = list.map(x => {
+    const s = P.stats[keyFn(x)];
+    if (!s) return 3;
+    const t = s[0] + s[1];
+    return 1 + 5 * (s[1] / t) + (t < 3 ? 2 : 0);
+  });
+  let r = Math.random() * w.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < list.length; i++) { r -= w[i]; if (r <= 0) return list[i]; }
+  return list[list.length - 1];
+}
+
+/* ====================== AUDIO ====================== */
+let muted = lsGet('aq_mute') === '1', AC = null;
+function tone(f, d, type = 'sine', g = 0.07, delay = 0) {
+  if (muted) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), n = AC.createGain(), t = AC.currentTime + delay;
+    o.type = type; o.frequency.value = f; n.gain.setValueAtTime(g, t); n.gain.exponentialRampToValueAtTime(0.001, t + d);
+    o.connect(n); n.connect(AC.destination); o.start(t); o.stop(t + d);
+  } catch (e) {}
+}
+const sfx = {
+  ok: () => { tone(660, .12); tone(880, .2, 'sine', .07, .1); },
+  bad: () => { tone(180, .35, 'sawtooth', .05); },
+  hit: () => { tone(300, .08, 'square', .05); tone(200, .12, 'square', .05, .06); },
+  win: () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, .25, 'triangle', .08, i * .12)); },
+  up: () => { [440, 554, 659, 880, 1109].forEach((f, i) => tone(f, .2, 'triangle', .08, i * .09)); }
+};
+function speakHe(text) {
+  try {
+    if (muted || !window.speechSynthesis) return;
+    const v = speechSynthesis.getVoices().find(v => /^(he|iw)/i.test(v.lang));
+    if (!v) return;
+    const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = .8;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch (e) {}
+}
+function setMute(m) { muted = m; lsSet('aq_mute', m ? '1' : '0'); $('#muteBtn').textContent = $('#menuMute').textContent = m ? '🔇' : '🔊'; }
+
+/* ====================== HERO ART ====================== */
+function heroSVG(g, color) {
+  const dark = shade(color, -45), light = shade(color, 40), skin = '#f6cfa6';
+  const hair = g === 'f' ? `<path d="M40 52 Q36 92 46 100 L52 70 Z M80 52 Q84 92 74 100 L68 70 Z" fill="#7a4a21"/>` : '';
+  const beard = g === 'm' ? `<path d="M46 62 Q60 96 74 62 Q60 72 46 62Z" fill="#f2f2f2"/>` : '';
+  return `<svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
+   <ellipse cx="60" cy="164" rx="34" ry="5" fill="#0005"/>
+   <rect x="94" y="40" width="5" height="122" rx="2" fill="#8a5a2b"/><circle cx="96" cy="36" r="9" fill="${light}" stroke="#fff" stroke-width="2"/>
+   <path d="M28 162 L44 84 H76 L92 162 Z" fill="${color}"/><path d="M28 162 L44 84 H52 L44 162Z" fill="${dark}" opacity=".35"/>
+   <rect x="44" y="108" width="32" height="7" fill="${dark}"/><rect x="56" y="106" width="8" height="11" rx="2" fill="#ffd166"/>
+   ${hair}<circle cx="60" cy="62" r="19" fill="${skin}"/>${beard}
+   <circle cx="53" cy="60" r="2.6" fill="#2a2340"/><circle cx="67" cy="60" r="2.6" fill="#2a2340"/>
+   <path d="M53 69 Q60 75 67 69" stroke="#a5503a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+   <circle cx="48" cy="67" r="3" fill="#ff9aa2" opacity=".5"/><circle cx="72" cy="67" r="3" fill="#ff9aa2" opacity=".5"/>
+   <ellipse cx="60" cy="46" rx="30" ry="7" fill="${dark}"/><path d="M36 46 Q52 36 58 6 Q74 32 84 46 Z" fill="${color}"/>
+   <path d="M36 46 Q52 36 58 6 L56 46Z" fill="${dark}" opacity=".3"/>
+   <text x="60" y="38" font-size="13" text-anchor="middle" fill="#ffd166">★</text>
+   <circle cx="94" cy="96" r="5" fill="${skin}"/></svg>`;
+}
+
+/* ====================== PROFILE / STORAGE ====================== */
+let P = null;                // current profile
+let saveTimer = null, cloudState = '';
+
+function newProfile(id, nick, gender, color) {
+  return { id, nick, gender, color, tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
+    quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() };
+}
+function pruneSec() {
+  const ks = Object.keys(P.sec).sort();
+  while (ks.length > 60) delete P.sec[ks.shift()];
+}
+function streak() {
+  let s = 0; const d = new Date();
+  const key = x => x.getFullYear() + '-' + String(x.getMonth() + 1).padStart(2, '0') + '-' + String(x.getDate()).padStart(2, '0');
+  if ((P.sec[key(d)] || 0) < 60) d.setDate(d.getDate() - 1);   // today not played yet: count from yesterday
+  while ((P.sec[key(d)] || 0) >= 60) { s++; d.setDate(d.getDate() - 1); }
+  return s;
+}
+function setCloud(s) {
+  cloudState = s;
+  const m = { ok: ['☁️✓', 'Progress saved to the cloud'], pend: ['☁️…', 'Saving…'], off: ['⚠️', 'Cloud not reachable. Progress is saved on this device.'], none: ['💾', 'Saved on this device'] }[s] || ['', ''];
+  for (const id of ['#cloud', '#menuCloud']) { const e = $(id); if (e) { e.textContent = m[0]; e.title = m[1]; } }
+}
+function saveSoon(now) {
+  if (!P) return;
+  P.updated = Date.now(); pruneSec();
+  lsSet('aq_p_' + P.id, JSON.stringify(P));
+  clearTimeout(saveTimer);
+  if (!CFG.SCRIPT_URL) { setCloud('none'); return; }
+  setCloud('pend');
+  saveTimer = setTimeout(cloudSave, now ? 0 : 4000);
+}
+async function cloudSave() {
+  if (!P || !CFG.SCRIPT_URL) return;
+  const total = Object.values(P.sec).reduce((a, b) => a + b, 0);
+  const body = JSON.stringify({ id: P.id, nick: P.nick, tier: P.tier, xp: P.xp, n: P.n, acc: P.n ? Math.round(100 * P.ok / P.n) : 0,
+    min: Math.round(total / 60), data: JSON.stringify(P) });
+  try {
+    const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
+    const j = await r.json();
+    if (j.conflict && j.data) {         // cloud copy is newer: adopt it
+      const c = JSON.parse(j.data); Object.assign(P, c); lsSet('aq_p_' + P.id, JSON.stringify(P));
+    }
+    setCloud('ok');
+  } catch (e) { setCloud('off'); }
+}
+async function loadProfile(id) {
+  let local = null, cloud = null, offline = false;
+  try { const t = lsGet('aq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
+  if (CFG.SCRIPT_URL) {
+    try {
+      const r = await fetch(CFG.SCRIPT_URL + '?action=load&id=' + encodeURIComponent(id));
+      const j = await r.json();
+      if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
+    } catch (e) { offline = true; }
+  }
+  const best = (cloud && local) ? (cloud.n >= local.n ? cloud : local) : (cloud || local);
+  return { profile: best, offline };
+}
+
+/* ====================== SCREENS / MODAL ====================== */
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
+  document.body.classList.toggle('peace', id === 'game' && G.quest === 'peace');
+  window.scrollTo(0, 0);
+}
+function modal(title, body, buttons) {
+  $('#mTitle').innerHTML = title; $('#mBody').innerHTML = body;
+  const b = $('#mBtns'); b.innerHTML = '';
+  buttons.forEach(([label, fn, ghost]) => {
+    const e = document.createElement('button'); e.className = 'btn' + (ghost ? ' ghost' : ''); e.textContent = label;
+    e.onclick = () => { $('#modal').classList.remove('on'); fn && fn(); }; b.appendChild(e);
+  });
+  $('#modal').classList.add('on');
+}
+function confetti(emojis = ['⭐', '✨', '🎉', '🪄']) {
+  for (let i = 0; i < 28; i++) {
+    const e = document.createElement('div'); e.className = 'confetti'; e.textContent = rnd(emojis);
+    e.style.left = Math.random() * 100 + 'vw'; e.style.animationDuration = (1.6 + Math.random() * 1.6) + 's'; e.style.animationDelay = Math.random() * .5 + 's';
+    document.body.appendChild(e); setTimeout(() => e.remove(), 3800);
+  }
+}
+
+/* ====================== LOGIN & CREATOR ====================== */
+const norm = s => s.trim().toUpperCase().replace(/\s+/g, '');
+let pendingId = '', cr = { g: 'm', color: COLORS[1] };
+
+$('#sid').value = lsGet('aq_last') || '';
+$('#sid').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginBtn').click(); });
+$('#loginBtn').onclick = async () => {
+  const id = norm($('#sid').value), msg = $('#loginMsg');
+  if (id.length < 4) { msg.textContent = 'Your number looks too short. Check it and try again!'; return; }
+  msg.textContent = 'Looking for your hero…'; $('#loginBtn').disabled = true;
+  const r = await loadProfile(id);
+  $('#loginBtn').disabled = false; msg.textContent = '';
+  lsSet('aq_last', id);
+  if (r.profile) { P = r.profile; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
+  const warn = r.offline ? '<p>⚠️ I can\'t reach the cloud right now, so I can\'t check for an old hero. If you have played before, ask your teacher to help.</p>' : '';
+  modal('New hero?', `<p>I don't know the number <b>${esc(id)}</b> yet.</p>${warn}<p>Is this your first time playing?</p>`,
+    [['Yes, first time!', () => { pendingId = id; openCreator(); }], ['No, let me check', null, true]]);
+};
+function openCreator() { cr = { g: 'm', color: rnd(COLORS) }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
+function drawCreator() {
+  $('#prevHero').innerHTML = heroSVG(cr.g, cr.color);
+  document.querySelectorAll('.gbtn').forEach(b => b.classList.toggle('sel', b.dataset.g === cr.g));
+  $('#swatches').innerHTML = COLORS.map(c => `<button class="sw ${c === cr.color ? 'sel' : ''}" data-c="${c}" style="background:${c}" aria-label="color"></button>`).join('');
+  document.querySelectorAll('.sw').forEach(b => b.onclick = () => { cr.color = b.dataset.c; drawCreator(); });
+}
+document.querySelectorAll('.gbtn').forEach(b => b.onclick = () => { cr.g = b.dataset.g; drawCreator(); });
+$('#createBtn').onclick = () => {
+  const nick = $('#nick').value.trim();
+  if (nick.length < 2) { $('#creatorMsg').textContent = 'Please choose a nickname (at least 2 letters).'; return; }
+  P = newProfile(pendingId, nick, cr.g, cr.color); saveSoon(true); openMenu();
+};
+
+/* ====================== MENU ====================== */
+function rankOf(xp) { return RANKS[Math.min(RANKS.length - 1, Math.floor(xp / 400))]; }
+function openMenu() {
+  G.quest = null; show('menu');
+  $('#menuHero').innerHTML = heroSVG(P.gender, P.color).replace('<svg ', '<svg style="height:90px" ');
+  $('#menuWho').textContent = P.nick;
+  $('#menuRank').textContent = rankOf(P.xp) + ' · ' + P.xp + ' XP';
+  $('#menuXp').style.width = ((P.xp % 400) / 4) + '%';
+  $('#menuTier').textContent = 'Level ' + P.tier + ': ' + TIERS[P.tier];
+  const t = P.sec[today()] || 0;
+  $('#menuToday').textContent = Math.min(10, Math.floor(t / 60)) + '/10 min' + (t >= CFG.DAILY_SEC ? ' ⭐' : '');
+  $('#menuStreak').textContent = streak() + ' day' + (streak() === 1 ? '' : 's');
+  for (const [q, k, names] of [['battle', 'Battle', AREAS], ['peace', 'Peace', VILLAGES]]) {
+    const s = P.quest[q];
+    $('#pb' + k).style.width = (s.enc / CFG.CHAPTER_LEN * 100) + '%';
+    $('#pt' + k).textContent = (q === 'battle' ? 'Chapter ' : 'Village ') + s.ch + ': ' + names[(s.ch - 1) % names.length] + ' (' + s.enc + '/' + CFG.CHAPTER_LEN + ')';
+  }
+  setCloud(cloudState || (CFG.SCRIPT_URL ? 'ok' : 'none'));
+}
+$('#qBattle').onclick = () => startQuest('battle');
+$('#qPeace').onclick = () => startQuest('peace');
+$('#logoutBtn').onclick = async () => { saveSoon(true); await sleep(300); P = null; $('#sid').value = ''; show('login'); };
+$('#menuMute').onclick = $('#muteBtn').onclick = () => setMute(!muted);
+$('#homeBtn').onclick = () => { saveSoon(true); openMenu(); };
+
+/* ====================== QUESTION GENERATORS ====================== */
+// Question: {kind:'choice'|'write', title, big, bigSm, sub, options:[{html,cls,ok,fx,em,note}], key, accept, ref, explain}
+function distinctSoundOptions(target, pool, n, sndOf) {
+  const opts = [target], used = new Set([sndOf(target)]);
+  for (const c of shuffle(pool)) { if (opts.length >= n) break; const s = sndOf(c); if (!used.has(s)) { used.add(s); opts.push(c); } }
+  return opts;
+}
+function qLetter(t, battle) {
+  const pool = t === 1 ? L1 : t === 2 ? L2 : L3, n = t === 3 ? 4 : 3;
+  const c = wpick(pool, x => 'L:' + x, G.lastKey), snd = LET[c][0];
+  const opts = shuffle(distinctSoundOptions(c, pool, n, x => LET[x][0]));
+  return { kind: 'choice', key: 'L:' + c, lastKey: 'L:' + c,
+    title: battle ? `${G.mon.name} is scared of this sound:` : 'The magic gate only opens to this sound:',
+    big: `“${snd}”`, sub: `like in “${LET[c][1]}”. Pick the letter that says it!`,
+    options: opts.map(x => ({ html: x, cls: '', ok: x === c, em: '✨', note: `${x} says “${LET[x][0]}”` })),
+    explain: `${c} says “${snd}”` };
+}
+function qSyl(t, battle) {
+  const cons = t === 4 ? S1 : S2, vows = t === 4 ? ['a', 'i', 'o'] : ['a', 'e', 'i', 'o', 'u'];
+  const all = []; cons.forEach(c => vows.forEach(v => all.push({ c, v })));
+  const mk = x => ({ he: x.c + VOW[x.v], snd: LET[x.c][0] + x.v, key: 'S:' + x.c + x.v });
+  const tgt = wpick(all, x => 'S:' + x.c + x.v, G.lastKey);
+  const target = mk(tgt), opts = [target], used = new Set([target.snd]);
+  const near = shuffle(all.filter(x => (x.c === tgt.c) !== (x.v === tgt.v)));   // share exactly one part
+  for (const x of near.concat(shuffle(all))) {
+    if (opts.length >= (t === 4 ? 3 : 4)) break;
+    const m = mk(x); if (!used.has(m.snd)) { used.add(m.snd); opts.push(m); }
+  }
+  return { kind: 'choice', key: target.key, lastKey: target.key,
+    title: battle ? `${G.mon.name} is scared of this sound:` : 'The bridge troll only lets you pass if you say:',
+    big: `“${target.snd}”`, sub: 'Read the letters and their vowel marks. Which spell says it?',
+    options: shuffle(opts).map(x => ({ html: x.he, cls: '', ok: x === target, em: '✨', note: `${x.he} says “${x.snd}”` })),
+    explain: `${target.he} says “${target.snd}”` };
+}
+function reasonFor(w, mon) {
+  const e = EL[mon.el];
+  if (e.weak.includes(w.el)) return 'Super effective!';
+  if (e.heal.includes(w.el)) return `Oh no, it powers up the ${e.label.toLowerCase()} monster!`;
+  return 'It barely tickles it.';
+}
+function qSpell(t) {
+  const mon = G.mon, e = EL[mon.el], bank = t >= 8 ? PHRASE : SPELL;
+  const eff = bank.filter(w => e.weak.includes(w.el)), heal = bank.filter(w => e.heal.includes(w.el));
+  const neu = bank.filter(w => !e.weak.includes(w.el) && !e.heal.includes(w.el));
+  const target = wpick(eff, w => 'W:' + w.he, G.lastKey), n = t === 6 ? 3 : 4, opts = [target];
+  if (heal.length && Math.random() < (t === 6 ? .45 : .75)) opts.push(rnd(heal));
+  for (const w of shuffle(neu)) { if (opts.length >= n) break; opts.push(w); }
+  const txt = w => t === 6 ? w.nk : w.he;
+  return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
+    title: `A ${e.badge} ${e.label} monster blocks the way!`, big: `${mon.name}`, bigSm: true,
+    sub: 'Read the spells. Which one hurts it the most?',
+    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 8 ? 'p' : 'w', ok: w === target, fx: e.heal.includes(w.el) ? 'heal' : '', em: w.em,
+      note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em} — ${reasonFor(w, mon)}`, say: txt(w) })),
+    explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}. ${e.why}`, say: txt(target) };
+}
+function similarity(a, b) {
+  let s = a.length === b.length ? 2 : 0; for (const ch of new Set(a)) if (b.includes(ch)) s++; return s + (a[0] === b[0] ? 1 : 0);
+}
+function qHelp(t) {
+  const target = wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 6 ? 3 : 4;
+  let others = VILL.filter(w => w !== target);
+  others = t >= 8 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he)).slice(0, 7) : others;
+  const opts = [target, ...shuffle(others).slice(0, n - 1)];
+  const txt = w => t === 6 ? w.nk : w.he;
+  return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
+    title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?',
+    speech: target.need,
+    options: shuffle(opts).map(w => ({ html: txt(w), cls: 'w', ok: w === target, em: w.em,
+      note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em}`, say: txt(w) })),
+    explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}`, say: txt(target), reveal: target.em };
+}
+function qWriteSpell(t) {
+  const mon = G.mon, e = EL[mon.el], bank = t === 9 ? SPELL : PHRASE;
+  const eff = bank.filter(w => e.weak.includes(w.el)), first = wpick(eff, w => 'W:' + w.he, G.lastKey);
+  return { kind: 'write', key: 'W:' + first.he, lastKey: 'W:' + first.he, accept: eff.map(w => w.he), keyOf: s => 'W:' + s,
+    title: `A ${e.badge} ${e.label} monster! Write a spell in Hebrew that beats it.`, big: mon.name, bigSm: true,
+    sub: `Write any one of these (no vowel marks needed):`,
+    ref: eff.map(w => `${w.em} ${w.en}`), explain: eff.map(w => `<span class="he">${w.he}</span> (${w.en})`).join(' · '), say: first.he };
+}
+function qWriteHelp(t) {
+  const pool = VILL.filter(w => t === 9 ? w.he.length <= 3 : w.he.length >= 4);
+  const w = wpick(pool, x => 'W:' + x.he, G.lastKey);
+  return { kind: 'write', key: 'W:' + w.he, lastKey: 'W:' + w.he, accept: [w.he], keyOf: s => 'W:' + s,
+    title: 'Write this word on the sign:', big: w.em, sub: `${w.en} — ${w.need}`, ref: [],
+    explain: `<span class="he">${w.he}</span> = ${w.en} ${w.em}`, say: w.he, speech: w.need, reveal: w.em };
+}
+function makeQ() {
+  const t = P.tier, b = G.quest === 'battle';
+  if (t <= 3) return qLetter(t, b);
+  if (t <= 5) return qSyl(t, b);
+  if (t <= 8) return b ? qSpell(t) : qHelp(t);
+  return b ? qWriteSpell(t) : qWriteHelp(t);
+}
+
+/* ====================== GAME ENGINE ====================== */
+const G = { quest: null, mon: null, hearts: 3, helped: 0, q: null, locked: false, combo: 0, lastKey: null, sess: 0, goalShown: false, folk: '🧓', typed: '', tries: 0 };
+
+function startQuest(q) {
+  G.quest = q; G.sess = 0; G.combo = 0; G.goalShown = (P.sec[today()] || 0) >= CFG.DAILY_SEC;
+  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroSVG(P.gender, P.color);
+  setMute(muted); newEncounter();
+}
+function newEncounter() {
+  const qs = P.quest[G.quest], boss = qs.enc === CFG.CHAPTER_LEN - 1;
+  G.hearts = 3; G.helped = 0; G.lastKey = null;
+  if (G.quest === 'battle') {
+    const def = boss ? BOSSES[(qs.ch - 1) % BOSSES.length] : rnd(MONS);
+    G.mon = { ...def, boss, max: boss ? 6 : 3, hp: boss ? 6 : 3 };
+  } else { G.folk = rnd(FOLK); G.mon = null; }
+  drawScene(); nextQuestion();
+}
+function drawScene() {
+  const qs = P.quest[G.quest], b = G.quest === 'battle';
+  $('#foeBody').className = 'foeBody' + (b && G.mon.boss ? ' boss' : '');
+  $('#heroBox').classList.remove('hurt');
+  if (b) {
+    $('#foeBody').textContent = G.mon.body;
+    $('#foeName').textContent = (G.mon.boss ? '👑 BOSS: ' : '') + G.mon.name;
+    $('#mid').innerHTML = `<b>${AREAS[(qs.ch - 1) % AREAS.length]}</b><br>${Array.from({ length: CFG.CHAPTER_LEN }, (_, i) => i < qs.enc ? '⚔️' : i === qs.enc ? (G.mon.boss ? '👑' : '❓') : '▫️').join(' ')}`;
+  } else {
+    $('#foeBody').textContent = G.folk;
+    $('#foeName').textContent = 'Villager';
+    $('#mid').innerHTML = `<b>${VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="houses">${Array.from({ length: CFG.CHAPTER_LEN }, (_, i) => i < qs.enc ? '🏠' : '🏚️').join('')}</div><div class="bubble" id="bubble"></div>`;
+  }
+  updateBars();
+}
+function updateBars() {
+  const b = G.quest === 'battle';
+  $('#hearts').textContent = b ? '❤️'.repeat(G.hearts) + '🖤'.repeat(3 - G.hearts) : '😊';
+  $('#hpFill').style.width = (b ? G.mon.hp / G.mon.max * 100 : G.helped / 3 * 100) + '%';
+  $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`;
+  $('#xpFill').style.width = ((P.xp % 400) / 4) + '%';
+}
+function nextQuestion() {
+  G.q = makeQ(); G.lastKey = G.q.lastKey; G.locked = false; G.tries = 0; G.typed = '';
+  const q = G.q;
+  $('#qTitle').textContent = q.title;
+  $('#qBig').innerHTML = q.big ? `<span class="${q.bigSm ? '' : ''}">${esc(q.big)}</span>` : '';
+  $('#qBig').classList.toggle('sm', !!q.bigSm || (q.big && q.big.length > 6));
+  $('#qSub').textContent = q.sub || '';
+  $('#fb').innerHTML = ''; $('#nextBtn').classList.add('hidden');
+  const bub = $('#bubble'); if (bub) { bub.style.visibility = q.speech ? 'visible' : 'hidden'; bub.textContent = q.speech || ''; }
+  const opts = $('#opts');
+  if (q.kind === 'choice') {
+    $('#write').classList.add('hidden'); opts.classList.remove('hidden'); opts.innerHTML = '';
+    q.options.forEach((o, i) => {
+      const b = document.createElement('button'); b.className = 'opt heb ' + (o.cls || ''); b.innerHTML = o.html; b.onclick = () => pickOption(i, b);
+      opts.appendChild(b);
+    });
+  } else {
+    opts.classList.add('hidden'); $('#write').classList.remove('hidden');
+    $('#writeRef').innerHTML = (q.ref || []).map(r => `<span>${r}</span>`).join('');
+    buildKeyboard(); renderTyped();
+  }
+}
+
+/* ----- recording & adaptive difficulty ----- */
+function record(key, ok) {
+  const s = P.stats[key] || (P.stats[key] = [0, 0]); s[ok ? 0 : 1]++;
+  P.n++; if (ok) P.ok++;
+  P.hist.push(ok ? 1 : 0); if (P.hist.length > CFG.MAX_WINDOW) P.hist.shift();
+  const len = P.hist.length, acc = P.hist.reduce((a, b) => a + b, 0) / len;
+  if (len >= CFG.MIN_WINDOW && acc >= CFG.UP_ACC && P.tier < 10) { P.tier++; P.hist = []; return 'up'; }
+  if (len >= CFG.MIN_WINDOW && acc <= CFG.DOWN_ACC && P.tier > 1) { P.tier--; P.hist = []; return 'down'; }
+  return '';
+}
+function gainXp(ok) {
+  if (!ok) return 0;
+  const g = 10 + Math.min(G.combo, 5) * 2; P.xp += g; return g;
+}
+function floatText(txt, color) {
+  const e = document.createElement('div'); e.className = 'float'; e.textContent = txt; e.style.color = color;
+  const f = $('#foeBody').getBoundingClientRect(), s = $('#stage').getBoundingClientRect();
+  e.style.left = (f.left - s.left + f.width / 2 - 20) + 'px'; e.style.top = (f.top - s.top) + 'px';
+  $('#stage').appendChild(e); setTimeout(() => e.remove(), 1000);
+}
+async function flySpell(emoji) {
+  try {
+    const h = $('#heroSvg').getBoundingClientRect(), f = $('#foeBody').getBoundingClientRect(), s = $('#stage').getBoundingClientRect();
+    const e = document.createElement('div'); e.textContent = emoji; e.style.cssText = `position:absolute;font-size:2.4rem;left:${h.left - s.left + h.width / 2}px;top:${h.top - s.top + h.height / 3}px;z-index:5;pointer-events:none`;
+    $('#stage').appendChild(e);
+    const a = e.animate([{ transform: 'translate(0,0) scale(.6)' }, { transform: `translate(${f.left - h.left}px,${f.top - h.top + 10}px) scale(1.4) rotate(360deg)` }], { duration: 450, easing: 'ease-in' });
+    await Promise.race([a.finished, new Promise(r => setTimeout(r, 700))]); e.remove();
+  } catch (e) {}
+}
+function after(tier) {
+  if (tier === 'up') { sfx.up(); confetti(['⬆️', '⭐', '✨']); toast(`⬆️ Level up! Level ${P.tier}: ${TIERS[P.tier]}`); }
+  if (tier === 'down') toast(`Let's practice a bit more. Level ${P.tier}: ${TIERS[P.tier]}`);
+  updateBars(); saveSoon();
+}
+function toast(t) {
+  const e = document.createElement('div');
+  e.style.cssText = 'position:fixed;left:50%;top:18px;transform:translateX(-50%);background:#ffd166;color:#3a2300;padding:10px 18px;border-radius:14px;font-weight:600;z-index:70;box-shadow:0 4px 0 #9b6411;max-width:92vw;text-align:center';
+  e.textContent = t; document.body.appendChild(e); setTimeout(() => e.remove(), 2800);
+}
+
+/* ----- answering ----- */
+async function pickOption(i, btn) {
+  if (G.locked) return;
+  const q = G.q, o = q.options[i], first = G.tries === 0, battle = G.quest === 'battle';
+  G.tries++;
+  if (o.ok) {
+    G.locked = true; btn.classList.add('good');
+    document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+    let tr = '';
+    if (first) { G.combo++; tr = record(q.key, true); }
+    const xp = first ? gainXp(true) : 0;
+    sfx.ok(); if (q.say && P.tier >= 6) speakHe(q.say);
+    $('#fb').innerHTML = `✅ ${q.explain}`;
+    if (battle) {
+      await flySpell(o.em || '✨'); sfx.hit();
+      const dmg = 1 + (G.combo >= 3 ? 1 : 0);
+      G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400);
+      floatText('-' + dmg + (xp ? '  +' + xp + 'xp' : ''), '#ffd166');
+    } else {
+      G.helped++; floatText(xp ? '+' + xp + 'xp' : '💛', '#ffd166');
+      if (q.reveal) { $('#foeName').textContent = q.reveal + ' ' + 'Thank you!'; }
+    }
+    after(tr); updateBars();
+    await sleep(battle ? 900 : 1500);
+    if (battle && G.mon.hp <= 0) return victory();
+    if (!battle && G.helped >= 3) return villageDone();
+    nextQuestion();
+  } else {
+    btn.classList.add('bad'); btn.disabled = true; sfx.bad();
+    let tr = '';
+    if (first) { G.combo = 0; tr = record(q.key, false); }
+    $('#fb').innerHTML = `❌ ${o.note || ''}`;
+    if (battle) {
+      G.locked = true;
+      document.querySelectorAll('.opt').forEach((b, k) => { b.disabled = true; if (q.options[k].ok) b.classList.add('good'); });
+      if (o.fx === 'heal') { G.mon.hp = Math.min(G.mon.max, G.mon.hp + 1); floatText('+1 💚', '#ff8b99'); }
+      G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); $('#heroBox').classList.add('hurt');
+      setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
+      $('#fb').innerHTML += `<br>✅ ${q.explain}`;
+      after(tr); updateBars();
+      if (G.hearts <= 0) { await sleep(900); return knockout(); }
+      $('#nextBtn').classList.remove('hidden'); $('#nextBtn').onclick = nextQuestion;
+    } else { after(tr); }
+  }
+}
+function normFinals(s) { return [...s].map(c => FINAL[c] || c).join(''); }
+function buildKeyboard() {
+  const kb = $('#kb'); kb.innerHTML = '';
+  KEYS.forEach(k => { const b = document.createElement('button'); b.textContent = k; b.onclick = () => typeKey(k); kb.appendChild(b); });
+  const sp = document.createElement('button'); sp.className = 'wide'; sp.textContent = 'space'; sp.onclick = () => typeKey(' '); kb.appendChild(sp);
+  const bk = document.createElement('button'); bk.className = 'wide'; bk.textContent = '⌫ erase'; bk.onclick = () => { G.typed = G.typed.slice(0, -1); renderTyped(); }; kb.appendChild(bk);
+}
+function typeKey(k) { if (G.locked || G.typed.length >= 14) return; G.typed += k; renderTyped(); }
+function renderTyped() { $('#typed').textContent = G.typed || '…'; }
+document.addEventListener('keydown', e => {
+  if (!$('#game').classList.contains('on') || !G.q || G.q.kind !== 'write' || G.locked) return;
+  if (e.key === 'Backspace') { G.typed = G.typed.slice(0, -1); renderTyped(); }
+  else if (e.key === 'Enter') $('#castBtn').click();
+  else if (/^[א-ת ]$/.test(e.key)) typeKey(e.key);
+});
+$('#castBtn').onclick = async () => {
+  if (G.locked) return; const q = G.q, battle = G.quest === 'battle';
+  const ans = G.typed.trim().replace(/\s+/g, ' ');
+  if (!ans) return;
+  const hit = q.accept.find(a => a === ans), near = !hit && q.accept.some(a => normFinals(a) === normFinals(ans));
+  G.locked = true;
+  if (hit) {
+    G.combo++; const tr = record(q.keyOf(hit), true), xp = gainXp(true) + 5; P.xp += 5;
+    sfx.ok(); speakHe(hit);
+    $('#fb').innerHTML = `✅ Perfect! ${q.explain}`;
+    if (battle) { await flySpell('✨'); sfx.hit(); const dmg = 2; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
+    else { G.helped++; floatText('+' + xp + 'xp', '#ffd166'); if (q.reveal) $('#foeName').textContent = q.reveal + ' Thank you!'; }
+    after(tr); updateBars(); await sleep(battle ? 1000 : 1600);
+    if (battle && G.mon.hp <= 0) return victory();
+    if (!battle && G.helped >= 3) return villageDone();
+    nextQuestion();
+  } else {
+    G.combo = 0; const tr = record(q.key, false); sfx.bad();
+    $('#fb').innerHTML = `❌ ${near ? 'So close! Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word.<br>' : ''}Answer: ${q.explain}`;
+    if (battle) {
+      G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); $('#heroBox').classList.add('hurt');
+      setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
+    }
+    after(tr); updateBars();
+    if (battle && G.hearts <= 0) { await sleep(900); return knockout(); }
+    $('#nextBtn').classList.remove('hidden'); $('#nextBtn').onclick = nextQuestion;
+  }
+};
+
+/* ----- encounter results ----- */
+function advanceQuest() {
+  const qs = P.quest[G.quest]; qs.enc++;
+  let chapterDone = false;
+  if (qs.enc >= CFG.CHAPTER_LEN) { qs.enc = 0; qs.ch++; chapterDone = true; }
+  return chapterDone;
+}
+function victory() {
+  const boss = G.mon.boss; $('#foeBody').classList.add('die'); sfx.win(); confetti();
+  const bonus = boss ? 80 : 30; P.xp += bonus;
+  const done = advanceQuest(); saveSoon(true);
+  modal(boss ? '👑 Boss defeated!' : '🎉 Victory!',
+    `<p>You defeated <b>${esc(G.mon.name)}</b>! +${bonus} XP</p>` + (done ? `<p>🏆 Chapter complete! A new land awaits: <b>${AREAS[(P.quest.battle.ch - 1) % AREAS.length]}</b></p>` : ''),
+    [['Next battle ⚔️', newEncounter], ['Back to map', openMenu, true]]);
+}
+function knockout() {
+  sfx.bad();
+  modal('😵 Knocked out!', '<p>Even great heroes fall sometimes. Take a breath, then try again. You learn more every time!</p>', [['Try again 💪', newEncounter], ['Back to map', openMenu, true]]);
+}
+function villageDone() {
+  sfx.win(); confetti(['💛', '🏠', '🌸', '⭐']);
+  const bonus = 40; P.xp += bonus; const done = advanceQuest(); saveSoon(true);
+  modal('🏠 The villagers are happy!', `<p>You helped everyone and a house was rebuilt! +${bonus} XP</p>` + (done ? `<p>🏆 The whole village is restored! Next stop: <b>${VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length]}</b></p>` : ''),
+    [['Help more people 🌿', newEncounter], ['Back to map', openMenu, true]]);
+}
+
+/* ----- 10-minute daily goal ----- */
+let tick = 0;
+setInterval(() => {
+  if (!P || document.hidden || !$('#game').classList.contains('on') || $('#modal').classList.contains('on')) return;
+  const d = today(); P.sec[d] = (P.sec[d] || 0) + 1; G.sess++;
+  if (!G.goalShown && P.sec[d] >= CFG.DAILY_SEC) {
+    G.goalShown = true; sfx.win(); confetti(['⭐', '🌟', '🏅']); saveSoon(true);
+    modal('⭐ Daily goal complete!', '<p>You practiced for 10 minutes today. Amazing! You can keep playing or stop here.</p>',
+      [['Keep playing', null], ['Finish for today', openMenu, true]]);
+  }
+  if (++tick % 30 === 0) saveSoon();
+}, 1000);
+document.addEventListener('visibilitychange', () => { if (document.hidden && P) saveSoon(true); });
+window.addEventListener('pagehide', () => { if (P) saveSoon(true); });
+
+/* ====================== PRIVATE-TESTING PASSCODE ====================== */
+// A light gate for the test phase: it keeps casual visitors out, but it is not real security
+// (the page source is public). Set GATE_HASH to '' to turn the gate off.
+const GATE_HASH = '455d30cd97bb7dff1670114fdfafb5c24b7db60d1c95f9f17729a61fa1c964ed';
+async function sha256(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+async function tryGate(code) { try { return (await sha256('rtr-adventure:' + code)) === GATE_HASH; } catch (e) { return false; } }
+function openGate() { show('login'); }
+(async () => {
+  if (!GATE_HASH || lsGet('aq_gate') === GATE_HASH) return openGate();
+  $('#gateBtn').onclick = async () => {
+    if (await tryGate($('#pass').value.trim())) { lsSet('aq_gate', GATE_HASH); openGate(); }
+    else { $('#gateMsg').textContent = 'That passcode is not right.'; $('#pass').value = ''; }
+  };
+  $('#pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gateBtn').click(); });
+})();
+
+/* init */
+setMute(muted); setCloud(CFG.SCRIPT_URL ? '' : 'none');
+</script>
+</body>
+</html>
