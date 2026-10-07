@@ -27,7 +27,7 @@ h2{margin:.2em 0}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #9b6411}
 .btn.ghost{background:#fff1;color:#fff;box-shadow:none;border:1px solid #fff3}
 .btn:disabled{opacity:.5}
-input[type=text]{width:100%;padding:14px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.3rem;text-align:center}
+input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.3rem;text-align:center}
 .center{text-align:center}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
 .msg{min-height:1.4em;color:#ffd0d6;text-align:center;margin:8px 0}
@@ -562,17 +562,29 @@ function reasonFor(w, mon) {
   if (e.heal.includes(w.el)) return `Oh no, it powers up the ${e.label.toLowerCase()} monster!`;
   return 'It barely tickles it.';
 }
+// What each spell "feels like". Two spells that share a feeling are never shown together.
+const FEEL = { water: ['wet'], rain: ['wet'], snow: ['cold', 'wet'], ice: ['cold'], fire: ['hot'], sun: ['hot', 'bright'],
+  light: ['bright'], lightning: ['bright'], dark: ['dark'], wind: ['air'], stone: ['earth'] };
+function distinctSpells(set) {
+  const seen = new Set();
+  for (const w of set) for (const f of FEEL[w.el]) { if (seen.has(f)) return false; seen.add(f); }
+  return true;
+}
 function qSpell(t) {
   const mon = G.mon, e = EL[mon.el], bank = t >= 8 ? PHRASE : SPELL;
   const eff = bank.filter(w => e.weak.includes(w.el)), heal = bank.filter(w => e.heal.includes(w.el));
   const neu = bank.filter(w => !e.weak.includes(w.el) && !e.heal.includes(w.el));
-  // Always exactly three spells: one that hurts it, one that does nothing, one with the opposite effect (heals it).
+  // Always four spells: one that hurts it, one with the opposite effect (heals it), and two that do nothing.
+  // No two spells may be alike in meaning (e.g. fire + sun are both hot and bright), so each one is easy to tell apart.
   const target = wpick(eff, w => 'W:' + w.he, G.lastKey);
-  const opts = [target, rnd(heal), rnd(neu)];
+  const pickSet = () => [target, rnd(heal), ...shuffle(neu).slice(0, 2)];
+  let opts = null;
+  for (let k = 0; k < 80 && !opts; k++) { const c = pickSet(); if (distinctSpells(c)) opts = c; }
+  if (!opts) opts = pickSet();
   const txt = w => t === 6 ? w.nk : w.he;
   return { kind: 'choice', soft: true, key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: `A ${e.badge} ${e.label} monster blocks the way!`, big: `${mon.name}`, bigSm: true,
-    sub: 'Read the spells. One hurts it, one does nothing, one makes it stronger. A wrong spell lets the monster attack!',
+    sub: 'Read the spells. One hurts it, one makes it stronger, two do nothing. A wrong spell lets the monster attack!',
     options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 8 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em,
       note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em} — ${reasonFor(w, mon)}`, say: txt(w) })),
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}. ${e.why}`, say: txt(target) };
