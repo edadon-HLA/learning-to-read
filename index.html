@@ -408,8 +408,8 @@ function loadSprite() {
   if (!spritePromise) {
     spritePromise = (async () => {
       const [wavBuf, idx] = await Promise.all([
-        fetch('syllables.wav?v=1').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
-        fetch('syllables.json?v=1').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
+        fetch('syllables.wav?v=2').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
+        fetch('syllables.json?v=2').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
       ]);
       AC = AC || new (window.AudioContext || window.webkitAudioContext)();
       sprite = { buf: await AC.decodeAudioData(wavBuf), idx };
