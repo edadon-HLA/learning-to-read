@@ -753,16 +753,22 @@ async function pickOption(i, btn) {
     if (battle) {
       // A wrong spell passes the turn: it does nothing (or even heals the monster), then the monster attacks for 1.
       G.locked = true;
-      document.querySelectorAll('.opt').forEach((b, k) => { b.disabled = true; if (q.options[k].ok) b.classList.add('good'); });
+      document.querySelectorAll('.opt').forEach(b => { b.disabled = true; });
       if (o.fx === 'heal') { G.mon.hp = Math.min(G.mon.max, G.mon.hp + 1); floatText('+1 💚', '#7dffb0'); $('#fb').innerHTML += '<br>The monster got stronger!'; }
       else if (o.fx === 'none') { floatText('0', '#d6d6e6'); $('#fb').innerHTML += '<br>Nothing happens.'; }
       updateBars(); await sleep(500);
       G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); $('#heroBox').classList.add('hurt');
       setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
-      $('#fb').innerHTML += `<br>💥 The monster attacks! −1 ❤️<br>✅ ${q.explain}`;
+      $('#fb').innerHTML += '<br>💥 The monster attacks! −1 ❤️';
       after(tr); updateBars();
-      if (G.hearts <= 0) { await sleep(900); return knockout(); }
-      $('#nextBtn').classList.remove('hidden'); $('#nextBtn').onclick = nextQuestion;
+      if (G.hearts <= 0) {
+        document.querySelectorAll('.opt').forEach((b, k) => { if (q.options[k].ok) b.classList.add('good'); });
+        $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(1400); return knockout();
+      }
+      // your turn again: same question, the spells you already tried stay greyed out
+      $('#fb').innerHTML += '<br>👉 Your turn! Pick another spell.';
+      document.querySelectorAll('.opt').forEach(b => { b.disabled = b.classList.contains('bad'); });
+      G.locked = false;
     } else { after(tr); }
   }
 }
@@ -787,8 +793,10 @@ $('#castBtn').onclick = async () => {
   if (!ans) return;
   const hit = q.accept.find(a => a === ans), near = !hit && q.accept.some(a => normFinals(a) === normFinals(ans));
   G.locked = true;
+  const first = G.tries === 0; G.tries++;
   if (hit) {
-    G.combo++; const tr = record(q.keyOf(hit), true), xp = gainXp(true) + 5; P.xp += 5;
+    let tr = '', xp = 0;
+    if (first) { G.combo++; tr = record(q.keyOf(hit), true); xp = gainXp(true) + 5; P.xp += 5; }
     sfx.ok(); speakHe(hit);
     $('#fb').innerHTML = `✅ Perfect! ${q.explain}`;
     if (battle) { await flySpell('✨'); sfx.hit(); const dmg = 2; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
@@ -798,15 +806,23 @@ $('#castBtn').onclick = async () => {
     if (!battle && G.helped >= 3) return villageDone();
     nextQuestion();
   } else {
-    G.combo = 0; const tr = record(q.key, false); sfx.bad();
-    $('#fb').innerHTML = `❌ ${near ? 'So close! Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word.<br>' : ''}Answer: ${q.explain}`;
+    G.combo = 0; const tr = first ? record(q.key, false) : ''; sfx.bad();
+    const nearMsg = near ? 'So close! Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word.<br>' : '';
     if (battle) {
+      // wrong spell: the monster attacks, then it's the player's turn again with the same question
+      $('#fb').innerHTML = `❌ Not quite. ${nearMsg}`;
       G.hearts--; $('#foeBody').classList.add('atk'); await sleep(250); sfx.hit(); $('#heroBox').classList.add('hurt');
       setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
+      $('#fb').innerHTML += '💥 The monster attacks! −1 ❤️';
+      after(tr); updateBars();
+      if (G.hearts <= 0) { $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(1800); return knockout(); }
+      $('#fb').innerHTML += '<br>👉 Your turn! Try writing another spell.';
+      G.typed = ''; renderTyped(); G.locked = false;
+    } else {
+      $('#fb').innerHTML = `❌ ${nearMsg}Answer: ${q.explain}`;
+      after(tr); updateBars();
+      $('#nextBtn').classList.remove('hidden'); $('#nextBtn').onclick = nextQuestion;
     }
-    after(tr); updateBars();
-    if (battle && G.hearts <= 0) { await sleep(900); return knockout(); }
-    $('#nextBtn').classList.remove('hidden'); $('#nextBtn').onclick = nextQuestion;
   }
 };
 
