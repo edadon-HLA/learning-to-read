@@ -61,6 +61,35 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .packBottle.sm .potSvg{width:20px;height:27px}.packBottle.sm i{font-size:.75rem}
 .opt{position:relative}.optSnd{position:absolute;top:6px;right:8px;background:#fff;color:#000;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 2px 0 #0004;cursor:pointer}.optSnd:hover{transform:scale(1.12)}
 .potNote{opacity:.75;width:100%;text-align:center}
+.jarPic i{white-space:nowrap}.jarPic i.two{font-size:.8rem;top:18px;letter-spacing:-2px}
+.roomBox{border-radius:18px;overflow:hidden;border:2px solid #fff3;background:linear-gradient(#6b4fa8 0%,#523a8c 62%,#3a2a66 62.1%)}
+.rmWall{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:6px;padding:10px 10px 4px;align-items:center;min-height:84px}
+.window svg{width:100%;max-width:92px;display:block}
+.spot{display:flex;align-items:center;justify-content:center;font-size:clamp(1.8rem,8vw,3rem);line-height:1;min-height:52px;border-radius:12px;cursor:pointer;position:relative;transition:transform .15s}
+.spot.have:hover{transform:scale(1.12)}.spot.ghost{opacity:.22;filter:grayscale(1);border:2px dashed #fff5;font-size:clamp(1.3rem,6vw,2rem)}
+.s-d_cat.have span{display:inline-block;animation:catTail 2.4s ease-in-out infinite}.s-d_owl.have span{animation:owlBob 3s ease-in-out infinite;display:inline-block}.s-d_clock.have span{animation:clockTick 2s steps(2) infinite;display:inline-block}
+@keyframes catTail{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}@keyframes owlBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}@keyframes clockTick{0%{transform:rotate(-3deg)}100%{transform:rotate(3deg)}}
+.rmShelves{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;padding:6px 10px}
+@media(max-width:520px){.rmShelves{grid-template-columns:1fr}}
+.pShelf,.rack{background:#0002;border-radius:12px;padding:6px 8px 0;position:relative}.shelfTitle{font-size:.8rem;opacity:.85;margin-bottom:2px}
+.plank{height:9px;background:linear-gradient(#a8743a,#7a4f2a);border-radius:4px;margin:0 -4px;box-shadow:0 3px 3px #0005}
+.bottles{display:flex;gap:4px;justify-content:space-around;align-items:flex-end}
+.bottle{position:relative;font:inherit;color:#fff;background:none;border:0;padding:2px;display:flex;flex-direction:column;align-items:center;cursor:pointer;min-width:42px}.bottle .potSvg{width:30px;height:40px}.bottle i{font-style:normal;font-size:.8rem}.bottle b{position:absolute;top:-2px;right:0;background:#000b;border-radius:8px;padding:0 5px;font-size:.72rem}.bottle.none{opacity:.28;filter:grayscale(1)}
+.jars{display:flex;flex-wrap:wrap;gap:2px 6px;max-height:228px;overflow-y:auto;padding-bottom:2px}
+.jar{font:inherit;color:#fff;background:none;border:0;border-bottom:8px solid #8a5a2b;padding:0 2px 1px;display:flex;flex-direction:column;align-items:center;width:64px;cursor:pointer}
+.jarPic{position:relative;display:block;width:38px;height:46px}.jarSvg{width:38px;height:46px}.jarPic i{position:absolute;left:0;right:0;top:15px;text-align:center;font-style:normal;font-size:1.15rem}.jarPic b{position:absolute;top:-3px;right:-8px;background:#000b;border-radius:8px;padding:0 5px;font-size:.72rem}
+.jarLbl{font-size:.74rem;line-height:1.1;text-align:center;margin-top:1px}.rackEmpty{opacity:.7;font-size:.85rem;padding:10px 4px 14px}
+.jar.pop{animation:jarPop .7s ease}@keyframes jarPop{0%{transform:scale(1)}35%{transform:scale(1.28);filter:drop-shadow(0 0 10px #ffd166)}100%{transform:scale(1)}}
+.rmMantel{display:flex;justify-content:space-around;align-items:flex-end;padding:8px 12px 0;position:relative;flex-wrap:wrap}.rmMantel .plank{position:absolute;left:8px;right:8px;bottom:0}.rmMantel .spot{margin-bottom:8px;min-width:64px}
+.rmFloor{background:linear-gradient(#a2733d,#7a5128);margin-top:8px;padding:10px;display:grid;grid-template-columns:repeat(6,1fr);grid-template-areas:"chest plant caul caul egg owl" "cat . caul caul . .";gap:4px;align-items:end}
+.rmFloor .s-d_chest{grid-area:chest}.rmFloor .s-d_plant{grid-area:plant}.rmFloor .s-d_egg{grid-area:egg}.rmFloor .s-d_owl{grid-area:owl}.rmFloor .s-d_cat{grid-area:cat}
+.caulCell{grid-area:caul;position:relative;font:inherit;color:#fff;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:6px 0 0}
+.caulSvg{width:min(150px,100%);position:relative;z-index:1;filter:drop-shadow(0 4px 4px #0006);transition:transform .15s}.caulCell:hover .caulSvg{transform:scale(1.06)}
+.caulSvg .flames{animation:flick .5s ease-in-out infinite alternate;transform-origin:40px 66px}.caulSvg .bubb circle{animation:bubb 1.6s ease-in-out infinite}.caulSvg .tw{animation:twk 1.4s ease-in-out infinite}
+@keyframes flick{to{transform:scale(1.07,.93)}}@keyframes bubb{50%{transform:translateY(-3px)}}@keyframes twk{50%{opacity:.3}}
+.caulLbl{font-size:.75rem;background:#0006;border-radius:8px;padding:1px 8px;margin-top:2px;z-index:1}
+.rug{position:absolute;left:-6%;right:-6%;bottom:14px;height:44%;border-radius:50%;z-index:0}.rug.have{background:radial-gradient(#c0392b 0 30%,#f1c40f 31% 40%,#c0392b 41% 60%,#8e1f15 61%);box-shadow:0 2px 6px #0006}.rug.ghost{border:2px dashed #fff5;opacity:.5}
+.vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
 .or{opacity:.7;margin:8px 0}.regLbl{display:block;text-align:left;margin:10px 0 2px;font-weight:600}
 .bigId{font-size:3rem;font-weight:800;letter-spacing:.25em;background:#0005;border:3px dashed var(--gold);border-radius:16px;padding:10px 6px 10px 18px;margin:8px 0;font-family:ui-monospace,Consolas,monospace;user-select:all}
 .regWarn{color:var(--gold)}.regTick{display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;cursor:pointer}
@@ -73,7 +102,6 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .shopItem:hover:not(.off){border-color:var(--gold);transform:translateY(-2px)}.shopItem.off{opacity:.55}.shopItem.own{border-color:#3ddc97;opacity:.9}
 .shopEm{font-size:2.2rem;line-height:1.1}.shopItem b{font-size:1.1rem}.shopItem .price{background:#0005;border-radius:10px;padding:1px 8px;font-size:.95rem}.shopItem small{opacity:.8;font-size:.7rem}.shopItem .why{color:#ffd166}
 .shopItem .packBottle .potSvg{width:30px;height:40px}
-.room{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:linear-gradient(#5b3aa8,#3a2470);border-radius:16px}
 .slot{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px;background:#0002;border:2px dashed #fff3;font-size:2.2rem}.slot.empty{opacity:.45;font-size:1.4rem}.slot small{font-size:.65rem;opacity:.8}
 .craftPic{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 6px}.craftEm{font-size:3rem;line-height:1}.craftPic small{opacity:.8;font-size:.95rem}
 .shine{position:relative;animation:shineGlow 1.8s ease-in-out infinite}
@@ -344,18 +372,15 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="row" style="margin-top:14px"><button class="btn" id="bagBtn">🎒 My bag</button><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
 </section>
 
-<section id="home" class="screen">
-  <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏡 Home</div><div class="small">Brew potions with the ingredients you found.</div></div></div>
-  <div class="card homeCard" id="homeCaul"></div>
-  <h2 class="center" style="margin:10px 0 4px">🧪 Brew a potion</h2>
-  <div class="card" id="homeRecipes"></div>
-  <h2 class="center" style="margin:10px 0 4px">🛋️ My room</h2>
-  <div class="card room" id="homeRoom"></div>
-  <h2 class="center" style="margin:10px 0 4px">🧴 My potion shelf</h2>
-  <div class="card shelf" id="homeShelf"></div>
-  <h2 class="center" style="margin:10px 0 4px">🌿 My ingredients</h2>
-  <div class="card bagGrid" id="homeIngs"></div>
-  <div class="small center" style="opacity:.7;margin:10px 0">🪴 Decorations are sold in the shop 🏪. Each one has its own spot in your room.</div>
+<section id="home" class="screen" style="max-width:760px">
+  <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏡 <span class="heb">בית</span> · Home</div><div class="small">Tap the cauldron to brew. Tap a bottle or a jar to look closer.</div></div></div>
+  <div class="roomBox">
+    <div class="rmWall" id="rmWall"></div>
+    <div class="rmShelves"><div class="pShelf" id="pShelf"></div><div class="rack" id="rack"></div></div>
+    <div class="rmMantel" id="rmMantel"></div>
+    <div class="rmFloor" id="rmFloor"></div>
+  </div>
+  <div class="small center" style="opacity:.7;margin:10px 0">🪴 Furniture and pets are sold in the shop 🏪. Each one has its own spot in your room.</div>
 </section>
 
 <section id="shop" class="screen">
@@ -746,7 +771,7 @@ function newProfile(id, nick, gender, color, real, cls) {
     quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() });
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 4;
+const PROFILE_V = 5;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -764,6 +789,13 @@ function migrate(p) {
     p.carry = {}; p.pot = p.pot || {}; for (const [id, n] of Object.entries(STARTER_POTIONS)) p.pot[id] = (p.pot[id] || 0) + n;
     for (const k of ['battle', 'peace']) p.quest[k].act = p.quest[k].enc > 0;
   }
+  if (v < 5) {   // version 5: the satchel (ingredients found on a quest wait there until you come home) and the 12-piece furnished room
+    p.satchel = {};
+    const MAPD = { d_candles: 'd_candle', d_painting: 'd_picture', d_lantern: 'd_lamp', d_dragon: 'd_egg' };
+    const old = (p.own && p.own.decor) || []; p.own.decor = [...new Set(old.filter(d => d !== 'd_teddy').map(d => MAPD[d] || d))];
+    if (old.includes('d_teddy')) p.coins = (p.coins || 0) + 60;   // the teddy bear is gone from the shop: refund it
+  }
+  p.satchel = p.satchel || {};
   if (v < 4 && p.inv && p.inv.mint) { p.inv.leaf = (p.inv.leaf || 0) + p.inv.mint; }   // version 4: the herb mint was removed; any mint becomes a leaf
   if (p.inv) delete p.inv.mint;
   p.carry = p.carry || {}; p.pot = p.pot || {};
@@ -1424,13 +1456,18 @@ $('#castBtn').onclick = async () => {
 // Rule: a potion may change the stakes of a question, but it never answers it. Any question a potion touches is left out of the learning
 // statistics (accuracy window, per-item stats, XP): G.noCount. Potions never change the coin or loot rewards.
 const POTIONS = {
-  heart:  { em: '❤️', name: 'Heart',        desc: 'Gives one more heart (up to 5)' },
-  sound:  { em: '🔊', name: 'Sound',        desc: 'Plays the sound of the answer' },
-  power:  { em: '💥', name: 'Power',        desc: 'The enemy needs one right answer less' },
-  second: { em: '⏪', name: 'Second chance', desc: 'Undo a mistake and answer again' },
-  super:  { em: '🌟', name: 'Super',        desc: 'Finishes the fight at once (once per chapter)' }
+  heart:  { em: '❤️', name: 'Heart',        desc: 'Gives one more heart (up to 5)', vname: 'Happy', vdesc: 'Cheers up a villager: one more smiley (up to 5)' },
+  sound:  { em: '🔊', name: 'Sound',        desc: 'Plays the sound of the answer', vname: 'Whisper', vdesc: 'A whisper of the answer' },
+  power:  { em: '💥', name: 'Power',        desc: 'The enemy needs one right answer less', vname: 'Helping-hands', vdesc: 'The request needs one answer less' },
+  second: { em: '⏪', name: 'Second chance', desc: 'Undo a mistake and answer again', vname: 'Lucky', vdesc: 'A lucky second try: undo a mistake and answer again' },
+  super:  { em: '🌟', name: 'Super',        desc: 'Finishes the fight at once (once per chapter)', vname: 'Miracle', vdesc: 'Finishes the request at once (once per chapter)' }
 };
 const POTION_IDS = Object.keys(POTIONS);
+// One potion, two names: the fight name in Monster Hunter, the village name in Village Helper (effects are identical). Places outside a quest show both.
+const inVillage = () => G.quest === 'peace';
+const pName = id => inVillage() ? POTIONS[id].vname : POTIONS[id].name;
+const pDesc = id => inVillage() ? POTIONS[id].vdesc : POTIONS[id].desc;
+const pBoth = id => `${POTIONS[id].name} potion · ${POTIONS[id].vname} potion`;
 function inCraft() { return G.quest === 'craft' || G.quest === 'shop'; }   // the question screen is also used for crafting and for buying in the shop
 const STARTER_POTIONS = { heart: 2, sound: 2, power: 2, second: 2 };   // a free gift for every student; more come from crafting and the shop
 const carried = () => POTION_IDS.reduce((a, id) => a + ((P.carry || {})[id] || 0), 0);
@@ -1445,7 +1482,7 @@ function openPack(onStart) {   // before a quest run: choose up to POUCH potions
   const render = () => {
     $('#packBody').innerHTML = `<p style="margin:0 0 6px">You can carry <b>${CFG.POUCH}</b> potions on a quest. Once you start, you cannot go home until the quest is finished.</p>
       <p style="margin:0 0 8px"><b>Pouch: ${carried()} / ${CFG.POUCH}</b></p>` +
-      POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="packRow"><span class="packName"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> <b>${POTIONS[id].name}</b><small>${POTIONS[id].desc}</small></span>
+      POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="packRow"><span class="packName"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> <b>${pName(id)} potion</b><small>${pDesc(id)}</small></span>
         <span class="packCtl"><button class="ib" data-id="${id}" data-d="-1" ${(P.carry[id] || 0) ? '' : 'disabled'}>➖</button><b class="packN">${P.carry[id] || 0}</b><button class="ib" data-id="${id}" data-d="1" ${(P.pot[id] || 0) && carried() < CFG.POUCH ? '' : 'disabled'}>➕</button>
         <small class="packHome">🏡 ${P.pot[id] || 0} at home</small></span></div>`).join('');
   };
@@ -1462,7 +1499,7 @@ function renderPotBar() {
   const bar = $('#potBar'); if (!bar || !P) return; if (inCraft()) { bar.style.display = 'none'; return; }
   const ids = POTION_IDS.filter(id => (P.carry[id] || 0) > 0);
   bar.style.display = ids.length ? '' : 'none';
-  bar.innerHTML = ids.map(id => `<button class="potBtn" data-id="${id}" ${G.potUsed ? 'disabled' : ''} title="${POTIONS[id].name}: ${POTIONS[id].desc}">${potionSVG(id)}<i class="potSym">${POTIONS[id].em}</i><b>×${P.carry[id]}</b></button>`).join('') +
+  bar.innerHTML = ids.map(id => `<button class="potBtn" data-id="${id}" ${G.potUsed ? 'disabled' : ''} title="${pName(id)} potion: ${pDesc(id)}">${potionSVG(id)}<i class="potSym">${POTIONS[id].em}</i><b>×${P.carry[id]}</b></button>`).join('') +
     '';
 }
 function addOptionSounds() {
@@ -1497,36 +1534,36 @@ async function usePotion(id) {
   if (G.potUsed || !((P.carry || {})[id] > 0) || !G.q) return;
   const battle = G.quest === 'battle', qs = P.quest[G.quest], spend = () => { P.carry[id]--; G.potUsed = true; saveSoon(true); renderPotBar(); updateBars(); updateReward(); };
   if (id === 'heart') {
-    if (G.hearts >= CFG.MAX_HEARTS_POT) { toast('Your hearts are already full!'); return; }
-    G.hearts++; qs.hearts = G.hearts; spend(); sfx.up(); burst('💖', 8); toast('❤️ One more heart!');
+    if (G.hearts >= CFG.MAX_HEARTS_POT) { toast(inVillage() ? 'Your smileys are already full!' : 'Your hearts are already full!'); return; }
+    G.hearts++; qs.hearts = G.hearts; spend(); sfx.up(); burst('💖', 8); toast(inVillage() ? '😊 The villager smiles again! One more smiley!' : '❤️ One more heart!');
   } else if (id === 'power') {
     if (battle) { if (G.mon.hp <= 1) { toast('The monster is almost defeated already!'); return; } G.mon.hp--; G.mon.max = Math.max(G.mon.hp, G.mon.max - 1); }
     else { if (G.need - G.helped <= 1) { toast('Only one answer is left already!'); return; } G.need--; }
-    spend(); sfx.up(); burst('💥', 8); toast(battle ? '💥 The monster is weaker!' : '💥 One less answer is needed!');
+    spend(); sfx.up(); burst(battle ? '💥' : '🤝', 8); toast(battle ? '💥 The monster is weaker!' : '🤝 Helping hands! One less answer is needed!');
   } else if (id === 'sound') {
     if (G.locked) { toast('Wait for your turn first.'); return; }
     const q = G.q, withSnd = q.kind === 'choice' && q.options.some(o => o.snd || o.say);
     if (withSnd) {   // every choice gets a speaker button: the student can hear what each one sounds like and decide
       if (!q.options.some(o => o.snd ? canPlay(o.snd) : findHeVoice())) { toast('No sound is available for this question on this device.'); return; }
-      G.noCount = true; G.optSound = true; spend(); addOptionSounds(); toast('🔊 Tap a speaker to hear each choice! (This question will not count for your level.)'); return;
+      G.noCount = true; G.optSound = true; spend(); addOptionSounds(); toast((inVillage() ? '🤫 A whisper of the answer! ' : '🔊 ') + 'Tap a speaker to hear each choice! (This question will not count for your level.)'); return;
     }
     const spec = q.audio || (q.say ? { say: q.say } : null);   // typing questions: the word is spoken
     if (!spec || (q.audio ? !canPlay(q.audio) : !findHeVoice())) { toast('No sound is available for this question on this device.'); return; }
-    G.noCount = true; spend(); playSound(spec); toast('🔊 Listen carefully! (This question will not count for your level.)');
+    G.noCount = true; spend(); playSound(spec); toast((inVillage() ? '🤫 A whisper… ' : '🔊 ') + 'Listen carefully! (This question will not count for your level.)');
   } else if (id === 'second') {
     if (!G.snap) { toast('Use this after a mistake, to try the same question again.'); return; }
-    spend(); restoreSnap(); G.noCount = true; showQuestion(); toast('⏪ Your mistake is gone. Try again! (This question will not count for your level.)');
+    spend(); restoreSnap(); G.noCount = true; showQuestion(); toast((inVillage() ? '🍀 Lucky! ' : '⏪ ') + 'Your mistake is gone. Try again! (This question will not count for your level.)');
   } else if (id === 'super') {
-    if (qs.ch === P.superCh) { toast('The Super potion was already used in this chapter.'); return; }
+    if (qs.ch === P.superCh) { toast('The ' + pName('super') + ' potion was already used in this chapter.'); return; }
     if (G.locked) { toast('Wait for your turn first.'); return; }
-    P.superCh = qs.ch; G.noCount = true; G.locked = true; spend(); sfx.win(); confetti(['🌟', '✨', '💫']);
+    P.superCh = qs.ch; G.noCount = true; G.locked = true; spend(); sfx.win(); confetti(['🌟', '✨', '💫']); if (!battle) toast('✨ A miracle! The request is done!');
     await sleep(700);
     if (battle) { G.mon.hp = 0; updateBars(); return victory(); }
     G.helped = G.need; updateBars(); return villageDone();
   }
 }
 function endOrSecond(fail) {   // out of hearts: if a Second chance potion is in the pouch, offer it before the quest restarts
-  if (!G.potUsed && (P.carry.second || 0) > 0 && G.snap) modal('⏪ Second chance!', '<p>You are out of hearts, but you have a Second chance potion. Drink it to undo your mistake and try this question again?</p>', [['Drink it ⏪', () => usePotion('second')], ['No thanks', fail, true]]);
+  if (!G.potUsed && (P.carry.second || 0) > 0 && G.snap) modal(inVillage() ? '🍀 Lucky potion!' : '⏪ Second chance!', inVillage() ? '<p>You are out of smileys, but you have a Lucky potion. Drink it to undo your mistake and try this question again?</p>' : '<p>You are out of hearts, but you have a Second chance potion. Drink it to undo your mistake and try this question again?</p>', [['Drink it ' + (inVillage() ? '🍀' : '⏪'), () => usePotion('second')], ['No thanks', fail, true]]);
   else fail();
 }
 /* ====================== HOME & CRAFTING ====================== */
@@ -1540,19 +1577,71 @@ function canBrew(id) {   // enough different ingredients of each needed rarity?
   const need = {}; RECIPES[id].slots.forEach(s => { need[s] = (need[s] || 0) + 1; });
   return Object.entries(need).every(([r, n]) => ownedOf(+r).length >= n);
 }
+/* ----- Home: one furnished room ----- */
+// Zones top to bottom: wall (window + 3 wall decorations), shelves (potion shelf + ingredient rack), mantel (3 spots), floor (cauldron on its rug + pets and furniture).
+// Every decoration has ONE fixed spot. Spots that are not bought yet show a faint outline, so the room visibly fills up.
+const cauldronSVG = lvl => { const col = ['#b5651d', '#5d6a75', '#cfd6df'][lvl] || '#b5651d', rim = ['#8a4a12', '#3e4851', '#a9b2bd'][lvl] || '#8a4a12';
+  return `<svg viewBox="0 0 80 78" class="caulSvg" aria-hidden="true">
+  <ellipse cx="40" cy="73" rx="26" ry="4" fill="#0004"/>
+  <g class="flames"><path d="M24 66c2-8 6-8 4-15 6 4 8 10 6 15zM36 68c1-10 7-10 4-19 8 6 10 13 6 19zM52 66c-1-7 3-9 2-14 5 3 6 9 4 14z" fill="#ff9f1c" opacity=".95"/><path d="M30 67c1-5 4-5 3-9 4 2 5 6 3 9zM44 68c1-6 4-7 3-11 4 3 4 8 2 11z" fill="#ffe08a"/></g>
+  <path d="M14 34c0 18 10 28 26 28s26-10 26-28z" fill="${col}"/>
+  <path d="M22 38c1 10 6 18 14 21" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="40" cy="34" rx="28" ry="7" fill="${rim}"/><ellipse cx="40" cy="34" rx="23" ry="4.6" fill="${lvl === 2 ? '#9fe8ff' : '#7dffb0'}"/>
+  <g class="bubb"><circle cx="31" cy="30" r="3" fill="#fff" opacity=".7"/><circle cx="44" cy="26" r="4" fill="#fff" opacity=".6"/><circle cx="52" cy="31" r="2.5" fill="#fff" opacity=".7"/></g>
+  <rect x="9" y="30" width="7" height="6" rx="3" fill="${rim}"/><rect x="64" y="30" width="7" height="6" rx="3" fill="${rim}"/>
+  ${lvl === 2 ? '<g fill="#fff"><path d="M12 14l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" class="tw"/><path d="M66 8l1 3 3 1-3 1-1 3-1-3-3-1 3-1z" class="tw"/></g>' : ''}</svg>`; };
+const jarSVG = r => { const c = ['#b9bfd0', '#3ddc97', '#4aa8ff', '#b56bff', '#ffd166'][r]; return `<svg viewBox="0 0 36 44" class="jarSvg" aria-hidden="true"><rect x="10" y="1.5" width="16" height="6" rx="2" fill="#b07a4c" stroke="#7a4f2a"/><path d="M11 7h14v3c5 1 7 4 7 9v17a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6V19c0-5 2-8 7-9z" fill="#ffffff22" stroke="${c}" stroke-width="2"/><rect x="6" y="24" width="24" height="3" fill="${c}" opacity=".35"/></svg>`; };
+const WHERE = { d_picture: 'wall', d_clock: 'wall', d_banner: 'wall', d_lamp: 'mantel', d_candle: 'mantel', d_books: 'mantel', d_chest: 'floor', d_plant: 'floor', d_cat: 'floor', d_egg: 'floor', d_owl: 'floor', d_rug: 'rug' };
+const decorSpot = d => { const have = P.own.decor.includes(d.id);
+  return `<div class="spot z-${WHERE[d.id]} ${have ? 'have' : 'ghost'} s-${d.id}" data-d="${d.id}" title="${have ? d.en : 'Buy it in the shop'}"><span>${d.em}</span></div>`; };
+const dById = id => SHOP[id];
+function renderRoom(disp) {   // disp = the ingredient counts to show on the rack (they fill up one by one while the satchel is unpacked)
+  const c = P.own.caul || 0;
+  $('#rmWall').innerHTML = `<div class="window"><svg viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" rx="4" fill="#7a5a33"/><rect x="4" y="4" width="52" height="52" fill="#2a1f6e"/><rect x="4" y="30" width="52" height="26" fill="#3f9a63"/><circle cx="42" cy="16" r="6" fill="#ffe9a8"/><g fill="#fff"><circle cx="14" cy="12" r="1"/><circle cx="26" cy="20" r=".8"/><circle cx="48" cy="26" r=".8"/></g><path d="M30 4v52M4 30h52" stroke="#7a5a33" stroke-width="3"/></svg></div>` + ['d_picture', 'd_clock', 'd_banner'].map(i => decorSpot(dById(i))).join('');
+  // potion shelf: one bottle per owned potion with its count (tap for details)
+  $('#pShelf').innerHTML = `<div class="shelfTitle">🧴 Potions</div><div class="bottles">` + POTION_IDS.map(id => { const n = P.pot[id] || 0;
+    return `<button class="bottle ${n ? '' : 'none'}" data-pot="${id}" aria-label="${pBoth(id)}">${potionSVG(id)}<i>${POTIONS[id].em}</i>${n ? `<b>×${n}</b>` : ''}</button>`; }).join('') + `</div><div class="plank"></div>`;
+  // ingredient rack: one jar per ingredient type, labelled with the Hebrew word (tap to hear it)
+  const have = Object.keys(ING).filter(id => (disp[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r || ING[a].he.localeCompare(ING[b].he, 'he'));
+  $('#rack').innerHTML = `<div class="shelfTitle">🌿 Ingredients</div>` + (have.length ? `<div class="jars">${have.map(id => `<button class="jar" data-ing="${id}" aria-label="${ING[id].en}"><span class="jarPic">${jarSVG(ING[id].r)}<i class="${ING[id].r === 4 ? "shine" : ""}${[...ING[id].em].length > 1 && ING[id].r === 1 ? " two" : ""}">${ING[id].em}</i><b>${disp[id]}</b></span><span class="jarLbl heb">${ING[id].nk}</span></button>`).join('')}</div>` : '<div class="rackEmpty">Empty. Beat monsters and help villagers to find ingredients!</div>');
+  $('#rmMantel').innerHTML = ['d_lamp', 'd_candle', 'd_books'].map(i => decorSpot(dById(i))).join('') + '<div class="plank"></div>';
+  const has = id => P.own.decor.includes(id);
+  $('#rmFloor').innerHTML = `${decorSpot(dById('d_chest'))}${decorSpot(dById('d_plant'))}<button class="caulCell" id="caulBtn" aria-label="Brew potions"><span class="rug ${has('d_rug') ? 'have' : 'ghost'}" data-d="d_rug"></span>${cauldronSVG(c)}<span class="caulLbl">${CAULDRONS[c]} · tap to brew</span></button>${decorSpot(dById('d_egg'))}${decorSpot(dById('d_owl'))}${decorSpot(dById('d_cat'))}`;
+}
 function openHome() {
   G.quest = null; show('home');
+  const disp = Object.assign({}, P.inv), sat = Object.entries(P.satchel || {}).filter(([, n]) => n > 0);
+  for (const [id, n] of sat) P.inv[id] = (P.inv[id] || 0) + n;   // the data is updated at once; only the picture fills up step by step
+  P.satchel = {}; if (sat.length) saveSoon(true);
+  renderRoom(disp);
+  if (!sat.length) return;
+  const total = sat.reduce((a, [, n]) => a + n, 0); toast(`🎒 Unpacking ${total} ingredient${total > 1 ? 's' : ''} onto your shelf…`);
+  sat.forEach(([id, n], k) => setTimeout(() => {
+    if (!$('#home').classList.contains('on')) return;
+    disp[id] = (disp[id] || 0) + n; renderRoom(disp); sfx.ok();
+    const j = document.querySelector(`.jar[data-ing="${id}"]`); if (j) { j.classList.add('pop'); j.scrollIntoView({ block: 'nearest' }); }
+  }, 500 + k * 550));
+}
+function openRecipes() {   // tapping the cauldron
   const c = P.own.caul || 0;
-  $('#homeCaul').innerHTML = `<span class="caulBig">🫕</span><div><b>${CAULDRONS[c]}</b><div class="small">Better cauldrons (bought in the shop) unlock stronger potions.</div></div>`;
-  $("#homeRoom").innerHTML = DECOR.map(d => P.own.decor.includes(d.id) ? `<div class="slot" title="${d.en}"><span>${d.em}</span></div>` : `<div class="slot empty" title="Buy in the shop"><span>＋</span></div>`).join("");
-  $('#homeShelf').innerHTML = POTION_IDS.map(id => `<div class="shelfItem"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span><b>${POTIONS[id].name}</b><span class="small">🏡 ${P.pot[id] || 0}${(P.carry[id] || 0) ? ' · 🎒 ' + P.carry[id] : ''}</span></div>`).join('');
+  modal(`🫕 ${CAULDRONS[c]}: brew a potion`, '<div id="homeRecipes"></div>', [['Close', null, true]]);
   $('#homeRecipes').innerHTML = POTION_IDS.map(id => { const r = RECIPES[id], locked = r.caul > c, ok = !locked && canBrew(id);
     return `<div class="recipe ${locked ? 'locked' : ''}"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span>
-      <div class="grow"><b>${POTIONS[id].name}</b><div class="small">${POTIONS[id].desc}</div><div class="small">Needs: ${slotsText(r)}${locked ? ` · 🔒 ${CAULDRONS[r.caul]}` : ''}</div></div>
+      <div class="grow"><b>${POTIONS[id].name}</b> <small class="vn">· ${POTIONS[id].vname} in villages</small><div class="small">${POTIONS[id].desc}</div><div class="small">Needs: ${slotsText(r)}${locked ? ` · 🔒 ${CAULDRONS[r.caul]}` : ''}</div></div>
       <button class="btn" data-brew="${id}" ${ok ? '' : 'disabled'}>${locked ? '🔒' : ok ? 'Brew ▶' : 'Need more'}</button></div>`; }).join('');
-  const have = Object.keys(ING).filter(id => (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
-  $('#homeIngs').innerHTML = have.length ? have.map(id => `<span class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></span>`).join('') : '<span style="opacity:.75">No ingredients yet. Beat monsters and help villagers to find some!</span>';
+  $('#homeRecipes').onclick = e => { const b = e.target.closest('[data-brew]'); if (b && !b.disabled) pickIngredients(b.dataset.brew); };
 }
+$('#home').onclick = e => {
+  if (e.target.closest('#caulBtn')) { openRecipes(); return; }
+  const bt = e.target.closest('[data-pot]');
+  if (bt) { const id = bt.dataset.pot; modal(`${POTIONS[id].em} ${pBoth(id)}`, `<div style="text-align:center"><div style="display:inline-block;transform:scale(1.8);margin:20px"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span></div></div>
+      <p><b>${POTIONS[id].name} potion</b> (fights): ${POTIONS[id].desc}.</p><p><b>${POTIONS[id].vname} potion</b> (villages): ${POTIONS[id].vdesc}.</p><p class="small">🏡 ${P.pot[id] || 0} on the shelf${(P.carry[id] || 0) ? ' · 🎒 ' + P.carry[id] + ' in your quest pouch' : ''}. You can carry 5 on a quest.</p>`, [['OK', null]]); return; }
+  const jr = e.target.closest('[data-ing]');
+  if (jr) { const g = ING[jr.dataset.ing]; if (!findHeVoice()) toast(`${g.em} ${g.nk} (this device has no Hebrew voice)`); else playSound({ say: g.nk }); jr.classList.remove('pop'); void jr.offsetWidth; jr.classList.add('pop'); return; }
+  const sp = e.target.closest('.spot[data-d]');
+  if (sp) { const d = SHOP[sp.dataset.d]; if (P.own.decor.includes(d.id)) { toast(`${d.em} ${d.nk}`); if (findHeVoice()) playSound({ say: d.nk }); } else toast('🏪 You can buy this in the shop'); }
+};
+$('#homeBack').onclick = () => { saveSoon(true); openMenu(); };
 function pickIngredients(potion) {   // the student chooses which ingredients to use (one for each slot, all different)
   const r = RECIPES[potion], chosen = r.slots.map(() => null);
   const render = () => {
@@ -1560,12 +1649,10 @@ function pickIngredients(potion) {   // the student chooses which ingredients to
       ownedOf(rar).map(id => { const used = chosen.some((c, j) => c === id && j !== k); return `<button class="slotBtn ${chosen[k] === id ? 'sel' : ''}" data-k="${k}" data-id="${id}" ${used ? 'disabled' : ''}>${ING[id].em} <b class="heb">${ING[id].nk}</b> <small>×${P.inv[id]}</small></button>`; }).join('') + '</div></div>').join('');
     $('#mBtns button').disabled = chosen.some(c => !c);
   };
-  modal(`${POTIONS[potion].em} Brew ${POTIONS[potion].name}`, '<div id="brewBody"></div>', [['Start brewing ▶', () => startCraft(potion, chosen.slice())], ['Cancel', null, true]]);
+  modal(`${POTIONS[potion].em} Brew ${POTIONS[potion].name} / ${POTIONS[potion].vname} potion`, '<div id="brewBody"></div>', [['Start brewing ▶', () => startCraft(potion, chosen.slice())], ['Cancel', null, true]]);
   $('#brewBody').onclick = e => { const b = e.target.closest('.slotBtn'); if (!b || b.disabled) return; const k = +b.dataset.k; chosen[k] = chosen[k] === b.dataset.id ? null : b.dataset.id; render(); };
   render();
 }
-$('#homeRecipes').onclick = e => { const b = e.target.closest('[data-brew]'); if (b && !b.disabled) pickIngredients(b.dataset.brew); };
-$('#homeBack').onclick = () => { saveSoon(true); openMenu(); };
 
 /* ----- brewing: one question per ingredient. Mistakes cost nothing; the student just tries again. ----- */
 function startCraft(potion, ings) {
@@ -1601,7 +1688,7 @@ function nameQuestion(ing, universe, ctx) {
 }
 function craftQuestion() {
   const C = G.craft;
-  $('#foeName').textContent = `${CAULDRONS[P.own.caul || 0]} · ${POTIONS[C.potion].name} potion`;
+  $('#foeName').textContent = `${CAULDRONS[P.own.caul || 0]} · ${pBoth(C.potion)}`;
   $('#mid').innerHTML = `<b>🧪 Brewing</b><br>${C.ings.map((id, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote">Ingredient ${C.i + 1} of ${C.ings.length}. Wrong answers cost nothing!</div>`;
   $('#hearts').textContent = POTIONS[C.potion].em; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / C.ings.length) + '%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = ((P.xp % 400) / 4) + '%'; $('#potBar').style.display = 'none';
@@ -1626,7 +1713,7 @@ function craftNext() {
   if (C.i < C.ings.length) { craftQuestion(); return; }
   C.ings.forEach(id => { P.inv[id] = Math.max(0, (P.inv[id] || 0) - 1); });   // the ingredients are used up only now
   P.pot[C.potion] = (P.pot[C.potion] || 0) + 1; saveSoon(true); sfx.win(); confetti(['🧪', '✨', '🫧', POTIONS[C.potion].em]);
-  modal('🧪 Your potion is ready!', `<div style="text-align:center"><div style="display:inline-block;transform:scale(2);margin:26px"><span class="packBottle">${potionSVG(C.potion)}<i>${POTIONS[C.potion].em}</i></span></div><p><b>${POTIONS[C.potion].name}</b> potion added to your shelf at Home.</p></div>`,
+  modal('🧪 Your potion is ready!', `<div style="text-align:center"><div style="display:inline-block;transform:scale(2);margin:26px"><span class="packBottle">${potionSVG(C.potion)}<i>${POTIONS[C.potion].em}</i></span></div><p><b>${pBoth(C.potion)}</b> added to your shelf at Home.</p></div>`,
     [['Back home 🏡', openHome], ['Back to map', openMenu, true]]);
 }
 /* ====================== SHOP ====================== */
@@ -1635,19 +1722,23 @@ const SHOP = {};
 for (const [id, kind, extra, he, nk, em, en, price] of [
   ['caul1', 'caul', { lv: 1 }, 'קדרת ברזל', 'קְדֵרַת בַּרְזֶל', '🫕', 'iron cauldron', 80],
   ['caul2', 'caul', { lv: 2 }, 'קדרת כסף', 'קְדֵרַת כֶּסֶף', '🥘', 'silver cauldron', 220],
-  ['pot_heart', 'potion', { pid: 'heart' }, 'שיקוי לב', 'שִׁקּוּי לֵב', '❤️', 'heart potion', 15],
-  ['pot_sound', 'potion', { pid: 'sound' }, 'שיקוי קול', 'שִׁקּוּי קוֹל', '🔊', 'sound potion', 15],
-  ['pot_power', 'potion', { pid: 'power' }, 'שיקוי כוח', 'שִׁקּוּי כֹּחַ', '💥', 'power potion', 40],
-  ['pot_second', 'potion', { pid: 'second' }, 'שיקוי חזרה', 'שִׁקּוּי חֲזָרָה', '⏪', 'second chance potion', 40],
-  ['pot_super', 'potion', { pid: 'super' }, 'שיקוי על', 'שִׁקּוּי עַל', '🌟', 'super potion', 120],
-  ['d_plant', 'decor', { slot: 0 }, 'צמח', 'צֶמַח', '🪴', 'plant', 10],
-  ['d_candles', 'decor', { slot: 1 }, 'נרות', 'נֵרוֹת', '🕯️', 'candles', 10],
-  ['d_painting', 'decor', { slot: 2 }, 'תמונה', 'תְּמוּנָה', '🖼️', 'painting', 20],
-  ['d_books', 'decor', { slot: 3 }, 'ספרים', 'סְפָרִים', '📚', 'books', 30],
-  ['d_cat', 'decor', { slot: 4 }, 'חתול', 'חָתוּל', '🐈', 'cat', 40],
-  ['d_lantern', 'decor', { slot: 5 }, 'פנס', 'פָּנָס', '🏮', 'lantern', 50],
-  ['d_teddy', 'decor', { slot: 6 }, 'דובי', 'דֻּבִּי', '🧸', 'teddy bear', 60],
-  ['d_dragon', 'decor', { slot: 7 }, 'דרקון', 'דְּרָקוֹן', '🐲', 'baby dragon', 150]
+  ['pot_heart', 'potion', { pid: 'heart' }, 'שיקוי לב', 'שִׁקּוּי לֵב', '❤️', 'heart potion (happy potion)', 15],
+  ['pot_sound', 'potion', { pid: 'sound' }, 'שיקוי קול', 'שִׁקּוּי קוֹל', '🔊', 'sound potion (whisper potion)', 15],
+  ['pot_power', 'potion', { pid: 'power' }, 'שיקוי כוח', 'שִׁקּוּי כֹּחַ', '💥', 'power potion (helping-hands potion)', 40],
+  ['pot_second', 'potion', { pid: 'second' }, 'שיקוי חזרה', 'שִׁקּוּי חֲזָרָה', '⏪', 'second chance potion (lucky potion)', 40],
+  ['pot_super', 'potion', { pid: 'super' }, 'שיקוי על', 'שִׁקּוּי עַל', '🌟', 'super potion (miracle potion)', 120],
+  ['d_candle', 'decor', {}, 'נר', 'נֵר', '🕯️', 'candle', 10],
+  ['d_plant', 'decor', {}, 'צמח', 'צֶמַח', '🪴', 'plant', 10],
+  ['d_picture', 'decor', {}, 'תמונה', 'תְּמוּנָה', '🖼️', 'picture', 20],
+  ['d_clock', 'decor', {}, 'שעון', 'שָׁעוֹן', '⏰', 'clock', 25],
+  ['d_books', 'decor', {}, 'ספרים', 'סְפָרִים', '📚', 'books', 30],
+  ['d_banner', 'decor', {}, 'דגל', 'דֶּגֶל', '🚩', 'banner', 35],
+  ['d_rug', 'decor', {}, 'שטיח', 'שָׁטִיחַ', '🧶', 'rug', 45],
+  ['d_lamp', 'decor', {}, 'מנורה', 'מְנוֹרָה', '🏮', 'lamp', 50],
+  ['d_chest', 'decor', {}, 'ארגז', 'אַרְגָּז', '🧰', 'chest', 60],
+  ['d_cat', 'decor', {}, 'חתול', 'חָתוּל', '🐈', 'cat', 60],
+  ['d_owl', 'decor', {}, 'ינשוף', 'יַנְשׁוּף', '🦉', 'owl', 80],
+  ['d_egg', 'decor', {}, 'ביצת דרקון', 'בֵּיצַת דְּרָקוֹן', '🥚', 'dragon egg', 150]
 ]) SHOP[id] = Object.assign({ id, kind, he, nk, em, en, price }, extra);
 const DECOR = Object.values(SHOP).filter(s => s.kind === 'decor');
 const owns = s => s.kind === 'caul' ? (P.own.caul || 0) >= s.lv : s.kind === 'decor' ? P.own.decor.includes(s.id) : false;
@@ -1730,21 +1821,21 @@ function dropFor(source, rar) {
 }
 function giveLoot(source, boss, mist) {   // call once, when the fight is won
   const rar = rollRarity(boss, mist), id = dropFor(source, rar), coins = fightCoins(mist, boss, true);
-  P.inv[id] = (P.inv[id] || 0) + 1; P.coins = (P.coins || 0) + coins;
+  P.satchel[id] = (P.satchel[id] || 0) + 1; P.coins = (P.coins || 0) + coins;
   const d = today(); if (P.coinDay.d !== d) P.coinDay = { d, c: 0 }; P.coinDay.c += coins;
   return { got: [id], coins, bonus: coins > 0 && earlyBonus() };
 }
 const ingHtml = id => `<span class="ingChip r${ING[id].r}${ING[id].r === 4 ? " shine" : ""}" title="${RARITY[ING[id].r]}">${ING[id].em} <b class="heb">${ING[id].nk}</b></span>`;
-const lootHtml = l => `<p class="loot">🎁 You found: ${l.got.map(ingHtml).join(' ')} <small class="rarLbl">${RARITY[ING[l.got[0]].r]}</small><br>` + (l.coins ? `+${l.coins} 🪙${l.bonus ? ' <small>(double coins: first 10 minutes!)</small>' : ''}` : 'No coins this time. Fewer mistakes means more coins!') + '</p>';
+const lootHtml = l => `<p class="loot">🎁 You found: ${l.got.map(ingHtml).join(' ')} <small class="rarLbl">${RARITY[ING[l.got[0]].r]}</small><br><small>🎒 It is in your satchel. At home it goes onto your shelf.</small><br>` + (l.coins ? `+${l.coins} 🪙${l.bonus ? ' <small>(double coins: first 10 minutes!)</small>' : ''}` : 'No coins this time. Fewer mistakes means more coins!') + '</p>';
 $('#potBar').onclick = e => {
   const b = e.target.closest('.potBtn'); if (!b || b.disabled) return;
   if (G.locked && b.dataset.id === 'second') { toast('One moment…'); return; }
   usePotion(b.dataset.id);
 };
 function openBag() {
-  const have = Object.keys(ING).filter(id => (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
-  const pots = POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="bagItem"><span class="packBottle sm">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> ${POTIONS[id].name}<span class="bagN">🏡${P.pot[id] || 0}${(P.carry[id] || 0) ? ' 🎒' + P.carry[id] : ''}</span></div>`).join('');
-  modal('🎒 My bag', `<p>🪙 <b>${Math.floor(P.coins || 0)}</b> coins</p>` + (pots ? `<p>Potions: <small style="opacity:.75">🏡 at home, 🎒 in your quest pouch</small></p><div class="bagGrid">${pots}</div>` : '') + (have.length ? '<p>Ingredients:</p><div class="bagGrid">' + have.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></div>`).join('') + '</div>' : '<p style="opacity:.8">No ingredients yet. Beat monsters and help villagers to find some!</p>'), [['Close', null]]);
+  const have = Object.keys(ING).filter(id => (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r), sat = Object.keys(ING).filter(id => (P.satchel[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
+  const pots = POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="bagItem"><span class="packBottle sm">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> ${POTIONS[id].name} <small class="vn">/ ${POTIONS[id].vname}</small><span class="bagN">🏡${P.pot[id] || 0}${(P.carry[id] || 0) ? ' 🎒' + P.carry[id] : ''}</span></div>`).join('');
+  modal('🎒 My bag', `<p>🪙 <b>${Math.floor(P.coins || 0)}</b> coins</p>` + (pots ? `<p>Potions: <small style="opacity:.75">🏡 at home, 🎒 in your quest pouch</small></p><div class="bagGrid">${pots}</div>` : '') + (have.length ? '<p>🏡 Ingredients on your shelf:</p><div class="bagGrid">' + have.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></div>`).join('') + '</div>' : '<p style="opacity:.8">No ingredients on your shelf yet. Beat monsters and help villagers to find some!</p>') + (sat.length ? '<p>🎒 In your satchel <small style="opacity:.75">(goes onto your shelf when you get home)</small>:</p><div class="bagGrid">' + sat.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.satchel[id]}</span></div>`).join('') + '</div>' : ''), [['Close', null]]);
 }
 // the live reward shown in the fight (what you would get if you won now)
 function updateReward() {
@@ -1873,7 +1964,7 @@ async function adminStudent(id) {
     const today = new Date(), days = Array.from({ length: 14 }, (_, i) => { const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (13 - i)); const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); return { d, s: sec[key] || 0 }; });
     const mx = Math.max(60, ...days.map(x => x.s)), q = p.quest || {}, activeLast14 = days.filter(x => x.s >= 60).length, goalDays = days.filter(x => x.s >= CFG.DAILY_SEC).length;
     // world
-    const rar = [0, 0, 0, 0, 0]; for (const [iid, n] of Object.entries(p.inv || {})) if (ING[iid]) rar[ING[iid].r] += n;
+    const rar = [0, 0, 0, 0, 0]; for (const [iid, n] of Object.entries(Object.assign({}, p.inv, ...Object.entries(p.satchel || {}).map(([k, v]) => ({ [k]: ((p.inv || {})[k] || 0) + v })))) ) if (ING[iid]) rar[ING[iid].r] += n;
     const potTxt = POTION_IDS.filter(pid => ((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)).map(pid => `${POTIONS[pid].em} ${((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)}`).join('  ') || 'none';
     const cr = p.craft || { n: 0, ok: 0 };
     const sec2 = (title, html) => `<div class="stuSec"><b>${title}</b>${html}</div>`;
@@ -1889,7 +1980,7 @@ async function adminStudent(id) {
       sec2('Quests', `<div class="kv"><span>⚔️ Monster Hunter: chapter ${(q.battle || {}).ch || 1}, fight ${((q.battle || {}).enc || 0) + 1}${(q.battle || {}).act ? ' (a run is in progress)' : ''}</span><span>🌿 Village Helper: village ${(q.peace || {}).ch || 1}, helped ${(q.peace || {}).enc || 0}${(q.peace || {}).act ? ' (a run is in progress)' : ''}</span>
         <span>🔁 Quest restarts: ${p.restartsTotal || 0}</span></div>`) +
       sec2('World', `<div class="kv"><span>🪙 ${Math.floor(p.coins || 0)} coins</span><span>🫕 ${CAULDRONS[(p.own || {}).caul || 0]}</span><span>🪴 ${((p.own || {}).decor || []).length} of ${DECOR.length} decorations</span><span>🧪 Potions: ${potTxt}</span>
-        <span>🌿 ${sum(p.inv)} ingredients (${RARITY.map((n, i) => rar[i] ? rar[i] + ' ' + n.toLowerCase() : '').filter(Boolean).join(', ') || 'none'})</span><span>🧰 Crafting and shop questions: ${cr.n ? pct(cr.ok, cr.n) + ' right first try, of ' + cr.n : 'none yet'}</span></div>`) +
+        <span>🌿 ${sum(p.inv) + sum(p.satchel)} ingredients (${sum(p.satchel) ? sum(p.satchel) + " still in the satchel, " : ""}${RARITY.map((n, i) => rar[i] ? rar[i] + ' ' + n.toLowerCase() : '').filter(Boolean).join(', ') || 'none'})</span><span>🧰 Crafting and shop questions: ${cr.n ? pct(cr.ok, cr.n) + ' right first try, of ' + cr.n : 'none yet'}</span></div>`) +
       `<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn ghost danger" id="admDelete">🗑 Delete this student…</button></div>`;
     $('#admDetailClose').onclick = () => { box.style.display = 'none'; };
     $('#admDelete').onclick = () => modal('🗑 Delete this student?', `<p>You are about to delete <b>${esc(p.nick)}</b>${p.real ? ' (' + esc(p.real) + (p.cls ? ', ' + esc(p.cls) : '') + ')' : ''}, number <b>${esc(p.id)}</b>.</p><p><b>All their progress is removed from the sheet for good. This cannot be undone,</b> and the number can never be used again.</p>`,
