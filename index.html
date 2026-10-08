@@ -1186,7 +1186,7 @@ async function pickOption(i, btn) {
       G.locked = false;
     } else {
       after(tr);
-      if (first) {   // village: the first wrong try costs one smiley
+      {   // village: every wrong try costs one smiley (like hearts in a fight)
         loseHeart(); $('#fb').innerHTML += '<br>The villagers look worried… −1 😊'; updateBars();
         if (G.hearts <= 0) {
           G.locked = true; document.querySelectorAll('.opt').forEach((b, k) => { b.disabled = true; if (q.options[k].ok) b.classList.add('good'); });
