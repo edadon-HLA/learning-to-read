@@ -329,6 +329,10 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     </div>
     <div>Pick a robe color:</div>
     <div class="swatches" id="swatches"></div>
+    <div style="margin-top:8px">Pick the skin that looks like you:</div>
+    <div class="swatches" id="skinSw"></div>
+    <div style="margin-top:8px">Pick your hair and beard colour:</div>
+    <div class="swatches" id="hairSw"></div>
     <div>Choose a fun nickname <small>(not your real name)</small>:</div>
     <input id="nick" type="text" maxlength="12" placeholder="Nickname" autocomplete="off" style="margin:8px 0">
     <div class="msg" id="creatorMsg"></div>
@@ -369,7 +373,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="place" data-p="shop" style="left:80%;top:74%"><span class="pIcon">🏪</span><span class="sign"><b class="heb">חנות</b><small>Shop</small></span></button>
     <div id="mapHero" aria-label="Your hero"></div>
   </div>
-  <div class="row" style="margin-top:14px"><button class="btn" id="bagBtn">🎒 My bag</button><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
+  <div class="row" style="margin-top:14px"><button class="btn" id="bagBtn">🎒 My bag</button><button class="btn" id="lookBtn">🎨 My look</button><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
 </section>
 
 <section id="home" class="screen" style="max-width:760px">
@@ -743,35 +747,51 @@ document.querySelectorAll('.vslider').forEach(s => {
 function setMute(m) { muted = m; lsSet('aq_mute', m ? '1' : '0'); refreshVolUI(); }
 
 /* ====================== HERO ART ====================== */
-function heroSVG(g, color) {
-  const dark = shade(color, -45), light = shade(color, 40), skin = '#f6cfa6';
-  const hair = g === 'f' ? `<path d="M40 52 Q36 92 46 100 L52 70 Z M80 52 Q84 92 74 100 L68 70 Z" fill="#7a4a21"/>` : '';
-  const beard = g === 'm' ? `<path d="M46 62 Q60 96 74 62 Q60 72 46 62Z" fill="#f2f2f2"/>` : '';
+// Looks: skin tone, robe colour and hair/beard colour. Skin tones are plain colour circles (no labels): every student can pick the one that looks like them.
+const SKINS = ['#fde3cf', '#f6cfa6', '#e8b98a', '#cf9a68', '#a9703f', '#7a4a28', '#5a3720', '#3d2616'];   // very light ... very dark
+const SKIN_MOD = ['🏻', '🏻', '🏼', '🏽', '🏾', '🏾', '🏿', '🏿'];                                          // the matching emoji skin-tone modifiers (for the Wizard / Witch icons)
+const HAIRS = ['#1b1b1b', '#5a3a1d', '#e0b44a', '#b5481f', '#9a9a9a', '#f2f2f2'];                         // black, brown, blond, red, grey, white
+const DEFAULT_SKIN = '#f6cfa6';
+const mixHex = (a, b, t) => { const x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16), m = (s) => Math.round(((x >> s) & 255) * (1 - t) + ((y >> s) & 255) * t); return '#' + [16, 8, 0].map(s => m(s).toString(16).padStart(2, '0')).join(''); };
+const lumOf = hex => { const n = parseInt(hex.slice(1), 16); return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
+function heroSVG(g, color, skinIn, hairIn) {
+  const dark = shade(color, -45), light = shade(color, 40), skin = skinIn || DEFAULT_SKIN, lum = lumOf(skin);
+  const hairCol = hairIn || (g === 'f' ? '#7a4a21' : '#f2f2f2');
+  const cheek = lum > 0.45 ? mixHex(skin, '#ff6f86', .5) : mixHex(skin, '#ff9a8a', .22), mouth = lum > 0.45 ? shade(skin, -85) : mixHex(skin, '#ffd0c0', .6);   // cheeks and mouth follow the skin tone
+  const hair = g === 'f' ? `<path d="M40 52 Q36 92 46 100 L52 70 Z M80 52 Q84 92 74 100 L68 70 Z" fill="${hairCol}"/>` : '';
+  const beard = g === 'm' ? `<path d="M46 62 Q60 96 74 62 Q60 72 46 62Z" fill="${hairCol}"/>` : '';
   return `<svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
    <ellipse cx="60" cy="164" rx="34" ry="5" fill="#0005"/>
    <rect x="94" y="40" width="5" height="122" rx="2" fill="#8a5a2b"/><circle cx="96" cy="36" r="9" fill="${light}" stroke="#fff" stroke-width="2"/>
    <path d="M28 162 L44 84 H76 L92 162 Z" fill="${color}"/><path d="M28 162 L44 84 H52 L44 162Z" fill="${dark}" opacity=".35"/>
    <rect x="44" y="108" width="32" height="7" fill="${dark}"/><rect x="56" y="106" width="8" height="11" rx="2" fill="#ffd166"/>
    ${hair}<circle cx="60" cy="62" r="19" fill="${skin}"/>${beard}
-   <circle cx="53" cy="60" r="2.6" fill="#2a2340"/><circle cx="67" cy="60" r="2.6" fill="#2a2340"/>
-   <path d="M53 69 Q60 75 67 69" stroke="#a5503a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-   <circle cx="48" cy="67" r="3" fill="#ff9aa2" opacity=".5"/><circle cx="72" cy="67" r="3" fill="#ff9aa2" opacity=".5"/>
+   <circle cx="53" cy="60" r="3.9" fill="#fff"/><circle cx="67" cy="60" r="3.9" fill="#fff"/><circle cx="53" cy="60" r="2.6" fill="#2a2340"/><circle cx="67" cy="60" r="2.6" fill="#2a2340"/>
+   <path d="M53 69 Q60 75 67 69" stroke="${mouth}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+   <circle cx="48" cy="67" r="3" fill="${cheek}" opacity=".55"/><circle cx="72" cy="67" r="3" fill="${cheek}" opacity=".55"/>
    <ellipse cx="60" cy="46" rx="30" ry="7" fill="${dark}"/><path d="M36 46 Q52 36 58 6 Q74 32 84 46 Z" fill="${color}"/>
    <path d="M36 46 Q52 36 58 6 L56 46Z" fill="${dark}" opacity=".3"/>
    <text x="60" y="38" font-size="13" text-anchor="middle" fill="#ffd166">★</text>
    <circle cx="94" cy="96" r="5" fill="${skin}"/></svg>`;
 }
+const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair);
+// Villagers are people emoji: a skin-tone modifier goes right after the FIRST code point (before any zero-width joiner), e.g. 👩🏽‍🌾. Tones are dealt from a shuffled bag so they are evenly spread.
+const TONE_MODS = ['🏻', '🏼', '🏽', '🏾', '🏿'];
+const tonedEmoji = (e, k) => { const cp = [...e]; return cp[0] + TONE_MODS[k % 5] + cp.slice(1).join(''); };
+let toneBag = []; const nextTone = () => { if (!toneBag.length) toneBag = shuffle([0, 1, 2, 3, 4]); return toneBag.pop(); };
 
 /* ====================== PROFILE / STORAGE ====================== */
 let P = null;                // current profile
 let saveTimer = null, cloudState = '';
 
-function newProfile(id, nick, gender, color, real, cls) {
-  return migrate({ id, nick, gender, color, real: real || '', cls: cls || '', tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
+function newProfile(id, nick, gender, color, real, cls, skin, hair) {
+  const p = migrate({ id, nick, gender, color, real: real || '', cls: cls || '', tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
     quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() });
+  p.skin = skin || DEFAULT_SKIN; p.hair = hair || null; p.lookPrompt = false;   // a new hero chose their look already
+  return p;
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 5;
+const PROFILE_V = 6;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -796,6 +816,7 @@ function migrate(p) {
     if (old.includes('d_teddy')) p.coins = (p.coins || 0) + 60;   // the teddy bear is gone from the shop: refund it
   }
   p.satchel = p.satchel || {};
+  if (v < 6) { p.skin = p.skin || '#f6cfa6'; p.hair = p.hair || null; p.lookPrompt = true; }   // version 6: looks. Existing heroes keep their current look and get a one-time, skippable question.
   if (v < 4 && p.inv && p.inv.mint) { p.inv.leaf = (p.inv.leaf || 0) + p.inv.mint; }   // version 4: the herb mint was removed; any mint becomes a leaf
   if (p.inv) delete p.inv.mint;
   p.carry = p.carry || {}; p.pot = p.pot || {};
@@ -886,7 +907,7 @@ function confetti(emojis = ['⭐', '✨', '🎉', '🪄']) {
 
 /* ====================== LOGIN & CREATOR ====================== */
 const norm = s => s.trim().toUpperCase().replace(/\s+/g, '');
-let pendingId = '', cr = { g: 'm', color: COLORS[1] };
+let pendingId = '', cr = { g: 'm', color: COLORS[1], skin: SKINS[2], hair: null };
 
 $('#sid').value = lsGet('aq_last') || '';
 $('#sid').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginBtn').click(); });
@@ -926,25 +947,40 @@ $('#regGo').onclick = async () => {
   $('#regId').textContent = id; $('#regForm').style.display = 'none'; $('#regDone').style.display = '';
 };
 $('#regNext').onclick = () => { if (!$('#regTick').checked) { $('#regMsg2').textContent = 'Please write your number down and tick the box.'; return; } openCreator(); };
-function openCreator() { cr = { g: 'm', color: rnd(COLORS) }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
-function drawCreator() {
-  $('#prevHero').innerHTML = heroSVG(cr.g, cr.color);
-  document.querySelectorAll('.gbtn').forEach(b => b.classList.toggle('sel', b.dataset.g === cr.g));
-  $('#swatches').innerHTML = COLORS.map(c => `<button class="sw ${c === cr.color ? 'sel' : ''}" data-c="${c}" style="background:${c}" aria-label="color"></button>`).join('');
-  document.querySelectorAll('.sw').forEach(b => b.onclick = () => { cr.color = b.dataset.c; drawCreator(); });
+/* ----- "My look": change robe colour, skin tone and hair/beard colour any time ----- */
+function openLook() {
+  const lk = { color: P.color, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null };
+  const render = () => { $('#lookBody').innerHTML = `<div class="center lookPrev">${heroSVG(P.gender, lk.color, lk.skin, lk.hair)}</div><div>Robe</div><div class="swatches">${swatchRow(COLORS, lk.color, 'color')}</div><div>Skin</div><div class="swatches">${swatchRow(SKINS, lk.skin, 'skin')}</div><div>Hair and beard</div><div class="swatches">${swatchRow(HAIRS, lk.hair || (P.gender === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair')}</div>`; };
+  modal('🎨 My look', '<div id="lookBody"></div>', [['Save', () => { P.color = lk.color; P.skin = lk.skin; P.hair = lk.hair; saveSoon(true); openMenu(); }], ['Cancel', null, true]]);
+  $('#lookBody').onclick = e => { const b = e.target.closest('.sw'); if (!b) return; const k = b.dataset.k, i = +b.dataset.i; lk[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; render(); };
+  render();
 }
+$('#lookBtn').onclick = openLook;
+function askLookOnce() {   // existing heroes: one friendly, skippable question
+  if (!P || !P.lookPrompt) return;
+  setTimeout(() => { if (P && P.lookPrompt && $('#menu').classList.contains('on') && !$('#modal').classList.contains('on')) { P.lookPrompt = false; saveSoon();
+    modal('🎨 Want to change how your hero looks?', '<p>Now you can choose your <b>skin tone</b>, your <b>hair colour</b> and your <b>robe colour</b>, so your hero looks like you!</p>', [['Yes, let me look 🎨', openLook], ['Not now', null, true]]); } }, 800);
+}
+function openCreator() { cr = { g: 'm', color: rnd(COLORS), skin: SKINS[2], hair: null }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
+const swatchRow = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
+function drawCreator() {
+  $('#prevHero').innerHTML = heroSVG(cr.g, cr.color, cr.skin, cr.hair);
+  document.querySelectorAll('.gbtn').forEach(b => { b.classList.toggle('sel', b.dataset.g === cr.g); const t = SKIN_MOD[SKINS.indexOf(cr.skin)] || '', zj = String.fromCharCode(0x200d); b.textContent = b.dataset.g === 'm' ? '🧙' + t + zj + '♂️ Wizard' : '🧙' + t + zj + '♀️ Witch'; });   // the icons wear the chosen skin tone
+  $('#swatches').innerHTML = swatchRow(COLORS, cr.color, 'color'); $('#skinSw').innerHTML = swatchRow(SKINS, cr.skin, 'skin'); $('#hairSw').innerHTML = swatchRow(HAIRS, cr.hair || (cr.g === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair');
+}
+$('#creator').onclick = e => { const b = e.target.closest('.sw'); if (!b) return; const k = b.dataset.k, i = +b.dataset.i; cr[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; drawCreator(); };
 document.querySelectorAll('.gbtn').forEach(b => b.onclick = () => { cr.g = b.dataset.g; drawCreator(); });
 $('#createBtn').onclick = () => {
   const nick = $('#nick').value.trim();
   if (nick.length < 2) { $('#creatorMsg').textContent = 'Please choose a nickname (at least 2 letters).'; return; }
-  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls); pendingReal = pendingCls = ''; saveSoon(true); openMenu();
+  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls, cr.skin, cr.hair); pendingReal = pendingCls = ''; saveSoon(true); openMenu();
 };
 
 /* ====================== MENU ====================== */
 function rankOf(xp) { return RANKS[Math.min(RANKS.length - 1, Math.floor(xp / 400))]; }
 function openMenu() {
   G.quest = null; show('menu');
-  $('#menuHero').innerHTML = heroSVG(P.gender, P.color).replace('<svg ', '<svg style="height:90px" ');
+  $('#menuHero').innerHTML = heroOf(P).replace('<svg ', '<svg style="height:90px" ');
   $('#menuWho').textContent = P.nick;
   $('#menuRank').textContent = rankOf(P.xp) + ' · ' + P.xp + ' XP · my number: ' + P.id;
   $('#menuXp').style.width = ((P.xp % 400) / 4) + '%';
@@ -956,8 +992,9 @@ function openMenu() {
   document.querySelectorAll('.place').forEach(b => b.classList.toggle('locked', isLocked(b.dataset.p)));
   $('#ptGate').textContent = 'Chapter ' + P.quest.battle.ch + ': ' + AREAS[(P.quest.battle.ch - 1) % AREAS.length];
   $('#ptBoard').textContent = 'Village ' + P.quest.peace.ch + ': ' + VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length];
-  $('#mapHero').innerHTML = heroSVG(P.gender, P.color); walking = false; placeHero(START.x, START.y);
+  $('#mapHero').innerHTML = heroOf(P); walking = false; placeHero(START.x, START.y);
   setCloud(cloudState || (CFG.SCRIPT_URL ? 'ok' : 'none'));
+  askLookOnce();
 }
 /* ----- the map: drag the hero onto a place, or tap the place; both end in the same walk-and-enter handler ----- */
 const START = { x: 50, y: 58 };
@@ -1169,7 +1206,7 @@ function startQuest(q) {   // a new quest run starts by packing potions; from th
 const nextRun = () => P.quest[G.quest].act ? newEncounter() : startQuest(G.quest);   // after a chapter ends or a restart, pack potions again
 function beginQuest(q) {
   G.quest = q; G.sess = 0; G.combo = 0; G.goalShown = (P.sec[today()] || 0) >= CFG.DAILY_SEC;
-  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroSVG(P.gender, P.color);
+  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P);
   setMute(muted); newEncounter();
 }
 function newEncounter() {
@@ -1185,7 +1222,7 @@ function newEncounter() {
   if (G.quest === 'battle') {
     const def = boss ? BOSSES[(qs.ch - 1) % BOSSES.length] : rnd(MONS);
     G.mon = { ...def, boss, max: boss ? 6 : 3, hp: boss ? 6 : 3 };
-  } else { G.folk = boss ? '👵' : rnd(FOLK); G.big = boss; G.mon = null; }
+  } else { G.folk = tonedEmoji(boss ? '👵' : rnd(FOLK), nextTone()); G.big = boss; G.mon = null; }
   drawScene(); nextQuestion();
 }
 // Each element has its own battlefield colours, glow and drifting particles (flames, snowflakes, wisps, leaves).
@@ -1657,7 +1694,7 @@ function pickIngredients(potion) {   // the student chooses which ingredients to
 /* ----- brewing: one question per ingredient. Mistakes cost nothing; the student just tries again. ----- */
 function startCraft(potion, ings) {
   G.quest = 'craft'; G.craft = { potion, ings, i: 0, done: [] }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = false;
-  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroSVG(P.gender, P.color); setMute(muted);
+  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = 'drop-shadow(0 0 12px #ffd16688)'; $('#foeBody').textContent = '🫕';
   craftQuestion();
@@ -1767,7 +1804,7 @@ $('#shop').onclick = e => {
 };
 function startShopBuy(id) {
   const s = SHOP[id]; G.quest = 'shop'; G.shop = { id }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = true;
-  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroSVG(P.gender, P.color); setMute(muted);
+  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').textContent = '🧙'; $('#foeName').textContent = 'Merchant';
   $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
