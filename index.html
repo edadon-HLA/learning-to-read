@@ -61,6 +61,11 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .packBottle.sm .potSvg{width:20px;height:27px}.packBottle.sm i{font-size:.75rem}
 .opt{position:relative}.optSnd{position:absolute;top:6px;right:8px;background:#fff;color:#000;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 2px 0 #0004;cursor:pointer}.optSnd:hover{transform:scale(1.12)}
 .potNote{opacity:.75;width:100%;text-align:center}
+.wdPrev svg{height:210px;width:auto}.wdTabs{display:flex;gap:6px;justify-content:center;margin:8px 0}.wdTab{font:inherit;color:#fff;background:#fff1;border:2px solid #fff3;border-radius:12px;padding:6px 12px;cursor:pointer}.wdTab.on{border-color:var(--gold);background:#ffd16622}
+.wdLbl{font-weight:600;margin:10px 0 4px}.wdChips{display:flex;flex-wrap:wrap;gap:6px}
+.wdChip{font:inherit;color:#fff;background:#0003;border:2px solid #fff3;border-radius:12px;padding:4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-width:54px}.wdChip.on{border-color:var(--gold);background:#ffd16622}.wdChip.lock{opacity:.55}.wdChip small{font-size:.65rem}.wdEm{font-size:1.5rem;line-height:1.1}
+.sw.lockSw{opacity:.55;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center}
+.wardCell{grid-area:ward;font:inherit;color:#fff;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}.wardCell svg{width:min(96px,100%);filter:drop-shadow(0 3px 3px #0006);transition:transform .15s}.wardCell:hover svg{transform:scale(1.05)}.wardCell span{font-size:.7rem;background:#0006;border-radius:8px;padding:1px 6px;margin-top:2px}
 .jarPic i{white-space:nowrap}.jarPic i.two{font-size:.8rem;top:18px;letter-spacing:-2px}
 .roomBox{border-radius:18px;overflow:hidden;border:2px solid #fff3;background:linear-gradient(#6b4fa8 0%,#523a8c 62%,#3a2a66 62.1%)}
 .rmWall{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:6px;padding:10px 10px 4px;align-items:center;min-height:84px}
@@ -81,7 +86,7 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .jarLbl{font-size:.74rem;line-height:1.1;text-align:center;margin-top:1px}.rackEmpty{opacity:.7;font-size:.85rem;padding:10px 4px 14px}
 .jar.pop{animation:jarPop .7s ease}@keyframes jarPop{0%{transform:scale(1)}35%{transform:scale(1.28);filter:drop-shadow(0 0 10px #ffd166)}100%{transform:scale(1)}}
 .rmMantel{display:flex;justify-content:space-around;align-items:flex-end;padding:8px 12px 0;position:relative;flex-wrap:wrap}.rmMantel .plank{position:absolute;left:8px;right:8px;bottom:0}.rmMantel .spot{margin-bottom:8px;min-width:64px}
-.rmFloor{background:linear-gradient(#a2733d,#7a5128);margin-top:8px;padding:10px;display:grid;grid-template-columns:repeat(6,1fr);grid-template-areas:"chest plant caul caul egg owl" "cat . caul caul . .";gap:4px;align-items:end}
+.rmFloor{background:linear-gradient(#a2733d,#7a5128);margin-top:8px;padding:10px;display:grid;grid-template-columns:repeat(6,1fr);grid-template-areas:"ward ward caul caul plant chest" "ward ward caul caul cat egg" "ward ward caul caul owl .";gap:4px;align-items:end}
 .rmFloor .s-d_chest{grid-area:chest}.rmFloor .s-d_plant{grid-area:plant}.rmFloor .s-d_egg{grid-area:egg}.rmFloor .s-d_owl{grid-area:owl}.rmFloor .s-d_cat{grid-area:cat}
 .caulCell{grid-area:caul;position:relative;font:inherit;color:#fff;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:6px 0 0}
 .caulSvg{width:min(150px,100%);position:relative;z-index:1;filter:drop-shadow(0 4px 4px #0006);transition:transform .15s}.caulCell:hover .caulSvg{transform:scale(1.06)}
@@ -387,11 +392,20 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="small center" style="opacity:.7;margin:10px 0">🪴 Furniture and pets are sold in the shop 🏪. Each one has its own spot in your room.</div>
 </section>
 
+<section id="wardrobe" class="screen" style="max-width:760px">
+  <div class="top"><button class="ib" id="wdBack" title="Back home">🏡</button><div class="grow"><div class="who">🚪 Wardrobe</div><div class="small">Try things on, then save your look. Locked things are sold in the shop.</div></div><button class="btn" id="wdSave">Save look ✔</button></div>
+  <div class="card center" style="margin:8px auto"><div class="wdPrev" id="wdPrev"></div>
+    <div class="wdTabs"><button class="wdTab on" data-t="robe">👗 Robe</button><button class="wdTab" data-t="face">🧑 Skin &amp; hair</button><button class="wdTab" data-t="acc">🎩 Accessories</button></div>
+    <div id="wdBody" style="text-align:left"></div></div>
+</section>
+
 <section id="shop" class="screen">
   <div class="top"><button class="ib" id="shopBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏪 <span class="heb">חנות</span> · Shop</div><div class="small">Spend your coins. The merchant asks one question for each purchase.</div></div><div class="coinBox">🪙 <b id="shopCoins">0</b></div></div>
   <h2 class="center" style="margin:10px 0 4px">🫕 Cauldrons</h2><div class="card shopGrid" id="shopCauls"></div>
   <h2 class="center" style="margin:10px 0 4px">🧪 Potions</h2><div class="card shopGrid" id="shopPots"></div>
   <h2 class="center" style="margin:10px 0 4px">🪴 Decorations for your home</h2><div class="card shopGrid" id="shopDecor"></div>
+  <h2 class="center" style="margin:10px 0 4px">👗 Robes</h2><div class="card shopGrid" id="shopRobes"></div>
+  <h2 class="center" style="margin:10px 0 4px">🎩 Accessories</h2><div class="card shopGrid" id="shopAcc"></div>
 </section>
 
 <section id="game" class="screen">
@@ -754,27 +768,64 @@ const HAIRS = ['#1b1b1b', '#5a3a1d', '#e0b44a', '#b5481f', '#9a9a9a', '#f2f2f2']
 const DEFAULT_SKIN = '#f6cfa6';
 const mixHex = (a, b, t) => { const x = parseInt(a.slice(1), 16), y = parseInt(b.slice(1), 16), m = (s) => Math.round(((x >> s) & 255) * (1 - t) + ((y >> s) & 255) * t); return '#' + [16, 8, 0].map(s => m(s).toString(16).padStart(2, '0')).join(''); };
 const lumOf = hex => { const n = parseInt(hex.slice(1), 16); return (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
-function heroSVG(g, color, skinIn, hairIn) {
+// ---- Wardrobe data: extra robe colours, robe styles and accessories. They are bought in the shop (more detailed = more expensive) and worn from the wardrobe at Home. ----
+const ROBE_EXTRA = [   // plain extra robe colours
+  ['rc_gold', '#d4a017', 'זהב', 'זָהָב', '🟡', 'gold'], ['rc_silver', '#c0c8d4', 'כסף', 'כֶּסֶף', '⚪', 'silver'], ['rc_black', '#2b2b3a', 'שחור', 'שָׁחוֹר', '⚫', 'black'],
+  ['rc_white', '#f4f4f8', 'לבן', 'לָבָן', '⬜', 'white'], ['rc_brown', '#8a5a2b', 'חום', 'חוּם', '🟤', 'brown'], ['rc_sky', '#6ec6ff', 'תכלת', 'תְּכֵלֶת', '🔷', 'light blue']];
+const ROBE_STYLES = [  // patterns and effects on the robe
+  ['rs_stripes', 'stripes', 'פסים', 'פַּסִּים', '🦓', 'stripes', 80], ['rs_hearts', 'hearts', 'לבבות', 'לְבָבוֹת', '💗', 'hearts', 80], ['rs_stars', 'stars', 'כוכבים', 'כּוֹכָבִים', '⭐', 'stars', 100],
+  ['rs_fire', 'fire', 'אש', 'אֵשׁ', '🔥', 'fire', 150], ['rs_galaxy', 'galaxy', 'גלקסיה', 'גָּלַקְסְיָה', '🌌', 'galaxy', 220], ['rs_rainbow', 'rainbow', 'קשת', 'קֶשֶׁת', '🌈', 'rainbow', 260]];
+const ACCS = [   // [id, slot, hebrew, vowels, emoji, english, price]
+  ['ac_bow', 'neck', 'פפיון', 'פַּפִּיּוֹן', '🎀', 'bow tie', 20], ['ac_glasses', 'face', 'משקפיים', 'מִשְׁקָפַיִם', '👓', 'glasses', 25], ['ac_flower', 'head', 'פרח', 'פֶּרַח', '🌸', 'flower', 30],
+  ['ac_band', 'head', 'סרט', 'סֶרֶט', '🎗️', 'hat band', 40], ['ac_scarf', 'neck', 'צעיף', 'צָעִיף', '🧣', 'scarf', 55], ['ac_necklace', 'neck', 'שרשרת', 'שַׁרְשֶׁרֶת', '📿', 'necklace', 70],
+  ['ac_staff', 'staff', 'שרביט', 'שַׁרְבִיט', '🪄', 'star wand', 100], ['ac_cape', 'back', 'גלימה', 'גְּלִימָה', '🧥', 'cape', 120], ['ac_crown', 'head', 'כתר', 'כֶּתֶר', '👑', 'crown', 180],
+  ['ac_parrot', 'pet', 'תוכי', 'תּוּכִּי', '🦜', 'parrot', 220], ['ac_wings', 'back', 'כנפיים', 'כְּנָפַיִם', '🪽', 'wings', 260], ['ac_dragon', 'pet', 'דרקון', 'דְּרָקוֹן', '🐉', 'baby dragon', 300], ['ac_aura', 'aura', 'זוהר', 'זֹהַר', '✨', 'glow', 350]];
+const ACC_SLOT = Object.fromEntries(ACCS.map(a => [a[0], a[1]]));
+const SLOT_NAMES = { head: 'Head', face: 'Face', neck: 'Neck', back: 'Back', staff: 'Wand', pet: 'Pet', aura: 'Glow' };
+let heroSeq = 0;
+function heroSVG(g, color, skinIn, hairIn, look) {
+  look = look || {}; const acc = look.acc || {}, style = look.style || null, has = id => Object.values(acc).includes(id), uid = 'h' + (++heroSeq);
   const dark = shade(color, -45), light = shade(color, 40), skin = skinIn || DEFAULT_SKIN, lum = lumOf(skin);
   const hairCol = hairIn || (g === 'f' ? '#7a4a21' : '#f2f2f2');
-  const cheek = lum > 0.45 ? mixHex(skin, '#ff6f86', .5) : mixHex(skin, '#ff9a8a', .22), mouth = lum > 0.45 ? shade(skin, -85) : mixHex(skin, '#ffd0c0', .6);   // cheeks and mouth follow the skin tone
+  const cheek = lum > 0.45 ? mixHex(skin, '#ff6f86', .5) : mixHex(skin, '#ff9a8a', .22), mouth = lum > 0.45 ? shade(skin, -85) : mixHex(skin, '#ffd0c0', .6);
   const hair = g === 'f' ? `<path d="M40 52 Q36 92 46 100 L52 70 Z M80 52 Q84 92 74 100 L68 70 Z" fill="${hairCol}"/>` : '';
   const beard = g === 'm' ? `<path d="M46 62 Q60 96 74 62 Q60 72 46 62Z" fill="${hairCol}"/>` : '';
-  return `<svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg">
+  // robe fill and pattern
+  const ROBE = 'M28 162 L44 84 H76 L92 162 Z', GRAD = { fire: ['#ff3d00', '#ff9f1c', '#ffd000'], galaxy: ['#1b1464', '#5a35b0', '#2aa3d8'], rainbow: ['#ff4d4d', '#ff9f1c', '#ffe14d', '#3ddc97', '#4aa8ff', '#9b59b6'] }[style];
+  const defs = `<clipPath id="c${uid}"><path d="${ROBE}"/></clipPath>` + (GRAD ? `<linearGradient id="g${uid}" x1="0" y1="0" x2="0" y2="1">${GRAD.map((c, i) => `<stop offset="${i / (GRAD.length - 1)}" stop-color="${c}"/>`).join('')}</linearGradient>` : '');
+  const fill = GRAD ? `url(#g${uid})` : color, SP = [[48, 100], [58, 126], [70, 110], [44, 142], [76, 140], [62, 152], [52, 118], [68, 94], [84, 150], [40, 156]];
+  const over = style === 'stars' ? SP.map(([x, y]) => `<text x="${x}" y="${y}" font-size="9" text-anchor="middle" fill="#ffe08a">★</text>`).join('')
+    : style === 'hearts' ? SP.map(([x, y]) => `<text x="${x}" y="${y}" font-size="9" text-anchor="middle" fill="#ff8fb1">♥</text>`).join('')
+    : style === 'stripes' ? [96, 110, 124, 138, 152].map(y => `<rect x="20" y="${y}" width="80" height="6" fill="${dark}" opacity=".5"/>`).join('')
+    : style === 'galaxy' ? SP.map(([x, y], i) => `<circle cx="${x}" cy="${y - 3}" r="${i % 3 ? 1 : 1.6}" fill="#fff" opacity=".85"><animate attributeName="opacity" values=".9;.2;.9" dur="${1.4 + i * .23}s" repeatCount="indefinite"/></circle>`).join('') : '';
+  // accessories
+  const back = (has('ac_cape') ? `<path d="M24 164 L42 86 H78 L96 164 Q60 174 24 164Z" fill="#8e1f15"/><path d="M24 164 L42 86 H52 L38 166Z" fill="#000" opacity=".2"/>` : '')
+    + (has('ac_wings') ? `<g opacity=".92"><path d="M46 92 Q2 52 10 112 Q28 106 46 112 Z" fill="#fff" stroke="#cfe3ff" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" values="0 46 100;-7 46 100;0 46 100" dur="1.6s" repeatCount="indefinite"/></path><path d="M74 92 Q118 52 110 112 Q92 106 74 112 Z" fill="#fff" stroke="#cfe3ff" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" values="0 74 100;7 74 100;0 74 100" dur="1.6s" repeatCount="indefinite"/></path></g>` : '');
+  const aura = has('ac_aura') ? [[18, 40], [100, 60], [12, 110], [104, 130], [30, 150], [88, 20], [60, 2]].map(([x, y], i) => `<text x="${x}" y="${y}" font-size="${9 + (i % 3) * 3}" text-anchor="middle" fill="#fff6b0"><animate attributeName="opacity" values="1;.1;1" dur="${1.2 + i * .3}s" repeatCount="indefinite"/>✦</text>`).join('') : '';
+  const neck = (has('ac_scarf') ? `<path d="M44 82 Q60 92 76 82 L77 91 Q60 101 43 91Z" fill="#e74c3c"/><path d="M44 86 Q60 96 76 86" stroke="#fff" stroke-width="2" fill="none" opacity=".6"/><rect x="66" y="90" width="9" height="26" rx="3" fill="#e74c3c"/><rect x="66" y="100" width="9" height="3" fill="#fff" opacity=".6"/>` : '')
+    + (has('ac_necklace') ? `<path d="M47 84 Q60 100 73 84" stroke="#ffd166" stroke-width="2" fill="none"/><circle cx="60" cy="96" r="3.6" fill="#ffd166" stroke="#fff" stroke-width=".8"/>` : '')
+    + (has('ac_bow') ? `<path d="M60 86 L48 80 L48 92Z M60 86 L72 80 L72 92Z" fill="#ff4d6d"/><circle cx="60" cy="86" r="3" fill="#c2185b"/>` : '');
+  const face = has('ac_glasses') ? `<circle cx="53" cy="60" r="6.3" fill="#9fe8ff" fill-opacity=".25" stroke="#222" stroke-width="1.4"/><circle cx="67" cy="60" r="6.3" fill="#9fe8ff" fill-opacity=".25" stroke="#222" stroke-width="1.4"/><path d="M59.3 60h1.4" stroke="#222" stroke-width="1.4"/>` : '';
+  const head = (has('ac_band') ? `<path d="M37 45 Q60 54 83 45 L82 40 Q60 48 38 40Z" fill="#ffd166"/>` : '')
+    + (has('ac_flower') ? `<g transform="translate(76 40)"><circle cx="0" cy="-4" r="3.2" fill="#ff8fb1"/><circle cx="4" cy="0" r="3.2" fill="#ff8fb1"/><circle cx="0" cy="4" r="3.2" fill="#ff8fb1"/><circle cx="-4" cy="0" r="3.2" fill="#ff8fb1"/><circle r="2.4" fill="#ffd166"/></g>` : '')
+    + (has('ac_crown') ? `<path d="M46 31 L48 20 L53 27 L58 17 L63 27 L68 20 L70 31 Z" fill="#ffd166" stroke="#b8860b" stroke-width="1"/><circle cx="58" cy="25" r="1.8" fill="#e74c3c"/>` : '');
+  const orb = has('ac_staff') ? `<g><circle cx="96" cy="36" r="13" fill="#ffe08a" opacity=".35"><animate attributeName="r" values="11;15;11" dur="1.6s" repeatCount="indefinite"/></circle><path d="M96 24 L99 33 L108 33 L101 39 L104 48 L96 42 L88 48 L91 39 L84 33 L93 33Z" fill="#ffd166" stroke="#fff" stroke-width="1.5"/></g>` : `<circle cx="96" cy="36" r="9" fill="${light}" stroke="#fff" stroke-width="2"/>`;
+  const pet = has('ac_parrot') ? `<text x="76" y="90" font-size="22">🦜</text>` : has('ac_dragon') ? `<text x="74" y="92" font-size="24">🐉</text>` : '';
+  return `<svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${aura}${back}
    <ellipse cx="60" cy="164" rx="34" ry="5" fill="#0005"/>
-   <rect x="94" y="40" width="5" height="122" rx="2" fill="#8a5a2b"/><circle cx="96" cy="36" r="9" fill="${light}" stroke="#fff" stroke-width="2"/>
-   <path d="M28 162 L44 84 H76 L92 162 Z" fill="${color}"/><path d="M28 162 L44 84 H52 L44 162Z" fill="${dark}" opacity=".35"/>
+   <rect x="94" y="40" width="5" height="122" rx="2" fill="#8a5a2b"/>${orb}
+   <path d="${ROBE}" fill="${fill}"/><g clip-path="url(#c${uid})">${over}</g><path d="M28 162 L44 84 H52 L44 162Z" fill="${dark}" opacity=".35"/>
    <rect x="44" y="108" width="32" height="7" fill="${dark}"/><rect x="56" y="106" width="8" height="11" rx="2" fill="#ffd166"/>
    ${hair}<circle cx="60" cy="62" r="19" fill="${skin}"/>${beard}
    <circle cx="53" cy="60" r="3.9" fill="#fff"/><circle cx="67" cy="60" r="3.9" fill="#fff"/><circle cx="53" cy="60" r="2.6" fill="#2a2340"/><circle cx="67" cy="60" r="2.6" fill="#2a2340"/>
    <path d="M53 69 Q60 75 67 69" stroke="${mouth}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-   <circle cx="48" cy="67" r="3" fill="${cheek}" opacity=".55"/><circle cx="72" cy="67" r="3" fill="${cheek}" opacity=".55"/>
+   <circle cx="48" cy="67" r="3" fill="${cheek}" opacity=".55"/><circle cx="72" cy="67" r="3" fill="${cheek}" opacity=".55"/>${face}${neck}
    <ellipse cx="60" cy="46" rx="30" ry="7" fill="${dark}"/><path d="M36 46 Q52 36 58 6 Q74 32 84 46 Z" fill="${color}"/>
    <path d="M36 46 Q52 36 58 6 L56 46Z" fill="${dark}" opacity=".3"/>
-   <text x="60" y="38" font-size="13" text-anchor="middle" fill="#ffd166">★</text>
-   <circle cx="94" cy="96" r="5" fill="${skin}"/></svg>`;
+   <text x="60" y="38" font-size="13" text-anchor="middle" fill="#ffd166">★</text>${head}
+   <circle cx="94" cy="96" r="5" fill="${skin}"/>${pet}</svg>`;
 }
-const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair);
+const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc });
 // Villagers are people emoji: a skin-tone modifier goes right after the FIRST code point (before any zero-width joiner), e.g. 👩🏽‍🌾. Tones are dealt from a shuffled bag so they are evenly spread.
 const TONE_MODS = ['🏻', '🏼', '🏽', '🏾', '🏿'];
 const tonedEmoji = (e, k) => { const cp = [...e]; return cp[0] + TONE_MODS[k % 5] + cp.slice(1).join(''); };
@@ -791,7 +842,7 @@ function newProfile(id, nick, gender, color, real, cls, skin, hair) {
   return p;
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 6;
+const PROFILE_V = 7;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -816,6 +867,8 @@ function migrate(p) {
     if (old.includes('d_teddy')) p.coins = (p.coins || 0) + 60;   // the teddy bear is gone from the shop: refund it
   }
   p.satchel = p.satchel || {};
+  if (v < 7) { p.style = p.style || null; p.acc = p.acc || {}; p.wd = p.wd || []; }   // version 7: the wardrobe (robe style, accessories, and what you own of them)
+  p.acc = p.acc || {}; p.wd = p.wd || [];
   if (v < 6) { p.skin = p.skin || '#f6cfa6'; p.hair = p.hair || null; p.lookPrompt = true; }   // version 6: looks. Existing heroes keep their current look and get a one-time, skippable question.
   if (v < 4 && p.inv && p.inv.mint) { p.inv.leaf = (p.inv.leaf || 0) + p.inv.mint; }   // version 4: the herb mint was removed; any mint becomes a leaf
   if (p.inv) delete p.inv.mint;
@@ -961,6 +1014,49 @@ function askLookOnce() {   // existing heroes: one friendly, skippable question
   setTimeout(() => { if (P && P.lookPrompt && $('#menu').classList.contains('on') && !$('#modal').classList.contains('on')) { P.lookPrompt = false; saveSoon();
     modal('🎨 Want to change how your hero looks?', '<p>Now you can choose your <b>skin tone</b>, your <b>hair colour</b> and your <b>robe colour</b>, so your hero looks like you!</p>', [['Yes, let me look 🎨', openLook], ['Not now', null, true]]); } }, 800);
 }
+/* ====================== WARDROBE ====================== */
+// All looks are changed here: robe colour and style, skin, hair, accessories. Free options are always available; the rest are bought in the shop and shown locked until then.
+let WD = null, wdTab = 'robe';
+const wdChip = (key, id, emo, on, locked, price, extra = '') => `<button class="wdChip ${on ? 'on' : ''} ${locked ? 'lock' : ''}" data-k="${key}" data-id="${id}">${emo}${locked ? `<small>🔒 ${price}</small>` : ''}${extra}</button>`;
+function openWardrobe() {
+  G.quest = null; WD = { color: P.color, style: P.style || null, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null, acc: Object.assign({}, P.acc) }; wdTab = 'robe'; show('wardrobe'); drawWardrobe();
+}
+function drawWardrobe() {
+  $('#wdPrev').innerHTML = heroSVG(P.gender, WD.color, WD.skin, WD.hair, { style: WD.style, acc: WD.acc });
+  document.querySelectorAll('.wdTab').forEach(b => b.classList.toggle('on', b.dataset.t === wdTab));
+  const sw = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
+  const dot = c => `<span class="wdDot" style="background:${c}"></span>`;
+  let h = '';
+  if (wdTab === 'robe') {
+    h = `<div class="wdLbl">Robe colour</div><div class="swatches">${sw(COLORS, WD.color, 'color')}${ROBE_EXTRA.map(r => { const own = P.wd.includes(r[0]); return `<button class="sw ${r[1] === WD.color ? 'sel' : ''} ${own ? '' : 'lockSw'}" data-k="xcolor" data-id="${r[0]}" style="background:${r[1]}" aria-label="${r[5]}">${own ? '' : '🔒'}</button>`; }).join('')}</div>`
+      + `<div class="wdLbl">Robe style</div><div class="wdChips">${wdChip('style', '', '<span class="wdEm">✖️</span>', !WD.style, false, 0, '<small>plain</small>')}${ROBE_STYLES.map(s => { const own = P.wd.includes(s[0]); return wdChip('style', s[0], `<span class="wdEm">${s[4]}</span>`, WD.style === s[1], !own, s[6]); }).join('')}</div>`;
+  } else if (wdTab === 'face') {
+    h = `<div class="wdLbl">Skin</div><div class="swatches">${sw(SKINS, WD.skin, 'skin')}</div><div class="wdLbl">Hair and beard</div><div class="swatches">${sw(HAIRS, WD.hair || (P.gender === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair')}</div>`;
+  } else {
+    h = Object.keys(SLOT_NAMES).map(slot => `<div class="wdLbl">${SLOT_NAMES[slot]}</div><div class="wdChips">${wdChip('acc-' + slot, '', '<span class="wdEm">✖️</span>', !WD.acc[slot], false, 0, '<small>none</small>')}${ACCS.filter(a => a[1] === slot).map(a => { const own = P.wd.includes(a[0]); return wdChip('acc-' + slot, a[0], `<span class="wdEm">${a[4]}</span>`, WD.acc[slot] === a[0], !own, a[6]); }).join('')}</div>`).join('');
+  }
+  $('#wdBody').innerHTML = h;
+}
+$('#wardrobe').onclick = e => {
+  const tab = e.target.closest('.wdTab'); if (tab) { wdTab = tab.dataset.t; drawWardrobe(); return; }
+  const sw = e.target.closest('.sw');
+  if (sw) {
+    const k = sw.dataset.k;
+    if (k === 'xcolor') { const r = ROBE_EXTRA.find(x => x[0] === sw.dataset.id); if (P.wd.includes(r[0])) WD.color = r[1]; else toast(`🔒 This robe colour is in the shop: 🪙 ${SHOP[r[0]].price}`); }
+    else { const i = +sw.dataset.i; WD[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; }
+    drawWardrobe(); return;
+  }
+  const ch = e.target.closest('.wdChip');
+  if (ch) {
+    const k = ch.dataset.k, id = ch.dataset.id;
+    if (id && !P.wd.includes(id)) { toast(`🔒 This is in the shop: 🪙 ${SHOP[id].price}`); return; }
+    if (k === 'style') WD.style = id ? ROBE_STYLES.find(s => s[0] === id)[1] : null;
+    else { const slot = k.slice(4); if (id) WD.acc[slot] = id; else delete WD.acc[slot]; }
+    drawWardrobe(); return;
+  }
+};
+$('#wdSave').onclick = () => { P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.acc = WD.acc; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
+$('#wdBack').onclick = () => openHome();
 function openCreator() { cr = { g: 'm', color: rnd(COLORS), skin: SKINS[2], hair: null }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
 const swatchRow = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
 function drawCreator() {
@@ -1632,6 +1728,7 @@ const WHERE = { d_picture: 'wall', d_clock: 'wall', d_banner: 'wall', d_lamp: 'm
 const decorSpot = d => { const have = P.own.decor.includes(d.id);
   return `<div class="spot z-${WHERE[d.id]} ${have ? 'have' : 'ghost'} s-${d.id}" data-d="${d.id}" title="${have ? d.en : 'Buy it in the shop'}"><span>${d.em}</span></div>`; };
 const dById = id => SHOP[id];
+const wardrobeSVG = () => `<svg viewBox="0 0 70 110" aria-hidden="true"><rect x="4" y="6" width="62" height="100" rx="4" fill="#8a5a2b" stroke="#5e3b17" stroke-width="2"/><rect x="9" y="12" width="25" height="86" rx="2" fill="#a8743a"/><rect x="36" y="12" width="25" height="86" rx="2" fill="#a8743a"/><rect x="13" y="20" width="17" height="30" rx="2" fill="#0002"/><rect x="40" y="20" width="17" height="30" rx="2" fill="#0002"/><rect x="13" y="58" width="17" height="30" rx="2" fill="#0002"/><rect x="40" y="58" width="17" height="30" rx="2" fill="#0002"/><circle cx="31" cy="56" r="2.6" fill="#ffd166"/><circle cx="39" cy="56" r="2.6" fill="#ffd166"/><rect x="1" y="102" width="68" height="6" rx="2" fill="#5e3b17"/><text x="35" y="4" font-size="12" text-anchor="middle">🎩</text></svg>`;
 function renderRoom(disp) {   // disp = the ingredient counts to show on the rack (they fill up one by one while the satchel is unpacked)
   const c = P.own.caul || 0;
   $('#rmWall').innerHTML = `<div class="window"><svg viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" rx="4" fill="#7a5a33"/><rect x="4" y="4" width="52" height="52" fill="#2a1f6e"/><rect x="4" y="30" width="52" height="26" fill="#3f9a63"/><circle cx="42" cy="16" r="6" fill="#ffe9a8"/><g fill="#fff"><circle cx="14" cy="12" r="1"/><circle cx="26" cy="20" r=".8"/><circle cx="48" cy="26" r=".8"/></g><path d="M30 4v52M4 30h52" stroke="#7a5a33" stroke-width="3"/></svg></div>` + ['d_picture', 'd_clock', 'd_banner'].map(i => decorSpot(dById(i))).join('');
@@ -1643,7 +1740,7 @@ function renderRoom(disp) {   // disp = the ingredient counts to show on the rac
   $('#rack').innerHTML = `<div class="shelfTitle">🌿 Ingredients</div>` + (have.length ? `<div class="jars">${have.map(id => `<button class="jar" data-ing="${id}" aria-label="${ING[id].en}"><span class="jarPic">${jarSVG(ING[id].r)}<i class="${ING[id].r === 4 ? "shine" : ""}${[...ING[id].em].length > 1 && ING[id].r === 1 ? " two" : ""}">${ING[id].em}</i><b>${disp[id]}</b></span><span class="jarLbl heb">${ING[id].nk}</span></button>`).join('')}</div>` : '<div class="rackEmpty">Empty. Beat monsters and help villagers to find ingredients!</div>');
   $('#rmMantel').innerHTML = ['d_lamp', 'd_candle', 'd_books'].map(i => decorSpot(dById(i))).join('') + '<div class="plank"></div>';
   const has = id => P.own.decor.includes(id);
-  $('#rmFloor').innerHTML = `${decorSpot(dById('d_chest'))}${decorSpot(dById('d_plant'))}<button class="caulCell" id="caulBtn" aria-label="Brew potions"><span class="rug ${has('d_rug') ? 'have' : 'ghost'}" data-d="d_rug"></span>${cauldronSVG(c)}<span class="caulLbl">${CAULDRONS[c]} · tap to brew</span></button>${decorSpot(dById('d_egg'))}${decorSpot(dById('d_owl'))}${decorSpot(dById('d_cat'))}`;
+  $("#rmFloor").innerHTML = `<button class="wardCell" id="wardBtn" aria-label="Wardrobe">${wardrobeSVG()}<span>👗 Wardrobe</span></button>${decorSpot(dById("d_chest"))}${decorSpot(dById('d_plant'))}<button class="caulCell" id="caulBtn" aria-label="Brew potions"><span class="rug ${has('d_rug') ? 'have' : 'ghost'}" data-d="d_rug"></span>${cauldronSVG(c)}<span class="caulLbl">${CAULDRONS[c]} · tap to brew</span></button>${decorSpot(dById('d_egg'))}${decorSpot(dById('d_owl'))}${decorSpot(dById('d_cat'))}`;
 }
 function openHome() {
   G.quest = null; show('home');
@@ -1670,6 +1767,7 @@ function openRecipes() {   // tapping the cauldron
 }
 $('#home').onclick = e => {
   if (e.target.closest('#caulBtn')) { openRecipes(); return; }
+  if (e.target.closest('#wardBtn')) { openWardrobe(); return; }
   const bt = e.target.closest('[data-pot]');
   if (bt) { const id = bt.dataset.pot; modal(`${POTIONS[id].em} ${pBoth(id)}`, `<div style="text-align:center"><div style="display:inline-block;transform:scale(1.8);margin:20px"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span></div></div>
       <p><b>${POTIONS[id].name} potion</b> (fights): ${POTIONS[id].desc}.</p><p><b>${POTIONS[id].vname} potion</b> (villages): ${POTIONS[id].vdesc}.</p><p class="small">🏡 ${P.pot[id] || 0} on the shelf${(P.carry[id] || 0) ? ' · 🎒 ' + P.carry[id] + ' in your quest pouch' : ''}. You can carry 5 on a quest.</p>`, [['OK', null]]); return; }
@@ -1778,7 +1876,11 @@ for (const [id, kind, extra, he, nk, em, en, price] of [
   ['d_egg', 'decor', {}, 'ביצת דרקון', 'בֵּיצַת דְּרָקוֹן', '🥚', 'dragon egg', 150]
 ]) SHOP[id] = Object.assign({ id, kind, he, nk, em, en, price }, extra);
 const DECOR = Object.values(SHOP).filter(s => s.kind === 'decor');
-const owns = s => s.kind === 'caul' ? (P.own.caul || 0) >= s.lv : s.kind === 'decor' ? P.own.decor.includes(s.id) : false;
+// wardrobe items in the shop
+for (const [id, hex, he, nk, em, en] of ROBE_EXTRA) SHOP[id] = { id, kind: 'wear', wtype: 'robe', hex, he, nk, em, en: en + ' robe', price: 30 };
+for (const [id, style, he, nk, em, en, price] of ROBE_STYLES) SHOP[id] = { id, kind: 'wear', wtype: 'style', style, he, nk, em, en: en + ' robe', price };
+for (const [id, slot, he, nk, em, en, price] of ACCS) SHOP[id] = { id, kind: 'wear', wtype: 'acc', slot, he, nk, em, en, price };
+const owns = s => s.kind === 'caul' ? (P.own.caul || 0) >= s.lv : s.kind === 'decor' ? P.own.decor.includes(s.id) : s.kind === 'wear' ? P.wd.includes(s.id) : false;
 function whyNot(s) {   // why this item cannot be bought right now ('' = it can)
   if (owns(s)) return 'You have it ✓';
   if (s.kind === 'caul' && s.lv > (P.own.caul || 0) + 1) return '🔒 Buy the iron cauldron first';
@@ -1795,6 +1897,8 @@ function openShop() {
   $('#shopCauls').innerHTML = ['caul1', 'caul2'].map(id => shopCard(SHOP[id])).join('');
   $('#shopPots').innerHTML = POTION_IDS.map(id => shopCard(SHOP['pot_' + id])).join('');
   $('#shopDecor').innerHTML = DECOR.map(shopCard).join('');
+  $('#shopRobes').innerHTML = [...ROBE_EXTRA.map(r => r[0]), ...ROBE_STYLES.map(r => r[0])].map(id => shopCard(SHOP[id])).join('');
+  $('#shopAcc').innerHTML = ACCS.map(a => shopCard(SHOP[a[0]])).join('');
 }
 $('#shopBack').onclick = () => { saveSoon(true); openMenu(); };
 $('#shop').onclick = e => {
@@ -1816,9 +1920,9 @@ function shopBought() {
   const s = SHOP[G.shop.id];
   if (Math.floor(P.coins || 0) < s.price || owns(s)) { openShop(); return; }
   P.coins = Math.round((P.coins - s.price) * 1000) / 1000;
-  if (s.kind === 'caul') P.own.caul = s.lv; else if (s.kind === 'potion') P.pot[s.pid] = (P.pot[s.pid] || 0) + 1; else P.own.decor.push(s.id);
+  if (s.kind === 'caul') P.own.caul = s.lv; else if (s.kind === 'potion') P.pot[s.pid] = (P.pot[s.pid] || 0) + 1; else if (s.kind === 'wear') P.wd.push(s.id); else P.own.decor.push(s.id);
   saveSoon(true); sfx.win(); confetti(['🪙', '✨', s.em]);
-  modal('🎉 Thank you!', `<p style="text-align:center;font-size:3rem;margin:6px">${s.em}</p><p style="text-align:center">You bought <b class="heb">${s.nk}</b>!${s.kind === 'potion' ? ' It is on your shelf at Home.' : s.kind === 'decor' ? ' It is now in your room at Home.' : ' You can brew stronger potions now.'}</p>`,
+  modal('🎉 Thank you!', `<p style="text-align:center;font-size:3rem;margin:6px">${s.em}</p><p style="text-align:center">You bought <b class="heb">${s.nk}</b>!${s.kind === 'potion' ? ' It is on your shelf at Home.' : s.kind === 'decor' ? ' It is now in your room at Home.' : s.kind === 'wear' ? ' Find it in the wardrobe at Home!' : ' You can brew stronger potions now.'}</p>`,
     [['Keep shopping 🛒', openShop], ['Go home 🏡', openHome], ['Back to map', openMenu, true]]);
 }
 /* ----- loot: coins (for the shop) and ingredients (for potions), both given at the END of a won fight ----- */
