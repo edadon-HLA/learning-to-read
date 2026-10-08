@@ -110,6 +110,28 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .opts>.opt:last-child:nth-child(odd){grid-column:span 2}
 .opt.w{font-size:2.4rem}.opt.p{font-size:1.9rem}
 .syl{display:inline-block;margin:0 .14em}
+/* teacher area */
+.adminLink{color:#fff;opacity:.5;font-size:.85rem;text-decoration:none;border-bottom:1px dotted #fff6}
+.adminLink:hover{opacity:.9}
+.admcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:10px 0}
+.admcards>div{background:var(--panel);border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center;font-size:.9rem}
+.admcards b{display:block;font-size:1.7rem;color:var(--gold)}
+.tblwrap{overflow-x:auto;margin-top:8px}
+#admTable{width:100%;border-collapse:collapse;font-size:.95rem}
+#admTable th{text-align:left;padding:8px;cursor:pointer;border-bottom:1px solid #fff4;white-space:nowrap;user-select:none}
+#admTable td{padding:8px;border-bottom:1px solid #fff1;white-space:nowrap}
+#admTable tbody tr:hover{background:#ffffff14;cursor:pointer}
+.pbar2{display:inline-block;width:64px;height:8px;background:#0006;border-radius:6px;vertical-align:middle;margin-right:6px;overflow:hidden}
+.pbar2 i{display:block;height:100%;background:linear-gradient(90deg,#ff5d73,#ffd166,#3ddc97)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a84a8}
+.dot.on{background:var(--good)} .dot.old{background:var(--bad)}
+.hebBig{font-family:'Noto Sans Hebrew','Arial Hebrew',Arial,sans-serif;font-size:1.8rem;direction:rtl;display:inline-block;min-width:3.2em;text-align:center}
+.days{display:flex;gap:4px;align-items:flex-end;height:70px;margin:6px 0 2px}
+.days div{flex:1;background:var(--accent);border-radius:4px 4px 0 0;min-height:2px}
+.dayLbl{display:flex;gap:4px;font-size:.62rem;opacity:.7}.dayLbl span{flex:1;text-align:center}
+.setRow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;background:#0003;border:2px solid transparent;border-radius:12px;padding:8px 10px;margin:6px 0}.setRow.on{border-color:#ffd166;background:#ffd16622}
+.setName small{display:block;opacity:.7}.setBadge{background:#ffd166;color:#3a2300;border-radius:8px;padding:2px 8px;font-size:.78rem;font-weight:700}.setBtns{display:flex;gap:6px;flex-wrap:wrap}.setBtns .btn{padding:7px 12px;font-size:.95rem}
+.kv{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.kv span{background:#0004;border-radius:10px;padding:5px 10px;font-size:.9rem}
 .hearBtn{background:linear-gradient(#ffd166,#f4a93a);color:#3a2300;border:0;border-radius:999px;padding:10px 30px;font-size:1.7rem;font-weight:600;box-shadow:0 5px 0 #9b6411;animation:hearPulse 1.6s ease-in-out infinite}
 .hearBtn:active{transform:translateY(4px);box-shadow:0 1px 0 #9b6411}
 @keyframes hearPulse{0%,100%{box-shadow:0 5px 0 #9b6411,0 0 0 0 #ffd16688}50%{box-shadow:0 5px 0 #9b6411,0 0 0 12px #ffd16600}}
@@ -162,6 +184,33 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <input id="sid" type="text" placeholder="Your number" autocomplete="off" autocapitalize="characters" maxlength="20">
     <div class="msg" id="loginMsg"></div>
     <button class="btn" id="loginBtn">Let's go! ▶</button>
+  </div>
+  <div class="center"><a href="#" id="adminLink" class="adminLink">🔧 Teacher area</a></div>
+</section>
+
+<section id="admin" class="screen" style="max-width:1000px">
+  <div class="top">
+    <button class="ib" id="admBack">← Back</button>
+    <h2 style="margin:0" class="grow">🔧 Teacher area</h2>
+    <button class="btn ghost" id="admRefresh" style="padding:8px 14px">⟳ Refresh</button>
+  </div>
+  <div class="admcards" id="admCards"></div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><b>Students</b>
+      <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
+      <button class="btn ghost" id="admCsv" style="padding:8px 14px">⬇ Download (CSV)</button></div>
+    <div class="tblwrap"><table id="admTable"></table></div>
+    <div class="small" style="opacity:.7;margin-top:6px">Tap a student to see details. Tap a column title to sort.</div>
+  </div>
+  <div class="card" id="admDetail" style="display:none"></div>
+  <div class="card" id="admSound">
+    <b>🎙️ Pronunciations</b>
+    <p class="small" style="margin:6px 0;opacity:.85">Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one.</p>
+    <div id="admSets"></div>
+    <div class="row" style="justify-content:flex-start;margin-top:8px">
+      <a class="btn" id="admRec" href="recorder.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">🎙️ Open the recorder</a>
+    </div>
+    <div class="small" style="opacity:.75">In the recorder: record the syllables, build the set, give it a name and press “Save set”. It appears here; nothing changes for students until you press “Use this”.</div>
   </div>
 </section>
 
@@ -404,9 +453,19 @@ const sylFile = (c, v) => 'audio/' + c.codePointAt(0).toString(16).padStart(4, '
 const soundFor = c => ({ file: sylFile(c, 'a'), say: sylA(c) });
 // All recorded syllables live in ONE file (syllables.wav) with an index (syllables.json): loaded once, then played from memory.
 let sprite = null, spritePromise = null, spriteFailed = false, curSrc = null;
+/* ---- a custom sound set published by the teacher is kept in this browser (IndexedDB) and used instead of the built-in one ---- */
+const idbOpen = () => new Promise((res, rej) => { const r = indexedDB.open('aq-sounds', 1); r.onupgradeneeded = () => r.result.createObjectStore('set'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+const idbGet = k => idbOpen().then(d => new Promise(res => { const t = d.transaction('set').objectStore('set').get(k); t.onsuccess = () => res(t.result); t.onerror = () => res(null); })).catch(() => null);
+const idbPut = (k, v) => idbOpen().then(d => new Promise(res => { const t = d.transaction('set', 'readwrite'); t.objectStore('set').put(v, k); t.oncomplete = () => res(true); t.onerror = () => res(false); })).catch(() => false);
+const idbDel = k => idbOpen().then(d => new Promise(res => { const t = d.transaction('set', 'readwrite'); t.objectStore('set').delete(k); t.oncomplete = () => res(true); t.onerror = () => res(false); })).catch(() => false);
 function loadSprite() {
   if (!spritePromise) {
     spritePromise = (async () => {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+      const cached = await idbGet('custom');   // the teacher's own set, if one was published
+      if (cached && cached.wav && cached.idx) {
+        try { sprite = { buf: await AC.decodeAudioData(cached.wav.slice(0)), idx: cached.idx, ver: cached.ver }; return; } catch (e) { /* fall through to the built-in set */ }
+      }
       const [wavBuf, idx] = await Promise.all([
         fetch('syllables.wav?v=2').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
         fetch('syllables.json?v=2').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
@@ -416,6 +475,25 @@ function loadSprite() {
     })().catch(e => { spriteFailed = true; spritePromise = null; throw e; });
   }
   return spritePromise;
+}
+// The cloud tells us (at every login) which custom sound set is current. Download it once, keep it, and switch to it.
+async function syncSounds(serverVer) {
+  try {
+    if (typeof serverVer !== 'number') return;
+    const cached = await idbGet('custom'), have = cached ? cached.ver : 0;
+    if (serverVer === have) return;
+    if (!serverVer) {                       // the teacher went back to the built-in voice
+      await idbDel('custom'); sprite = null; spritePromise = null; for (const k in clipCache) delete clipCache[k];
+      await loadSprite(); return;
+    }
+    const j = await (await fetch(CFG.SCRIPT_URL + '?action=getSound')).json();
+    if (!j.ok || !j.ver || !j.wav) return;
+    const bin = atob(j.wav), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const buf = await AC.decodeAudioData(bytes.buffer.slice(0));
+    await idbPut('custom', { ver: j.ver, idx: j.idx, wav: bytes.buffer });
+    sprite = { buf, idx: j.idx, ver: j.ver }; for (const k in clipCache) delete clipCache[k];
+  } catch (e) { /* keep using whatever sound set we already have */ }
 }
 async function playFile(spec) {
   const name = (spec.file.match(/([0-9a-f]{4}[aeiou])\.wav$/) || [])[1];
@@ -430,11 +508,51 @@ async function playFile(spec) {
     src.start(0, e[0], e[1] + 0.03); curSrc = src;
   } catch (err) { speakHe(spec.say, .7); }
 }
+/* ---- made-up words (levels 6-7): built from the recorded syllables, overlapped so they flow like one word ---- */
+const CHAIN = { pre: 0.06, tail: 0.10, ov: 0, cutRatio: 0.15 };   // style "D" chosen by the teacher: whole syllables, no overlap (most robust)
+const clipCache = {};
+function clipInfo(name, cutRatio) {
+  const key = name + '|' + cutRatio; if (clipCache[key]) return clipCache[key];
+  const [s, l] = sprite.idx[name], d = sprite.buf.getChannelData(0), sr = sprite.buf.sampleRate, fr = Math.round(sr * 0.01), a = Math.floor(s * sr), nf = Math.max(1, Math.floor(l * sr / fr));
+  const env = []; for (let f = 0; f < nf; f++) { let q = 0; for (let i = 0; i < fr; i++) { const v = d[a + f * fr + i] || 0; q += v * v; } env.push(Math.sqrt(q / fr)); }
+  const sorted = [...env].sort((x, y) => x - y), loud = sorted[Math.floor(sorted.length * 0.95)], thr = 0.10 * loud;
+  let on = 0; while (on < nf - 3 && !(env[on] >= thr && env[on + 1] >= thr && env[on + 2] >= thr)) on++;
+  const sm = env.map((_, f) => (env[Math.max(0, f - 1)] + env[f] + env[Math.min(nf - 1, f + 1)]) / 3);
+  let pk = on; for (let f = on; f < nf; f++) if (sm[f] > sm[pk]) pk = f;
+  let cut = nf - 6; for (let f = pk + 6; f < nf; f++) if (sm[f] < cutRatio * sm[pk]) { cut = f; break; }   // at least 60 ms after the peak
+  return clipCache[key] = { onset: on * 0.01, cut: Math.min(cut * 0.01, l - 0.06) };
+}
+// Schedules the syllables on any audio context (the real one, or an offline one for testing). Returns the stop-able sources and the total length.
+function scheduleChain(ctx, out, names, o, T0) {
+  const nodes = []; let T = T0;
+  names.forEach((nm, k) => {
+    const [s, l] = sprite.idx[nm], a = clipInfo(nm, o.cutRatio), last = k === names.length - 1;
+    const from = k === 0 ? s : s + Math.max(0, a.onset - o.pre), to = last ? s + l : s + Math.min(l, a.cut + o.tail), dur = to - from;
+    const src = ctx.createBufferSource(); src.buffer = sprite.buf; const g = ctx.createGain();
+    const lv = vol * 0.85;   // headroom: two syllables overlap at each join
+    g.gain.setValueAtTime(0, T); g.gain.linearRampToValueAtTime(lv, T + (k === 0 ? 0.004 : 0.03));
+    if (!last) { g.gain.setValueAtTime(lv, T + dur - 0.06); g.gain.linearRampToValueAtTime(0, T + dur); }
+    src.connect(g); g.connect(out); src.start(T, from, dur); nodes.push(src);
+    T += dur - (last ? 0 : o.ov);
+  });
+  return { nodes, end: T };
+}
+let curChain = [];
+async function playChain(spec, o = CHAIN) {
+  try {
+    try { speechSynthesis.cancel(); } catch (e) {}
+    if (curSrc) { try { curSrc.stop(); } catch (e) {} curSrc = null; }
+    curChain.forEach(n => { try { n.stop(); } catch (e) {} }); curChain = [];
+    if (!sprite) await loadSprite();
+    if (AC.state === 'suspended') await AC.resume();
+    curChain = scheduleChain(AC, AC.destination, spec.chain, o, AC.currentTime + 0.04).nodes;
+  } catch (err) { speakHe(spec.say, .7); }
+}
 function playSound(spec) {
   if (muted) { toast('🔇 The sound is off. Tap the speaker at the top.'); return; }
-  if (spec.file) playFile(spec); else speakHe(spec.say, .7);
+  if (spec.chain) playChain(spec); else if (spec.file) playFile(spec); else speakHe(spec.say, .7);
 }
-const canPlay = spec => spec.file ? (!spriteFailed || !!findHeVoice()) : !!findHeVoice();
+const canPlay = spec => (spec.file || spec.chain) ? (!spriteFailed || !!findHeVoice()) : !!findHeVoice();
 try { loadSprite().catch(() => {}); } catch (e) {}   // start loading the sounds right away
 // One sound control (speaker button + volume slider) in the game bar AND on the map screen, always in sync.
 // Tap the speaker to mute/unmute; drag the slider to change the volume (dragging also unmutes). A sample plays when you let go.
@@ -528,6 +646,7 @@ async function loadProfile(id) {
       const r = await fetch(CFG.SCRIPT_URL + '?action=load&id=' + encodeURIComponent(id));
       const j = await r.json();
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
+      if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
     } catch (e) { offline = true; }
   }
   const best = (cloud && local) ? (cloud.n >= local.n ? cloud : local) : (cloud || local);
@@ -679,7 +798,7 @@ function qChain(t, battle) {
     const sn = wSnd(w); if (!used.has(sn)) { used.add(sn); opts.push(w); }
   }
   const show = w => w.map(s => `<span class="syl">${sylTxt(s)}</span>`).join('');
-  return { kind: 'choice', key: wKey(target), lastKey: wKey(target), audio: { say: target.map(sylSay).join('') }, translit: `“${wSnd(target)}”`,
+  return { kind: 'choice', key: wKey(target), lastKey: wKey(target), audio: { chain: target.map(s => sylFile(s.c, s.v).match(/([0-9a-f]{4}[aeiou])\.wav$/)[1]), say: target.map(sylSay).join('') }, translit: `“${wSnd(target)}”`,
     title: battle ? `The spell that beats the ${G.mon.name} is…` : 'The old gate opens only to the word…',
     big: '', sub: 'Listen carefully, then pick how it is written!',
     options: shuffle(opts).map(w => ({ html: show(w), cls: 'w', ok: w === target, em: '✨', note: `${show(w)} says “${wSnd(w)}”` })),
@@ -1061,6 +1180,136 @@ setInterval(() => {
 }, 1000);
 document.addEventListener('visibilitychange', () => { if (document.hidden && P) saveSoon(true); });
 window.addEventListener('pagehide', () => { if (P) saveSoon(true); });
+
+/* ====================== TEACHER (ADMIN) AREA ====================== */
+// The password is checked by the Google script, never by this page, and it is kept in memory only (gone when the tab closes).
+let ADMKEY = null; const ADM = { students: [], sortKey: 'last', sortDir: -1, filter: '', soundVer: 0 };
+async function adminCall(action, extra) {
+  const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, key: ADMKEY }, extra || {})) });
+  return r.json();
+}
+function adminAsk() {
+  if (!CFG.SCRIPT_URL) { modal('Teacher area', '<p>The cloud is not set up, so there is no student data to show.</p>', [['OK', null]]); return; }
+  modal('🔧 Teacher area', '<p>Enter the teacher password.</p><input id="admPass" type="password" autocomplete="off" style="margin:6px 0">', [['Open', adminOpen], ['Cancel', null, true]]);
+  setTimeout(() => { const i = $('#admPass'); if (i) { i.focus(); i.onkeydown = e => { if (e.key === 'Enter') $('#mBtns button').click(); }; } }, 60);
+}
+async function adminOpen() {
+  ADMKEY = $('#admPass').value; if (!ADMKEY) return;
+  toast('Checking…');
+  try {
+    const j = await adminCall('list');
+    if (!j.ok) { ADMKEY = null; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : 'That password is not right.'}</p>`, [['Try again', adminAsk], ['Close', null, true]]); return; }
+    show('admin'); adminRender(j);
+  } catch (e) { ADMKEY = null; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
+}
+function adminRender(j) {
+  const byId = {}; for (const s of j.students) if (!byId[s.id] || s.answers >= byId[s.id].answers) byId[s.id] = s;   // one row per student
+  ADM.students = Object.values(byId); ADM.soundVer = j.soundVer || 0;
+  const dayDiff = iso => { if (!iso) return 9999; const a = new Date(iso), n = new Date(); return Math.round((new Date(n.getFullYear(), n.getMonth(), n.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5); };
+  ADM.students.forEach(s => { s.days = dayDiff(s.last); });
+  const played = ADM.students.filter(s => s.answers > 0), today = ADM.students.filter(s => s.days === 0).length, inactive = ADM.students.filter(s => s.days >= 7).length;
+  const avg = played.length ? Math.round(played.reduce((a, s) => a + s.accuracy, 0) / played.length) : 0;
+  $('#admCards').innerHTML = [[ADM.students.length, 'students'], [today, 'played today'], [inactive, 'not played for 7+ days'], [avg + '%', 'average accuracy'], [Math.round(ADM.students.reduce((a, s) => a + s.minutes, 0)), 'total minutes']]
+    .map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
+  adminSets(); adminTable(); $('#admDetail').style.display = 'none';
+}
+const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
+function adminTable() {
+  const cols = [['nick', 'Student'], ['tier', 'Level'], ['accuracy', 'Accuracy'], ['answers', 'Answers'], ['minutes', 'Minutes'], ['last', 'Last played']];
+  const f = ADM.filter.trim().toLowerCase();
+  const rows = ADM.students.filter(s => !f || (s.nick + ' ' + s.id).toLowerCase().includes(f))
+    .sort((a, b) => { const k = ADM.sortKey; const va = k === 'last' ? (a.last || '') : k === 'nick' ? a.nick.toLowerCase() : a[k], vb = k === 'last' ? (b.last || '') : k === 'nick' ? b.nick.toLowerCase() : b[k]; return (va > vb ? 1 : va < vb ? -1 : 0) * ADM.sortDir; });
+  $('#admTable').innerHTML = '<thead><tr>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
+    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small></td>
+      <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${agoText(s.days)}</td></tr>`).join('')
+      : '<tr><td colspan="6" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
+}
+function keyLabel(k) {
+  const t = k[0], body = k.slice(2);
+  if (t === 'L') return body + VOW.a + ('בכפ'.includes(body) ? 'ּ' : '');
+  if (t === 'S') return body[0] + (VOW[body[1]] || '');
+  if (t === 'C') { let s = ''; for (let i = 0; i + 1 < body.length; i += 2) s += body[i] + (VOW[body[i + 1]] || ''); return s; }
+  return body;
+}
+async function adminStudent(id) {
+  const box = $('#admDetail'); box.style.display = ''; box.innerHTML = 'Loading…'; box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  try {
+    const j = await adminCall('student', { id }); if (!j.ok) throw new Error(j.error);
+    const p = JSON.parse(j.data), st = Object.entries(p.stats || {}).map(([k, [r, w]]) => ({ k, r, w, n: r + w }));
+    const total = st.reduce((a, x) => a + x.n, 0), right = st.reduce((a, x) => a + x.r, 0);
+    const hard = st.filter(x => x.w >= 1 && x.n >= 2).sort((a, b) => (b.w / b.n) - (a.w / a.n) || b.w - a.w).slice(0, 8), mastered = st.filter(x => x.r >= 3 && x.w === 0).length;
+    const today = new Date(), days = Array.from({ length: 14 }, (_, i) => { const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (13 - i)); const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); return { d, s: (p.sec || {})[key] || 0 }; });
+    const mx = Math.max(60, ...days.map(x => x.s)), q = p.quest || {};
+    box.innerHTML = `<div class="row" style="justify-content:space-between"><b style="font-size:1.2rem">${esc(p.nick)} <small style="opacity:.7">#${esc(p.id)}</small></b><button class="ib" id="admDetailClose">✕</button></div>
+      <div class="kv"><span>Level ${p.tier}: ${esc(TIERS[p.tier] || '')}</span><span>⭐ ${p.xp} XP</span><span>${total} answers · ${total ? Math.round(100 * right / total) : 0}% correct</span><span>✅ ${mastered} items mastered</span>
+        <span>⚔️ Monster Hunter: chapter ${(q.battle || {}).ch || 1} (${(q.battle || {}).enc || 0}/5)</span><span>🌿 Village Helper: village ${(q.peace || {}).ch || 1} (${(q.peace || {}).enc || 0}/5)</span></div>
+      <b>Practice time, last 14 days (minutes)</b>
+      <div class="days">${days.map(x => `<div title="${x.d.toLocaleDateString()}: ${Math.round(x.s / 60)} min" style="height:${Math.max(3, 100 * x.s / mx)}%"></div>`).join('')}</div>
+      <div class="dayLbl">${days.map(x => `<span>${x.d.getDate()}</span>`).join('')}</div>
+      <p style="margin:12px 0 4px"><b>Needs more practice</b> <small style="opacity:.7">(most mistakes, in what they were asked)</small></p>
+      ${hard.length ? '<div class="kv">' + hard.map(x => `<span><span class="hebBig">${esc(keyLabel(x.k))}</span><br>${x.w} wrong of ${x.n}</span>`).join('') + '</div>' : '<p style="opacity:.8;margin:4px 0">Nothing stands out yet. 👍</p>'}`;
+    $('#admDetailClose').onclick = () => { box.style.display = 'none'; };
+  } catch (e) { box.innerHTML = '<p>Could not load this student. ' + esc(e.message || '') + '</p>'; }
+}
+$('#adminLink').onclick = e => { e.preventDefault(); adminAsk(); };
+$('#admBack').onclick = () => { ADMKEY = null; show('login'); };
+$('#admRefresh').onclick = async () => { try { const j = await adminCall('list'); if (j.ok) adminRender(j); } catch (e) { toast('Could not refresh'); } };
+$('#admSearch').oninput = () => { ADM.filter = $('#admSearch').value; adminTable(); };
+$('#admTable').onclick = e => {
+  const th = e.target.closest('th'); if (th) { const k = th.dataset.k; ADM.sortDir = ADM.sortKey === k ? -ADM.sortDir : (k === 'nick' ? 1 : -1); ADM.sortKey = k; adminTable(); return; }
+  const tr = e.target.closest('tbody tr[data-id]'); if (tr) adminStudent(tr.dataset.id);
+};
+$('#admCsv').onclick = () => {
+  const head = ['id', 'nickname', 'level', 'accuracy %', 'answers', 'minutes', 'last played'];
+  const csv = [head, ...ADM.students.map(s => [s.id, s.nick, s.tier, s.accuracy, s.answers, s.minutes, s.last])].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'students.csv'; a.click();
+};
+/* ---- voice-set library: the teacher decides which named set the students hear ---- */
+let SETS = { active: 'builtin', sets: [] }; const audCache = {}; let audSrcs = [];
+async function adminSets() {
+  try { const j = await adminCall('listSets'); if (j.ok) SETS = j; } catch (e) { $('#admSets').innerHTML = '<p class="small">Could not load the voice sets.</p>'; return; }
+  const row = (id, name, sub) => `<div class="setRow ${SETS.active === id ? 'on' : ''}" data-id="${esc(id)}"><div class="setName"><b>${esc(name)}</b> ${SETS.active === id ? '<span class="setBadge">In the game now</span>' : ''}<small>${esc(sub)}</small></div>
+    <div class="setBtns"><button class="btn ghost" data-a="listen">🔊 Listen</button>${SETS.active === id ? '' : '<button class="btn" data-a="use">✔ Use this</button>'}${id === 'builtin' ? '' : '<button class="btn ghost" data-a="rename">✏️</button><button class="btn ghost" data-a="del">🗑</button>'}</div></div>`;
+  $('#admSets').innerHTML = row('builtin', 'Built-in voice', 'The original set that comes with the game') +
+    SETS.sets.map(s => row(s.id, s.name, `${s.clips} sounds · saved ${s.created ? new Date(s.created).toLocaleDateString() : ''}`)).join('');
+}
+async function auditionSet(id) {
+  audSrcs.forEach(s => { try { s.stop(); } catch (e) {} }); audSrcs = [];
+  AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') await AC.resume();
+  let buf, idx;
+  if (id === 'builtin') { await loadSpriteBuiltin(); ({ buf, idx } = builtinSprite); }
+  else {
+    if (!audCache[id]) {
+      toast('Loading…');
+      const j = await (await fetch(CFG.SCRIPT_URL + '?action=getSound&id=' + encodeURIComponent(id) + '&key=' + encodeURIComponent(ADMKEY))).json();
+      if (!j.ok) throw new Error(j.error || 'failed');
+      const bin = atob(j.wav), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      audCache[id] = { buf: await AC.decodeAudioData(bytes.buffer), idx: j.idx };
+    }
+    ({ buf, idx } = audCache[id]);
+  }
+  let T = AC.currentTime + 0.05;
+  for (const nm of ['05d1a', '05d3a', '05dca', '05e2a', '05e1a', '05d1o', '05d3i', '05dce']) {   // ba, ga, la, a, sa ... a few sample syllables
+    const e = idx[nm]; if (!e) continue;
+    const src = AC.createBufferSource(); src.buffer = buf; const g = AC.createGain(); g.gain.value = Math.max(vol, .3); src.connect(g); g.connect(AC.destination);
+    src.start(T, e[0], e[1] + 0.03); audSrcs.push(src); T += e[1] + 0.45;
+  }
+}
+let builtinSprite = null;
+async function loadSpriteBuiltin() {
+  if (builtinSprite) return;
+  const [wavBuf, idx] = await Promise.all([fetch('syllables.wav?v=2').then(r => r.arrayBuffer()), fetch('syllables.json?v=2').then(r => r.json())]);
+  builtinSprite = { buf: await AC.decodeAudioData(wavBuf), idx };
+}
+$('#admSets').onclick = async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const id = b.closest('.setRow').dataset.id, a = b.dataset.a, set = SETS.sets.find(s => s.id === id), nm = id === 'builtin' ? 'the built-in voice' : `"${set ? set.name : id}"`;
+  const done = async (action, extra, msg) => { try { const j = await adminCall(action, Object.assign({ id }, extra || {})); if (j.ok) { toast(msg); adminSets(); } else toast(j.error === 'name taken' ? 'That name is already used' : 'Could not do that: ' + (j.error || '')); } catch (err) { toast('Could not reach the cloud'); } };
+  if (a === 'listen') { try { await auditionSet(id); } catch (err) { toast('Could not play this set'); } }
+  else if (a === 'use') modal('Use this set in the game?', `<p>All students will hear ${esc(nm)} the next time they log in.</p>`, [['Yes, use it', () => done('setActive', {}, 'Done: students will hear ' + nm)], ['Cancel', null, true]]);
+  else if (a === 'rename') { modal('Rename the set', '<input id="admNewName" type="text" maxlength="40" value="' + esc(set ? set.name : '') + '">', [['Save', () => { const v = ($('#admNewName') || {}).value || ''; if (v.trim()) done('renameSet', { name: v }, 'Renamed'); }], ['Cancel', null, true]]); }
+  else if (a === 'del') modal('Delete this set?', `<p>${esc(nm)} will be deleted for good.${SETS.active === id ? ' Students will go back to the built-in voice.' : ''}</p>`, [['Yes, delete', () => done('deleteSet', {}, 'Deleted')], ['Cancel', null, true]]);
+};
 
 /* ====================== PRIVATE-TESTING PASSCODE ====================== */
 // A light gate for the test phase: it keeps casual visitors out, but it is not real security

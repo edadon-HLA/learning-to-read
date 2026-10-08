@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Syllable recorder</title>
+<style>
+  :root{--gold:#ffd166;--good:#3ddc97;--bad:#ff5d73}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,sans-serif;color:#fff;background:linear-gradient(160deg,#1b1340,#3a1c71);min-height:100vh}
+  .wrap{max-width:900px;margin:0 auto;padding:14px}
+  h1{margin:.1em 0;font-size:1.4rem}
+  .top{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+  .pbar{height:12px;background:#0006;border-radius:8px;overflow:hidden;flex:1;min-width:160px}
+  .pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3ddc97,#ffd166);transition:width .3s}
+  .card{background:#ffffff14;border:1px solid #fff3;border-radius:20px;padding:18px;margin-top:12px;text-align:center}
+  .sec{opacity:.8;font-size:.95rem}
+  .he{font-family:'Noto Sans Hebrew','Arial Hebrew',Arial,sans-serif;font-size:7rem;line-height:1.1;direction:rtl;margin:4px 0}
+  .say{font-size:1.6rem;font-weight:700;color:var(--gold)}
+  .hint{opacity:.85;margin:4px 0 10px}
+  .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+  button{font:inherit;border:0;border-radius:14px;padding:12px 22px;font-weight:700;font-size:1.05rem;cursor:pointer;color:#3a2300;background:linear-gradient(#ffd166,#f4a93a);box-shadow:0 4px 0 #9b6411}
+  button:active{transform:translateY(3px);box-shadow:0 1px 0 #9b6411}
+  button.rec{background:linear-gradient(#ff8b99,#ff5d73);color:#fff;box-shadow:0 4px 0 #a8384a}
+  button.rec.on{animation:pulse 1s infinite}
+  button.ghost{background:#fff2;color:#fff;box-shadow:none;border:1px solid #fff4}
+  button:disabled{opacity:.4;cursor:default}
+  @keyframes pulse{50%{box-shadow:0 0 0 12px #ff5d7344}}
+  .meter{height:14px;background:#0006;border-radius:8px;overflow:hidden;max-width:420px;margin:6px auto}
+  .meter i{display:block;height:100%;width:0;background:var(--good);transition:width .06s}
+  .msg{min-height:1.5em;margin:6px 0}
+  .msg.ok{color:var(--good)} .msg.warn{color:var(--gold)} .msg.bad{color:#ffb3bd}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px;margin-top:14px}
+  .cell{background:#ffffff14;border:2px solid transparent;border-radius:10px;padding:6px 2px;text-align:center;cursor:pointer;font-family:'Noto Sans Hebrew',Arial,sans-serif;font-size:1.5rem;direction:rtl}
+  .cell small{display:block;font-family:system-ui;font-size:.65rem;opacity:.75;direction:ltr}
+  .cell.done{background:#3ddc9733;border-color:#3ddc9788}
+  .cell.cur{border-color:var(--gold)}
+  details{margin-top:12px;background:#ffffff10;border-radius:12px;padding:10px 14px}
+  summary{cursor:pointer;font-weight:700}
+  li{margin:4px 0}
+  @media(max-width:560px){.he{font-size:5rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>🎙️ Syllable recorder</h1>
+    <div style="flex:1;min-width:200px"><div class="pbar"><i id="pb"></i></div><div id="count" class="sec" style="margin-top:4px"></div></div>
+    <button id="saveAll" class="ghost">💾 Save all to a folder</button>
+  </div>
+
+  <div class="card" id="micCard" style="text-align:left">
+    <b>Step 1 · Microphone check</b>
+    <div class="row" style="justify-content:flex-start">
+      <button id="micOn">🎤 Turn on the microphone</button>
+      <select id="micSel" style="display:none;font:inherit;padding:10px;border-radius:10px;max-width:100%"></select>
+      <select id="boost" style="font:inherit;padding:10px;border-radius:10px" title="Make a quiet microphone louder">
+        <option value="1">Boost: normal</option><option value="2">Boost ×2</option><option value="4">Boost ×4</option><option value="8">Boost ×8</option>
+      </select>
+    </div>
+    <div class="meter" style="margin-left:0"><i id="lvl0"></i></div>
+    <div class="msg" id="micMsg">Click the button, allow the microphone, then say something. The green bar should move.</div>
+  </div>
+
+  <details id="help">
+    <summary>How to record (read this first)</summary>
+    <ol>
+      <li>Find a <b>quiet room</b>. Hold the microphone (or phone) about a hand's width from your mouth. Chrome will ask for permission to use the microphone: click <b>Allow</b>.</li>
+      <li>Press <b>Space</b> (or the red button), say the syllable shown <b>clearly</b>, then press <b>Space</b> again to stop. A little pause before and after is fine; I trim it automatically.</li>
+      <li>Say it the way you want students to hear it. If you like a slightly longer vowel (<i>baaa</i>), do that for every syllable so they all match.</li>
+      <li>Press <b>P</b> to play it back. Not happy? Press Space and record it again (it replaces the old one). When it's good, press <b>→</b> for the next one.</li>
+      <li>Your recordings are kept in this browser, so you can stop and continue later. When you're done (or whenever you like), click <b>Save all to a folder</b> and pick a folder. Then tell me which folder.</li>
+    </ol>
+    <p>Start with the first group, the <b>"a" syllables</b> (21 recordings). They are used by the easiest levels, so they matter the most. The other vowels can come later.</p>
+  </details>
+
+  <div class="card">
+    <div class="sec" id="sec"></div>
+    <div class="he" id="he"></div>
+    <div class="say" id="say"></div>
+    <div class="hint" id="hint"></div>
+    <div class="meter"><i id="lvl"></i></div>
+    <div class="msg" id="msg"></div>
+    <div class="row">
+      <button id="prev" class="ghost">◀ Back</button>
+      <button id="rec" class="rec">● Record (Space)</button>
+      <button id="play" class="ghost">▶ Play (P)</button>
+      <button id="next">Next ▶</button>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="card" id="buildCard" style="text-align:left">
+    <b>Step 3 · Build the new set and put it in the game</b>
+    <p class="hint" style="margin:6px 0">Record as many as you like. Any syllable you did not record keeps the current built-in voice. Building trims the silence and evens out the loudness for you.</p>
+    <div class="row" style="justify-content:flex-start">
+      <button id="buildBtn">🔨 Build the new set</button>
+      <button id="dlBtn" class="ghost" disabled>⬇ Download the files</button>
+    </div>
+    <div class="msg" id="buildMsg"></div>
+    <div id="prevBox" style="display:none">
+      <b>Listen to the new set</b> <small style="opacity:.75">(tap any syllable)</small>
+      <div class="grid" id="prevGrid"></div>
+    </div>
+    <div id="pubBox" style="display:none;margin-top:12px">
+      <b>Save this set to your library</b>
+      <p class="hint" style="margin:4px 0">Give the set a name. Saving does NOT change what students hear — later, in the Teacher area of the game, you choose which set is used. You need the teacher password.</p>
+      <div class="row" style="justify-content:flex-start">
+        <input id="setName" type="text" maxlength="40" placeholder="Set name (e.g. Mom's voice, take 2)" autocomplete="off" style="font:inherit;padding:11px;border-radius:10px;border:2px solid #fff4;background:#0004;color:#fff">
+        <input id="pubKey" type="password" placeholder="Teacher password" autocomplete="off" style="font:inherit;padding:11px;border-radius:10px;border:2px solid #fff4;background:#0004;color:#fff">
+        <button id="pubBtn">💾 Save set</button>
+      </div>
+      <div class="msg" id="pubMsg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ---------- the list of syllables (same file names the game uses) ---------- */
+const LET = {'מ':['m','mom'],'ש':['sh','shoe'],'ל':['l','lion'],'נ':['n','nose'],'ס':['s','sun'],'ב':['b','ball'],'ד':['d','dog'],'ג':['g','go'],'ז':['z','zoo'],
+  'ת':['t','tea'],'ה':['h','hat'],'י':['y','yes'],'ר':['r','rain'],'ק':['k','kite'],'ט':['t','top'],'צ':['ts','cats'],'פ':['p','pig'],'כ':['k','key'],'ח':['kh','Bach'],'ו':['v','van'],'א':['',''],'ע':['','']};
+const A_LETTERS = [...'מ ש ל נ ס ב ד ג ז ת ה י ר ק ט צ פ כ ח ו א'.replace(/ /g, '')];   // ע shares the recording of א
+const S2 = [...'משלנסדגזתהרקטצ'];
+const VOW = {a: 'ַ', e: 'ֶ', i: 'ִ', o: 'ֹ', u: 'ֻ'};
+const VOW_HINT = {a: '“ah” as in father', e: '“eh” as in bed', i: '“ee” as in see', o: '“oh” as in go', u: '“oo” as in zoo'};
+const code = c => c.codePointAt(0).toString(16).padStart(4, '0');
+const ITEMS = [];
+for (const c of A_LETTERS) {
+  const dag = (c === 'ב' || c === 'כ' || c === 'פ') ? 'ּ' : '';
+  const sound = c === 'א' ? 'a' : LET[c][0] + 'a';
+  ITEMS.push({ id: code(c) + 'a', saveAs: c === 'א' ? [code('א') + 'a', code('ע') + 'a'] : [code(c) + 'a'], he: c + VOW.a + dag, say: sound,
+    sec: 'Group 1 · the “a” syllables', hint: c === 'א' ? 'Alef and Ayin sound the same here: just “ah”. One recording is used for both.' : `${VOW_HINT.a}${LET[c][1] ? ' · the first sound as in “' + LET[c][1] + '”' : ''}` });
+}
+for (const v of ['e', 'i', 'o', 'u']) for (const c of S2) ITEMS.push({ id: code(c) + v, saveAs: [code(c) + v], he: c + VOW[v], say: LET[c][0] + v,
+  sec: `Group ${{e: 2, i: 3, o: 4, u: 5}[v]} · the “${v}” syllables`, hint: VOW_HINT[v] + ' · first sound as in “' + LET[c][1] + '”' });
+
+/* ---------- storage in the browser (so nothing is lost on refresh) ---------- */
+const DB = (() => {
+  let db; const open = () => db ? Promise.resolve(db) : new Promise((res, rej) => { const r = indexedDB.open('syllable-recorder', 1); r.onupgradeneeded = () => r.result.createObjectStore('clips', { keyPath: 'id' }); r.onsuccess = () => res(db = r.result); r.onerror = () => rej(r.error); });
+  const tx = (mode, fn) => open().then(d => new Promise((res, rej) => { const t = d.transaction('clips', mode), s = t.objectStore('clips'), q = fn(s); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); }));
+  return { put: (id, wav) => tx('readwrite', s => s.put({ id, wav })), all: () => tx('readonly', s => s.getAll()), get: id => tx('readonly', s => s.get(id)) };
+})();
+const clips = new Map();   // id -> ArrayBuffer (16 kHz mono 16-bit WAV)
+
+/* ---------- WAV helpers ---------- */
+function encodeWav(f32, sr) {
+  const b = new ArrayBuffer(44 + f32.length * 2), v = new DataView(b), w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + f32.length * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, f32.length * 2, true);
+  for (let i = 0; i < f32.length; i++) v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, f32[i])) * 32767, true);
+  return b;
+}
+async function blobToWav16k(blob) {
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  const buf = await ac.decodeAudioData(await blob.arrayBuffer()); ac.close();
+  const off = new OfflineAudioContext(1, Math.max(1, Math.ceil(buf.duration * 16000)), 16000);
+  const s = off.createBufferSource(); s.buffer = buf; s.connect(off.destination); s.start();
+  const out = await off.startRendering(); const d = out.getChannelData(0);
+  let peak = 0; for (let i = 0; i < d.length; i++) peak = Math.max(peak, Math.abs(d[i]));
+  return { wav: encodeWav(d, 16000), peak, seconds: buf.duration };
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+let cur = 0, mediaStream = null, analyser = null, mr = null, chunks = [], recording = false, audioEl = null, meterTimer = null;
+function setMsg(t, cls) { const m = $('msg'); m.textContent = t || ''; m.className = 'msg ' + (cls || ''); }
+function render() {
+  const it = ITEMS[cur];
+  $('sec').textContent = it.sec + `  ·  ${cur + 1} of ${ITEMS.length}`; $('he').textContent = it.he; $('say').textContent = 'Say: “' + it.say + '”'; $('hint').textContent = it.hint;
+  const done = ITEMS.filter(i => clips.has(i.id)).length;
+  $('pb').style.width = (100 * done / ITEMS.length) + '%'; $('count').textContent = `${done} of ${ITEMS.length} recorded`;
+  $('play').disabled = !clips.has(it.id); $('prev').disabled = cur === 0; $('next').disabled = cur === ITEMS.length - 1;
+  $('rec').textContent = recording ? '■ Stop (Space)' : (clips.has(it.id) ? '● Record again (Space)' : '● Record (Space)'); $('rec').classList.toggle('on', recording);
+  [...$('grid').children].forEach((c, i) => { c.classList.toggle('done', clips.has(ITEMS[i].id)); c.classList.toggle('cur', i === cur); });
+}
+function buildGrid() {
+  $('grid').innerHTML = ''; ITEMS.forEach((it, i) => { const d = document.createElement('div'); d.className = 'cell'; d.innerHTML = it.he + '<small>' + it.say + '</small>'; d.onclick = () => go(i); $('grid').appendChild(d); });
+}
+function go(i) { if (recording) return; cur = Math.max(0, Math.min(ITEMS.length - 1, i)); setMsg(clips.has(ITEMS[cur].id) ? 'Already recorded. Press P to listen, or Space to record it again.' : ''); render(); }
+
+/* ---------- microphone: choose the device, show live level, tell the user if nothing is heard ---------- */
+let rawStream = null, micCtx = null, micGain = null, heardAt = 0, micLabel = '';
+const BAD_MIC = /epson|projector|stereo mix|virtual|loopback|monitor of/i, GOOD_MIC = /array|internal|built.?in|headset|usb|webcam|logitech|realtek.*mic/i;
+function bestDevice(list) {
+  const score = d => (BAD_MIC.test(d.label) ? -10 : 0) + (GOOD_MIC.test(d.label) ? 5 : 0) + (d.deviceId === 'default' ? -1 : 0);
+  return [...list].sort((a, b) => score(b) - score(a))[0];
+}
+async function openMic(deviceId) {
+  if (rawStream) rawStream.getTracks().forEach(t => t.stop());
+  if (micCtx) { try { micCtx.close(); } catch (e) {} }
+  rawStream = await navigator.mediaDevices.getUserMedia({ audio: Object.assign({ channelCount: 1, echoCancellation: false, noiseSuppression: true, autoGainControl: true }, deviceId ? { deviceId: { exact: deviceId } } : {}) });
+  micCtx = new (window.AudioContext || window.webkitAudioContext)(); await micCtx.resume();
+  const src = micCtx.createMediaStreamSource(rawStream); micGain = micCtx.createGain(); micGain.gain.value = +$('boost').value;
+  analyser = micCtx.createAnalyser(); analyser.fftSize = 1024; const dest = micCtx.createMediaStreamDestination();
+  src.connect(micGain); micGain.connect(analyser); micGain.connect(dest); mediaStream = dest.stream;   // the recorder records this (already boosted)
+  micLabel = rawStream.getAudioTracks()[0].label || 'microphone';
+  startMeter();
+}
+function startMeter() {
+  clearInterval(meterTimer); const data = new Float32Array(analyser.fftSize);
+  meterTimer = setInterval(() => {
+    analyser.getFloatTimeDomainData(data); let p = 0; for (const x of data) p = Math.max(p, Math.abs(x));
+    for (const id of ['lvl', 'lvl0']) { $(id).style.width = Math.min(100, p * 140) + '%'; $(id).style.background = p > .95 ? 'var(--bad)' : 'var(--good)'; }
+    if (p > 0.04) heardAt = Date.now();
+    const heard = Date.now() - heardAt < 2500;
+    const m = $('micMsg'); m.className = 'msg ' + (heard ? 'ok' : 'warn');
+    m.textContent = heard ? `✓ I can hear you.  Using: ${micLabel}` : `I can’t hear anything from “${micLabel}” yet. Say something. If the bar stays empty, pick another microphone in the list.`;
+  }, 80);
+}
+async function enableMic() {
+  const m = $('micMsg');
+  try {
+    await openMic(localStorage.getItem('aq_mic') || undefined);
+    const list = (await navigator.mediaDevices.enumerateDevices()).filter(d => d.kind === 'audioinput' && d.deviceId);
+    const sel = $('micSel'); sel.innerHTML = list.map(d => `<option value="${d.deviceId}">${d.label || 'Microphone'}</option>`).join(''); sel.style.display = list.length > 1 ? '' : 'none';
+    const cur = rawStream.getAudioTracks()[0].getSettings().deviceId, saved = localStorage.getItem('aq_mic');
+    if (!saved) { const best = bestDevice(list); if (best && best.deviceId !== cur) { await openMic(best.deviceId); } }
+    sel.value = rawStream.getAudioTracks()[0].getSettings().deviceId || sel.value;
+    $('micOn').textContent = '🎤 Microphone is on';
+  } catch (e) {
+    const why = { NotAllowedError: 'Chrome is blocking the microphone. Click the 🔒 icon at the left of the address bar, set Microphone to “Allow”, then reload this page.',
+      NotFoundError: 'No microphone was found. Plug one in (or turn it on) and reload.', NotReadableError: 'Another program is using the microphone (Zoom, Teams, …). Close it and try again.' }[e.name] || ('The microphone could not be started: ' + e.message);
+    m.className = 'msg bad'; m.textContent = why;
+  }
+}
+$('micOn').onclick = enableMic;
+$('micSel').onchange = async () => { try { localStorage.setItem('aq_mic', $('micSel').value); await openMic($('micSel').value); } catch (e) { $('micMsg').textContent = 'Could not use that one: ' + e.message; } };
+$('boost').onchange = () => { if (micGain) micGain.gain.value = +$('boost').value; };
+async function startRec() {
+  if (!mediaStream) { setMsg('Please turn on the microphone first (Step 1 at the top).', 'bad'); window.scrollTo(0, 0); return; }
+  chunks = []; mr = new MediaRecorder(mediaStream); mr.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  mr.onstop = onStopped; mr.start(); recording = true; setMsg('Recording… say it now, then press Space.', 'warn'); render();
+}
+function stopRec() { if (mr && recording) { recording = false; mr.stop(); setMsg('Saving…'); render(); } }
+async function onStopped() {
+  const it = ITEMS[cur];
+  try {
+    const { wav, peak, seconds } = await blobToWav16k(new Blob(chunks, { type: mr.mimeType }));
+    if (seconds < 0.15 || peak < 0.01) { setMsg('I did not hear anything. Check the volume bar moves when you speak, then try again.', 'bad'); render(); return; }
+    clips.set(it.id, wav); await DB.put(it.id, wav);
+    if (peak < 0.12) setMsg('Saved, but it is quite quiet. Speak a bit louder or move closer, and record again if you can.', 'warn');
+    else if (peak > 0.98) setMsg('Saved, but it is too loud (distorted). Move back a little and record again.', 'warn');
+    else if (seconds > 3) setMsg('Saved, but it is long. Only the syllable is needed; record again if you like.', 'warn');
+    else setMsg('Saved ✓  Press P to listen, or → for the next one.', 'ok');
+  } catch (e) { setMsg('Something went wrong saving that one: ' + e.message, 'bad'); }
+  render();
+}
+function toggleRec() { recording ? stopRec() : startRec(); }
+function playIt() {
+  const w = clips.get(ITEMS[cur].id); if (!w) return;
+  if (audioEl) audioEl.pause(); audioEl = new Audio(URL.createObjectURL(new Blob([w], { type: 'audio/wav' }))); audioEl.play();
+}
+
+/* ---------- saving to a folder the user picks ---------- */
+async function writeAll(dir) {
+  let n = 0;
+  for (const it of ITEMS) { const w = clips.get(it.id); if (!w) continue;
+    for (const name of it.saveAs) { const fh = await dir.getFileHandle(name + '.wav', { create: true }); const wr = await fh.createWritable(); await wr.write(w); await wr.close(); n++; } }
+  return n;
+}
+async function saveAll() {
+  if (!clips.size) { setMsg('Nothing recorded yet.', 'warn'); return; }
+  if (!window.showDirectoryPicker) { setMsg('This browser cannot save to a folder. Please open this page in Google Chrome.', 'bad'); return; }
+  try {
+    const dir = await window.showDirectoryPicker({ mode: 'readwrite' });
+    const n = await writeAll(dir);
+    setMsg(`Saved ${n} files into the folder “${dir.name}” ✓  Tell me that folder and I will use them.`, 'ok');
+  } catch (e) { if (e.name !== 'AbortError') setMsg('Could not save: ' + e.message, 'bad'); }
+}
+
+/* ---------- build a new sound set from the recordings, preview it, publish it ---------- */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_WgFcze8lH_KTjGD1oI_m5BTocs8REMrOJwYrs6fkX5Pir_C1BzRGQJIkX-kG3ESN/exec';
+const SR = 16000, GAP = Math.round(SR * 0.1);
+function wavToF32(ab) {
+  const v = new DataView(ab); let off = 12;
+  while (off + 8 <= ab.byteLength && String.fromCharCode(v.getUint8(off), v.getUint8(off + 1), v.getUint8(off + 2), v.getUint8(off + 3)) !== 'data') off += 8 + v.getUint32(off + 4, true);
+  off += 8; const n = (ab.byteLength - off) >> 1, f = new Float32Array(n); for (let i = 0; i < n; i++) f[i] = v.getInt16(off + 2 * i, true) / 32768; return f;
+}
+const rmsAt = (x, s, len) => { let a = 0; for (let i = 0; i < len; i++) a += x[s + i] * x[s + i]; return Math.sqrt(a / len); };
+// trim to the voiced part (ignoring key clicks), squeeze pauses inside the syllable, soften the edges
+function processClip(x0) {
+  const fr = SR / 100 | 0, nfr = Math.floor(x0.length / fr); if (nfr < 12) return null;
+  const fe = new Float32Array(nfr); for (let f = 0; f < nfr; f++) fe[f] = rmsAt(x0, f * fr, fr);
+  const sorted = [...fe].sort((a, b) => a - b), loud = sorted[Math.floor(sorted.length * 0.95)]; if (loud < 1e-3) return null;
+  const thr = 0.10 * loud; let ff = 0; while (ff < nfr - 5 && !(fe[ff] >= thr && fe[ff + 1] >= thr && fe[ff + 2] >= thr && fe[ff + 3] >= thr)) ff++;
+  let lf = nfr - 1; while (lf > 4 && !(fe[lf] >= thr && fe[lf - 1] >= thr && fe[lf - 2] >= thr && fe[lf - 3] >= thr)) lf--;
+  if (lf <= ff) return null;
+  const first = Math.max(0, ff * fr - Math.round(0.10 * SR)), last = Math.min(x0.length - 1, (lf + 1) * fr + Math.round(0.09 * SR)), x = x0.subarray(first, last + 1);
+  const w5 = SR * 0.005 | 0, nw = Math.floor(x.length / w5); let pk = 0; for (const v of x) pk = Math.max(pk, Math.abs(v));
+  const quiet = []; for (let w = 0; w < nw; w++) quiet[w] = rmsAt(x, w * w5, w5) < 0.05 * pk;
+  const y = []; let wi = 0;
+  while (wi < nw) {
+    if (!quiet[wi]) { for (let i = 0; i < w5; i++) y.push(x[wi * w5 + i]); wi++; continue; }
+    let j = wi; while (j < nw && quiet[j]) j++;
+    const inner = wi > 0 && j < nw, keep = (inner && (j - wi) * 5 > 40) ? 5 : (j - wi);
+    for (let k = 0; k < keep; k++) for (let i = 0; i < w5; i++) y.push(x[(wi + k) * w5 + i]);
+    wi = j;
+  }
+  for (let i = nw * w5; i < x.length; i++) y.push(x[i]);
+  const o = Float32Array.from(y), fi = Math.round(0.006 * SR), fo = Math.round(0.04 * SR);
+  for (let i = 0; i < fi && i < o.length; i++) o[i] *= i / fi; for (let i = 0; i < fo && i < o.length; i++) o[o.length - 1 - i] *= i / fo;
+  const out = new Float32Array(o.length + Math.round(0.05 * SR)); out.set(o); return out;   // 50 ms of silence at the end
+}
+function loudRms(x) {
+  const w = 160, nw = Math.floor(x.length / w), e = []; for (let k = 0; k < nw; k++) e.push(rmsAt(x, k * w, w));
+  e.sort((a, b) => b - a); const top = Math.max(5, Math.floor(e.length * 0.3)); let a = 0, c = 0; for (let i = 0; i < top && i < e.length; i++) { a += e[i]; c++; } return a / Math.max(1, c);
+}
+let builtSet = null;   // { wav: ArrayBuffer, idx, clips: {name: Float32Array}, fromYou: n }
+async function buildSet() {
+  const msg = $('buildMsg'); msg.className = 'msg warn'; msg.textContent = 'Building… (a few seconds)';
+  await new Promise(r => setTimeout(r, 30));
+  try {
+    const [bw, bidx] = await Promise.all([fetch('syllables.wav?v=2').then(r => r.arrayBuffer()), fetch('syllables.json?v=2').then(r => r.json())]);
+    const base = wavToF32(bw), names = []; ITEMS.forEach(it => it.saveAs.forEach(n => names.push([n, it])));
+    const clips = {}; let fromYou = 0, bad = [];
+    for (const [name, it] of names) {
+      const rec = clips_(it.id); let c = null;
+      if (rec) { c = processClip(wavToF32(rec)); if (!c) bad.push(it.say); else if (name === it.saveAs[0]) fromYou++; }
+      if (!c) { const [s, d] = bidx[name]; c = base.slice(Math.round(s * SR), Math.round((s + d) * SR) + Math.round(0.03 * SR)); }
+      clips[name] = c;
+    }
+    // step 1: bring every clip up to a healthy volume (peak at 85%); step 2: even out loudness so every clip has the same "loud part" level (never above 95%)
+    for (const c of Object.values(clips)) { let pk = 0; for (const v of c) pk = Math.max(pk, Math.abs(v)); if (pk > 1e-4) { const g0 = 0.85 / pk; for (let i = 0; i < c.length; i++) c[i] *= g0; } }
+    const lv = Object.fromEntries(Object.entries(clips).map(([n, c]) => [n, loudRms(c)])), med = Object.values(lv).sort((a, b) => a - b)[Math.floor(Object.keys(lv).length / 2)];
+    for (const [n, c] of Object.entries(clips)) { let pk = 0; for (const v of c) pk = Math.max(pk, Math.abs(v)); let g = lv[n] > 1e-6 ? med / lv[n] : 1; if (pk * g > 0.95) g = 0.95 / pk; for (let i = 0; i < c.length; i++) c[i] *= g; }
+    // pack into one file with a 100 ms gap between clips
+    const order = Object.keys(clips).sort(), total = order.reduce((a, n) => a + clips[n].length + GAP, 0), all = new Float32Array(total), idx = {}; let pos = 0;
+    for (const n of order) { all.set(clips[n], pos); idx[n] = [+(pos / SR).toFixed(4), +(clips[n].length / SR).toFixed(4)]; pos += clips[n].length + GAP; }
+    builtSet = { wav: encodeWav(all, SR), idx, clips, all, fromYou };
+    msg.className = 'msg ok'; msg.textContent = `Done ✓  ${fromYou} syllables are from your recordings, ${ITEMS.length - fromYou} still use the built-in voice. The set is ${(builtSet.wav.byteLength / 1048576).toFixed(1)} MB.` + (bad.length ? `  (I could not use these recordings, they seem silent: ${bad.join(', ')})` : '');
+    $('dlBtn').disabled = false; $('prevBox').style.display = ''; $('pubBox').style.display = '';
+    const g = $('prevGrid'); g.innerHTML = ''; ITEMS.forEach(it => { const d = document.createElement('div'); d.className = 'cell' + (clips_(it.id) ? ' done' : ''); d.innerHTML = it.he + '<small>' + it.say + '</small>'; d.onclick = () => playBuilt(it.saveAs[0]); g.appendChild(d); });
+  } catch (e) { msg.className = 'msg bad'; msg.textContent = 'Could not build the set: ' + e.message; }
+}
+const clips_ = id => clips.get(id);
+let prevCtx = null, prevSrc = null;
+function playBuilt(name) {
+  if (!builtSet) return; prevCtx = prevCtx || new (window.AudioContext || window.webkitAudioContext)(); if (prevCtx.state === 'suspended') prevCtx.resume();
+  if (prevSrc) { try { prevSrc.stop(); } catch (e) {} }
+  const buf = prevCtx.createBuffer(1, builtSet.all.length, SR); buf.copyToChannel(builtSet.all, 0);
+  const [s, d] = builtSet.idx[name]; prevSrc = prevCtx.createBufferSource(); prevSrc.buffer = buf; prevSrc.connect(prevCtx.destination); prevSrc.start(0, s, d + 0.03);
+}
+function toB64(ab) { const u = new Uint8Array(ab); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
+async function postAdmin(body) { const r = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); return r.json(); }
+const authMsg = j => j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes.' : j.error === 'auth' ? 'That password is not right.' : (j.error || 'something went wrong');
+async function publish() {
+  const m = $('pubMsg'); if (!builtSet) { m.className = 'msg bad'; m.textContent = 'Build the set first.'; return; }
+  const name = $('setName').value.trim(); if (!name) { m.className = 'msg bad'; m.textContent = 'Please give the set a name.'; return; }
+  const key = $('pubKey').value; if (!key) { m.className = 'msg bad'; m.textContent = 'Please enter the teacher password.'; return; }
+  m.className = 'msg warn'; m.textContent = 'Saving… this can take up to a minute.';
+  try {
+    let j = await postAdmin({ action: 'putSound', key, name, idx: builtSet.idx, wav: toB64(builtSet.wav) });
+    if (!j.ok && j.error === 'name taken' && confirm(`A set called "${name}" already exists. Replace it with this new recording?`)) {
+      m.textContent = 'Replacing… this can take up to a minute.';
+      j = await postAdmin({ action: 'putSound', key, name, replace: true, idx: builtSet.idx, wav: toB64(builtSet.wav) });
+    }
+    if (j.ok) { m.className = 'msg ok'; m.textContent = `Saved ✓ "${name}" is in your library. Students will NOT hear it until you choose it in the Teacher area of the game.`; }
+    else { m.className = 'msg bad'; m.textContent = 'Not saved: ' + (j.error === 'name taken' ? 'that name is already used.' : j.error === 'too many sets' ? 'the library is full — delete an old set in the Teacher area first.' : authMsg(j)); }
+  } catch (e) { m.className = 'msg bad'; m.textContent = 'Could not reach the cloud: ' + e.message; }
+}
+function download() {
+  if (!builtSet) return;
+  const dl = (blob, name) => { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); };
+  dl(new Blob([builtSet.wav], { type: 'audio/wav' }), 'syllables.wav'); setTimeout(() => dl(new Blob([JSON.stringify(builtSet.idx)], { type: 'application/json' }), 'syllables.json'), 400);
+}
+$('buildBtn').onclick = buildSet; $('pubBtn').onclick = publish;$('dlBtn').onclick = download;
+
+/* ---------- wiring ---------- */
+$('rec').onclick = toggleRec; $('play').onclick = playIt; $('next').onclick = () => go(cur + 1); $('prev').onclick = () => go(cur - 1); $('saveAll').onclick = saveAll;
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SUMMARY') return;
+  if (e.code === 'Space') { e.preventDefault(); toggleRec(); }
+  else if (e.key === 'ArrowRight') go(cur + 1); else if (e.key === 'ArrowLeft') go(cur - 1);
+  else if (e.key === 'p' || e.key === 'P') playIt();
+});
+(async () => {
+  try { for (const r of await DB.all()) clips.set(r.id, r.wav); } catch (e) {}
+  buildGrid(); const firstEmpty = ITEMS.findIndex(i => !clips.has(i.id)); cur = firstEmpty < 0 ? 0 : firstEmpty;
+  if (clips.size) $('help').open = false; render();
+})();
+window.__rec = { ITEMS, clips, encodeWav, writeAll, buildSet, publish, processClip, get: () => builtSet };   // for testing
+</script>
+</body>
+</html>
