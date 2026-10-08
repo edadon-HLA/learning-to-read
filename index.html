@@ -40,6 +40,18 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 #prevHero svg{height:200px}
 /* menu */
 .questcard{flex:1 1 300px;text-align:left;border:2px solid #fff3;border-radius:20px;padding:18px;background:var(--panel);min-height:150px}
+#world{position:relative;width:100%;max-width:760px;margin:0 auto;aspect-ratio:100/62;border-radius:20px;overflow:hidden;border:2px solid #fff3;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#worldArt{position:absolute;inset:0;width:100%;height:100%}
+.place{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;padding:4px;color:#fff;cursor:pointer;width:30%}
+.place .pIcon{font-size:clamp(2rem,8vw,3.6rem);line-height:1;filter:drop-shadow(0 3px 3px #0008);transition:transform .2s}
+.place:hover .pIcon,.place:focus-visible .pIcon,.place.near .pIcon{transform:scale(1.18)}
+.place.near{filter:drop-shadow(0 0 10px var(--gold))}
+.sign{background:#5a3b1d;border:2px solid #c99a5b;border-radius:8px;padding:2px 10px;text-align:center;box-shadow:0 3px 0 #0006}
+.sign b{display:block;font-size:clamp(1rem,3.6vw,1.5rem);line-height:1.15}.sign small{display:block;font-size:clamp(.6rem,1.9vw,.75rem);opacity:.85}
+.pSub{font-size:clamp(.6rem,1.9vw,.75rem);background:#0006;border-radius:8px;padding:1px 6px}.pSub:empty{display:none}
+#mapHero{position:absolute;width:11%;aspect-ratio:3/4;transform:translate(-50%,-92%);cursor:grab;touch-action:none;z-index:5;transition:left .9s ease-in-out,top .9s ease-in-out;filter:drop-shadow(0 4px 3px #0007)}
+#mapHero svg{width:100%;height:100%}#mapHero.drag{transition:none;cursor:grabbing;z-index:6}#mapHero.walk svg{animation:hop .3s infinite alternate}
+@keyframes hop{to{transform:translateY(-6%)}}
 .questcard:hover{border-color:var(--gold);transform:translateY(-2px)}
 .questcard b{font-size:1.5rem;display:block;margin-bottom:6px}
 .pbar{height:12px;border-radius:8px;background:#0005;overflow:hidden}
@@ -242,14 +254,29 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <span>📖 <b id="menuTier"></b></span>
     <span>⏱️ Today: <b id="menuToday"></b></span>
     <span>🔥 Streak: <b id="menuStreak"></b></span>
+    <span>🪙 <b id="menuCoins">0</b></span>
+    <span>🧪 <b id="menuPots">0</b></span>
     <span id="menuCloud">☁️</span>
   </div>
-  <h2 class="center">Choose your quest</h2>
-  <div class="row" style="align-items:stretch">
-    <button class="questcard" id="qBattle"><b>⚔️ Monster Hunter</b>Fight monsters with word magic! Read the spells and pick the one that works.<div class="pbar" style="margin-top:10px"><i id="pbBattle"></i></div><div class="small" id="ptBattle"></div></button>
-    <button class="questcard" id="qPeace"><b>🌿 Village Helper</b>Help the villagers with your reading and writing skills. No fighting!<div class="pbar" style="margin-top:10px"><i id="pbPeace"></i></div><div class="small" id="ptPeace"></div></button>
+  <h2 class="center" style="margin:6px 0">Where to? <small style="font-weight:400;opacity:.75;font-size:.9rem">Drag your hero to a place, or tap it</small></h2>
+  <div id="world" aria-label="Map">
+    <svg id="worldArt" viewBox="0 0 100 62" preserveAspectRatio="none" aria-hidden="true">
+      <defs><linearGradient id="wSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1f6e"/><stop offset="1" stop-color="#7a5cc8"/></linearGradient>
+        <linearGradient id="wGrass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f9a63"/><stop offset="1" stop-color="#256b45"/></linearGradient></defs>
+      <rect width="100" height="62" fill="url(#wSky)"/>
+      <g fill="#fff" opacity=".8"><circle cx="8" cy="6" r=".5"/><circle cx="22" cy="10" r=".4"/><circle cx="40" cy="5" r=".5"/><circle cx="63" cy="8" r=".4"/><circle cx="88" cy="5" r=".5"/><circle cx="94" cy="13" r=".4"/></g>
+      <circle cx="84" cy="9" r="4" fill="#ffe9a8" opacity=".9"/>
+      <path d="M0 24 Q15 14 30 22 T60 20 T100 18 V62 H0Z" fill="#4b3a96"/>
+      <path d="M0 30 Q25 22 50 30 T100 28 V62 H0Z" fill="url(#wGrass)"/>
+      <path d="M50 62 C50 52 28 48 24 40 M50 62 C50 52 74 48 78 40 M50 62 C48 50 30 34 26 24 M50 56 C60 46 72 34 76 24" fill="none" stroke="#e9d8a6" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>
+    </svg>
+    <button class="place" data-p="gate" style="left:76%;top:34%"><span class="pIcon">🏰</span><span class="sign"><b class="heb">שער</b><small>City gate · Monsters</small></span><span class="pSub" id="ptGate"></span></button>
+    <button class="place" data-p="board" style="left:24%;top:34%"><span class="pIcon">📜</span><span class="sign"><b class="heb">לוח</b><small>Notice board · Villagers</small></span><span class="pSub" id="ptBoard"></span></button>
+    <button class="place" data-p="home" style="left:20%;top:74%"><span class="pIcon">🏡</span><span class="sign"><b class="heb">בית</b><small>Home · Potions</small></span></button>
+    <button class="place" data-p="shop" style="left:80%;top:74%"><span class="pIcon">🏪</span><span class="sign"><b class="heb">חנות</b><small>Shop</small></span></button>
+    <div id="mapHero" aria-label="Your hero"></div>
   </div>
-  <div class="row" style="margin-top:18px"><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
+  <div class="row" style="margin-top:14px"><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
 </section>
 
 <section id="game" class="screen">
@@ -740,15 +767,45 @@ function openMenu() {
   const t = P.sec[today()] || 0;
   $('#menuToday').textContent = Math.min(10, Math.floor(t / 60)) + '/10 min' + (t >= CFG.DAILY_SEC ? ' ⭐' : '');
   $('#menuStreak').textContent = streak() + ' day' + (streak() === 1 ? '' : 's');
-  for (const [q, k, names] of [['battle', 'Battle', AREAS], ['peace', 'Peace', VILLAGES]]) {
-    const s = P.quest[q];
-    $('#pb' + k).style.width = (s.enc / CFG.CHAPTER_LEN * 100) + '%';
-    $('#pt' + k).textContent = (q === 'battle' ? 'Chapter ' : 'Village ') + s.ch + ': ' + names[(s.ch - 1) % names.length] + ' (' + s.enc + '/' + CFG.CHAPTER_LEN + ')';
-  }
+  $('#menuCoins').textContent = P.coins || 0; $('#menuPots').textContent = Object.values(P.pot || {}).reduce((a, b) => a + b, 0);
+  $('#ptGate').textContent = 'Chapter ' + P.quest.battle.ch + ': ' + AREAS[(P.quest.battle.ch - 1) % AREAS.length];
+  $('#ptBoard').textContent = 'Village ' + P.quest.peace.ch + ': ' + VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length];
+  $('#mapHero').innerHTML = heroSVG(P.gender, P.color); walking = false; placeHero(START.x, START.y);
   setCloud(cloudState || (CFG.SCRIPT_URL ? 'ok' : 'none'));
 }
-$('#qBattle').onclick = () => startQuest('battle');
-$('#qPeace').onclick = () => startQuest('peace');
+/* ----- the map: drag the hero onto a place, or tap the place; both end in the same walk-and-enter handler ----- */
+const START = { x: 50, y: 58 };
+const PLACES = { gate: { say: 'שער', door: [76, 52] }, board: { say: 'לוח', door: [24, 52] }, home: { say: 'בית', door: [20, 92] }, shop: { say: 'חנות', door: [80, 92] } };
+let walking = false;
+function placeHero(x, y) { const h = $('#mapHero'); h.style.left = x + '%'; h.style.top = y + '%'; }
+function enterPlace(id) {
+  if (id === 'gate') startQuest('battle');
+  else if (id === 'board') startQuest('peace');
+  else { modal(id === 'home' ? '🏡 Home' : '🏪 Shop', '<p>Coming soon! This place is still being built.</p>', [['OK', null]]); placeHero(START.x, START.y); }
+}
+function walkTo(id) {
+  if (walking) return; walking = true;
+  const h = $('#mapHero'); h.classList.remove('drag'); h.classList.add('walk'); placeHero(...PLACES[id].door);
+  playSound({ say: PLACES[id].say });   // the Hebrew name of the place, if the device has a Hebrew voice
+  setTimeout(() => { walking = false; h.classList.remove('walk'); enterPlace(id); }, 950);
+}
+document.querySelectorAll('.place').forEach(b => b.onclick = () => walkTo(b.dataset.p));
+(() => {
+  const w = $('#world'), h = $('#mapHero'); let drag = false;
+  const pos = e => { const r = w.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * 100, (e.clientY - r.top) / r.height * 100]; };
+  const nearest = (x, y) => { let best = null, bd = 1e9; for (const [id, p] of Object.entries(PLACES)) { const d = Math.hypot(x - p.door[0], (y - p.door[1]) * 1.6); if (d < bd) { bd = d; best = id; } } return bd < 18 ? best : null; };
+  h.addEventListener('pointerdown', e => { if (walking) return; drag = true; h.setPointerCapture(e.pointerId); h.classList.add('drag'); e.preventDefault(); });
+  h.addEventListener('pointermove', e => {
+    if (!drag) return; const [x, y] = pos(e); placeHero(Math.max(4, Math.min(96, x)), Math.max(14, Math.min(96, y)) + 6);
+    const n = nearest(x, y + 6); document.querySelectorAll('.place').forEach(b => b.classList.toggle('near', b.dataset.p === n));
+  });
+  const end = e => {
+    if (!drag) return; drag = false; h.classList.remove('drag'); const [x, y] = pos(e), n = nearest(x, y + 6);
+    document.querySelectorAll('.place').forEach(b => b.classList.remove('near'));
+    if (n) walkTo(n); else placeHero(START.x, START.y);
+  };
+  h.addEventListener('pointerup', end); h.addEventListener('pointercancel', end);
+})();
 $('#logoutBtn').onclick = async () => { saveSoon(true); await sleep(300); P = null; $('#sid').value = ''; show('login'); };
 $('#menuMute').onclick = $('#muteBtn').onclick = () => setMute(!muted);
 $('#homeBtn').onclick = () => { saveSoon(true); openMenu(); };
