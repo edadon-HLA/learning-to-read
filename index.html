@@ -596,8 +596,26 @@ let P = null;                // current profile
 let saveTimer = null, cloudState = '';
 
 function newProfile(id, nick, gender, color) {
-  return { id, nick, gender, color, tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
-    quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() };
+  return migrate({ id, nick, gender, color, tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
+    quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() });
+}
+/* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
+const PROFILE_V = 2;
+function migrate(p) {
+  if (!p || typeof p !== 'object') return p;
+  const v = p.v || 1;
+  p.quest = p.quest || {}; for (const k of ['battle', 'peace']) { const q = p.quest[k] = p.quest[k] || {}; q.ch = q.ch || 1; q.enc = q.enc || 0; }
+  if (v < 2) {
+    p.inv = {};                                   // ingredient counts by id
+    p.pot = {};                                   // potion counts by id
+    p.coins = 0; p.coinDay = { d: '', c: 0 };     // balance, and coins earned today (soft daily cap)
+    p.own = { caul: 0, decor: [] };               // cauldron level, owned decor ids
+    p.craft = { n: 0, ok: 0 };                    // crafting answers (kept apart from the tier window)
+    p.superCh = 0;                                // chapter in which the super potion was last used
+    for (const k of ['battle', 'peace']) { const q = p.quest[k]; q.len = 0; q.hearts = 3; q.restarts = 0; }   // len 0 = not rolled yet (step 3)
+  }
+  p.v = PROFILE_V;
+  return p;
 }
 function pruneSec() {
   const ks = Object.keys(P.sec).sort();
@@ -633,7 +651,7 @@ async function cloudSave() {
     const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
     const j = await r.json();
     if (j.conflict && j.data) {         // cloud copy is newer: adopt it
-      const c = JSON.parse(j.data); Object.assign(P, c); lsSet('aq_p_' + P.id, JSON.stringify(P));
+      const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('aq_p_' + P.id, JSON.stringify(P));
     }
     setCloud('ok');
   } catch (e) { setCloud('off'); }
@@ -649,7 +667,9 @@ async function loadProfile(id) {
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
     } catch (e) { offline = true; }
   }
-  const best = (cloud && local) ? (cloud.n >= local.n ? cloud : local) : (cloud || local);
+  // the copy with more answers wins; on a tie, the one saved last (crafting and shopping do not add answers)
+  const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
+  const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
   return { profile: best, offline };
 }
 
