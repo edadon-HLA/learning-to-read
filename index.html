@@ -382,7 +382,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="place" data-p="shop" style="left:80%;top:74%"><span class="pIcon">🏪</span><span class="sign"><b class="heb">חנות</b><small>Shop</small></span></button>
     <div id="mapHero" aria-label="Your hero"></div>
   </div>
-  <div class="row" style="margin-top:14px"><button class="btn" id="bagBtn">🎒 My bag</button><button class="btn" id="lookBtn">🎨 My look</button><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
+  <div class="row" style="margin-top:14px"><button class="btn" id="bagBtn">🎒 My bag</button><button class="btn ghost danger" id="abandonMapBtn" style="display:none">🏳️ Abandon quest</button><button class="btn" id="lookBtn">🎨 My look</button><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
 </section>
 
 <section id="home" class="screen" style="max-width:760px">
@@ -414,7 +414,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 
 <section id="game" class="screen">
   <div class="top">
-    <button class="ib" id="homeBtn" title="Back to map">🗺️</button>
+    <button class="ib" id="homeBtn" title="Back to map">🗺️</button><button class="ib" id="abandonBtn" title="Abandon the quest" style="display:none">🏳️</button>
     <div class="grow"><div class="who" id="who"></div><div class="small" id="tierLbl"></div><div class="pbar" style="height:8px;margin-top:4px"><i id="xpFill"></i></div></div>
     <span id="cloud" class="small"></span>
     <div class="vctl"><button class="ib" id="muteBtn" title="Sound on/off">🔊</button><input type="range" class="vslider" min="10" max="100" step="5" aria-label="Volume"></div>
@@ -1094,6 +1094,7 @@ function openMenu() {
   $('#ptBoard').textContent = 'Village ' + P.quest.peace.ch + ': ' + VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length];
   $('#mapHero').innerHTML = heroOf(P); walking = false; placeHero(START.x, START.y);
   setCloud(cloudState || (CFG.SCRIPT_URL ? 'ok' : 'none'));
+  $('#abandonMapBtn').style.display = runOf() ? '' : 'none';
   askLookOnce();
 }
 /* ----- the map: drag the hero onto a place, or tap the place; both end in the same walk-and-enter handler ----- */
@@ -1109,7 +1110,7 @@ function enterPlace(id) {
 }
 function walkTo(id) {
   if (walking) return;
-  if (isLocked(id)) { placeHero(START.x, START.y); toast('🔒 You are in the middle of a quest! Finish it first. You can always keep going from the gate or the board.'); return; }
+  if (isLocked(id)) { placeHero(START.x, START.y); toast('🔒 You are in the middle of a quest! Finish it, or tap 🏳️ Abandon quest to leave it.'); return; }
   walking = true;
   const h = $('#mapHero'); h.classList.remove('drag'); h.classList.add('walk'); placeHero(...PLACES[id].door);
   playSound({ say: PLACES[id].say });   // the Hebrew name of the place, if the device has a Hebrew voice
@@ -1387,8 +1388,17 @@ function updateBars() {
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`;
   $('#xpFill').style.width = ((P.xp % 400) / 4) + '%';
 }
+/* ----- abandoning a quest: leave the run, keep coins and ingredients, start from the beginning next time ----- */
+function abandonQuest(q) {
+  const qs = P.quest[q]; if (!qs || !qs.act) return;
+  modal('🏳️ Abandon this quest?', `<p>You will leave the quest. Then you can go home or to the shop.</p><p>✅ You <b>keep</b> all the coins and ingredients you already have.<br>⚠️ Next time the quest starts again <b>from the beginning</b>.</p>`,
+    [['Yes, abandon it', () => { qs.enc = 0; qs.len = 0; qs.hearts = CFG.MAX_HEARTS; qs.act = false; P.abandons = (P.abandons || 0) + 1; saveSoon(true); openMenu(); toast('🏳️ You left the quest. Your coins and ingredients are safe.'); }], ['Keep playing', null, true]]);
+}
+$('#abandonBtn').onclick = () => abandonQuest(G.quest);
+$('#abandonMapBtn').onclick = () => abandonQuest(runOf());
 function nextQuestion() { G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = false; G.snap = null; G.optSound = false; showQuestion(); }
 function showQuestion() {   // draws G.q (a Second chance potion draws the same question again)
+  $('#abandonBtn').style.display = (G.quest === 'battle' || G.quest === 'peace') ? '' : 'none';
   G.locked = false; G.tries = 0; G.typed = ''; renderPotBar(); $('#castBtn').textContent = G.quest === 'craft' ? '🫕 Drop it in!' : G.quest === 'shop' ? '🛒 Answer' : '✨ Cast it!';
   const q = G.q;
   $('#qTitle').textContent = q.title;
@@ -1788,7 +1798,7 @@ function pickIngredients(potion) {   // the student chooses which ingredients to
       ownedOf(rar).map(id => { const used = chosen.some((c, j) => c === id && j !== k); return `<button class="slotBtn ${chosen[k] === id ? 'sel' : ''}" data-k="${k}" data-id="${id}" ${used ? 'disabled' : ''}>${ING[id].em} <b class="heb">${ING[id].nk}</b> <small>×${P.inv[id]}</small></button>`; }).join('') + '</div></div>').join('');
     $('#mBtns button').disabled = chosen.some(c => !c);
   };
-  modal(`${POTIONS[potion].em} Brew ${POTIONS[potion].name} / ${POTIONS[potion].vname} potion`, '<div id="brewBody"></div>', [['Start brewing ▶', () => startCraft(potion, chosen.slice())], ['Cancel', null, true]]);
+  modal(`${POTIONS[potion].em} Brew ${POTIONS[potion].name} / ${POTIONS[potion].vname} potion`, '<div id="brewBody"></div><p class="small" style="opacity:.85;margin-top:8px">🔥 Careful: a wrong answer burns the ingredient you are working on. You need at least one left to finish the potion.</p>', [['Start brewing ▶', () => startCraft(potion, chosen.slice())], ['Cancel', null, true]]);
   $('#brewBody').onclick = e => { const b = e.target.closest('.slotBtn'); if (!b || b.disabled) return; const k = +b.dataset.k; chosen[k] = chosen[k] === b.dataset.id ? null : b.dataset.id; render(); };
   render();
 }
@@ -1828,10 +1838,21 @@ function nameQuestion(ing, universe, ctx) {
 function craftQuestion() {
   const C = G.craft;
   $('#foeName').textContent = `${CAULDRONS[P.own.caul || 0]} · ${pBoth(C.potion)}`;
-  $('#mid').innerHTML = `<b>🧪 Brewing</b><br>${C.ings.map((id, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote">Ingredient ${C.i + 1} of ${C.ings.length}. Wrong answers cost nothing!</div>`;
+  $('#mid').innerHTML = `<b>🧪 Brewing</b><br>${C.ings.map((id, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote"></div>`;
   $('#hearts').textContent = POTIONS[C.potion].em; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / C.ings.length) + '%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = ((P.xp % 400) / 4) + '%'; $('#potBar').style.display = 'none';
+  craftNote();
   nameQuestion(ING[C.ings[C.i]], Object.values(ING), { listen: '🫕 The cauldron bubbles… Listen!', read: 'Read the ingredient and pick its picture!', sub: 'Which one goes in the cauldron?', write: 'Write the name of this ingredient in Hebrew!' });
+}
+// A wrong answer while brewing burns one unit of the ingredient being worked on (and nothing else). If none is left for the potion, the brew fizzles.
+function craftNote() { const C = G.craft, id = C.ings[C.i], n = P.inv[id] || 0; const e = document.querySelector('#mid .runNote'); if (e) e.innerHTML = `Ingredient ${C.i + 1} of ${C.ings.length}. 🔥 A wrong answer burns ${ING[id].em} ${ING[id].nk}. You have <b>${n}</b> left.`; }
+function craftBurn() {
+  const C = G.craft, id = C.ings[C.i]; P.inv[id] = Math.max(0, (P.inv[id] || 0) - 1); saveSoon();
+  burst('🔥', 6); toast(`🔥 ${ING[id].em} burned! ${P.inv[id] ? P.inv[id] + ' left' : 'none left'}`);
+  if (P.inv[id] >= 1) { craftNote(); return false; }   // one more is still needed for the potion itself
+  G.locked = true; sfx.bad();
+  setTimeout(() => modal('💥 The potion fizzled!', `<p>You ran out of ${ING[id].em} <b class="heb">${ING[id].nk}</b>. The other ingredients are safe.</p>`, [['Back home 🏡', openHome]]), 700);
+  return true;
 }
 function craftCount(first, ok) { if (first) { P.craft.n++; if (ok) P.craft.ok++; } }   // crafting answers are a separate figure; they never change the level
 async function craftPick(i, btn) {
@@ -1839,13 +1860,13 @@ async function craftPick(i, btn) {
   if (o.ok) {
     G.locked = true; btn.classList.add('good'); document.querySelectorAll('.opt').forEach(b => { b.disabled = true; }); craftCount(first, true);
     sfx.ok(); if (q.say && P.tier >= 8) speakHe(q.say); $('#fb').innerHTML = `✅ ${q.explain}`; await sleep(1300); G.quest === 'shop' ? shopBought() : craftNext();
-  } else { btn.classList.add('bad'); btn.disabled = true; sfx.bad(); craftCount(first, false); $('#fb').innerHTML = `❌ ${o.note || 'Not that one.'} Try again!`; saveSoon(); }
+  } else { btn.classList.add('bad'); btn.disabled = true; sfx.bad(); craftCount(first, false); $('#fb').innerHTML = `❌ ${o.note || 'Not that one.'} Try again!`; saveSoon(); if (G.quest === 'craft') craftBurn(); }
 }
 async function craftCast() {
   if (G.locked) return; const q = G.q, ans = G.typed.trim().replace(/\s+/g, ' '); if (!ans) return;
   const hit = q.accept.find(a => a === ans), near = !hit && q.accept.some(a => normFinals(a) === normFinals(ans)), first = G.tries === 0; G.tries++;
   if (hit) { G.locked = true; craftCount(first, true); sfx.ok(); speakHe(hit); $('#fb').innerHTML = `✅ Perfect! ${q.explain}`; await sleep(1500); G.quest === 'shop' ? shopBought() : craftNext(); }
-  else { craftCount(first, false); sfx.bad(); $('#fb').innerHTML = `❌ Not quite. ${near ? 'Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word. ' : ''}Try again!`; G.typed = ''; renderTyped(); saveSoon(); }
+  else { craftCount(first, false); sfx.bad(); $('#fb').innerHTML = `❌ Not quite. ${near ? 'Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word. ' : ''}Try again!`; G.typed = ''; renderTyped(); saveSoon(); if (G.quest === 'craft') craftBurn(); }
 }
 function craftNext() {
   const C = G.craft; C.i++;
@@ -2123,7 +2144,7 @@ async function adminStudent(id) {
       sec2('Needs more practice <small style="opacity:.7;font-weight:400">(most mistakes)</small>', hard.length ? '<div class="kv">' + hard.map(x => `<span><span class="hebBig">${esc(keyLabel(x.k))}</span><br>${x.w} wrong of ${x.n}</span>`).join('') + '</div>' : '<p style="opacity:.8;margin:4px 0">Nothing stands out yet. 👍</p>') +
       sec2('Doing well', strong.length ? '<div class="kv">' + strong.map(x => `<span><span class="hebBig">${esc(keyLabel(x.k))}</span><br>${x.r} right</span>`).join('') + '</div>' : '<p style="opacity:.8;margin:4px 0">Not enough yet.</p>') +
       sec2('Quests', `<div class="kv"><span>⚔️ Monster Hunter: chapter ${(q.battle || {}).ch || 1}, fight ${((q.battle || {}).enc || 0) + 1}${(q.battle || {}).act ? ' (a run is in progress)' : ''}</span><span>🌿 Village Helper: village ${(q.peace || {}).ch || 1}, helped ${(q.peace || {}).enc || 0}${(q.peace || {}).act ? ' (a run is in progress)' : ''}</span>
-        <span>🔁 Quest restarts: ${p.restartsTotal || 0}</span></div>`) +
+        <span>🔁 Quest restarts: ${p.restartsTotal || 0}</span><span>🏳️ Quests abandoned: ${p.abandons || 0}</span></div>`) +
       sec2('World', `<div class="kv"><span>🪙 ${Math.floor(p.coins || 0)} coins</span><span>🫕 ${CAULDRONS[(p.own || {}).caul || 0]}</span><span>🪴 ${((p.own || {}).decor || []).length} of ${DECOR.length} decorations</span><span>🧪 Potions: ${potTxt}</span>
         <span>🌿 ${sum(p.inv) + sum(p.satchel)} ingredients (${sum(p.satchel) ? sum(p.satchel) + " still in the satchel, " : ""}${RARITY.map((n, i) => rar[i] ? rar[i] + ' ' + n.toLowerCase() : '').filter(Boolean).join(', ') || 'none'})</span><span>🧰 Crafting and shop questions: ${cr.n ? pct(cr.ok, cr.n) + ' right first try, of ' + cr.n : 'none yet'}</span></div>`) +
       `<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn ghost danger" id="admDelete">🗑 Delete this student…</button></div>`;
