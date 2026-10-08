@@ -61,6 +61,12 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .packBottle.sm .potSvg{width:20px;height:27px}.packBottle.sm i{font-size:.75rem}
 .opt{position:relative}.optSnd{position:absolute;top:6px;right:8px;background:#fff;color:#000;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 2px 0 #0004;cursor:pointer}.optSnd:hover{transform:scale(1.12)}
 .potNote{opacity:.75;width:100%;text-align:center}
+.or{opacity:.7;margin:8px 0}.regLbl{display:block;text-align:left;margin:10px 0 2px;font-weight:600}
+.bigId{font-size:3rem;font-weight:800;letter-spacing:.25em;background:#0005;border:3px dashed var(--gold);border-radius:16px;padding:10px 6px 10px 18px;margin:8px 0;font-family:ui-monospace,Consolas,monospace;user-select:all}
+.regWarn{color:var(--gold)}.regTick{display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0;cursor:pointer}
+.stuSec{margin:12px 0 4px;border-top:1px solid #fff2;padding-top:8px}.stuSec>b{display:block;margin-bottom:4px}
+.skillTbl{width:100%;border-collapse:collapse;font-size:.9rem}.skillTbl th,.skillTbl td{text-align:left;padding:4px 8px;border-bottom:1px solid #fff1}
+.btn.danger{border-color:#ff5d73;color:#ff9aa8}.btn.danger:hover{background:#ff5d7322}
 .coinBox{background:#0005;border-radius:14px;padding:6px 12px;font-size:1.2rem}
 .shopGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
 .shopItem{font:inherit;color:#fff;display:flex;flex-direction:column;align-items:center;gap:2px;background:#0003;border:2px solid #fff2;border-radius:14px;padding:8px 6px;cursor:pointer;text-align:center}
@@ -230,6 +236,8 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <input id="sid" type="text" placeholder="Your number" autocomplete="off" autocapitalize="characters" maxlength="20">
     <div class="msg" id="loginMsg"></div>
     <button class="btn" id="loginBtn">Let's go! ▶</button>
+    <div class="or">— or —</div>
+    <button class="btn ghost" id="newBtn">🌟 I am new</button>
   </div>
   <div class="center"><a href="#" id="adminLink" class="adminLink">🔧 Teacher area</a></div>
 </section>
@@ -257,6 +265,29 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
       <a class="btn" id="admRec" href="recorder.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">🎙️ Open the recorder</a>
     </div>
     <div class="small" style="opacity:.75">In the recorder: record the syllables, build the set, give it a name and press “Save set”. It appears here; nothing changes for students until you press “Use this”.</div>
+  </div>
+</section>
+
+<section id="register" class="screen">
+  <h1>🌟 Welcome, new hero!</h1>
+  <div class="card center" style="max-width:460px;margin:18px auto">
+    <div id="regForm">
+      <p>Tell me who you are. Your teacher uses this to know who is who.</p>
+      <label class="regLbl">Your full real name</label>
+      <input id="regName" type="text" maxlength="40" placeholder="First name and last name" autocomplete="off">
+      <label class="regLbl">Your class</label>
+      <input id="regClass" type="text" maxlength="15" placeholder="For example 3B" autocomplete="off">
+      <div class="msg" id="regMsg"></div>
+      <div class="row"><button class="btn ghost" id="regBack">← Back</button><button class="btn" id="regGo">Get my number ▶</button></div>
+    </div>
+    <div id="regDone" style="display:none">
+      <p>Your secret hero number is:</p>
+      <div class="bigId" id="regId"></div>
+      <p class="regWarn">✏️ <b>Write it down now!</b><br>You need this number every time you play.</p>
+      <label class="regTick"><input type="checkbox" id="regTick"> I wrote my number down</label>
+      <div class="msg" id="regMsg2"></div>
+      <button class="btn" id="regNext">Next: create my hero ▶</button>
+    </div>
   </div>
 </section>
 
@@ -710,8 +741,8 @@ function heroSVG(g, color) {
 let P = null;                // current profile
 let saveTimer = null, cloudState = '';
 
-function newProfile(id, nick, gender, color) {
-  return migrate({ id, nick, gender, color, tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
+function newProfile(id, nick, gender, color, real, cls) {
+  return migrate({ id, nick, gender, color, real: real || '', cls: cls || '', tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
     quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() });
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
@@ -768,10 +799,11 @@ async function cloudSave() {
   if (!P || !CFG.SCRIPT_URL) return;
   const total = Object.values(P.sec).reduce((a, b) => a + b, 0);
   const body = JSON.stringify({ id: P.id, nick: P.nick, tier: P.tier, xp: P.xp, n: P.n, acc: P.n ? Math.round(100 * P.ok / P.n) : 0,
-    min: Math.round(total / 60), data: JSON.stringify(P) });
+    min: Math.round(total / 60), coins: Math.floor(P.coins || 0), craftAcc: P.craft && P.craft.n ? Math.round(100 * P.craft.ok / P.craft.n) : 0, restarts: P.restartsTotal || 0, real: P.real || '', cls: P.cls || '', data: JSON.stringify(P) });
   try {
     const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
     const j = await r.json();
+    if (j.deleted) { removedByTeacher(); return; }   // the teacher deleted this student
     if (j.conflict && j.data) {         // cloud copy is newer: adopt it
       const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('aq_p_' + P.id, JSON.stringify(P));
     }
@@ -779,18 +811,20 @@ async function cloudSave() {
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
-  let local = null, cloud = null, offline = false;
+  let local = null, cloud = null, offline = false, deleted = false;
   try { const t = lsGet('aq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
       const r = await fetch(CFG.SCRIPT_URL + '?action=load&id=' + encodeURIComponent(id));
       const j = await r.json();
+      if (j.ok && j.deleted) deleted = true;
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
     } catch (e) { offline = true; }
   }
   // the copy with more answers wins; on a tie, the one saved last (crafting and shopping do not add answers)
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
+  if (deleted) { try { localStorage.removeItem('aq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
   return { profile: best, offline };
 }
@@ -832,10 +866,34 @@ $('#loginBtn').onclick = async () => {
   $('#loginBtn').disabled = false; msg.textContent = '';
   lsSet('aq_last', id);
   if (r.profile) { P = r.profile; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
-  const warn = r.offline ? '<p>⚠️ I can\'t reach the cloud right now, so I can\'t check for an old hero. If you have played before, ask your teacher to help.</p>' : '';
-  modal('New hero?', `<p>I don't know the number <b>${esc(id)}</b> yet.</p>${warn}<p>Is this your first time playing?</p>`,
-    [['Yes, first time!', () => { pendingId = id; openCreator(); }], ['No, let me check', null, true]]);
+  if (r.deleted) { modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['I am new 🌟', () => $('#newBtn').click()], ['OK', null, true]]); return; }
+  const warn = r.offline ? '<p>⚠️ I can\'t reach the cloud right now, so I can\'t check your number. Try again in a moment.</p>' : '';
+  modal('I don\'t know this number', `<p>I can\'t find the number <b>${esc(id)}</b>.</p>${warn}<p>Check it and try again. If you are new, tap <b>I am new</b>.</p>`,
+    [['Try again', null], ['I am new 🌟', () => $('#newBtn').click(), true]]);
 };
+/* ----- new students: "I am new" -> full real name + class -> a generated 5-character number to write down ----- */
+let pendingReal = '', pendingCls = '';
+const ID_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // no I, O, 0, 1: they are easy to mix up when writing down
+function genId() { let s; do { s = ''; for (let i = 0; i < 5; i++) s += ID_CHARS[Math.floor(Math.random() * ID_CHARS.length)]; } while (!/[A-Z]/.test(s) || !/[2-9]/.test(s)); return s; }   // always some letters and some digits
+function removedByTeacher() {   // the teacher deleted this student: forget the local copy and go back to the start
+  const id = P && P.id; P = null; try { if (id) localStorage.removeItem('aq_p_' + id); } catch (e) {}
+  show('login'); modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['OK', null]]);
+}
+$('#newBtn').onclick = () => { $('#regName').value = ''; $('#regClass').value = ''; $('#regMsg').textContent = ''; $('#regMsg2').textContent = ''; $('#regTick').checked = false; $('#regForm').style.display = ''; $('#regDone').style.display = 'none'; show('register'); };
+$('#regBack').onclick = () => show('login');
+$('#regGo').onclick = async () => {
+  const name = $('#regName').value.trim().replace(/\s+/g, ' '), cls = $('#regClass').value.trim().replace(/\s+/g, ' '), msg = $('#regMsg');
+  if (name.length < 4 || !name.includes(' ')) { msg.textContent = 'Please write your full name: first name and last name.'; return; }
+  if (!cls) { msg.textContent = 'Please write your class.'; return; }
+  msg.textContent = 'Making your number…'; $('#regGo').disabled = true;
+  let id = null;
+  for (let k = 0; k < 8 && !id; k++) { const c = genId(), r = await loadProfile(c); if (r.offline || (!r.profile && !r.deleted)) id = c; }   // a number nobody has used (offline, the chance of a clash is tiny)
+  $('#regGo').disabled = false; msg.textContent = '';
+  if (!id) { msg.textContent = 'Something went wrong. Please try again.'; return; }
+  pendingId = id; pendingReal = name; pendingCls = cls; lsSet('aq_last', id); $('#sid').value = id;
+  $('#regId').textContent = id; $('#regForm').style.display = 'none'; $('#regDone').style.display = '';
+};
+$('#regNext').onclick = () => { if (!$('#regTick').checked) { $('#regMsg2').textContent = 'Please write your number down and tick the box.'; return; } openCreator(); };
 function openCreator() { cr = { g: 'm', color: rnd(COLORS) }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
 function drawCreator() {
   $('#prevHero').innerHTML = heroSVG(cr.g, cr.color);
@@ -847,7 +905,7 @@ document.querySelectorAll('.gbtn').forEach(b => b.onclick = () => { cr.g = b.dat
 $('#createBtn').onclick = () => {
   const nick = $('#nick').value.trim();
   if (nick.length < 2) { $('#creatorMsg').textContent = 'Please choose a nickname (at least 2 letters).'; return; }
-  P = newProfile(pendingId, nick, cr.g, cr.color); saveSoon(true); openMenu();
+  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls); pendingReal = pendingCls = ''; saveSoon(true); openMenu();
 };
 
 /* ====================== MENU ====================== */
@@ -856,7 +914,7 @@ function openMenu() {
   G.quest = null; show('menu');
   $('#menuHero').innerHTML = heroSVG(P.gender, P.color).replace('<svg ', '<svg style="height:90px" ');
   $('#menuWho').textContent = P.nick;
-  $('#menuRank').textContent = rankOf(P.xp) + ' · ' + P.xp + ' XP';
+  $('#menuRank').textContent = rankOf(P.xp) + ' · ' + P.xp + ' XP · my number: ' + P.id;
   $('#menuXp').style.width = ((P.xp % 400) / 4) + '%';
   $('#menuTier').textContent = 'Level ' + P.tier + ': ' + TIERS[P.tier];
   const t = P.sec[today()] || 0;
@@ -1705,7 +1763,7 @@ function advanceQuest() {
 }
 // Losing every heart restarts the quest from its first encounter with a newly rolled length. Loot, coins and potions are kept.
 function restartQuest() {
-  const qs = P.quest[G.quest]; qs.enc = 0; qs.len = 0; qs.hearts = CFG.MAX_HEARTS; qs.restarts = (qs.restarts || 0) + 1; qs.act = false; saveSoon(true);
+  const qs = P.quest[G.quest]; qs.enc = 0; qs.len = 0; qs.hearts = CFG.MAX_HEARTS; qs.restarts = (qs.restarts || 0) + 1; P.restartsTotal = (P.restartsTotal || 0) + 1; qs.act = false; saveSoon(true);
 }
 function victory() {
   const boss = G.mon.boss; $('#foeBody').classList.add('die'); $('#aura').style.display = 'none'; burst('✨', 14); sfx.win(); confetti();
@@ -1780,14 +1838,14 @@ function adminRender(j) {
 }
 const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
 function adminTable() {
-  const cols = [['nick', 'Student'], ['tier', 'Level'], ['accuracy', 'Accuracy'], ['answers', 'Answers'], ['minutes', 'Minutes'], ['last', 'Last played']];
+  const cols = [['nick', 'Student'], ['tier', 'Level'], ['accuracy', 'Accuracy'], ['answers', 'Answers'], ['minutes', 'Minutes'], ['coins', 'Coins'], ['craftAcc', 'Crafting'], ['restarts', 'Restarts'], ['last', 'Last played']];
   const f = ADM.filter.trim().toLowerCase();
-  const rows = ADM.students.filter(s => !f || (s.nick + ' ' + s.id).toLowerCase().includes(f))
+  const rows = ADM.students.filter(s => !f || (s.nick + ' ' + s.id + ' ' + (s.real || '') + ' ' + (s.cls || '')).toLowerCase().includes(f))
     .sort((a, b) => { const k = ADM.sortKey; const va = k === 'last' ? (a.last || '') : k === 'nick' ? a.nick.toLowerCase() : a[k], vb = k === 'last' ? (b.last || '') : k === 'nick' ? b.nick.toLowerCase() : b[k]; return (va > vb ? 1 : va < vb ? -1 : 0) * ADM.sortDir; });
   $('#admTable').innerHTML = '<thead><tr>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
-    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small></td>
-      <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${agoText(s.days)}</td></tr>`).join('')
-      : '<tr><td colspan="6" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
+    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
+      <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${s.coins || 0}</td><td>${s.craftAcc ? s.craftAcc + "%" : "–"}</td><td>${s.restarts || 0}</td><td>${agoText(s.days)}</td></tr>`).join('')
+      : '<tr><td colspan="9" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
 }
 function keyLabel(k) {
   const t = k[0], body = k.slice(2);
@@ -1801,19 +1859,41 @@ async function adminStudent(id) {
   try {
     const j = await adminCall('student', { id }); if (!j.ok) throw new Error(j.error);
     const p = JSON.parse(j.data), st = Object.entries(p.stats || {}).map(([k, [r, w]]) => ({ k, r, w, n: r + w }));
-    const total = st.reduce((a, x) => a + x.n, 0), right = st.reduce((a, x) => a + x.r, 0);
-    const hard = st.filter(x => x.w >= 1 && x.n >= 2).sort((a, b) => (b.w / b.n) - (a.w / a.n) || b.w - a.w).slice(0, 8), mastered = st.filter(x => x.r >= 3 && x.w === 0).length;
-    const today = new Date(), days = Array.from({ length: 14 }, (_, i) => { const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (13 - i)); const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); return { d, s: (p.sec || {})[key] || 0 }; });
-    const mx = Math.max(60, ...days.map(x => x.s)), q = p.quest || {};
-    box.innerHTML = `<div class="row" style="justify-content:space-between"><b style="font-size:1.2rem">${esc(p.nick)} <small style="opacity:.7">#${esc(p.id)}</small></b><button class="ib" id="admDetailClose">✕</button></div>
-      <div class="kv"><span>Level ${p.tier}: ${esc(TIERS[p.tier] || '')}</span><span>⭐ ${p.xp} XP</span><span>${total} answers · ${total ? Math.round(100 * right / total) : 0}% correct</span><span>✅ ${mastered} items mastered</span>
-        <span>⚔️ Monster Hunter: chapter ${(q.battle || {}).ch || 1}, fight ${((q.battle || {}).enc || 0) + 1}</span><span>🌿 Village Helper: village ${(q.peace || {}).ch || 1}, helped ${(q.peace || {}).enc || 0}</span><span>🔁 Restarts: ${((q.battle || {}).restarts || 0) + ((q.peace || {}).restarts || 0)}</span></div>
-      <b>Practice time, last 14 days (minutes)</b>
-      <div class="days">${days.map(x => `<div title="${x.d.toLocaleDateString()}: ${Math.round(x.s / 60)} min" style="height:${Math.max(3, 100 * x.s / mx)}%"></div>`).join('')}</div>
-      <div class="dayLbl">${days.map(x => `<span>${x.d.getDate()}</span>`).join('')}</div>
-      <p style="margin:12px 0 4px"><b>Needs more practice</b> <small style="opacity:.7">(most mistakes, in what they were asked)</small></p>
-      ${hard.length ? '<div class="kv">' + hard.map(x => `<span><span class="hebBig">${esc(keyLabel(x.k))}</span><br>${x.w} wrong of ${x.n}</span>`).join('') + '</div>' : '<p style="opacity:.8;margin:4px 0">Nothing stands out yet. 👍</p>'}`;
+    const total = st.reduce((a, x) => a + x.n, 0), right = st.reduce((a, x) => a + x.r, 0), pct = (a, b) => b ? Math.round(100 * a / b) + '%' : '–';
+    const sum = o => Object.values(o || {}).reduce((a, b) => a + b, 0);
+    // skills: what kind of questions, how many, how well
+    const NAMES = { L: 'Single letter sounds', S: 'Syllables', C: 'Sound chains (made-up words)', W: 'Words (reading and writing)' }, cat = {};
+    for (const x of st) { const c = cat[x.k[0]] = cat[x.k[0]] || { r: 0, w: 0, items: 0, mast: 0, hard: 0 }; c.r += x.r; c.w += x.w; c.items++; if (x.r >= 3 && x.w === 0) c.mast++; if (x.w >= 1 && x.n >= 2 && x.w / x.n >= .4) c.hard++; }
+    const skillRows = Object.keys(NAMES).filter(k => cat[k]).map(k => { const c = cat[k], n = c.r + c.w;
+      return `<tr><td>${NAMES[k]}</td><td>${n}</td><td><span class="pbar2"><i style="width:${Math.round(100 * c.r / n)}%"></i></span>${pct(c.r, n)}</td><td>${c.items}</td><td>✅ ${c.mast}</td><td>${c.hard ? '⚠️ ' + c.hard : '–'}</td></tr>`; }).join('');
+    const hard = st.filter(x => x.w >= 1 && x.n >= 2).sort((a, b) => (b.w / b.n) - (a.w / a.n) || b.w - a.w).slice(0, 8);
+    const strong = st.filter(x => x.r >= 3 && x.w === 0).sort((a, b) => b.r - a.r).slice(0, 8), mastered = st.filter(x => x.r >= 3 && x.w === 0).length;
+    // time
+    const sec = p.sec || {}, daysPlayed = Object.keys(sec).filter(d => sec[d] >= 60), totalMin = Math.round(Object.values(sec).reduce((a, b) => a + b, 0) / 60);
+    const today = new Date(), days = Array.from({ length: 14 }, (_, i) => { const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - (13 - i)); const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); return { d, s: sec[key] || 0 }; });
+    const mx = Math.max(60, ...days.map(x => x.s)), q = p.quest || {}, activeLast14 = days.filter(x => x.s >= 60).length, goalDays = days.filter(x => x.s >= CFG.DAILY_SEC).length;
+    // world
+    const rar = [0, 0, 0, 0, 0]; for (const [iid, n] of Object.entries(p.inv || {})) if (ING[iid]) rar[ING[iid].r] += n;
+    const potTxt = POTION_IDS.filter(pid => ((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)).map(pid => `${POTIONS[pid].em} ${((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)}`).join('  ') || 'none';
+    const cr = p.craft || { n: 0, ok: 0 };
+    const sec2 = (title, html) => `<div class="stuSec"><b>${title}</b>${html}</div>`;
+    box.innerHTML = `<div class="row" style="justify-content:space-between;align-items:flex-start;flex-wrap:nowrap"><div><b style="font-size:1.3rem">${esc(p.nick)}</b> <small style="opacity:.7">#${esc(p.id)}</small>
+        <div>${p.real ? '👤 ' + esc(p.real) : '<span style="opacity:.6">(no real name saved: this student joined before names were asked)</span>'}${p.cls ? ' · 🏫 ' + esc(p.cls) : ''}</div></div><button class="ib" id="admDetailClose">✕</button></div>` +
+      sec2('Overview', `<div class="kv"><span>📖 Level ${p.tier}: ${esc(TIERS[p.tier] || '')}</span><span>🏅 ${rankOf(p.xp)} · ⭐ ${p.xp} XP</span><span>🎯 ${total} answers · ${pct(right, total)} correct</span><span>✅ ${mastered} items mastered</span>
+        <span>⏱️ ${totalMin} min in total</span><span>📅 ${daysPlayed.length} days played${daysPlayed.length ? ' · about ' + Math.round(totalMin / daysPlayed.length) + ' min a day' : ''}</span><span>🕒 Created ${p.created ? new Date(p.created).toLocaleDateString() : '?'} · last saved ${p.updated ? new Date(p.updated).toLocaleDateString() : '?'}</span></div>`) +
+      sec2('Skills', skillRows ? `<div class="tblwrap"><table class="skillTbl"><thead><tr><th>Skill</th><th>Answers</th><th>Correct</th><th>Items seen</th><th>Mastered</th><th>Needs work</th></tr></thead><tbody>${skillRows}</tbody></table></div>` : '<p style="opacity:.7;margin:4px 0">No answers yet.</p>') +
+      sec2('Practice time, last 14 days (minutes)', `<div class="days">${days.map(x => `<div title="${x.d.toLocaleDateString()}: ${Math.round(x.s / 60)} min" style="height:${Math.max(3, 100 * x.s / mx)}%"></div>`).join('')}</div><div class="dayLbl">${days.map(x => `<span>${x.d.getDate()}</span>`).join('')}</div>
+        <div class="small" style="opacity:.8">Played on ${activeLast14} of the last 14 days · reached the 10-minute goal on ${goalDays}</div>`) +
+      sec2('Needs more practice <small style="opacity:.7;font-weight:400">(most mistakes)</small>', hard.length ? '<div class="kv">' + hard.map(x => `<span><span class="hebBig">${esc(keyLabel(x.k))}</span><br>${x.w} wrong of ${x.n}</span>`).join('') + '</div>' : '<p style="opacity:.8;margin:4px 0">Nothing stands out yet. 👍</p>') +
+      sec2('Doing well', strong.length ? '<div class="kv">' + strong.map(x => `<span><span class="hebBig">${esc(keyLabel(x.k))}</span><br>${x.r} right</span>`).join('') + '</div>' : '<p style="opacity:.8;margin:4px 0">Not enough yet.</p>') +
+      sec2('Quests', `<div class="kv"><span>⚔️ Monster Hunter: chapter ${(q.battle || {}).ch || 1}, fight ${((q.battle || {}).enc || 0) + 1}${(q.battle || {}).act ? ' (a run is in progress)' : ''}</span><span>🌿 Village Helper: village ${(q.peace || {}).ch || 1}, helped ${(q.peace || {}).enc || 0}${(q.peace || {}).act ? ' (a run is in progress)' : ''}</span>
+        <span>🔁 Quest restarts: ${p.restartsTotal || 0}</span></div>`) +
+      sec2('World', `<div class="kv"><span>🪙 ${Math.floor(p.coins || 0)} coins</span><span>🫕 ${CAULDRONS[(p.own || {}).caul || 0]}</span><span>🪴 ${((p.own || {}).decor || []).length} of ${DECOR.length} decorations</span><span>🧪 Potions: ${potTxt}</span>
+        <span>🌿 ${sum(p.inv)} ingredients (${RARITY.map((n, i) => rar[i] ? rar[i] + ' ' + n.toLowerCase() : '').filter(Boolean).join(', ') || 'none'})</span><span>🧰 Crafting and shop questions: ${cr.n ? pct(cr.ok, cr.n) + ' right first try, of ' + cr.n : 'none yet'}</span></div>`) +
+      `<div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn ghost danger" id="admDelete">🗑 Delete this student…</button></div>`;
     $('#admDetailClose').onclick = () => { box.style.display = 'none'; };
+    $('#admDelete').onclick = () => modal('🗑 Delete this student?', `<p>You are about to delete <b>${esc(p.nick)}</b>${p.real ? ' (' + esc(p.real) + (p.cls ? ', ' + esc(p.cls) : '') + ')' : ''}, number <b>${esc(p.id)}</b>.</p><p><b>All their progress is removed from the sheet for good. This cannot be undone,</b> and the number can never be used again.</p>`,
+      [['Yes, delete', async () => { try { const r = await adminCall('deleteStudent', { id: p.id }); if (r.ok) { ADM.students = ADM.students.filter(s => s.id !== p.id); box.style.display = 'none'; adminRender({ students: ADM.students, soundVer: ADM.soundVer }); toast('Student deleted'); } else toast('Could not delete: ' + (r.error || '')); } catch (e) { toast('Could not reach the cloud'); } }], ['Cancel', null, true]]);
   } catch (e) { box.innerHTML = '<p>Could not load this student. ' + esc(e.message || '') + '</p>'; }
 }
 $('#adminLink').onclick = e => { e.preventDefault(); adminAsk(); };
@@ -1825,8 +1905,8 @@ $('#admTable').onclick = e => {
   const tr = e.target.closest('tbody tr[data-id]'); if (tr) adminStudent(tr.dataset.id);
 };
 $('#admCsv').onclick = () => {
-  const head = ['id', 'nickname', 'level', 'accuracy %', 'answers', 'minutes', 'last played'];
-  const csv = [head, ...ADM.students.map(s => [s.id, s.nick, s.tier, s.accuracy, s.answers, s.minutes, s.last])].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const head = ['id', 'nickname', 'real name', 'class', 'level', 'accuracy %', 'answers', 'minutes', 'coins', 'crafting accuracy %', 'quest restarts', 'last played'];
+  const csv = [head, ...ADM.students.map(s => [s.id, s.nick, s.real || '', s.cls || '', s.tier, s.accuracy, s.answers, s.minutes, s.coins || 0, s.craftAcc || 0, s.restarts || 0, s.last])].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'students.csv'; a.click();
 };
 /* ---- voice-set library: the teacher decides which named set the students hear ---- */
