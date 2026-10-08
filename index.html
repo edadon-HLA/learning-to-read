@@ -239,6 +239,10 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 #modal .box{background:linear-gradient(160deg,#2a1d5e,#4b2a8c);border:2px solid var(--gold);border-radius:22px;padding:22px;max-width:440px;width:100%;text-align:center;animation:pop .3s}
 @keyframes pop{from{transform:scale(.7);opacity:0}}
 #modal h2{font-size:1.8rem}
+#modal .box{max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}   /* a tall window (like My look on a small screen) scrolls instead of getting stuck */
+#modal #mBtns{position:sticky;bottom:-22px;padding:10px 0 4px;background:linear-gradient(rgba(58,36,120,0),#3a2478 35%)}   /* its buttons stay visible */
+.lookPrev svg{height:150px;width:auto}
+@media(max-height:620px){.lookPrev svg{height:100px}#modal h2{font-size:1.4rem}}
 .confetti{position:fixed;top:-30px;font-size:1.8rem;pointer-events:none;animation:fall linear forwards;z-index:60}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 @media (max-width:560px){
