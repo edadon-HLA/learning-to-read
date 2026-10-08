@@ -52,6 +52,10 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 #mapHero{position:absolute;width:11%;aspect-ratio:3/4;transform:translate(-50%,-92%);cursor:grab;touch-action:none;z-index:5;transition:left .9s ease-in-out,top .9s ease-in-out;filter:drop-shadow(0 4px 3px #0007)}
 #mapHero svg{width:100%;height:100%}#mapHero.drag{transition:none;cursor:grabbing;z-index:6}#mapHero.walk svg{animation:hop .3s infinite alternate}
 @keyframes hop{to{transform:translateY(-6%)}}
+.ingChip{display:inline-block;background:#0004;border-radius:10px;padding:2px 8px;border:2px solid #fff3}
+.ingChip.r0{border-color:#b9bfd0}.ingChip.r1{border-color:#3ddc97}.ingChip.r2{border-color:#4aa8ff}.ingChip.r3{border-color:#b56bff}.ingChip.r4{border-color:#ffd166;box-shadow:0 0 10px #ffd16688}
+.rarLbl{opacity:.8;margin-left:4px}.runNote.low{opacity:.6}.loot{margin:8px 0}
+.bagGrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.bagItem{background:#0003;border-radius:12px;padding:6px 10px;font-size:1.1rem}.bagN{margin-left:6px;opacity:.85}
 .runNote{margin-top:4px;font-size:.8rem;opacity:.9}.runNote.warn{color:#ffd166;font-weight:700;opacity:1}
 .questcard:hover{border-color:var(--gold);transform:translateY(-2px)}
 .questcard b{font-size:1.5rem;display:block;margin-bottom:6px}
@@ -277,7 +281,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="place" data-p="shop" style="left:80%;top:74%"><span class="pIcon">🏪</span><span class="sign"><b class="heb">חנות</b><small>Shop</small></span></button>
     <div id="mapHero" aria-label="Your hero"></div>
   </div>
-  <div class="row" style="margin-top:14px"><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
+  <div class="row" style="margin-top:14px"><button class="btn" id="bagBtn">🎒 My bag</button><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
 </section>
 
 <section id="game" class="screen">
@@ -323,6 +327,11 @@ const CFG = {
   MAX_HEARTS: 3,            // hearts (fights) or smileys (village) the student can have
   HINT_AFTER: 5,            // from this encounter on, tell the student the monsters are getting stronger
   VILLAGE_NEED: 3, BIG_NEED: 5,    // correct answers a villager needs; a big request needs more
+  COIN_BY_TIER: [0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4],   // coin "unit" by level (index = level): a won fight pays up to FIGHT_UNITS units, each mistake takes one unit away
+  FIGHT_UNITS: 3,           // a normal fight or villager takes 3 right answers: maximum coins = 3 x the level base amount; each mistake takes one base amount away
+  BOSS_MIN: 3, BOSS_MAX: 5, // a boss / big request pays the normal amount times a random number between these
+  EARLY_MULT: 2,            // coins are doubled during the first 10 minutes of play each day
+  ODDS_NORMAL: [60, 30, 10], ODDS_BOSS: [60, 30, 10],   // chance (%) of common/uncommon/rare in normal fights; rare/epic/legendary in boss fights
   SAFETY_RESTARTS: 2,       // after this many restarts in a row, the next try starts with one free extra heart (0 = off)
   UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10
 };
@@ -408,6 +417,27 @@ const VILL = [
  {he:'תפוח',nk:'תַּפּוּחַ',en:'apple',em:'🍎',need:'I want a crunchy red fruit.'},
  {he:'שעון',nk:'שָׁעוֹן',en:'clock',em:'⏰',need:"I'm late! What tells me the time?"}
 ];
+// Ingredients are words the student learns to read (and, later, to write). Ids, not words, are stored in the profile.
+// Rarity: 0 common (plants), 1 uncommon (element stones), 2 rare (creature parts), 3 epic (sky), 4 legendary (treasures)
+const RARITY = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
+const ING = {};
+for (const [r, rows] of [
+  [0, [['leaf', 'עלה', 'עָלֶה', 'leaf', '🍃'], ['grass', 'עשב', 'עֵשֶׂב', 'grass', '🌾'], ['flower', 'פרח', 'פֶּרַח', 'flower', '🌸'], ['seed', 'זרע', 'זֶרַע', 'seed', '🌰'],
+       ['root', 'שורש', 'שֹׁרֶשׁ', 'root', '🥕'], ['thorn', 'קוץ', 'קוֹץ', 'thorn', '🌵'], ['mint', 'נענע', 'נַעֲנָע', 'mint', '🌿'], ['mushroom', 'פטרייה', 'פִּטְרִיָּה', 'mushroom', '🍄']]],
+  [1, [['g_fire', 'אבן אש', 'אֶבֶן אֵשׁ', 'fire stone', '🔥💎'], ['g_water', 'אבן מים', 'אֶבֶן מַיִם', 'water stone', '💧💎'], ['g_wind', 'אבן רוח', 'אֶבֶן רוּחַ', 'wind stone', '💨💎'],
+       ['g_earth', 'אבן אדמה', 'אֶבֶן אֲדָמָה', 'earth stone', '🌱💎'], ['g_ice', 'אבן קרח', 'אֶבֶן קֶרַח', 'ice stone', '🧊💎'], ['g_bolt', 'אבן ברק', 'אֶבֶן בָּרָק', 'lightning stone', '⚡💎'],
+       ['g_light', 'אבן אור', 'אֶבֶן אוֹר', 'light stone', '✨💎'], ['g_dark', 'אבן חושך', 'אֶבֶן חֹשֶׁךְ', 'shadow stone', '🌑💎']]],
+  [2, [['feather', 'נוצה', 'נוֹצָה', 'feather', '🪶'], ['scale', 'קשקש', 'קַשְׂקַשׂ', 'scale', '🐉'], ['horn', 'קרן', 'קֶרֶן', 'horn', '🦄'], ['tooth', 'שן', 'שֵׁן', 'tooth', '🦷'], ['wing', 'כנף', 'כָּנָף', 'wing', '🪽']]],
+  [3, [['star', 'כוכב', 'כּוֹכָב', 'star', '⭐'], ['moon', 'ירח', 'יָרֵחַ', 'moon', '🌙'], ['rainbow', 'קשת', 'קֶשֶׁת', 'rainbow', '🌈'], ['comet', 'שביט', 'שָׁבִיט', 'comet', '☄️'], ['cloud', 'ענן', 'עָנָן', 'cloud', '☁️']]],
+  [4, [['diamond', 'יהלום', 'יַהֲלוֹם', 'diamond', '💠'], ['pearl', 'פנינה', 'פְּנִינָה', 'pearl', '🦪'], ['crown', 'כתר', 'כֶּתֶר', 'crown', '👑'], ['dragonegg', 'ביצת דרקון', 'בֵּיצַת דְּרָקוֹן', 'dragon egg', '🥚']]]
+]) for (const [id, he, nk, en, em] of rows) ING[id] = { id, he, nk, en, em, r };
+const RARE_POOL = { 2: ['feather', 'scale', 'horn', 'tooth', 'wing'], 3: ['star', 'moon', 'rainbow', 'comet', 'cloud'], 4: ['diamond', 'pearl', 'crown', 'dragonegg'] };
+// what each kind of monster (and the villagers) drops as common plants and uncommon stones
+const DROP = {
+  fire: { common: ['thorn', 'root', 'seed'], uncommon: ['g_fire', 'g_wind'] }, ice: { common: ['mint', 'leaf', 'grass'], uncommon: ['g_ice', 'g_water'] },
+  dark: { common: ['mushroom', 'root', 'thorn'], uncommon: ['g_dark', 'g_bolt'] }, plant: { common: ['grass', 'flower', 'leaf', 'seed'], uncommon: ['g_earth', 'g_water'] },
+  folk: { common: ['flower', 'grass', 'leaf', 'mint', 'seed'], uncommon: ['g_light', 'g_water', 'g_wind'] }
+};
 const FOLK = ['🧓','👩‍🌾','👨‍🌾','🧑‍🍳','👵','👴','🧒','👧','🧑‍🔧','👩‍🎤'];
 const TIERS = ['','Hear "a" syllables I','Hear "a" syllables II','Hear "a" syllables III','Hear new vowels I','Hear new vowels II',
   'Sound chains (2 syllables)','Sound chains (3 syllables)','Words I','Words II','Phrases & tricky words','Writing words','Writing spells'];
@@ -811,6 +841,7 @@ document.querySelectorAll('.place').forEach(b => b.onclick = () => walkTo(b.data
   };
   h.addEventListener('pointerup', end); h.addEventListener('pointercancel', end);
 })();
+$('#bagBtn').onclick = openBag;
 $('#logoutBtn').onclick = async () => { saveSoon(true); await sleep(300); P = null; $('#sid').value = ''; show('login'); };
 $('#menuMute').onclick = $('#muteBtn').onclick = () => setMute(!muted);
 $('#homeBtn').onclick = () => { saveSoon(true); openMenu(); };
@@ -990,7 +1021,7 @@ function newEncounter() {
   if (qs.enc > qs.len) qs.len = qs.enc;   // (only possible with a damaged save) the boss comes now
   if (!(qs.hearts > 0)) qs.hearts = CFG.MAX_HEARTS;
   const boss = qs.enc >= qs.len;
-  G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.need = G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;
+  G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier;   // mistakes in this fight lower the coins and the rarity of the loot G.need = G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;
   if (G.quest === 'battle') {
     const def = boss ? BOSSES[(qs.ch - 1) % BOSSES.length] : rnd(MONS);
     G.mon = { ...def, boss, max: boss ? 6 : 3, hp: boss ? 6 : 3 };
@@ -1041,13 +1072,13 @@ function drawScene() {
   if (b) {
     $('#foeBody').textContent = G.mon.body;
     $('#foeName').textContent = (G.mon.boss ? '👑 BOSS: ' : '') + G.mon.name;
-    $('#mid').innerHTML = `<b>${AREAS[(qs.ch - 1) % AREAS.length]}</b><br>${'⚔️'.repeat(qs.enc)} ${G.mon.boss ? '👑' : '❓'}${runNote(qs, 'The monsters are getting stronger…', '⚠️ Danger! Something big is waiting ahead!')}`;
+    $('#mid').innerHTML = `<b>${AREAS[(qs.ch - 1) % AREAS.length]}</b><br>${'⚔️'.repeat(qs.enc)} ${G.mon.boss ? '👑' : '❓'}${runNote(qs, 'The monsters are getting stronger…', '⚠️ Danger! Something big is waiting ahead!')}<div class="runNote" id="rewardPill"></div>`;
   } else {
     $('#foeBody').textContent = G.folk;
     $('#foeName').textContent = G.big ? '📜 Big request!' : 'Villager';
-    $('#mid').innerHTML = `<b>${VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="houses">${'🏠'.repeat(qs.enc)}${G.big ? '🏚️🏚️' : '🏚️'}</div>${runNote(qs, 'More and more people need help…', '⚠️ A big request is coming!')}<div class="bubble" id="bubble"></div>`;
+    $('#mid').innerHTML = `<b>${VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="houses">${'🏠'.repeat(qs.enc)}${G.big ? '🏚️🏚️' : '🏚️'}</div>${runNote(qs, 'More and more people need help…', '⚠️ A big request is coming!')}<div class="runNote" id="rewardPill"></div><div class="bubble" id="bubble"></div>`;
   }
-  updateBars();
+  updateBars(); updateReward();
 }
 function updateBars() {
   const b = G.quest === 'battle';
@@ -1160,7 +1191,7 @@ async function pickOption(i, btn) {
     if (!battle && G.helped >= G.need) return villageDone();
     nextQuestion();
   } else {
-    btn.classList.add('bad'); btn.disabled = true; sfx.bad();
+    btn.classList.add('bad'); btn.disabled = true; sfx.bad(); G.mist++; updateReward();
     let tr = '';
     if (first) { G.combo = 0; tr = record(q.key, false); }
     $('#fb').innerHTML = `❌ ${o.note || ''}`;
@@ -1230,7 +1261,7 @@ $('#castBtn').onclick = async () => {
     if (!battle && G.helped >= G.need) return villageDone();
     nextQuestion();
   } else {
-    G.combo = 0; const tr = first ? record(q.key, false) : ''; sfx.bad();
+    G.combo = 0; const tr = first ? record(q.key, false) : ''; sfx.bad(); G.mist++; updateReward();
     const nearMsg = near ? 'So close! Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word.<br>' : '';
     if (battle) {
       // wrong spell: the monster attacks, then it's the player's turn again with the same question
@@ -1254,6 +1285,59 @@ $('#castBtn').onclick = async () => {
   }
 };
 
+/* ----- loot: coins (for the shop) and ingredients (for potions), both given at the END of a won fight ----- */
+// During the fight the reward is only calculated: every mistake lowers the coins and the chance of rare ingredients.
+// Losing a fight pays nothing (all or nothing). Potions will count as mistakes (step 5).
+const earlyBonus = () => (P.sec[today()] || 0) < CFG.DAILY_SEC;   // the first 10 minutes of the day pay double
+function fightCoins(mist, boss, rollBoss) {
+  const unit = CFG.COIN_BY_TIER[G.fightTier || P.tier] || 1;
+  let c = Math.max(0, CFG.FIGHT_UNITS * unit - mist * unit);        // what a normal monster pays for this many mistakes
+  if (boss) c = c * (rollBoss ? CFG.BOSS_MIN + Math.random() * (CFG.BOSS_MAX - CFG.BOSS_MIN) : (CFG.BOSS_MIN + CFG.BOSS_MAX) / 2);
+  if (earlyBonus()) c *= CFG.EARLY_MULT;
+  return Math.round(c);
+}
+// Rarity odds (low to high). Each mistake takes 10 points from the highest tier that still has a chance and shares them among the tiers below it.
+function rarityOdds(boss, mist) {
+  const w = (boss ? CFG.ODDS_BOSS : CFG.ODDS_NORMAL).slice();
+  for (let m = 0; m < mist; m++) {
+    let hi = w.length - 1; while (hi > 0 && w[hi] <= 0) hi--;
+    if (hi === 0) break;
+    const take = Math.min(10, w[hi]); w[hi] -= take;
+    for (let i = 0; i < hi; i++) w[i] += take / hi;
+  }
+  return w;
+}
+function rollRarity(boss, mist) {   // returns 0..4 (common, uncommon, rare, epic, legendary)
+  const w = rarityOdds(boss, mist), base = boss ? 2 : 0; let r = Math.random() * 100;
+  for (let i = 0; i < w.length; i++) { r -= w[i]; if (r < 0) return base + i; }
+  return base;
+}
+function pickIngredient(ids) {   // favours words the student finds hard (more wrong answers = a bit more likely)
+  const wt = ids.map(id => { const s = P.stats['W:' + ING[id].he]; return s && s[0] + s[1] ? 1 + 2 * s[1] / (s[0] + s[1]) : 1; });
+  let r = Math.random() * wt.reduce((a, b) => a + b, 0); for (let i = 0; i < ids.length; i++) { r -= wt[i]; if (r <= 0) return ids[i]; } return ids[ids.length - 1];
+}
+function dropFor(source, rar) {
+  const pool = (DROP[source] || DROP.folk);
+  return pickIngredient(rar === 0 ? pool.common : rar === 1 ? pool.uncommon : RARE_POOL[rar]);
+}
+function giveLoot(source, boss, mist) {   // call once, when the fight is won
+  const rar = rollRarity(boss, mist), id = dropFor(source, rar), coins = fightCoins(mist, boss, true);
+  P.inv[id] = (P.inv[id] || 0) + 1; P.coins = (P.coins || 0) + coins;
+  const d = today(); if (P.coinDay.d !== d) P.coinDay = { d, c: 0 }; P.coinDay.c += coins;
+  return { got: [id], coins, bonus: coins > 0 && earlyBonus() };
+}
+const ingHtml = id => `<span class="ingChip r${ING[id].r}" title="${RARITY[ING[id].r]}">${ING[id].em} <b class="heb">${ING[id].nk}</b></span>`;
+const lootHtml = l => `<p class="loot">🎁 You found: ${l.got.map(ingHtml).join(' ')} <small class="rarLbl">${RARITY[ING[l.got[0]].r]}</small><br>` + (l.coins ? `+${l.coins} 🪙${l.bonus ? ' <small>(double coins: first 10 minutes!)</small>' : ''}` : 'No coins this time. Fewer mistakes means more coins!') + '</p>';
+function openBag() {
+  const have = Object.keys(ING).filter(id => (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
+  modal('🎒 My bag', `<p>🪙 <b>${Math.floor(P.coins || 0)}</b> coins</p>` + (have.length ? '<p>Ingredients:</p><div class="bagGrid">' + have.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></div>`).join('') + '</div>' : '<p style="opacity:.8">No ingredients yet. Beat monsters and help villagers to find some!</p>'), [['Close', null]]);
+}
+// the live reward shown in the fight (what you would get if you won now)
+function updateReward() {
+  const e = $('#rewardPill'); if (!e) return; const boss = G.quest === 'battle' ? G.mon.boss : G.big;
+  const c = fightCoins(G.mist || 0, boss, false);
+  e.innerHTML = boss ? `👑 Boss reward: 🪙 ~${c} <small>(×3–5)</small>` : `🪙 Reward: ${c}`; e.classList.toggle('low', c === 0);
+}
 /* ----- encounter results ----- */
 function advanceQuest() {
   const qs = P.quest[G.quest]; qs.enc++;
@@ -1269,11 +1353,11 @@ function restartQuest() {
 }
 function victory() {
   const boss = G.mon.boss; $('#foeBody').classList.add('die'); $('#aura').style.display = 'none'; burst('✨', 14); sfx.win(); confetti();
-  const bonus = boss ? 80 : 30; P.xp += bonus;
+  const bonus = boss ? 80 : 30; P.xp += bonus; const loot = giveLoot(G.mon.el, boss, G.mist);
   const done = advanceQuest(); saveSoon(true);
   const qs = P.quest.battle, next = !done && qs.enc === qs.len;   // the boss is next
   modal(boss ? '👑 Boss defeated!' : '🎉 Victory!',
-    `<p>You defeated <b>${esc(G.mon.name)}</b>! +${bonus} XP</p>` + (done ? `<p>🏆 Chapter complete! A new land awaits: <b>${AREAS[(P.quest.battle.ch - 1) % AREAS.length]}</b></p>` : `<p>❤️ You feel a bit stronger.</p>`) + (next ? '<p>⚠️ The boss awaits!</p>' : ''),
+    `<p>You defeated <b>${esc(G.mon.name)}</b>! +${bonus} XP</p>` + lootHtml(loot) + (done ? `<p>🏆 Chapter complete! A new land awaits: <b>${AREAS[(P.quest.battle.ch - 1) % AREAS.length]}</b></p>` : `<p>❤️ You feel a bit stronger.</p>`) + (next ? '<p>⚠️ The boss awaits!</p>' : ''),
     [['Next battle ⚔️', newEncounter], ['Back to map', openMenu, true]]);
 }
 function knockout() {
@@ -1286,8 +1370,8 @@ function villageFail() {
 }
 function villageDone() {
   sfx.win(); confetti(['💛', '🏠', '🌸', '⭐']);
-  const big = G.big, bonus = big ? 70 : 40; P.xp += bonus; const done = advanceQuest(); saveSoon(true);
-  modal(big ? '📜 The big request is done!' : '🏠 The villagers are happy!', `<p>You helped everyone and a house was rebuilt! +${bonus} XP</p>` + (done ? `<p>🏆 The whole village is restored! Next stop: <b>${VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length]}</b></p>` : '<p>😊 You feel a bit happier.</p>'),
+  const big = G.big, bonus = big ? 70 : 40; P.xp += bonus; const loot = giveLoot("folk", big, G.mist); const done = advanceQuest(); saveSoon(true);
+  modal(big ? '📜 The big request is done!' : '🏠 The villagers are happy!', `<p>You helped everyone and a house was rebuilt! +${bonus} XP</p>` + lootHtml(loot) + (done ? `<p>🏆 The whole village is restored! Next stop: <b>${VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length]}</b></p>` : '<p>😊 You feel a bit happier.</p>'),
     [['Help more people 🌿', newEncounter], ['Back to map', openMenu, true]]);
 }
 
