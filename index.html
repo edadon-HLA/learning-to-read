@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#3a1c71">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Learning to Read</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -278,6 +283,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="btn ghost" id="newBtn">🌟 I am new</button>
   </div>
   <div class="center"><a href="#" id="adminLink" class="adminLink">🔧 Teacher area</a></div>
+  <div class="center"><button class="btn ghost" id="installBtn" style="display:none;margin-top:10px">📲 Install the game on this device</button></div>
   <div class="credit">Created by Dr. Dadon Eldar<br>in collaboration with HLA Hebrew Public</div>
 </section>
 
@@ -1064,6 +1070,12 @@ $('#wardrobe').onclick = e => {
 };
 $('#wdSave').onclick = () => { P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.acc = WD.acc; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
 $('#wdBack').onclick = () => openHome();
+/* ----- install as an app (works from Chrome on Android) and keep a saved copy for offline play ----- */
+let installEvt = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; $('#installBtn').style.display = ''; });
+window.addEventListener('appinstalled', () => { installEvt = null; $('#installBtn').style.display = 'none'; toast('📲 The game is installed!'); });
+$('#installBtn').onclick = async () => { if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch (e) {} installEvt = null; $('#installBtn').style.display = 'none'; };
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
 function openCreator() { cr = { g: 'm', color: rnd(COLORS), skin: SKINS[2], hair: null }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
 const swatchRow = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
 function drawCreator() {
