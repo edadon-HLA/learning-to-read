@@ -2,7 +2,7 @@
   "name": "Learning to Read",
   "short_name": "Learn to Read",
   "description": "An adventure game for learning to read and write Hebrew.",
-  "start_url": "./",
+  "start_url": "./?mode=app",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
