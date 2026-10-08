@@ -61,6 +61,15 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .packBottle.sm .potSvg{width:20px;height:27px}.packBottle.sm i{font-size:.75rem}
 .opt{position:relative}.optSnd{position:absolute;top:6px;right:8px;background:#fff;color:#000;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 2px 0 #0004;cursor:pointer}.optSnd:hover{transform:scale(1.12)}
 .potNote{opacity:.75;width:100%;text-align:center}
+.craftPic{display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 6px}.craftEm{font-size:3rem;line-height:1}.craftPic small{opacity:.8;font-size:.95rem}
+.shine{position:relative;animation:shineGlow 1.8s ease-in-out infinite}
+@keyframes shineGlow{0%,100%{filter:drop-shadow(0 0 3px #fff8) brightness(1)}50%{filter:drop-shadow(0 0 12px #9fe8ffcc) drop-shadow(0 0 5px #ffffffee) brightness(1.35)}}
+.ingChip.shine{border-color:#9fe8ff;box-shadow:0 0 10px #9fe8ff88}
+.homeCard{display:flex;align-items:center;gap:14px}.caulBig{font-size:3.2rem;filter:drop-shadow(0 0 12px #ffd16666)}
+.recipe{display:flex;align-items:center;gap:10px;background:#0003;border-radius:14px;padding:8px 10px;margin:6px 0}.recipe.locked{opacity:.6}.recipe .packBottle .potSvg{width:34px;height:46px}.recipe .btn{padding:8px 14px;font-size:1rem}
+.shelf{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.shelfItem{display:flex;flex-direction:column;align-items:center;background:#0003;border-radius:14px;padding:8px 10px;min-width:92px}.shelfItem .packBottle .potSvg{width:30px;height:40px}
+.slotRow{margin:8px 0}.slotOpts{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.slotBtn{font:inherit;color:#fff;background:#0004;border:2px solid #fff3;border-radius:12px;padding:6px 10px;cursor:pointer}.slotBtn.sel{border-color:var(--gold);background:#ffd16633}.slotBtn:disabled{opacity:.35}
+.stage.craft{background:radial-gradient(circle at 70% 70%,#5b3aa8,#241247)}
 .packRow{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#0003;border-radius:12px;padding:6px 10px;margin:6px 0}.packName small{display:block;opacity:.75;font-size:.75rem}
 .packCtl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}.packN{min-width:1.4em;text-align:center;font-size:1.2rem}.packHome{opacity:.8}
 .place.locked{filter:grayscale(.85);opacity:.55}.place.locked .pSub::before{content:'🔒 '}
@@ -296,6 +305,18 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="row" style="margin-top:14px"><button class="btn" id="bagBtn">🎒 My bag</button><button class="btn ghost" id="logoutBtn">🚪 Switch student</button></div>
 </section>
 
+<section id="home" class="screen">
+  <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏡 Home</div><div class="small">Brew potions with the ingredients you found.</div></div></div>
+  <div class="card homeCard" id="homeCaul"></div>
+  <h2 class="center" style="margin:10px 0 4px">🧪 Brew a potion</h2>
+  <div class="card" id="homeRecipes"></div>
+  <h2 class="center" style="margin:10px 0 4px">🧴 My potion shelf</h2>
+  <div class="card shelf" id="homeShelf"></div>
+  <h2 class="center" style="margin:10px 0 4px">🌿 My ingredients</h2>
+  <div class="card bagGrid" id="homeIngs"></div>
+  <div class="small center" style="opacity:.7;margin:10px 0">🪴 Decorations for your home will be sold in the shop.</div>
+</section>
+
 <section id="game" class="screen">
   <div class="top">
     <button class="ib" id="homeBtn" title="Back to map">🗺️</button>
@@ -310,6 +331,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   </div>
   <div class="potBar" id="potBar" style="display:none"></div>
   <div class="panel card">
+    <div class="craftPic" id="craftPic" style="display:none"></div>
     <div class="qtitle" id="qTitle"></div>
     <div class="big" id="qBig"></div>
     <div class="qsub" id="qSub"></div>
@@ -437,20 +459,20 @@ const RARITY = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
 const ING = {};
 for (const [r, rows] of [
   [0, [['leaf', 'עלה', 'עָלֶה', 'leaf', '🍃'], ['grass', 'עשב', 'עֵשֶׂב', 'grass', '🌾'], ['flower', 'פרח', 'פֶּרַח', 'flower', '🌸'], ['seed', 'זרע', 'זֶרַע', 'seed', '🌰'],
-       ['root', 'שורש', 'שֹׁרֶשׁ', 'root', '🥕'], ['thorn', 'קוץ', 'קוֹץ', 'thorn', '🌵'], ['mint', 'נענע', 'נַעֲנָע', 'mint', '🌿'], ['mushroom', 'פטרייה', 'פִּטְרִיָּה', 'mushroom', '🍄']]],
+       ['root', 'שורש', 'שֹׁרֶשׁ', 'root', '🥕'], ['thorn', 'קוץ', 'קוֹץ', 'thorn', '🌵'], ['mushroom', 'פטרייה', 'פִּטְרִיָּה', 'mushroom', '🍄']]],
   [1, [['g_fire', 'אבן אש', 'אֶבֶן אֵשׁ', 'fire stone', '🔥💎'], ['g_water', 'אבן מים', 'אֶבֶן מַיִם', 'water stone', '💧💎'], ['g_wind', 'אבן רוח', 'אֶבֶן רוּחַ', 'wind stone', '💨💎'],
        ['g_earth', 'אבן אדמה', 'אֶבֶן אֲדָמָה', 'earth stone', '🌱💎'], ['g_ice', 'אבן קרח', 'אֶבֶן קֶרַח', 'ice stone', '🧊💎'], ['g_bolt', 'אבן ברק', 'אֶבֶן בָּרָק', 'lightning stone', '⚡💎'],
        ['g_light', 'אבן אור', 'אֶבֶן אוֹר', 'light stone', '✨💎'], ['g_dark', 'אבן חושך', 'אֶבֶן חֹשֶׁךְ', 'shadow stone', '🌑💎']]],
   [2, [['feather', 'נוצה', 'נוֹצָה', 'feather', '🪶'], ['scale', 'קשקש', 'קַשְׂקַשׂ', 'scale', '🐉'], ['horn', 'קרן', 'קֶרֶן', 'horn', '🦄'], ['tooth', 'שן', 'שֵׁן', 'tooth', '🦷'], ['wing', 'כנף', 'כָּנָף', 'wing', '🪽']]],
   [3, [['star', 'כוכב', 'כּוֹכָב', 'star', '⭐'], ['moon', 'ירח', 'יָרֵחַ', 'moon', '🌙'], ['rainbow', 'קשת', 'קֶשֶׁת', 'rainbow', '🌈'], ['comet', 'שביט', 'שָׁבִיט', 'comet', '☄️'], ['cloud', 'ענן', 'עָנָן', 'cloud', '☁️']]],
-  [4, [['diamond', 'יהלום', 'יַהֲלוֹם', 'diamond', '💠'], ['pearl', 'פנינה', 'פְּנִינָה', 'pearl', '🦪'], ['crown', 'כתר', 'כֶּתֶר', 'crown', '👑'], ['dragonegg', 'ביצת דרקון', 'בֵּיצַת דְּרָקוֹן', 'dragon egg', '🥚']]]
+  [4, [['diamond', 'יהלום', 'יַהֲלוֹם', 'diamond', '💎'], ['pearl', 'פנינה', 'פְּנִינָה', 'pearl', '🦪'], ['crown', 'כתר', 'כֶּתֶר', 'crown', '👑'], ['dragonegg', 'ביצת דרקון', 'בֵּיצַת דְּרָקוֹן', 'dragon egg', '🥚']]]
 ]) for (const [id, he, nk, en, em] of rows) ING[id] = { id, he, nk, en, em, r };
 const RARE_POOL = { 2: ['feather', 'scale', 'horn', 'tooth', 'wing'], 3: ['star', 'moon', 'rainbow', 'comet', 'cloud'], 4: ['diamond', 'pearl', 'crown', 'dragonegg'] };
 // what each kind of monster (and the villagers) drops as common plants and uncommon stones
 const DROP = {
-  fire: { common: ['thorn', 'root', 'seed'], uncommon: ['g_fire', 'g_wind'] }, ice: { common: ['mint', 'leaf', 'grass'], uncommon: ['g_ice', 'g_water'] },
+  fire: { common: ['thorn', 'root', 'seed'], uncommon: ['g_fire', 'g_wind'] }, ice: { common: ['seed', 'leaf', 'grass'], uncommon: ['g_ice', 'g_water'] },
   dark: { common: ['mushroom', 'root', 'thorn'], uncommon: ['g_dark', 'g_bolt'] }, plant: { common: ['grass', 'flower', 'leaf', 'seed'], uncommon: ['g_earth', 'g_water'] },
-  folk: { common: ['flower', 'grass', 'leaf', 'mint', 'seed'], uncommon: ['g_light', 'g_water', 'g_wind'] }
+  folk: { common: ['flower', 'grass', 'leaf', 'seed'], uncommon: ['g_light', 'g_water', 'g_wind'] }
 };
 const FOLK = ['🧓','👩‍🌾','👨‍🌾','🧑‍🍳','👵','👴','🧒','👧','🧑‍🔧','👩‍🎤'];
 const TIERS = ['','Hear "a" syllables I','Hear "a" syllables II','Hear "a" syllables III','Hear new vowels I','Hear new vowels II',
@@ -676,7 +698,7 @@ function newProfile(id, nick, gender, color) {
     quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() });
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 3;
+const PROFILE_V = 4;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -694,6 +716,8 @@ function migrate(p) {
     p.carry = {}; p.pot = p.pot || {}; for (const [id, n] of Object.entries(STARTER_POTIONS)) p.pot[id] = (p.pot[id] || 0) + n;
     for (const k of ['battle', 'peace']) p.quest[k].act = p.quest[k].enc > 0;
   }
+  if (v < 4 && p.inv && p.inv.mint) { p.inv.leaf = (p.inv.leaf || 0) + p.inv.mint; }   // version 4: the herb mint was removed; any mint becomes a leaf
+  if (p.inv) delete p.inv.mint;
   p.carry = p.carry || {}; p.pot = p.pot || {};
   p.v = PROFILE_V;
   return p;
@@ -836,7 +860,8 @@ function placeHero(x, y) { const h = $('#mapHero'); h.style.left = x + '%'; h.st
 function enterPlace(id) {
   if (id === 'gate') startQuest('battle');
   else if (id === 'board') startQuest('peace');
-  else { modal(id === 'home' ? '🏡 Home' : '🏪 Shop', '<p>Coming soon! This place is still being built.</p>', [['OK', null]]); placeHero(START.x, START.y); }
+  else if (id === 'home') openHome();
+  else { modal('🏪 Shop', '<p>Coming soon! This place is still being built.</p>', [['OK', null]]); placeHero(START.x, START.y); }
 }
 function walkTo(id) {
   if (walking) return;
@@ -866,7 +891,7 @@ document.querySelectorAll('.place').forEach(b => b.onclick = () => walkTo(b.data
 $('#bagBtn').onclick = openBag;
 $('#logoutBtn').onclick = async () => { saveSoon(true); await sleep(300); P = null; $('#sid').value = ''; show('login'); };
 $('#menuMute').onclick = $('#muteBtn').onclick = () => setMute(!muted);
-$('#homeBtn').onclick = () => { saveSoon(true); openMenu(); };
+$('#homeBtn').onclick = () => { saveSoon(true); G.quest === 'craft' ? openHome() : openMenu(); };
 
 /* ====================== QUESTION GENERATORS ====================== */
 // Question: {kind:'choice'|'write', title, big, bigSm, sub, options:[{html,cls,ok,fx,em,note}], key, accept, ref, explain}
@@ -1109,6 +1134,7 @@ function drawScene() {
   updateBars(); updateReward();
 }
 function updateBars() {
+  if (G.quest === 'craft') return;
   const b = G.quest === 'battle';
   const hs = Math.max(0, G.hearts), mx = Math.max(CFG.MAX_HEARTS, hs);
   $('#hearts').textContent = b ? '❤️'.repeat(hs) + '🖤'.repeat(mx - hs) : '😊'.repeat(hs) + '😐'.repeat(mx - hs);
@@ -1119,7 +1145,7 @@ function updateBars() {
 }
 function nextQuestion() { G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = false; G.snap = null; G.optSound = false; showQuestion(); }
 function showQuestion() {   // draws G.q (a Second chance potion draws the same question again)
-  G.locked = false; G.tries = 0; G.typed = ''; renderPotBar();
+  G.locked = false; G.tries = 0; G.typed = ''; renderPotBar(); $('#castBtn').textContent = G.quest === 'craft' ? '🫕 Drop it in!' : '✨ Cast it!';
   const q = G.q;
   $('#qTitle').textContent = q.title;
   $('#qBig').innerHTML = q.big ? `<span class="${q.bigSm ? '' : ''}">${esc(q.big)}</span>` : '';
@@ -1197,6 +1223,7 @@ function toast(t) {
 /* ----- answering ----- */
 async function pickOption(i, btn) {
   if (G.locked) return;
+  if (G.quest === 'craft') return craftPick(i, btn);
   const q = G.q, o = q.options[i], first = G.tries === 0, battle = G.quest === 'battle';
   G.tries++;
   if (o.ok) {
@@ -1274,7 +1301,9 @@ document.addEventListener('keydown', e => {
   else if (/^[א-ת ]$/.test(e.key)) typeKey(e.key);
 });
 $('#castBtn').onclick = async () => {
-  if (G.locked) return; const q = G.q, battle = G.quest === 'battle';
+  if (G.locked) return;
+  if (G.quest === 'craft') return craftCast();
+  const q = G.q, battle = G.quest === 'battle';
   const ans = G.typed.trim().replace(/\s+/g, ' ');
   if (!ans) return;
   const hit = q.accept.find(a => a === ans), near = !hit && q.accept.some(a => normFinals(a) === normFinals(ans));
@@ -1354,7 +1383,7 @@ function openPack(onStart) {   // before a quest run: choose up to POUCH potions
   render();
 }
 function renderPotBar() {
-  const bar = $('#potBar'); if (!bar || !P) return;
+  const bar = $('#potBar'); if (!bar || !P) return; if (G.quest === 'craft') { bar.style.display = 'none'; return; }
   const ids = POTION_IDS.filter(id => (P.carry[id] || 0) > 0);
   bar.style.display = ids.length ? '' : 'none';
   bar.innerHTML = ids.map(id => `<button class="potBtn" data-id="${id}" ${G.potUsed ? 'disabled' : ''} title="${POTIONS[id].name}: ${POTIONS[id].desc}">${potionSVG(id)}<i class="potSym">${POTIONS[id].em}</i><b>×${P.carry[id]}</b></button>`).join('') +
@@ -1424,6 +1453,100 @@ function endOrSecond(fail) {   // out of hearts: if a Second chance potion is in
   if (!G.potUsed && (P.carry.second || 0) > 0 && G.snap) modal('⏪ Second chance!', '<p>You are out of hearts, but you have a Second chance potion. Drink it to undo your mistake and try this question again?</p>', [['Drink it ⏪', () => usePotion('second')], ['No thanks', fail, true]]);
   else fail();
 }
+/* ====================== HOME & CRAFTING ====================== */
+// A recipe lists the RARITY of each ingredient it needs (0 common ... 4 legendary), not the exact item. Every ingredient must be a different item.
+const CAULDRONS = ['Clay pot', 'Iron cauldron', 'Silver cauldron'];
+const RECIPES = { heart: { caul: 0, slots: [0, 0] }, sound: { caul: 0, slots: [0, 1] }, power: { caul: 1, slots: [1, 1] }, second: { caul: 1, slots: [1, 2] }, super: { caul: 2, slots: [3, 3, 4] } };
+const RAR_TXT = ['herb', 'stone', 'creature part', 'sky item', 'treasure'];
+const slotsText = r => { const c = {}; r.slots.forEach(s => { c[s] = (c[s] || 0) + 1; }); return Object.entries(c).map(([s, n]) => `${n} ${RAR_TXT[s]}${n > 1 ? 's' : ''}`).join(' + '); };
+const ownedOf = rar => Object.keys(ING).filter(id => ING[id].r === rar && (P.inv[id] || 0) > 0);
+function canBrew(id) {   // enough different ingredients of each needed rarity?
+  const need = {}; RECIPES[id].slots.forEach(s => { need[s] = (need[s] || 0) + 1; });
+  return Object.entries(need).every(([r, n]) => ownedOf(+r).length >= n);
+}
+function openHome() {
+  G.quest = null; show('home');
+  const c = P.own.caul || 0;
+  $('#homeCaul').innerHTML = `<span class="caulBig">🫕</span><div><b>${CAULDRONS[c]}</b><div class="small">Better cauldrons (bought in the shop) unlock stronger potions.</div></div>`;
+  $('#homeShelf').innerHTML = POTION_IDS.map(id => `<div class="shelfItem"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span><b>${POTIONS[id].name}</b><span class="small">🏡 ${P.pot[id] || 0}${(P.carry[id] || 0) ? ' · 🎒 ' + P.carry[id] : ''}</span></div>`).join('');
+  $('#homeRecipes').innerHTML = POTION_IDS.map(id => { const r = RECIPES[id], locked = r.caul > c, ok = !locked && canBrew(id);
+    return `<div class="recipe ${locked ? 'locked' : ''}"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span>
+      <div class="grow"><b>${POTIONS[id].name}</b><div class="small">${POTIONS[id].desc}</div><div class="small">Needs: ${slotsText(r)}${locked ? ` · 🔒 ${CAULDRONS[r.caul]}` : ''}</div></div>
+      <button class="btn" data-brew="${id}" ${ok ? '' : 'disabled'}>${locked ? '🔒' : ok ? 'Brew ▶' : 'Need more'}</button></div>`; }).join('');
+  const have = Object.keys(ING).filter(id => (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
+  $('#homeIngs').innerHTML = have.length ? have.map(id => `<span class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></span>`).join('') : '<span style="opacity:.75">No ingredients yet. Beat monsters and help villagers to find some!</span>';
+}
+function pickIngredients(potion) {   // the student chooses which ingredients to use (one for each slot, all different)
+  const r = RECIPES[potion], chosen = r.slots.map(() => null);
+  const render = () => {
+    $('#brewBody').innerHTML = r.slots.map((rar, k) => `<div class="slotRow"><div class="small">${k + 1}. a ${RAR_TXT[rar]} (${RARITY[rar]})</div><div class="slotOpts">` +
+      ownedOf(rar).map(id => { const used = chosen.some((c, j) => c === id && j !== k); return `<button class="slotBtn ${chosen[k] === id ? 'sel' : ''}" data-k="${k}" data-id="${id}" ${used ? 'disabled' : ''}>${ING[id].em} <b class="heb">${ING[id].nk}</b> <small>×${P.inv[id]}</small></button>`; }).join('') + '</div></div>').join('');
+    $('#mBtns button').disabled = chosen.some(c => !c);
+  };
+  modal(`${POTIONS[potion].em} Brew ${POTIONS[potion].name}`, '<div id="brewBody"></div>', [['Start brewing ▶', () => startCraft(potion, chosen.slice())], ['Cancel', null, true]]);
+  $('#brewBody').onclick = e => { const b = e.target.closest('.slotBtn'); if (!b || b.disabled) return; const k = +b.dataset.k; chosen[k] = chosen[k] === b.dataset.id ? null : b.dataset.id; render(); };
+  render();
+}
+$('#homeRecipes').onclick = e => { const b = e.target.closest('[data-brew]'); if (b && !b.disabled) pickIngredients(b.dataset.brew); };
+$('#homeBack').onclick = () => { saveSoon(true); openMenu(); };
+
+/* ----- brewing: one question per ingredient. Mistakes cost nothing; the student just tries again. ----- */
+function startCraft(potion, ings) {
+  G.quest = 'craft'; G.craft = { potion, ings, i: 0, done: [] }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = false;
+  show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroSVG(P.gender, P.color); setMute(muted);
+  $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
+  $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = 'drop-shadow(0 0 12px #ffd16688)'; $('#foeBody').textContent = '🫕';
+  craftQuestion();
+}
+function craftQuestion() {
+  const C = G.craft, ing = ING[C.ings[C.i]], t = P.tier;
+  $('#foeName').textContent = `${CAULDRONS[P.own.caul || 0]} · ${POTIONS[C.potion].name} potion`;
+  $('#mid').innerHTML = `<b>🧪 Brewing</b><br>${C.ings.map((id, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote">Ingredient ${C.i + 1} of ${C.ings.length}. Wrong answers cost nothing!</div>`;
+  $('#hearts').textContent = POTIONS[C.potion].em; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / C.ings.length) + '%';
+  $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = ((P.xp % 400) / 4) + '%'; $('#potBar').style.display = 'none';
+  let q; G.optSound = false;
+  const pic = $('#craftPic'); pic.style.display = t <= 8 ? '' : 'none'; pic.innerHTML = `<span class="craftEm ${ing.r === 4 ? "shine" : ""}">${ing.em}</span>`;   // levels 1-8: the ingredient is shown next to the question
+  if (t <= 3) { q = qLetter(t, false); }   // levels 1-3: a plain listening question (the picture is shown above it)
+  else if (t <= 8 && findHeVoice()) {   // levels 4-8: see the ingredient and its name, then pick the correct word by HEARING each choice
+    const others = shuffle(Object.values(ING).filter(x => x.id !== ing.id && x.he !== ing.he)).slice(0, 3);
+    q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: 'Which one says this word?', big: ing.nk, sub: 'Tap 🔊 to hear each choice, then pick the one that says it.', say: ing.nk,
+      options: shuffle([ing, ...others]).map((x, k) => ({ html: `<span style="font-size:2rem">${'①②③④'[k]}</span>`, snd: { say: x.nk }, cls: '', ok: x.id === ing.id, em: x.em, note: `That one says ${x.nk} ${x.em}` })), explain: `<span class="he">${ing.nk}</span> = ${ing.em}` };
+    G.optSound = true;   // every choice has its speaker from the start
+  }
+  else if (t <= 10) {   // levels 9-10 (and 4-8 on a device without a Hebrew voice): read the name, pick its picture
+    const others = shuffle(Object.values(ING).filter(x => x.id !== ing.id && x.em !== ing.em)).slice(0, t <= 8 ? 2 : 3), txt = t <= 8 ? ing.nk : ing.he;
+    q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: 'Read the ingredient and pick its picture!', big: txt, sub: 'Which one goes in the cauldron?', say: txt,
+      options: shuffle([ing, ...others]).map(x => ({ html: `<span style="font-size:2.4rem" class="${x.r === 4 ? "shine" : ""}">${x.em}</span>`, cls: '', ok: x.id === ing.id, em: x.em, note: `That is ${x.em}` })), explain: `<span class="he">${txt}</span> = ${ing.em}` };
+  } else {   // see the picture, type the name
+    q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: 'Write the name of this ingredient in Hebrew!', big: ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
+      explain: `<span class="he">${ing.he}</span> (${ing.en})`, say: ing.he };
+  }
+  G.q = q; G.lastKey = q.lastKey; G.noCount = true; G.snap = null; G.potUsed = true;
+  if (t <= 3) q.title = '🫕 The cauldron bubbles… Listen!';
+  showQuestion();
+}
+function craftCount(first, ok) { if (first) { P.craft.n++; if (ok) P.craft.ok++; } }   // crafting answers are a separate figure; they never change the level
+async function craftPick(i, btn) {
+  if (G.locked) return; const q = G.q, o = q.options[i], first = G.tries === 0; G.tries++;
+  if (o.ok) {
+    G.locked = true; btn.classList.add('good'); document.querySelectorAll('.opt').forEach(b => { b.disabled = true; }); craftCount(first, true);
+    sfx.ok(); if (q.say && P.tier >= 8) speakHe(q.say); $('#fb').innerHTML = `✅ ${q.explain}`; await sleep(1300); craftNext();
+  } else { btn.classList.add('bad'); btn.disabled = true; sfx.bad(); craftCount(first, false); $('#fb').innerHTML = `❌ ${o.note || 'Not that one.'} Try again!`; saveSoon(); }
+}
+async function craftCast() {
+  if (G.locked) return; const q = G.q, ans = G.typed.trim().replace(/\s+/g, ' '); if (!ans) return;
+  const hit = q.accept.find(a => a === ans), near = !hit && q.accept.some(a => normFinals(a) === normFinals(ans)), first = G.tries === 0; G.tries++;
+  if (hit) { G.locked = true; craftCount(first, true); sfx.ok(); speakHe(hit); $('#fb').innerHTML = `✅ Perfect! ${q.explain}`; await sleep(1500); craftNext(); }
+  else { craftCount(first, false); sfx.bad(); $('#fb').innerHTML = `❌ Not quite. ${near ? 'Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word. ' : ''}Try again!`; G.typed = ''; renderTyped(); saveSoon(); }
+}
+function craftNext() {
+  const C = G.craft; C.i++;
+  if (C.i < C.ings.length) { craftQuestion(); return; }
+  C.ings.forEach(id => { P.inv[id] = Math.max(0, (P.inv[id] || 0) - 1); });   // the ingredients are used up only now
+  P.pot[C.potion] = (P.pot[C.potion] || 0) + 1; saveSoon(true); sfx.win(); confetti(['🧪', '✨', '🫧', POTIONS[C.potion].em]);
+  modal('🧪 Your potion is ready!', `<div style="text-align:center"><div style="display:inline-block;transform:scale(2);margin:26px"><span class="packBottle">${potionSVG(C.potion)}<i>${POTIONS[C.potion].em}</i></span></div><p><b>${POTIONS[C.potion].name}</b> potion added to your shelf at Home.</p></div>`,
+    [['Back home 🏡', openHome], ['Back to map', openMenu, true]]);
+}
 /* ----- loot: coins (for the shop) and ingredients (for potions), both given at the END of a won fight ----- */
 // During the fight the reward is only calculated: every mistake lowers the coins and the chance of rare ingredients.
 // Losing a fight pays nothing (all or nothing). Potions will count as mistakes (step 5).
@@ -1465,7 +1588,7 @@ function giveLoot(source, boss, mist) {   // call once, when the fight is won
   const d = today(); if (P.coinDay.d !== d) P.coinDay = { d, c: 0 }; P.coinDay.c += coins;
   return { got: [id], coins, bonus: coins > 0 && earlyBonus() };
 }
-const ingHtml = id => `<span class="ingChip r${ING[id].r}" title="${RARITY[ING[id].r]}">${ING[id].em} <b class="heb">${ING[id].nk}</b></span>`;
+const ingHtml = id => `<span class="ingChip r${ING[id].r}${ING[id].r === 4 ? " shine" : ""}" title="${RARITY[ING[id].r]}">${ING[id].em} <b class="heb">${ING[id].nk}</b></span>`;
 const lootHtml = l => `<p class="loot">🎁 You found: ${l.got.map(ingHtml).join(' ')} <small class="rarLbl">${RARITY[ING[l.got[0]].r]}</small><br>` + (l.coins ? `+${l.coins} 🪙${l.bonus ? ' <small>(double coins: first 10 minutes!)</small>' : ''}` : 'No coins this time. Fewer mistakes means more coins!') + '</p>';
 $('#potBar').onclick = e => {
   const b = e.target.closest('.potBtn'); if (!b || b.disabled) return;
