@@ -52,6 +52,18 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 #mapHero{position:absolute;width:11%;aspect-ratio:3/4;transform:translate(-50%,-92%);cursor:grab;touch-action:none;z-index:5;transition:left .9s ease-in-out,top .9s ease-in-out;filter:drop-shadow(0 4px 3px #0007)}
 #mapHero svg{width:100%;height:100%}#mapHero.drag{transition:none;cursor:grabbing;z-index:6}#mapHero.walk svg{animation:hop .3s infinite alternate}
 @keyframes hop{to{transform:translateY(-6%)}}
+.potBar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin:4px auto;max-width:760px}
+.potBtn{position:relative;display:flex;flex-direction:column;align-items:center;gap:0;background:#0003;color:#fff;border:2px solid #fff3;border-radius:12px;padding:3px 6px 2px;min-width:44px;cursor:pointer;transition:transform .15s}
+.potBtn:not(:disabled):hover{transform:translateY(-3px);border-color:var(--gold)}.potBtn:not(:disabled):active{transform:translateY(1px)}.potBtn:disabled{opacity:.4;cursor:default;filter:grayscale(.6)}
+.potSvg{width:24px;height:32px;filter:drop-shadow(0 2px 2px #0006)}.potSym{font-style:normal;font-size:.8rem;line-height:1}
+.potBtn b{position:absolute;top:-4px;right:-4px;background:#000c;border-radius:8px;padding:0 5px;font-size:.7rem}
+.packBottle{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin-right:6px}.packBottle .potSvg{width:26px;height:35px}.packBottle i{font-style:normal;font-size:.9rem;line-height:1}
+.packBottle.sm .potSvg{width:20px;height:27px}.packBottle.sm i{font-size:.75rem}
+.opt{position:relative}.optSnd{position:absolute;top:6px;right:8px;background:#fff;color:#000;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 2px 0 #0004;cursor:pointer}.optSnd:hover{transform:scale(1.12)}
+.potNote{opacity:.75;width:100%;text-align:center}
+.packRow{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#0003;border-radius:12px;padding:6px 10px;margin:6px 0}.packName small{display:block;opacity:.75;font-size:.75rem}
+.packCtl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}.packN{min-width:1.4em;text-align:center;font-size:1.2rem}.packHome{opacity:.8}
+.place.locked{filter:grayscale(.85);opacity:.55}.place.locked .pSub::before{content:'🔒 '}
 .ingChip{display:inline-block;background:#0004;border-radius:10px;padding:2px 8px;border:2px solid #fff3}
 .ingChip.r0{border-color:#b9bfd0}.ingChip.r1{border-color:#3ddc97}.ingChip.r2{border-color:#4aa8ff}.ingChip.r3{border-color:#b56bff}.ingChip.r4{border-color:#ffd166;box-shadow:0 0 10px #ffd16688}
 .rarLbl{opacity:.8;margin-left:4px}.runNote.low{opacity:.6}.loot{margin:8px 0}
@@ -296,6 +308,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="mid" id="mid"></div>
     <div class="side foe"><div id="foeName" class="small"></div><div class="hpbar"><i id="hpFill"></i></div><div class="foeWrap"><div class="aura" id="aura"></div><div class="foeBody" id="foeBody"></div></div></div>
   </div>
+  <div class="potBar" id="potBar" style="display:none"></div>
   <div class="panel card">
     <div class="qtitle" id="qTitle"></div>
     <div class="big" id="qBig"></div>
@@ -332,6 +345,7 @@ const CFG = {
   BOSS_MIN: 3, BOSS_MAX: 5, // a boss / big request pays the normal amount times a random number between these
   EARLY_MULT: 2,            // coins are doubled during the first 10 minutes of play each day
   ODDS_NORMAL: [60, 30, 10], ODDS_BOSS: [60, 30, 10],   // chance (%) of common/uncommon/rare in normal fights; rare/epic/legendary in boss fights
+  POUCH: 5, MAX_HEARTS_POT: 5,   // potions that can be carried on a quest run; most hearts with a Heart potion
   SAFETY_RESTARTS: 2,       // after this many restarts in a row, the next try starts with one free extra heart (0 = off)
   UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10
 };
@@ -662,7 +676,7 @@ function newProfile(id, nick, gender, color) {
     quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() });
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 2;
+const PROFILE_V = 3;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -676,6 +690,11 @@ function migrate(p) {
     p.superCh = 0;                                // chapter in which the super potion was last used
     for (const k of ['battle', 'peace']) { const q = p.quest[k]; q.len = 0; q.hearts = 3; q.restarts = 0; }   // len 0 = not rolled yet (step 3)
   }
+  if (v < 3) {   // version 3: potions. A free starter set waits at Home; the pouch (potions carried on a quest) is empty; a quest in progress is marked as such.
+    p.carry = {}; p.pot = p.pot || {}; for (const [id, n] of Object.entries(STARTER_POTIONS)) p.pot[id] = (p.pot[id] || 0) + n;
+    for (const k of ['battle', 'peace']) p.quest[k].act = p.quest[k].enc > 0;
+  }
+  p.carry = p.carry || {}; p.pot = p.pot || {};
   p.v = PROFILE_V;
   return p;
 }
@@ -802,7 +821,8 @@ function openMenu() {
   const t = P.sec[today()] || 0;
   $('#menuToday').textContent = Math.min(10, Math.floor(t / 60)) + '/10 min' + (t >= CFG.DAILY_SEC ? ' ⭐' : '');
   $('#menuStreak').textContent = streak() + ' day' + (streak() === 1 ? '' : 's');
-  $('#menuCoins').textContent = P.coins || 0; $('#menuPots').textContent = Object.values(P.pot || {}).reduce((a, b) => a + b, 0);
+  $('#menuCoins').textContent = Math.floor(P.coins || 0); $('#menuPots').textContent = carried() + athome();
+  document.querySelectorAll('.place').forEach(b => b.classList.toggle('locked', isLocked(b.dataset.p)));
   $('#ptGate').textContent = 'Chapter ' + P.quest.battle.ch + ': ' + AREAS[(P.quest.battle.ch - 1) % AREAS.length];
   $('#ptBoard').textContent = 'Village ' + P.quest.peace.ch + ': ' + VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length];
   $('#mapHero').innerHTML = heroSVG(P.gender, P.color); walking = false; placeHero(START.x, START.y);
@@ -819,7 +839,9 @@ function enterPlace(id) {
   else { modal(id === 'home' ? '🏡 Home' : '🏪 Shop', '<p>Coming soon! This place is still being built.</p>', [['OK', null]]); placeHero(START.x, START.y); }
 }
 function walkTo(id) {
-  if (walking) return; walking = true;
+  if (walking) return;
+  if (isLocked(id)) { placeHero(START.x, START.y); toast('🔒 You are in the middle of a quest! Finish it first. You can always keep going from the gate or the board.'); return; }
+  walking = true;
   const h = $('#mapHero'); h.classList.remove('drag'); h.classList.add('walk'); placeHero(...PLACES[id].door);
   playSound({ say: PLACES[id].say });   // the Hebrew name of the place, if the device has a Hebrew voice
   setTimeout(() => { walking = false; h.classList.remove('walk'); enterPlace(id); }, 950);
@@ -878,7 +900,7 @@ function qLetter(t, battle) {
   return { kind: 'choice', key: 'L:' + c, lastKey: 'L:' + c, audio: soundFor(c), translit: `“${snd}”`,
     title: battle ? `The spell that beats the ${G.mon.name} is…` : 'The magic gate only opens to the sound…',
     big: '', sub: 'Listen, then pick the syllable you hear!',
-    options: opts.map(x => ({ html: sylA(x), cls: '', ok: x === c, em: '✨', note: `${sylA(x)} says “${LET[x][0]}a”` })),
+    options: opts.map(x => ({ html: sylA(x), snd: soundFor(x), cls: '', ok: x === c, em: '✨', note: `${sylA(x)} says “${LET[x][0]}a”` })),
     explain: `${sylA(c)} says “${snd}”` };
 }
 function qSyl(t, battle) {
@@ -898,7 +920,7 @@ function qSyl(t, battle) {
   return { kind: 'choice', key: target.key, lastKey: target.key, audio: { file: sylFile(target.c, target.v), say: target.he + (target.v === 'i' ? 'י' : '') }, translit: `“${target.snd}”`,
     title: battle ? `The spell that beats the ${G.mon.name} is…` : 'The bridge troll only lets you pass if you say…',
     big: '', sub: 'Listen, then pick the letters that make this sound!',
-    options: shuffle(opts).map(x => ({ html: x.he, cls: '', ok: x === target, em: '✨', note: `${x.he} says “${x.snd}”` })),
+    options: shuffle(opts).map(x => ({ html: x.he, snd: { file: sylFile(x.c, x.v), say: x.he + (x.v === 'i' ? 'י' : '') }, cls: '', ok: x === target, em: '✨', note: `${x.he} says “${x.snd}”` })),
     explain: `${target.he} says “${target.snd}”` };
 }
 // Sound chains: 2-3 made-up syllables glued together (like "ramo"). The student hears it and picks how it is written.
@@ -919,7 +941,7 @@ function qChain(t, battle) {
   return { kind: 'choice', key: wKey(target), lastKey: wKey(target), audio: { chain: target.map(s => sylFile(s.c, s.v).match(/([0-9a-f]{4}[aeiou])\.wav$/)[1]), say: target.map(sylSay).join('') }, translit: `“${wSnd(target)}”`,
     title: battle ? `The spell that beats the ${G.mon.name} is…` : 'The old gate opens only to the word…',
     big: '', sub: 'Listen carefully, then pick how it is written!',
-    options: shuffle(opts).map(w => ({ html: show(w), cls: 'w', ok: w === target, em: '✨', note: `${show(w)} says “${wSnd(w)}”` })),
+    options: shuffle(opts).map(w => ({ html: show(w), snd: { chain: w.map(s => sylFile(s.c, s.v).match(/([0-9a-f]{4}[aeiou]).wav$/)[1]), say: w.map(sylSay).join('') }, cls: 'w', ok: w === target, em: '✨', note: `${show(w)} says “${wSnd(w)}”` })),
     explain: `${show(target)} says “${wSnd(target)}”` };
 }
 function reasonFor(w, mon) {
@@ -1007,7 +1029,13 @@ function makeQ() {
 /* ====================== GAME ENGINE ====================== */
 const G = { quest: null, mon: null, hearts: 3, helped: 0, q: null, locked: false, combo: 0, lastKey: null, sess: 0, goalShown: false, folk: '🧓', typed: '', tries: 0 };
 
-function startQuest(q) {
+function startQuest(q) {   // a new quest run starts by packing potions; from then on the run is "active" (no going home) until it is won or lost
+  const qs = P.quest[q];
+  if (qs.act) return beginQuest(q);
+  G.quest = q; openPack(() => { qs.act = true; saveSoon(true); beginQuest(q); });
+}
+const nextRun = () => P.quest[G.quest].act ? newEncounter() : startQuest(G.quest);   // after a chapter ends or a restart, pack potions again
+function beginQuest(q) {
   G.quest = q; G.sess = 0; G.combo = 0; G.goalShown = (P.sec[today()] || 0) >= CFG.DAILY_SEC;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroSVG(P.gender, P.color);
   setMute(muted); newEncounter();
@@ -1021,7 +1049,7 @@ function newEncounter() {
   if (qs.enc > qs.len) qs.len = qs.enc;   // (only possible with a damaged save) the boss comes now
   if (!(qs.hearts > 0)) qs.hearts = CFG.MAX_HEARTS;
   const boss = qs.enc >= qs.len;
-  G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier;   // mistakes in this fight lower the coins and the rarity of the loot G.need = G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;
+  G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier; G.potUsed = false; G.snap = null; G.noCount = false; G.need = G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;   // mistakes in this fight (G.mist) lower the coins and the rarity of the loot
   if (G.quest === 'battle') {
     const def = boss ? BOSSES[(qs.ch - 1) % BOSSES.length] : rnd(MONS);
     G.mon = { ...def, boss, max: boss ? 6 : 3, hp: boss ? 6 : 3 };
@@ -1089,8 +1117,9 @@ function updateBars() {
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`;
   $('#xpFill').style.width = ((P.xp % 400) / 4) + '%';
 }
-function nextQuestion() {
-  G.q = makeQ(); G.lastKey = G.q.lastKey; G.locked = false; G.tries = 0; G.typed = '';
+function nextQuestion() { G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = false; G.snap = null; G.optSound = false; showQuestion(); }
+function showQuestion() {   // draws G.q (a Second chance potion draws the same question again)
+  G.locked = false; G.tries = 0; G.typed = ''; renderPotBar();
   const q = G.q;
   $('#qTitle').textContent = q.title;
   $('#qBig').innerHTML = q.big ? `<span class="${q.bigSm ? '' : ''}">${esc(q.big)}</span>` : '';
@@ -1121,10 +1150,12 @@ function nextQuestion() {
     $('#writeRef').innerHTML = (q.ref || []).map(r => `<span>${r}</span>`).join('');
     buildKeyboard(); renderTyped();
   }
+  if (G.optSound) addOptionSounds();
 }
 
 /* ----- recording & adaptive difficulty ----- */
 function record(key, ok) {
+  if (G.noCount) return '';   // a question touched by a potion never reaches the statistics
   const s = P.stats[key] || (P.stats[key] = [0, 0]); s[ok ? 0 : 1]++;
   P.n++; if (ok) P.ok++;
   P.hist.push(ok ? 1 : 0); if (P.hist.length > CFG.MAX_WINDOW) P.hist.shift();
@@ -1134,7 +1165,7 @@ function record(key, ok) {
   return '';
 }
 function gainXp(ok) {
-  if (!ok) return 0;
+  if (!ok || G.noCount) return 0;
   const g = 10 + Math.min(G.combo, 5) * 2; P.xp += g; return g;
 }
 function floatText(txt, color) {
@@ -1191,7 +1222,7 @@ async function pickOption(i, btn) {
     if (!battle && G.helped >= G.need) return villageDone();
     nextQuestion();
   } else {
-    btn.classList.add('bad'); btn.disabled = true; sfx.bad(); G.mist++; updateReward();
+    btn.classList.add('bad'); btn.disabled = true; sfx.bad(); takeSnap(); G.mist++; updateReward();
     let tr = '';
     if (first) { G.combo = 0; tr = record(q.key, false); }
     $('#fb').innerHTML = `❌ ${o.note || ''}`;
@@ -1209,7 +1240,7 @@ async function pickOption(i, btn) {
       after(tr); updateBars();
       if (G.hearts <= 0) {
         document.querySelectorAll('.opt').forEach((b, k) => { if (q.options[k].ok) b.classList.add('good'); });
-        $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(1400); return knockout();
+        $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(1400); return endOrSecond(knockout);
       }
       // your turn again: same question, the spells you already tried stay greyed out
       $('#fb').innerHTML += '<br>👉 Your turn! Pick another spell.';
@@ -1221,7 +1252,7 @@ async function pickOption(i, btn) {
         loseHeart(); $('#fb').innerHTML += '<br>The villagers look worried… −1 😊'; updateBars();
         if (G.hearts <= 0) {
           G.locked = true; document.querySelectorAll('.opt').forEach((b, k) => { b.disabled = true; if (q.options[k].ok) b.classList.add('good'); });
-          $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(2200); return villageFail();
+          $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(2200); return endOrSecond(villageFail);
         }
       }
     }
@@ -1251,7 +1282,7 @@ $('#castBtn').onclick = async () => {
   const first = G.tries === 0; G.tries++;
   if (hit) {
     let tr = '', xp = 0;
-    if (first) { G.combo++; tr = record(q.keyOf(hit), true); xp = gainXp(true) + 5; P.xp += 5; }
+    if (first) { G.combo++; tr = record(q.keyOf(hit), true); xp = gainXp(true) + (G.noCount ? 0 : 5); if (!G.noCount) P.xp += 5; }
     sfx.ok(); speakHe(hit);
     $('#fb').innerHTML = `✅ Perfect! ${q.explain}`;
     if (battle) { await flySpell('✨'); sfx.hit(); burst('✨', 10); burst('💥', 3); const dmg = 2; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
@@ -1261,7 +1292,7 @@ $('#castBtn').onclick = async () => {
     if (!battle && G.helped >= G.need) return villageDone();
     nextQuestion();
   } else {
-    G.combo = 0; const tr = first ? record(q.key, false) : ''; sfx.bad(); G.mist++; updateReward();
+    takeSnap(); G.combo = 0; const tr = first ? record(q.key, false) : ''; sfx.bad(); G.mist++; updateReward();
     const nearMsg = near ? 'So close! Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word.<br>' : '';
     if (battle) {
       // wrong spell: the monster attacks, then it's the player's turn again with the same question
@@ -1270,7 +1301,7 @@ $('#castBtn').onclick = async () => {
       setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
       $('#fb').innerHTML += '💥 The monster attacks! −1 ❤️';
       after(tr); updateBars();
-      if (G.hearts <= 0) { $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(1800); return knockout(); }
+      if (G.hearts <= 0) { $('#fb').innerHTML += `<br>✅ ${q.explain}`; await sleep(1800); return endOrSecond(knockout); }
       $('#fb').innerHTML += '<br>👉 Your turn! Try writing another spell.';
       G.typed = ''; renderTyped(); G.locked = false;
     } else {
@@ -1278,13 +1309,121 @@ $('#castBtn').onclick = async () => {
       after(tr); updateBars();
       if (first) {   // village: a wrong first try costs one smiley
         loseHeart(); $('#fb').innerHTML += '<br>The villagers look worried… −1 😊'; updateBars();
-        if (G.hearts <= 0) { await sleep(2200); return villageFail(); }
+        if (G.hearts <= 0) { await sleep(2200); return endOrSecond(villageFail); }
       }
       $('#nextBtn').classList.remove('hidden'); $('#nextBtn').onclick = nextQuestion;
     }
   }
 };
 
+/* ----- potions ----- */
+// Rule: a potion may change the stakes of a question, but it never answers it. Any question a potion touches is left out of the learning
+// statistics (accuracy window, per-item stats, XP): G.noCount. Potions never change the coin or loot rewards.
+const POTIONS = {
+  heart:  { em: '❤️', name: 'Heart',        desc: 'Gives one more heart (up to 5)' },
+  sound:  { em: '🔊', name: 'Sound',        desc: 'Plays the sound of the answer' },
+  power:  { em: '💥', name: 'Power',        desc: 'The enemy needs one right answer less' },
+  second: { em: '⏪', name: 'Second chance', desc: 'Undo a mistake and answer again' },
+  super:  { em: '🌟', name: 'Super',        desc: 'Finishes the fight at once (once per chapter)' }
+};
+const POTION_IDS = Object.keys(POTIONS);
+const STARTER_POTIONS = { heart: 2, sound: 2, power: 2, second: 2 };   // a free gift for every student; more come from crafting and the shop
+const carried = () => POTION_IDS.reduce((a, id) => a + ((P.carry || {})[id] || 0), 0);
+const athome = () => POTION_IDS.reduce((a, id) => a + ((P.pot || {})[id] || 0), 0);
+const runOf = () => ['battle', 'peace'].find(k => P.quest[k].act) || null;   // the quest run in progress, if any
+function isLocked(place) {   // during a quest run you cannot go home, to the shop or start the other quest (you can leave to the map and save)
+  const a = runOf(); if (!a) return false;
+  return place === 'gate' ? a !== 'battle' : place === 'board' ? a !== 'peace' : true;
+}
+function openPack(onStart) {   // before a quest run: choose up to POUCH potions to carry. The rest wait at Home.
+  if (carried() + athome() === 0) { onStart(); return; }
+  const render = () => {
+    $('#packBody').innerHTML = `<p style="margin:0 0 6px">You can carry <b>${CFG.POUCH}</b> potions on a quest. Once you start, you cannot go home until the quest is finished.</p>
+      <p style="margin:0 0 8px"><b>Pouch: ${carried()} / ${CFG.POUCH}</b></p>` +
+      POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="packRow"><span class="packName"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> <b>${POTIONS[id].name}</b><small>${POTIONS[id].desc}</small></span>
+        <span class="packCtl"><button class="ib" data-id="${id}" data-d="-1" ${(P.carry[id] || 0) ? '' : 'disabled'}>➖</button><b class="packN">${P.carry[id] || 0}</b><button class="ib" data-id="${id}" data-d="1" ${(P.pot[id] || 0) && carried() < CFG.POUCH ? '' : 'disabled'}>➕</button>
+        <small class="packHome">🏡 ${P.pot[id] || 0} at home</small></span></div>`).join('');
+  };
+  modal('🧪 Pack your potions', '<div id="packBody"></div>', [['Start the quest ▶', onStart], ['Back to map', openMenu, true]]);
+  $('#packBody').onclick = e => {
+    const b = e.target.closest('button[data-id]'); if (!b || b.disabled) return; const id = b.dataset.id, d = +b.dataset.d;
+    if (d > 0 && (P.pot[id] || 0) > 0 && carried() < CFG.POUCH) { P.pot[id]--; P.carry[id] = (P.carry[id] || 0) + 1; }
+    else if (d < 0 && (P.carry[id] || 0) > 0) { P.carry[id]--; P.pot[id] = (P.pot[id] || 0) + 1; }
+    render(); saveSoon();
+  };
+  render();
+}
+function renderPotBar() {
+  const bar = $('#potBar'); if (!bar || !P) return;
+  const ids = POTION_IDS.filter(id => (P.carry[id] || 0) > 0);
+  bar.style.display = ids.length ? '' : 'none';
+  bar.innerHTML = ids.map(id => `<button class="potBtn" data-id="${id}" ${G.potUsed ? 'disabled' : ''} title="${POTIONS[id].name}: ${POTIONS[id].desc}">${potionSVG(id)}<i class="potSym">${POTIONS[id].em}</i><b>×${P.carry[id]}</b></button>`).join('') +
+    '';
+}
+function addOptionSounds() {
+  document.querySelectorAll('#opts .opt').forEach((b, i) => {
+    const o = G.q.options[i]; if (!o || b.querySelector('.optSnd')) return;
+    const s = document.createElement('span'); s.className = 'optSnd'; s.textContent = '🔊'; s.setAttribute('role', 'button'); s.setAttribute('aria-label', 'Hear this choice');
+    s.onclick = e => { e.stopPropagation(); e.preventDefault(); playSound(o.snd || { say: o.say }); };
+    b.appendChild(s);
+  });
+}
+// A potion bottle drawn in the potion's own colour (with the symbol shown beneath it where it is used)
+const POTION_COL = { heart: '#ff4d6d', sound: '#3aa0ff', power: '#ff9f1c', second: '#b36bff', super: '#ffd54a' };
+const potionSVG = id => { const c = POTION_COL[id] || '#999'; return `<svg viewBox="0 0 40 54" class="potSvg" aria-hidden="true">
+  <rect x="15" y="1.5" width="10" height="7" rx="2.5" fill="#b07a4c" stroke="#7a4f2a" stroke-width="1"/>
+  <path d="M16 8h8v7c0 2.5 13 7.5 13 22a9.5 9.5 0 0 1-9.5 9.5h-11A9.5 9.5 0 0 1 3 37c0-14.5 13-19.5 13-22z" fill="#ffffff26" stroke="#ffffffcc" stroke-width="1.6"/>
+  <path d="M5 33c4-2 8 2 15 0s11-2 15 0c1 9-3 13-8.5 13.5h-12C7.5 46 4 42 5 33z" fill="${c}"/>
+  <path d="M5 33c4-2 8 2 15 0s11-2 15 0" fill="none" stroke="#ffffff88" stroke-width="1.2"/>
+  <ellipse cx="11.5" cy="30" rx="2" ry="5" fill="#fff" opacity=".45" transform="rotate(12 11.5 30)"/><circle cx="26" cy="38" r="1.4" fill="#fff" opacity=".5"/><circle cx="21" cy="41.5" r="1" fill="#fff" opacity=".4"/>
+  <rect x="14" y="6.5" width="12" height="2.5" rx="1" fill="#ffffff55"/></svg>`; };
+function takeSnap() {   // just before the first mistake of a question, so a Second chance potion can undo it completely
+  if (G.snap || !G.q) return; const k = G.q.key;
+  G.snap = { key: k, stat: P.stats[k] ? P.stats[k].slice() : null, n: P.n, ok: P.ok, hist: P.hist.slice(), tier: P.tier, xp: P.xp, hearts: G.hearts, qhearts: P.quest[G.quest].hearts,
+    mhp: G.mon ? G.mon.hp : 0, mist: G.mist, combo: G.combo };
+}
+function restoreSnap() {
+  const s = G.snap; if (!s) return;
+  if (s.stat) P.stats[s.key] = s.stat; else delete P.stats[s.key];
+  P.n = s.n; P.ok = s.ok; P.hist = s.hist; P.tier = s.tier; P.xp = s.xp; G.hearts = s.hearts; P.quest[G.quest].hearts = s.qhearts; G.mist = s.mist; G.combo = s.combo;
+  if (G.mon) G.mon.hp = s.mhp; G.snap = null;
+}
+async function usePotion(id) {
+  if (G.potUsed || !((P.carry || {})[id] > 0) || !G.q) return;
+  const battle = G.quest === 'battle', qs = P.quest[G.quest], spend = () => { P.carry[id]--; G.potUsed = true; saveSoon(true); renderPotBar(); updateBars(); updateReward(); };
+  if (id === 'heart') {
+    if (G.hearts >= CFG.MAX_HEARTS_POT) { toast('Your hearts are already full!'); return; }
+    G.hearts++; qs.hearts = G.hearts; spend(); sfx.up(); burst('💖', 8); toast('❤️ One more heart!');
+  } else if (id === 'power') {
+    if (battle) { if (G.mon.hp <= 1) { toast('The monster is almost defeated already!'); return; } G.mon.hp--; G.mon.max = Math.max(G.mon.hp, G.mon.max - 1); }
+    else { if (G.need - G.helped <= 1) { toast('Only one answer is left already!'); return; } G.need--; }
+    spend(); sfx.up(); burst('💥', 8); toast(battle ? '💥 The monster is weaker!' : '💥 One less answer is needed!');
+  } else if (id === 'sound') {
+    if (G.locked) { toast('Wait for your turn first.'); return; }
+    const q = G.q, withSnd = q.kind === 'choice' && q.options.some(o => o.snd || o.say);
+    if (withSnd) {   // every choice gets a speaker button: the student can hear what each one sounds like and decide
+      if (!q.options.some(o => o.snd ? canPlay(o.snd) : findHeVoice())) { toast('No sound is available for this question on this device.'); return; }
+      G.noCount = true; G.optSound = true; spend(); addOptionSounds(); toast('🔊 Tap a speaker to hear each choice! (This question will not count for your level.)'); return;
+    }
+    const spec = q.audio || (q.say ? { say: q.say } : null);   // typing questions: the word is spoken
+    if (!spec || (q.audio ? !canPlay(q.audio) : !findHeVoice())) { toast('No sound is available for this question on this device.'); return; }
+    G.noCount = true; spend(); playSound(spec); toast('🔊 Listen carefully! (This question will not count for your level.)');
+  } else if (id === 'second') {
+    if (!G.snap) { toast('Use this after a mistake, to try the same question again.'); return; }
+    spend(); restoreSnap(); G.noCount = true; showQuestion(); toast('⏪ Your mistake is gone. Try again! (This question will not count for your level.)');
+  } else if (id === 'super') {
+    if (qs.ch === P.superCh) { toast('The Super potion was already used in this chapter.'); return; }
+    if (G.locked) { toast('Wait for your turn first.'); return; }
+    P.superCh = qs.ch; G.noCount = true; G.locked = true; spend(); sfx.win(); confetti(['🌟', '✨', '💫']);
+    await sleep(700);
+    if (battle) { G.mon.hp = 0; updateBars(); return victory(); }
+    G.helped = G.need; updateBars(); return villageDone();
+  }
+}
+function endOrSecond(fail) {   // out of hearts: if a Second chance potion is in the pouch, offer it before the quest restarts
+  if (!G.potUsed && (P.carry.second || 0) > 0 && G.snap) modal('⏪ Second chance!', '<p>You are out of hearts, but you have a Second chance potion. Drink it to undo your mistake and try this question again?</p>', [['Drink it ⏪', () => usePotion('second')], ['No thanks', fail, true]]);
+  else fail();
+}
 /* ----- loot: coins (for the shop) and ingredients (for potions), both given at the END of a won fight ----- */
 // During the fight the reward is only calculated: every mistake lowers the coins and the chance of rare ingredients.
 // Losing a fight pays nothing (all or nothing). Potions will count as mistakes (step 5).
@@ -1328,9 +1467,15 @@ function giveLoot(source, boss, mist) {   // call once, when the fight is won
 }
 const ingHtml = id => `<span class="ingChip r${ING[id].r}" title="${RARITY[ING[id].r]}">${ING[id].em} <b class="heb">${ING[id].nk}</b></span>`;
 const lootHtml = l => `<p class="loot">🎁 You found: ${l.got.map(ingHtml).join(' ')} <small class="rarLbl">${RARITY[ING[l.got[0]].r]}</small><br>` + (l.coins ? `+${l.coins} 🪙${l.bonus ? ' <small>(double coins: first 10 minutes!)</small>' : ''}` : 'No coins this time. Fewer mistakes means more coins!') + '</p>';
+$('#potBar').onclick = e => {
+  const b = e.target.closest('.potBtn'); if (!b || b.disabled) return;
+  if (G.locked && b.dataset.id === 'second') { toast('One moment…'); return; }
+  usePotion(b.dataset.id);
+};
 function openBag() {
   const have = Object.keys(ING).filter(id => (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
-  modal('🎒 My bag', `<p>🪙 <b>${Math.floor(P.coins || 0)}</b> coins</p>` + (have.length ? '<p>Ingredients:</p><div class="bagGrid">' + have.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></div>`).join('') + '</div>' : '<p style="opacity:.8">No ingredients yet. Beat monsters and help villagers to find some!</p>'), [['Close', null]]);
+  const pots = POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="bagItem"><span class="packBottle sm">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> ${POTIONS[id].name}<span class="bagN">🏡${P.pot[id] || 0}${(P.carry[id] || 0) ? ' 🎒' + P.carry[id] : ''}</span></div>`).join('');
+  modal('🎒 My bag', `<p>🪙 <b>${Math.floor(P.coins || 0)}</b> coins</p>` + (pots ? `<p>Potions: <small style="opacity:.75">🏡 at home, 🎒 in your quest pouch</small></p><div class="bagGrid">${pots}</div>` : '') + (have.length ? '<p>Ingredients:</p><div class="bagGrid">' + have.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></div>`).join('') + '</div>' : '<p style="opacity:.8">No ingredients yet. Beat monsters and help villagers to find some!</p>'), [['Close', null]]);
 }
 // the live reward shown in the fight (what you would get if you won now)
 function updateReward() {
@@ -1343,13 +1488,13 @@ function advanceQuest() {
   const qs = P.quest[G.quest]; qs.enc++;
   let chapterDone = false;
   if (qs.enc > qs.len) {   // the boss / big request is done: the next chapter starts fresh (new length is rolled, hearts refilled)
-    qs.enc = 0; qs.ch++; qs.len = 0; qs.hearts = CFG.MAX_HEARTS; qs.restarts = 0; chapterDone = true;
+    qs.enc = 0; qs.ch++; qs.len = 0; qs.hearts = CFG.MAX_HEARTS; qs.restarts = 0; qs.act = false; chapterDone = true;
   } else qs.hearts = Math.max(qs.hearts || 0, Math.min(CFG.MAX_HEARTS, (qs.hearts || 0) + 1));   // a win restores one heart (or smiley), up to the maximum
   return chapterDone;
 }
 // Losing every heart restarts the quest from its first encounter with a newly rolled length. Loot, coins and potions are kept.
 function restartQuest() {
-  const qs = P.quest[G.quest]; qs.enc = 0; qs.len = 0; qs.hearts = CFG.MAX_HEARTS; qs.restarts = (qs.restarts || 0) + 1; saveSoon(true);
+  const qs = P.quest[G.quest]; qs.enc = 0; qs.len = 0; qs.hearts = CFG.MAX_HEARTS; qs.restarts = (qs.restarts || 0) + 1; qs.act = false; saveSoon(true);
 }
 function victory() {
   const boss = G.mon.boss; $('#foeBody').classList.add('die'); $('#aura').style.display = 'none'; burst('✨', 14); sfx.win(); confetti();
@@ -1358,21 +1503,21 @@ function victory() {
   const qs = P.quest.battle, next = !done && qs.enc === qs.len;   // the boss is next
   modal(boss ? '👑 Boss defeated!' : '🎉 Victory!',
     `<p>You defeated <b>${esc(G.mon.name)}</b>! +${bonus} XP</p>` + lootHtml(loot) + (done ? `<p>🏆 Chapter complete! A new land awaits: <b>${AREAS[(P.quest.battle.ch - 1) % AREAS.length]}</b></p>` : `<p>❤️ You feel a bit stronger.</p>`) + (next ? '<p>⚠️ The boss awaits!</p>' : ''),
-    [['Next battle ⚔️', newEncounter], ['Back to map', openMenu, true]]);
+    [['Next battle ⚔️', nextRun], ['Back to map', openMenu, true]]);
 }
 function knockout() {
   sfx.bad(); restartQuest();
-  modal('😵 Knocked out!', '<p>Even great heroes fall sometimes. Take a breath, then start the quest again. You keep everything you collected, and you learn more every time!</p>', [['Start again 💪', newEncounter], ['Back to map', openMenu, true]]);
+  modal('😵 Knocked out!', '<p>Even great heroes fall sometimes. Take a breath, then start the quest again. You keep everything you collected, and you learn more every time!</p>', [['Start again 💪', nextRun], ['Back to map', openMenu, true]]);
 }
 function villageFail() {
   sfx.bad(); restartQuest();
-  modal('🌧️ The villagers will try again tomorrow', '<p>That was a hard one. Let\'s start the village again and you will do great. You keep everything you collected!</p>', [['Start again 🌿', newEncounter], ['Back to map', openMenu, true]]);
+  modal('🌧️ The villagers will try again tomorrow', '<p>That was a hard one. Let\'s start the village again and you will do great. You keep everything you collected!</p>', [['Start again 🌿', nextRun], ['Back to map', openMenu, true]]);
 }
 function villageDone() {
   sfx.win(); confetti(['💛', '🏠', '🌸', '⭐']);
   const big = G.big, bonus = big ? 70 : 40; P.xp += bonus; const loot = giveLoot("folk", big, G.mist); const done = advanceQuest(); saveSoon(true);
   modal(big ? '📜 The big request is done!' : '🏠 The villagers are happy!', `<p>You helped everyone and a house was rebuilt! +${bonus} XP</p>` + lootHtml(loot) + (done ? `<p>🏆 The whole village is restored! Next stop: <b>${VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length]}</b></p>` : '<p>😊 You feel a bit happier.</p>'),
-    [['Help more people 🌿', newEncounter], ['Back to map', openMenu, true]]);
+    [['Help more people 🌿', nextRun], ['Back to map', openMenu, true]]);
 }
 
 /* ----- 10-minute daily goal ----- */
