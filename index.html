@@ -54,7 +54,7 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .sign{background:#5a3b1d;border:2px solid #c99a5b;border-radius:8px;padding:2px 10px;text-align:center;box-shadow:0 3px 0 #0006}
 .sign b{display:block;font-size:clamp(1rem,3.6vw,1.5rem);line-height:1.15}.sign small{display:block;font-size:clamp(.6rem,1.9vw,.75rem);opacity:.85}
 .pSub{font-size:clamp(.6rem,1.9vw,.75rem);background:#0006;border-radius:8px;padding:1px 6px}.pSub:empty{display:none}
-#mapHero{position:absolute;width:11%;aspect-ratio:3/4;transform:translate(-50%,-92%);cursor:grab;touch-action:none;z-index:5;transition:left .9s ease-in-out,top .9s ease-in-out;filter:drop-shadow(0 4px 3px #0007)}
+#mapHero{position:absolute;width:13%;aspect-ratio:3/4;transform:translate(-50%,-92%);cursor:grab;touch-action:none;z-index:5;transition:left .9s ease-in-out,top .9s ease-in-out;filter:drop-shadow(0 4px 3px #0007)}
 #mapHero svg{width:100%;height:100%}#mapHero.drag{transition:none;cursor:grabbing;z-index:6}#mapHero.walk svg{animation:hop .3s infinite alternate}
 @keyframes hop{to{transform:translateY(-6%)}}
 .potBar{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;margin:4px auto;max-width:760px}
@@ -171,6 +171,8 @@ body.peace .foeBody{font-size:6rem}
 .potIco{display:inline-block;vertical-align:middle;width:1.3em;height:1.7em}.potIco .potSvg{width:100%;height:100%;display:block}
 .shopRobe{display:block;height:4rem}.shopRobe svg{height:100%;width:auto;display:block;margin:0 auto}.shopRobe.big{height:6.4rem}
 .qRobe{display:inline-block;height:3.4rem}.qRobe svg{height:100%;width:auto;display:block}.craftEm .qRobe{height:5rem}
+.beardRow{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:4px 0}
+.beardBtn{font:inherit;font-size:.85rem;color:#fff;background:#fff1;border:2px solid #fff3;border-radius:12px;padding:5px 10px;cursor:pointer}.beardBtn.sel{border-color:var(--gold);background:#ffd16622}
 .shMerchBody{display:block;width:6.4rem;margin:0 auto}.shMerchBody svg{display:block;width:100%;height:auto}
 @media (prefers-reduced-motion:reduce){.shMerchant,.shCau .flame{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
@@ -224,7 +226,7 @@ body.peace .foeBody{font-size:6rem}
   background:linear-gradient(#0000,#0006),linear-gradient(180deg,#2b2060,#3f2a7a 55%,#2a1f4f);border:1px solid #fff2;overflow:hidden}
 body.peace .stage{background:linear-gradient(#0000,#0005),linear-gradient(180deg,#5db7e8,#9fe0b8 60%,#4f9d5f)}
 .side{text-align:center}
-.side svg{height:150px;max-width:100%}
+.side svg{height:168px;max-width:100%}
 .foeBody{font-size:4.8rem;padding-bottom:4px;line-height:1;transition:transform .15s;filter:drop-shadow(0 6px 8px #0008)}
 .foeBody.boss{font-size:6rem}
 /* ---- elemental monsters: glowing aura, floating particles, themed battlefield ---- */
@@ -326,7 +328,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 @media (max-width:560px){
  .opt{font-size:2.4rem;min-height:80px}.opt.w{font-size:1.9rem}.opt.p{font-size:1.45rem}
- .foeBody{font-size:3.8rem}.side svg{height:110px}.big{font-size:2.4rem}
+ .foeBody{font-size:3.8rem}.side svg{height:124px}.big{font-size:2.4rem}
  #kb{gap:4px}#kb button{font-size:1.2rem;padding:6px 0}
 }
 /* compact fight screen: smaller answers, so the stage is bigger and everything fits */
@@ -341,7 +343,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .stage{min-height:clamp(200px,33vh,330px)}
 #tierLbl{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.8rem;line-height:1.15}
 @media (max-width:560px){.stage{min-height:clamp(200px,33vh,330px)}.potBar{margin:2px auto}.fb{min-height:1.8em;margin-top:4px}.qsub{margin-bottom:4px}}
-@media (max-height:700px){.side svg{height:100px}.hearts{font-size:1.1rem}.mid{font-size:.8rem}.panel{padding:8px}.opt{min-height:52px;font-size:1.75rem}.opt.w{font-size:1.35rem}}
+@media (max-height:700px){.side svg{height:112px}.hearts{font-size:1.1rem}.mid{font-size:.8rem}.panel{padding:8px}.opt{min-height:52px;font-size:1.75rem}.opt.w{font-size:1.35rem}}
 </style>
 </head>
 <body>
@@ -454,6 +456,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="swatches" id="skinSw"></div>
     <div style="margin-top:8px">Pick your hair and beard colour:</div>
     <div class="swatches" id="hairSw"></div>
+    <div id="beardSw" style="margin-top:8px"></div>
     <div>Choose a fun nickname <small>(not your real name)</small>:</div>
     <input id="nick" type="text" maxlength="12" placeholder="Nickname" autocomplete="off" style="margin:8px 0">
     <div class="msg" id="creatorMsg"></div>
@@ -913,49 +916,69 @@ const ACCS = [   // [id, slot, hebrew, vowels, emoji, english, price]
 const ACC_SLOT = Object.fromEntries(ACCS.map(a => [a[0], a[1]]));
 const SLOT_NAMES = { head: 'Head', face: 'Face', neck: 'Neck', back: 'Back', staff: 'Wand', pet: 'Pet', aura: 'Glow' };
 let heroSeq = 0;
+const BEARDS = [['none', 'No facial hair'], ['mustache', 'Mustache'], ['short', 'Short beard'], ['long', 'Long beard']];
+const beardRow = cur => `<div class="beardRow">${BEARDS.map(([id, nm]) => `<button class="beardBtn ${id === cur ? 'sel' : ''}" data-beard="${id}">${nm}</button>`).join('')}</div>`;
+/* The hero is ONE drawing made of layers (storybook wizard / witch): robe, skin, facial hair or hair, hat, shoulder cloak, belt with one vial per potion owned, amulet, staff,
+   and the wardrobe extras. Call heroSVG(gender, robeColour, skin, hairColour, look) where look = { style, acc, beard, pots }. viewBox 0 -16 120 186. */
 function heroSVG(g, color, skinIn, hairIn, look) {
-  look = look || {}; const acc = look.acc || {}, style = look.style || null, has = id => Object.values(acc).includes(id), uid = 'h' + (++heroSeq);
-  const dark = shade(color, -45), light = shade(color, 40), skin = skinIn || DEFAULT_SKIN, lum = lumOf(skin);
-  const hairCol = hairIn || (g === 'f' ? '#7a4a21' : '#f2f2f2');
-  const cheek = lum > 0.45 ? mixHex(skin, '#ff6f86', .5) : mixHex(skin, '#ff9a8a', .22), mouth = lum > 0.45 ? shade(skin, -85) : mixHex(skin, '#ffd0c0', .6);
-  const hair = g === 'f' ? `<path d="M40 52 Q36 92 46 100 L52 70 Z M80 52 Q84 92 74 100 L68 70 Z" fill="${hairCol}"/>` : '';
-  const beard = g === 'm' ? `<path d="M46 62 Q60 96 74 62 Q60 72 46 62Z" fill="${hairCol}"/>` : '';
-  // robe fill and pattern
-  const ROBE = 'M28 162 L44 84 H76 L92 162 Z', GRAD = { fire: ['#ff3d00', '#ff9f1c', '#ffd000'], galaxy: ['#1b1464', '#5a35b0', '#2aa3d8'], rainbow: ['#ff4d4d', '#ff9f1c', '#ffe14d', '#3ddc97', '#4aa8ff', '#9b59b6'] }[style];
+  look = look || {}; const acc = look.acc || {}, style = look.style || null, has = id => Object.values(acc).includes(id), uid = 'h' + (++heroSeq), f = g === 'f';
+  const beardKind = f ? 'none' : (look.beard || 'short'), pots = look.pots || [];
+  const dark = shade(color, -45), mid = shade(color, -22), light = shade(color, 40), skin = skinIn || DEFAULT_SKIN, lum = lumOf(skin);
+  const hairCol = hairIn || (f ? '#7a4a21' : '#f2f2f2');
+  const cheek = lum > 0.45 ? mixHex(skin, '#ff6f86', .5) : mixHex(skin, '#ff9a8a', .22), mouth = lum > 0.45 ? shade(skin, -85) : mixHex(skin, '#ffd0c0', .6), nose = shade(skin, -14);
+  const ROBE = f ? 'M30 158 L45 90 H75 L90 158 Z' : 'M38 158 L46 90 H74 L82 158 Z', hemX = f ? [31.4, 88.6] : [38.8, 81.2];
+  const GRAD = { fire: ['#ff3d00', '#ff9f1c', '#ffd000'], galaxy: ['#1b1464', '#5a35b0', '#2aa3d8'], rainbow: ['#ff4d4d', '#ff9f1c', '#ffe14d', '#3ddc97', '#4aa8ff', '#9b59b6'] }[style];
   const defs = `<clipPath id="c${uid}"><path d="${ROBE}"/></clipPath>` + (GRAD ? `<linearGradient id="g${uid}" x1="0" y1="0" x2="0" y2="1">${GRAD.map((c, i) => `<stop offset="${i / (GRAD.length - 1)}" stop-color="${c}"/>`).join('')}</linearGradient>` : '');
-  const fill = GRAD ? `url(#g${uid})` : color, SP = [[48, 100], [58, 126], [70, 110], [44, 142], [76, 140], [62, 152], [52, 118], [68, 94], [84, 150], [40, 156]];
+  const fill = GRAD ? `url(#g${uid})` : color, SP = [[52, 104], [60, 128], [68, 112], [48, 144], [72, 142], [62, 150], [54, 120], [66, 98], [76, 150], [42, 152]];
   const over = style === 'stars' ? SP.map(([x, y]) => `<text x="${x}" y="${y}" font-size="9" text-anchor="middle" fill="#ffe08a">★</text>`).join('')
     : style === 'hearts' ? SP.map(([x, y]) => `<text x="${x}" y="${y}" font-size="9" text-anchor="middle" fill="#ff8fb1">♥</text>`).join('')
-    : style === 'stripes' ? [96, 110, 124, 138, 152].map(y => `<rect x="20" y="${y}" width="80" height="6" fill="${dark}" opacity=".5"/>`).join('')
+    : style === 'stripes' ? [96, 110, 124, 138, 150].map(y => `<rect x="20" y="${y}" width="80" height="6" fill="${dark}" opacity=".5"/>`).join('')
     : style === 'galaxy' ? SP.map(([x, y], i) => `<circle cx="${x}" cy="${y - 3}" r="${i % 3 ? 1 : 1.6}" fill="#fff" opacity=".85"><animate attributeName="opacity" values=".9;.2;.9" dur="${1.4 + i * .23}s" repeatCount="indefinite"/></circle>`).join('') : '';
-  // accessories
-  const back = (has('ac_cape') ? `<path d="M24 164 L42 86 H78 L96 164 Q60 174 24 164Z" fill="#8e1f15"/><path d="M24 164 L42 86 H52 L38 166Z" fill="#000" opacity=".2"/>` : '')
-    + (has('ac_wings') ? `<g opacity=".92"><path d="M46 92 Q2 52 10 112 Q28 106 46 112 Z" fill="#fff" stroke="#cfe3ff" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" values="0 46 100;-7 46 100;0 46 100" dur="1.6s" repeatCount="indefinite"/></path><path d="M74 92 Q118 52 110 112 Q92 106 74 112 Z" fill="#fff" stroke="#cfe3ff" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" values="0 74 100;7 74 100;0 74 100" dur="1.6s" repeatCount="indefinite"/></path></g>` : '');
-  const aura = has('ac_aura') ? [[18, 40], [100, 60], [12, 110], [104, 130], [30, 150], [88, 20], [60, 2]].map(([x, y], i) => `<text x="${x}" y="${y}" font-size="${9 + (i % 3) * 3}" text-anchor="middle" fill="#fff6b0"><animate attributeName="opacity" values="1;.1;1" dur="${1.2 + i * .3}s" repeatCount="indefinite"/>✦</text>`).join('') : '';
-  const neck = (has('ac_scarf') ? `<path d="M44 82 Q60 92 76 82 L77 91 Q60 101 43 91Z" fill="#e74c3c"/><path d="M44 86 Q60 96 76 86" stroke="#fff" stroke-width="2" fill="none" opacity=".6"/><rect x="66" y="90" width="9" height="26" rx="3" fill="#e74c3c"/><rect x="66" y="100" width="9" height="3" fill="#fff" opacity=".6"/>` : '')
-    + (has('ac_necklace') ? `<path d="M47 84 Q60 100 73 84" stroke="#ffd166" stroke-width="2" fill="none"/><circle cx="60" cy="96" r="3.6" fill="#ffd166" stroke="#fff" stroke-width=".8"/>` : '')
+  // accessories (wardrobe)
+  const back = (has('ac_cape') ? `<path d="M24 162 L42 88 H78 L96 162 Q60 172 24 162Z" fill="#8e1f15"/><path d="M24 162 L42 88 H52 L38 164Z" fill="#000" opacity=".2"/>` : '')
+    + (has('ac_wings') ? `<g opacity=".92"><path d="M46 96 Q2 56 10 116 Q28 110 46 116 Z" fill="#fff" stroke="#cfe3ff" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" values="0 46 104;-7 46 104;0 46 104" dur="1.6s" repeatCount="indefinite"/></path><path d="M74 96 Q118 56 110 116 Q92 110 74 116 Z" fill="#fff" stroke="#cfe3ff" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" values="0 74 104;7 74 104;0 74 104" dur="1.6s" repeatCount="indefinite"/></path></g>` : '');
+  const aura = has('ac_aura') ? [[14, 30], [104, 50], [10, 110], [108, 130], [28, 152], [90, 14], [60, -8]].map(([x, y], i) => `<text x="${x}" y="${y}" font-size="${9 + (i % 3) * 3}" text-anchor="middle" fill="#fff6b0"><animate attributeName="opacity" values="1;.1;1" dur="${1.2 + i * .3}s" repeatCount="indefinite"/>✦</text>`).join('') : '';
+  const neck = (has('ac_scarf') ? `<path d="M44 80 Q60 90 76 80 L77 90 Q60 100 43 90Z" fill="#e74c3c"/><path d="M44 84 Q60 94 76 84" stroke="#fff" stroke-width="2" fill="none" opacity=".6"/><rect x="66" y="88" width="9" height="26" rx="3" fill="#e74c3c"/><rect x="66" y="98" width="9" height="3" fill="#fff" opacity=".6"/>` : '')
+    + (has('ac_necklace') ? `<path d="M47 84 Q60 98 73 84" stroke="#ffd166" stroke-width="2" fill="none"/><circle cx="60" cy="94" r="3.4" fill="#ffd166" stroke="#fff" stroke-width=".8"/>` : '')
     + (has('ac_bow') ? `<path d="M60 86 L48 80 L48 92Z M60 86 L72 80 L72 92Z" fill="#ff4d6d"/><circle cx="60" cy="86" r="3" fill="#c2185b"/>` : '');
-  const face = has('ac_glasses') ? `<circle cx="53" cy="60" r="6.3" fill="#9fe8ff" fill-opacity=".25" stroke="#222" stroke-width="1.4"/><circle cx="67" cy="60" r="6.3" fill="#9fe8ff" fill-opacity=".25" stroke="#222" stroke-width="1.4"/><path d="M59.3 60h1.4" stroke="#222" stroke-width="1.4"/>` : '';
-  const head = (has('ac_band') ? `<path d="M37 45 Q60 54 83 45 L82 40 Q60 48 38 40Z" fill="#ffd166"/>` : '')
-    + (has('ac_flower') ? `<g transform="translate(76 40)"><circle cx="0" cy="-4" r="3.2" fill="#ff8fb1"/><circle cx="4" cy="0" r="3.2" fill="#ff8fb1"/><circle cx="0" cy="4" r="3.2" fill="#ff8fb1"/><circle cx="-4" cy="0" r="3.2" fill="#ff8fb1"/><circle r="2.4" fill="#ffd166"/></g>` : '')
-    + (has('ac_crown') ? `<path d="M46 31 L48 20 L53 27 L58 17 L63 27 L68 20 L70 31 Z" fill="#ffd166" stroke="#b8860b" stroke-width="1"/><circle cx="58" cy="25" r="1.8" fill="#e74c3c"/>` : '');
-  const orb = has('ac_staff') ? `<g><circle cx="96" cy="36" r="13" fill="#ffe08a" opacity=".35"><animate attributeName="r" values="11;15;11" dur="1.6s" repeatCount="indefinite"/></circle><path d="M96 24 L99 33 L108 33 L101 39 L104 48 L96 42 L88 48 L91 39 L84 33 L93 33Z" fill="#ffd166" stroke="#fff" stroke-width="1.5"/></g>` : `<circle cx="96" cy="36" r="9" fill="${light}" stroke="#fff" stroke-width="2"/>`;
-  const pet = has('ac_parrot') ? `<text x="76" y="90" font-size="22">🦜</text>` : has('ac_dragon') ? `<text x="74" y="92" font-size="24">🐉</text>` : '';
-  return `<svg viewBox="0 0 120 170" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${aura}${back}
-   <ellipse cx="60" cy="164" rx="34" ry="5" fill="#0005"/>
-   <rect x="94" y="40" width="5" height="122" rx="2" fill="#8a5a2b"/>${orb}
-   <path d="${ROBE}" fill="${fill}"/><g clip-path="url(#c${uid})">${over}</g><path d="M28 162 L44 84 H52 L44 162Z" fill="${dark}" opacity=".35"/>
-   <rect x="44" y="108" width="32" height="7" fill="${dark}"/><rect x="56" y="106" width="8" height="11" rx="2" fill="#ffd166"/>
-   ${hair}<circle cx="60" cy="62" r="19" fill="${skin}"/>${beard}
-   <circle cx="53" cy="60" r="3.9" fill="#fff"/><circle cx="67" cy="60" r="3.9" fill="#fff"/><circle cx="53" cy="60" r="2.6" fill="#2a2340"/><circle cx="67" cy="60" r="2.6" fill="#2a2340"/>
-   <path d="M53 69 Q60 75 67 69" stroke="${mouth}" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-   <circle cx="48" cy="67" r="3" fill="${cheek}" opacity=".55"/><circle cx="72" cy="67" r="3" fill="${cheek}" opacity=".55"/>${face}${neck}
-   <ellipse cx="60" cy="46" rx="30" ry="7" fill="${dark}"/><path d="M36 46 Q52 36 58 6 Q74 32 84 46 Z" fill="${color}"/>
-   <path d="M36 46 Q52 36 58 6 L56 46Z" fill="${dark}" opacity=".3"/>
-   <text x="60" y="38" font-size="13" text-anchor="middle" fill="#ffd166">★</text>${head}
-   <circle cx="94" cy="96" r="5" fill="${skin}"/>${pet}</svg>`;
+  const faceAcc = has('ac_glasses') ? `<circle cx="51" cy="50" r="7" fill="#9fe8ff" fill-opacity=".25" stroke="#222" stroke-width="1.4"/><circle cx="69" cy="50" r="7" fill="#9fe8ff" fill-opacity=".25" stroke="#222" stroke-width="1.4"/><path d="M58 50h4" stroke="#222" stroke-width="1.4"/>` : '';
+  const head = (has('ac_band') ? `<path d="M30 36 Q60 46 90 36 L90 31 Q60 41 30 31Z" fill="#ff8fb1"/>` : '')
+    + (has('ac_flower') ? `<g transform="translate(84 33)"><circle cx="0" cy="-4" r="3.2" fill="#ff8fb1"/><circle cx="4" cy="0" r="3.2" fill="#ff8fb1"/><circle cx="0" cy="4" r="3.2" fill="#ff8fb1"/><circle cx="-4" cy="0" r="3.2" fill="#ff8fb1"/><circle r="2.4" fill="#ffd166"/></g>` : '')
+    + (has('ac_crown') ? `<path d="M48 30 L50 18 L55 25 L60 14 L65 25 L70 18 L72 30 Z" fill="#ffd166" stroke="#b8860b" stroke-width="1"/><circle cx="60" cy="24" r="1.8" fill="#e74c3c"/>` : '');
+  const head2 = has('ac_staff')
+    ? `<circle cx="98.5" cy="30" r="13" fill="#ffe08a" opacity=".35"><animate attributeName="r" values="11;15;11" dur="1.6s" repeatCount="indefinite"/></circle><path d="M98.5 17 L101.5 26 L110.5 26 L103.5 32 L106.5 41 L98.5 35 L90.5 41 L93.5 32 L86.5 26 L95.5 26Z" fill="#ffd166" stroke="#fff" stroke-width="1.5"/>`
+    : `<circle cx="98.5" cy="30" r="9" fill="none" stroke="#7a4a21" stroke-width="3"/><polygon points="98.5,22 103,30 98.5,38 94,30" fill="#ff7a7a" stroke="#ffd166" stroke-width="1"/>`;   // staff head: a crystal in a ring
+  const pet = has('ac_parrot') ? `<text x="76" y="98" font-size="18">🦜</text>` : has('ac_dragon') ? `<text x="86" y="162" font-size="22">🐉</text>` : '';
+  // facial hair (wizard) / long hair (witch)
+  const stache = `<path d="M60 62 C54 58 47 59 44 63 C46 67 52 66 60 64 C68 66 74 67 76 63 C73 59 66 58 60 62Z" fill="${hairCol}"/>`;
+  const beard = beardKind === 'mustache' ? stache
+    : beardKind === 'short' ? `<path d="M42 58 Q44 80 60 84 Q76 80 78 58 Q70 68 60 66 Q50 68 42 58Z" fill="${hairCol}"/>${stache}`
+    : beardKind === 'long' ? `<path d="M40 56 Q42 92 60 100 Q78 92 80 56 Q70 70 60 68 Q50 70 40 56Z" fill="${hairCol}"/><path d="M60 72 Q58 86 60 94" fill="none" stroke="#0002" stroke-width="1.2"/>${stache}` : '';
+  const hairBack = f ? `<path d="M36 50 Q26 92 38 112 Q44 100 46 76Z" fill="${hairCol}"/><path d="M84 50 Q94 92 82 112 Q76 100 74 76Z" fill="${hairCol}"/>` : '';
+  const fringe = f ? `<path d="M37 44 Q60 26 83 44 Q80 52 72 48 Q60 38 48 48 Q40 52 37 44Z" fill="${hairCol}"/>` : '';
+  const lashes = f ? `<path d="M46 46 l-2 -2 M48.6 44.6 l-1 -2.6 M73.4 44.6 l1 -2.6 M76 46 l2 -2" stroke="#2a2340" stroke-width="1.4" stroke-linecap="round" fill="none"/>` : '';
+  const brows = `<path d="M44 43 Q51 39 56 44 M64 44 Q69 39 76 43" fill="none" stroke="${f ? '#6b3a1f' : '#cfc8b8'}" stroke-width="2.4" stroke-linecap="round"/>`;
+  const hat = f
+    ? `<ellipse cx="60" cy="38" rx="40" ry="8.5" fill="${dark}"/><path d="M28 38 Q48 26 56 -6 Q62 -14 80 -2 Q72 8 80 20 Q86 30 94 38 Z" fill="${color}"/><path d="M28 37 Q60 47 92 37 L92 31 Q60 41 28 31 Z" fill="#e0b84a"/><rect x="55" y="30" width="10" height="9" rx="1.5" fill="none" stroke="${dark}" stroke-width="2"/>`
+    : `<ellipse cx="60" cy="38" rx="35" ry="8" fill="${dark}"/><path d="M28 38 Q50 28 58 -4 Q62 -12 78 0 Q74 10 80 20 Q86 30 92 38 Z" fill="${color}"/><path d="M30 37 Q60 46 90 37 L90 32 Q60 41 30 32 Z" fill="#e0b84a"/><polygon points="60,16 62.6,22 69,22 64,26 66,32 60,28 54,32 56,26 51,22 57.4,22" fill="#ffd166"/>`;
+  const vials = pots.slice(0, 5).map((id, k) => `<rect x="${44.8 + k * 6.4}" y="125" width="4.6" height="8" rx="2.2" fill="${POTION_COL[id] || '#999'}" stroke="#ffffff88" stroke-width=".5"/>`).join('');
+  const strings = pots.slice(0, 5).map((id, k) => `M${47.1 + k * 6.4} 118 V125`).join(' ');
+  return `<svg viewBox="0 -16 120 186" xmlns="http://www.w3.org/2000/svg"><defs>${defs}</defs>${aura}${back}${hairBack}
+   <ellipse cx="60" cy="160" rx="${f ? 36 : 34}" ry="5" fill="#000" opacity=".15"/>
+   <rect x="96" y="38" width="5" height="120" rx="2" fill="#7a4a21"/>${head2}
+   <path d="${ROBE}" fill="${fill}"/><g clip-path="url(#c${uid})">${over}</g><path d="M${ROBE.split(' ')[0].slice(1)} 158 L${f ? '45' : '46'} 90 H${f ? '53' : '54'} L${f ? '38' : '47'} 158Z" fill="${dark}" opacity=".4"/>
+   <path d="M${hemX[0] - 0.4} 158 L${hemX[0] + 0.4} 152 H${hemX[1] - 0.4} L${hemX[1] + 0.4} 158Z" fill="#e0b84a"/>
+   <path d="M44 92 L26 128 L36 134 L52 102Z" fill="${mid}"/><path d="M76 94 L97 98 L94 108 L72 104Z" fill="${mid}"/><circle cx="97" cy="104" r="5" fill="${skin}"/><circle cx="30" cy="132" r="5" fill="${skin}"/>
+   <rect x="44" y="112" width="32" height="6" fill="#4a2f1a"/><rect x="56" y="110.5" width="8" height="9" rx="1.5" fill="#e0b84a"/><path d="${strings}" stroke="#4a2f1a" stroke-width="1" fill="none"/>${vials}
+   <path d="M42 160 Q30 160 30 168 Q36 171 48 166 L48 158Z" fill="#4a2f1a"/><path d="M72 158 V166 Q84 171 90 168 Q90 160 78 160Z" fill="#4a2f1a"/>
+   <path d="M42 88 Q60 82 78 88 L86 106 Q60 114 34 106 Z" fill="#6b3fa8"/><path d="M34 106 Q60 114 86 106" fill="none" stroke="#8a5cd6" stroke-width="2.5"/><circle cx="60" cy="90" r="3" fill="#ffd166"/>
+   <circle cx="60" cy="102" r="9" fill="#8a5cd6" opacity=".3"/><circle cx="60" cy="102" r="4.8" fill="#8a5cd6" stroke="#ffd166" stroke-width="1.6"/>${neck}
+   <circle cx="60" cy="52" r="24" fill="${skin}"/>
+   <ellipse cx="51" cy="50" rx="4.6" ry="5" fill="#fff"/><ellipse cx="69" cy="50" rx="4.6" ry="5" fill="#fff"/><circle cx="52" cy="51" r="2.6" fill="#2a2340"/><circle cx="70" cy="51" r="2.6" fill="#2a2340"/>
+   <circle cx="43" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="77" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="60" cy="57" r="2.6" fill="${nose}"/>
+   <path d="M53 64 Q60 69 67 64" fill="none" stroke="${mouth}" stroke-width="2" stroke-linecap="round"/>${beard}${faceAcc}${brows}${lashes}${fringe}${hat}${head}${pet}</svg>`;
 }
-const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc });
+const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc, beard: p.beard, pots: typeof POTION_IDS === 'undefined' ? [] : POTION_IDS.filter(id => ((p.pot || {})[id] || 0) + ((p.carry || {})[id] || 0) > 0) });
 // Villagers are people emoji: a skin-tone modifier goes right after the FIRST code point (before any zero-width joiner), e.g. 👩🏽‍🌾. Tones are dealt from a shuffled bag so they are evenly spread.
 const TONE_MODS = ['🏻', '🏼', '🏽', '🏾', '🏿'];
 const tonedEmoji = (e, k) => { const cp = [...e]; return cp[0] + TONE_MODS[k % 5] + cp.slice(1).join(''); };
@@ -972,7 +995,7 @@ function newProfile(id, nick, gender, color, real, cls, skin, hair) {
   return p;
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 8;
+const PROFILE_V = 9;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -1000,6 +1023,7 @@ function migrate(p) {
     p.own = p.own || { caul: 0, decor: [] };
     if (p.own.decor.includes('d_chest')) { p.own.decor = p.own.decor.filter(d => d !== 'd_chest'); p.coins = (p.coins || 0) + 60; p.shopNote = '🧰 The shop has new things! Your old toolbox was returned: 🪙 +60'; }
   }
+  if (v < 9) { p.beard = p.gender === 'f' ? 'none' : 'short'; }   // version 9: the new hero look. Facial hair is a choice; existing wizards keep a short beard.
   p.satchel = p.satchel || {}; p.own = p.own || { caul: 0, decor: [] }; p.own.pos = p.own.pos || {};   // own.pos: where the student moved each decoration in the room
   if (v < 7) { p.style = p.style || null; p.acc = p.acc || {}; p.wd = p.wd || []; }   // version 7: the wardrobe (robe style, accessories, and what you own of them)
   p.acc = p.acc || {}; p.wd = p.wd || [];
@@ -1138,10 +1162,10 @@ $('#regGo').onclick = async () => {
 $('#regNext').onclick = () => { if (!$('#regTick').checked) { $('#regMsg2').textContent = 'Please write your number down and tick the box.'; return; } openCreator(); };
 /* ----- "My look": change robe colour, skin tone and hair/beard colour any time ----- */
 function openLook() {
-  const lk = { color: P.color, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null };
-  const render = () => { $('#lookBody').innerHTML = `<div class="center lookPrev">${heroSVG(P.gender, lk.color, lk.skin, lk.hair)}</div><div>Robe</div><div class="swatches">${swatchRow(COLORS, lk.color, 'color')}</div><div>Skin</div><div class="swatches">${swatchRow(SKINS, lk.skin, 'skin')}</div><div>Hair and beard</div><div class="swatches">${swatchRow(HAIRS, lk.hair || (P.gender === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair')}</div>`; };
-  modal('🎨 My look', '<div id="lookBody"></div>', [['Save', () => { P.color = lk.color; P.skin = lk.skin; P.hair = lk.hair; saveSoon(true); openMenu(); }], ['Cancel', null, true]]);
-  $('#lookBody').onclick = e => { const b = e.target.closest('.sw'); if (!b) return; const k = b.dataset.k, i = +b.dataset.i; lk[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; render(); };
+  const lk = { color: P.color, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null, beard: P.beard || 'short' };
+  const render = () => { $('#lookBody').innerHTML = `<div class="center lookPrev">${heroSVG(P.gender, lk.color, lk.skin, lk.hair, { beard: lk.beard })}</div><div>Robe</div><div class="swatches">${swatchRow(COLORS, lk.color, 'color')}</div><div>Skin</div><div class="swatches">${swatchRow(SKINS, lk.skin, 'skin')}</div><div>Hair and beard</div><div class="swatches">${swatchRow(HAIRS, lk.hair || (P.gender === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair')}</div>${P.gender === 'm' ? '<div>Facial hair</div>' + beardRow(lk.beard) : ''}`; };
+  modal('🎨 My look', '<div id="lookBody"></div>', [['Save', () => { P.color = lk.color; P.skin = lk.skin; P.hair = lk.hair; P.beard = lk.beard; saveSoon(true); openMenu(); }], ['Cancel', null, true]]);
+  $('#lookBody').onclick = e => { const bb = e.target.closest('.beardBtn'); if (bb) { lk.beard = bb.dataset.beard; render(); return; } const b = e.target.closest('.sw'); if (!b) return; const k = b.dataset.k, i = +b.dataset.i; lk[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; render(); };
   render();
 }
 $('#lookBtn').onclick = openLook;
@@ -1155,10 +1179,10 @@ function askLookOnce() {   // existing heroes: one friendly, skippable question
 let WD = null, wdTab = 'robe';
 const wdChip = (key, id, emo, on, locked, price, extra = '') => `<button class="wdChip ${on ? 'on' : ''} ${locked ? 'lock' : ''}" data-k="${key}" data-id="${id}">${emo}${locked ? `<small>🔒 ${price}</small>` : ''}${extra}</button>`;
 function openWardrobe() {
-  G.quest = null; WD = { color: P.color, style: P.style || null, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null, acc: Object.assign({}, P.acc) }; wdTab = 'robe'; show('wardrobe'); drawWardrobe();
+  G.quest = null; WD = { color: P.color, style: P.style || null, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null, beard: P.beard || 'short', acc: Object.assign({}, P.acc) }; wdTab = 'robe'; show('wardrobe'); drawWardrobe();
 }
 function drawWardrobe() {
-  $('#wdPrev').innerHTML = heroSVG(P.gender, WD.color, WD.skin, WD.hair, { style: WD.style, acc: WD.acc });
+  $('#wdPrev').innerHTML = heroSVG(P.gender, WD.color, WD.skin, WD.hair, { style: WD.style, acc: WD.acc, beard: WD.beard });
   document.querySelectorAll('.wdTab').forEach(b => b.classList.toggle('on', b.dataset.t === wdTab));
   const sw = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
   const dot = c => `<span class="wdDot" style="background:${c}"></span>`;
@@ -1167,7 +1191,7 @@ function drawWardrobe() {
     h = `<div class="wdLbl">Robe colour</div><div class="swatches">${sw(COLORS, WD.color, 'color')}${ROBE_EXTRA.map(r => { const own = P.wd.includes(r[0]); return `<button class="sw ${r[1] === WD.color ? 'sel' : ''} ${own ? '' : 'lockSw'}" data-k="xcolor" data-id="${r[0]}" style="background:${r[1]}" aria-label="${r[5]}">${own ? '' : '🔒'}</button>`; }).join('')}</div>`
       + `<div class="wdLbl">Robe style</div><div class="wdChips">${wdChip('style', '', '<span class="wdEm">✖️</span>', !WD.style, false, 0, '<small>plain</small>')}${ROBE_STYLES.map(s => { const own = P.wd.includes(s[0]); return wdChip('style', s[0], `<span class="wdEm">${s[4]}</span>`, WD.style === s[1], !own, s[6]); }).join('')}</div>`;
   } else if (wdTab === 'face') {
-    h = `<div class="wdLbl">Skin</div><div class="swatches">${sw(SKINS, WD.skin, 'skin')}</div><div class="wdLbl">Hair and beard</div><div class="swatches">${sw(HAIRS, WD.hair || (P.gender === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair')}</div>`;
+    h = `<div class="wdLbl">Skin</div><div class="swatches">${sw(SKINS, WD.skin, 'skin')}</div><div class="wdLbl">Hair and beard</div><div class="swatches">${sw(HAIRS, WD.hair || (P.gender === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair')}</div>${P.gender === 'm' ? '<div class="wdLbl">Facial hair</div>' + beardRow(WD.beard) : ''}`;
   } else {
     h = Object.keys(SLOT_NAMES).map(slot => `<div class="wdLbl">${SLOT_NAMES[slot]}</div><div class="wdChips">${wdChip('acc-' + slot, '', '<span class="wdEm">✖️</span>', !WD.acc[slot], false, 0, '<small>none</small>')}${ACCS.filter(a => a[1] === slot).map(a => { const own = P.wd.includes(a[0]); return wdChip('acc-' + slot, a[0], `<span class="wdEm">${a[4]}</span>`, WD.acc[slot] === a[0], !own, a[6]); }).join('')}</div>`).join('');
   }
@@ -1175,6 +1199,7 @@ function drawWardrobe() {
 }
 $('#wardrobe').onclick = e => {
   const tab = e.target.closest('.wdTab'); if (tab) { wdTab = tab.dataset.t; drawWardrobe(); return; }
+  const bbtn = e.target.closest('.beardBtn'); if (bbtn) { WD.beard = bbtn.dataset.beard; drawWardrobe(); return; }
   const sw = e.target.closest('.sw');
   if (sw) {
     const k = sw.dataset.k;
@@ -1191,7 +1216,7 @@ $('#wardrobe').onclick = e => {
     drawWardrobe(); return;
   }
 };
-$('#wdSave').onclick = () => { P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.acc = WD.acc; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
+$('#wdSave').onclick = () => { P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.beard = WD.beard; P.acc = WD.acc; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
 $('#wdBack').onclick = () => openHome();
 /* ----- install as an app (works from Chrome on Android) and keep a saved copy for offline play ----- */
 let installEvt = null;
@@ -1199,26 +1224,27 @@ window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); instal
 window.addEventListener('appinstalled', () => { installEvt = null; $('#installBtn').style.display = 'none'; toast('📲 The game is installed!'); });
 $('#installBtn').onclick = async () => { if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch (e) {} installEvt = null; $('#installBtn').style.display = 'none'; };
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
-function openCreator() { cr = { g: 'm', color: rnd(COLORS), skin: SKINS[2], hair: null }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
+function openCreator() { cr = { g: 'm', color: rnd(COLORS), skin: SKINS[2], hair: null, beard: 'short' }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
 const swatchRow = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
 function drawCreator() {
-  $('#prevHero').innerHTML = heroSVG(cr.g, cr.color, cr.skin, cr.hair);
+  $('#prevHero').innerHTML = heroSVG(cr.g, cr.color, cr.skin, cr.hair, { beard: cr.beard });
+  $('#beardSw').innerHTML = cr.g === 'm' ? '<div>Facial hair:</div>' + beardRow(cr.beard) : '';
   document.querySelectorAll('.gbtn').forEach(b => { b.classList.toggle('sel', b.dataset.g === cr.g); const t = SKIN_MOD[SKINS.indexOf(cr.skin)] || '', zj = String.fromCharCode(0x200d); b.textContent = b.dataset.g === 'm' ? '🧙' + t + zj + '♂️ Wizard' : '🧙' + t + zj + '♀️ Witch'; });   // the icons wear the chosen skin tone
   $('#swatches').innerHTML = swatchRow(COLORS, cr.color, 'color'); $('#skinSw').innerHTML = swatchRow(SKINS, cr.skin, 'skin'); $('#hairSw').innerHTML = swatchRow(HAIRS, cr.hair || (cr.g === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair');
 }
-$('#creator').onclick = e => { const b = e.target.closest('.sw'); if (!b) return; const k = b.dataset.k, i = +b.dataset.i; cr[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; drawCreator(); };
+$('#creator').onclick = e => { const bb = e.target.closest('.beardBtn'); if (bb) { cr.beard = bb.dataset.beard; drawCreator(); return; } const b = e.target.closest('.sw'); if (!b) return; const k = b.dataset.k, i = +b.dataset.i; cr[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; drawCreator(); };
 document.querySelectorAll('.gbtn').forEach(b => b.onclick = () => { cr.g = b.dataset.g; drawCreator(); });
 $('#createBtn').onclick = () => {
   const nick = $('#nick').value.trim();
   if (nick.length < 2) { $('#creatorMsg').textContent = 'Please choose a nickname (at least 2 letters).'; return; }
-  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls, cr.skin, cr.hair); if (APP) { P.app = true; if (pendingId.startsWith('local-')) P.local = true; } pendingReal = pendingCls = ''; saveSoon(true); openMenu();
+  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls, cr.skin, cr.hair); P.beard = cr.g === 'm' ? cr.beard : 'none'; if (APP) { P.app = true; if (pendingId.startsWith('local-')) P.local = true; } pendingReal = pendingCls = ''; saveSoon(true); openMenu();
 };
 
 /* ====================== MENU ====================== */
 function rankOf(xp) { return RANKS[Math.min(RANKS.length - 1, Math.floor(xp / 400))]; }
 function openMenu() {
   G.quest = null; show('menu');
-  $('#menuHero').innerHTML = heroOf(P).replace('<svg ', '<svg style="height:90px" ');
+  $('#menuHero').innerHTML = heroOf(P).replace('<svg ', '<svg style="height:100px" ');
   $('#menuWho').textContent = P.nick;
   $('#menuRank').textContent = rankOf(P.xp) + ' · ' + P.xp + ' XP' + (APP ? '' : ' · my number: ' + P.id);
   $('#menuXp').style.width = ((P.xp % 400) / 4) + '%';
@@ -1583,7 +1609,7 @@ function jDraw() {
   o += `<rect id="jFogR" width="${W}" height="${H}" fill="url(#jFogG)" pointer-events="none"/>`;
   for (let i = 0; i < 7; i++) o += `<ellipse class="puff" data-o="${(r() * (J.vertical ? W : H)).toFixed(0)}" rx="${J.vertical ? 38 : 16}" ry="${J.vertical ? 12 : 34}" fill="#fff" opacity=".42" filter="url(#jSoft)" pointer-events="none"/>`;
   const wp = jPosAt(J.wizLen), hero = heroOf(P).replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
-  o += `<g id="jWiz" transform="translate(${wp.x.toFixed(1)},${wp.y.toFixed(1)})" pointer-events="none"><g id="jWizFlip"><svg x="-17" y="-47" width="34" height="48" viewBox="0 0 120 170" overflow="visible">${hero}</svg></g></g>`;
+  o += `<g id="jWiz" transform="translate(${wp.x.toFixed(1)},${wp.y.toFixed(1)})" pointer-events="none"><g id="jWizFlip"><svg x="-20" y="-58" width="40" height="62" viewBox="0 -16 120 186" overflow="visible">${hero}</svg></g></g>`;
   $('#jMap').setAttribute('viewBox', `0 0 ${W} ${H}`); $('#jMap').innerHTML = o;
   jSetFog(J.fogF === null ? jFogTarget(J.revealIdx) : J.fogF);
   document.querySelectorAll('#jMap .jnode.next').forEach(g => { g.onclick = () => jWalk(); g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jWalk(); } }; });
@@ -2470,7 +2496,7 @@ const shCounterSVG = () => `<defs><linearGradient id="shCsh" gradientUnits="user
   <polygon points="9,69 91,69 96,75.5 4,75.5" fill="url(#shCsh)" filter="url(#shCbl)"/>
   <polygon points="14,57 86,57 90,61 10,61" fill="#c58f58"/><polygon points="10,61 90,61 90,69.5 10,69.5" fill="#6e4222"/><polygon points="10,61 90,61 90,62.2 10,62.2" fill="#8a5a2b"/>
   ${[18, 34, 50, 66, 82].map(x => `<rect x="${x - 6}" y="63.4" width="12" height="4.6" rx=".8" fill="none" stroke="#4a2a14" stroke-width=".4"/>`).join('')}`;
-const robePic = s => s.wtype === 'robe' ? heroSVG(P.gender, s.hex, P.skin, P.hair, {}) : s.wtype === 'style' ? heroSVG(P.gender, P.color, P.skin, P.hair, { style: s.style }) : '';   // robes are shown on the student's own wizard
+const robePic = s => s.wtype === 'robe' ? heroSVG(P.gender, s.hex, P.skin, P.hair, { beard: P.beard }) : s.wtype === 'style' ? heroSVG(P.gender, P.color, P.skin, P.hair, { style: s.style, beard: P.beard }) : '';   // robes are shown on the student's own wizard
 const shPic = s => s.kind === 'wear' && s.wtype !== 'acc' ? '<span class="shopRobe big">' + robePic(s) + '</span>' : s.kind === 'potion' ? `<span class="packBottle" style="transform:scale(1.8);margin:12px">${potionSVG(s.pid)}<i>${s.em}</i></span>` : s.kind === 'caul' ? cauldronArt(s.lv) : s.id === 'd_rug' ? '<span class="shRug" style="width:6rem;height:2.4rem"></span>' : s.em;
 function renderShop() {
   const sh = shopShelf(), skin = SH_SKINS[sh.skin % SH_SKINS.length], c = P.own.caul || 0, next = SHOP['caul' + (c + 1)];
