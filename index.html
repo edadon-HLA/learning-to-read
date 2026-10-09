@@ -186,6 +186,8 @@ body.peace .foeBody{font-size:6rem}
 .itemBtn.glow{border-color:#4aa8ff;box-shadow:0 0 12px #4aa8ff88;animation:itemGlow 2s ease-in-out infinite}.itemBtn.glow.v2{border-color:#ffd166;box-shadow:0 0 14px #ffd166aa}
 .itemBtn.used{opacity:.45;filter:grayscale(1)}@keyframes itemGlow{50%{box-shadow:0 0 5px #4aa8ff55}}
 @media (prefers-reduced-motion:reduce){.itemBtn.glow{animation:none}}
+.miInl{display:inline-block;vertical-align:middle;line-height:1}.miInl .magicSvg{width:1.5em;height:1.5em;display:block}
+.craftEm .miInl .magicSvg{width:4.4rem;height:4.4rem}.opt .miInl .magicSvg{width:3rem;height:3rem}
 .shMerchBody{display:block;width:6.4rem;margin:0 auto}.shMerchBody svg{display:block;width:100%;height:auto}
 @media (prefers-reduced-motion:reduce){.shMerchant,.shCau .flame{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
@@ -421,6 +423,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="small" style="opacity:.7;margin-top:6px">Tap a student to see details. Tap a column title to sort.</div>
   </div>
   <div class="card" id="admDetail" style="display:none"></div>
+  <div class="card" id="admDemoCard"><b>🧪 Demo run</b><p class="small" style="margin:6px 0;opacity:.85">Try the game as a pretend student: pick any level, jump to the workshop, shop or home, start a quest, give yourself items. Nothing is saved and no student is changed.</p><button class="btn" id="admDemo">▶ Start a demo run</button></div>
   <div class="card" id="admSound">
     <b>🎙️ Pronunciations</b>
     <p class="small" style="margin:6px 0;opacity:.85">Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one.</p>
@@ -2400,10 +2403,10 @@ function startCraft(potion, ings) {
 }
 // One question that asks for an item's name, adapted to the student's level. Shared by crafting (ingredients) and the shop (items).
 // Levels 1-3 listen (the picture is shown above); 4-8 see the picture + written name and pick the word they HEAR; 9-10 read the name and pick the picture; 11+ type the name (English shown only here).
-const itemEm = x => (x.kind === 'wear' && x.wtype !== 'acc') ? `<span class="qRobe">${robePic(x)}</span>` : x.em;   // robes are drawn on the student's wizard, everything else is its emoji
+const itemEm = x => x.magic ? magicIcon(x.id) : (x.kind === 'wear' && x.wtype !== 'acc') ? `<span class="qRobe">${robePic(x)}</span>` : x.em;   // robes are drawn on the student's wizard, everything else is its emoji
 function nameQuestion(ing, universe, ctx) {
   const t = P.tier; let q; G.optSound = false;
-  const pic = $('#craftPic'); pic.style.display = (t <= 8 || (ing.kind === 'wear' && ing.wtype !== 'acc')) ? '' : 'none'; pic.innerHTML = `<span class="craftEm ${ing.r === 4 ? 'shine' : ''}">${itemEm(ing)}</span>`;
+  const pic = $('#craftPic'); pic.style.display = (t <= 8 || ing.magic || (ing.kind === 'wear' && ing.wtype !== 'acc')) ? '' : 'none'; pic.innerHTML = `<span class="craftEm ${ing.r === 4 ? 'shine' : ''}">${itemEm(ing)}</span>`;
   if (t <= 3) { q = qLetter(t, false); }
   else if (t <= 8 && findHeVoice()) {
     const others = shuffle(universe.filter(x => x.id !== ing.id && x.he !== ing.he)).slice(0, 3);
@@ -2416,7 +2419,7 @@ function nameQuestion(ing, universe, ctx) {
     q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: ctx.read, big: txt, sub: ctx.sub, say: txt,
       options: shuffle([ing, ...others]).map(x => ({ html: `<span style="font-size:2.4rem" class="${x.r === 4 ? 'shine' : ''}">${itemEm(x)}</span>`, cls: '', ok: x.id === ing.id, em: x.em, note: `That is ${x.em}` })), explain: `<span class="he">${txt}</span> = ${ing.em}` };
   } else {
-    q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: ctx.write, big: ing.kind === 'wear' && ing.wtype !== 'acc' ? '' : ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
+    q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: ctx.write, big: ing.magic || (ing.kind === 'wear' && ing.wtype !== 'acc') ? '' : ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
       explain: `<span class="he">${ing.he}</span> (${ing.en})`, say: ing.he };
   }
   G.q = q; G.lastKey = q.lastKey; G.noCount = true; G.snap = null; G.potUsed = true;
@@ -2472,9 +2475,10 @@ function craftNext() {
 const MAGIC = {
   amulet: { id: 'amulet', he: 'קמע', nk: 'קָמֵעַ', em: '🔮', en: 'amulet of protection', does: 'If you would be knocked out, you keep 1 heart and the quest goes on.' },
   staff: { id: 'staff', he: 'מטה', nk: 'מַטֶּה', em: '🪄', en: 'staff of banishing', does: 'Sends one monster or villager away at once (never a boss).' },
-  belt: { id: 'belt', he: 'חגורה', nk: 'חֲגוֹרָה', em: '🎗️', en: 'belt of seeing', does: 'Clears the fog: you see the next four stops, even the boss.' }
+  belt: { id: 'belt', he: 'חגורה', nk: 'חֲגוֹרָה', em: '', en: 'belt of seeing', does: 'Clears the fog: you see the next four stops, even the boss.' }
 };
-const MAGIC_SLOTS = Object.keys(MAGIC), MAGIC_Q = MAGIC_SLOTS.map(s => ({ ...MAGIC[s], r: 3 }));   // MAGIC_Q: shaped like an ingredient so the usual name question can ask about it
+const MAGIC_SLOTS = Object.keys(MAGIC), MAGIC_Q = MAGIC_SLOTS.map(s => ({ ...MAGIC[s], r: 3, magic: true }));
+const magicIcon = s => `<span class="miInl">${magicPic(s, 1)}</span>`;   // a small drawing of the item for titles and questions (there is no belt emoji)   // MAGIC_Q: shaped like an ingredient so the usual name question can ask about it
 const FORGE = { 1: { slots: [3, 0, 0], coins: 150 }, 2: { slots: [4, 3], coins: 300 } };   // epic: 1 epic + 2 common + 150 coins. Legendary upgrade: 1 legendary + 1 epic + 300 coins. (rarity numbers: 0 common ... 3 epic, 4 legendary)
 const VER_NAME = ['', 'Epic', 'Legendary'];
 const itemVer = s => (P.items && P.items[s]) || 0;
@@ -2567,7 +2571,7 @@ function pickForge(slot) {   // choose which ingredients to use (one for each ne
       ownedOf(rar).map(id => { const used = chosen.some((c, j) => c === id && j !== k); return `<button class="slotBtn ${chosen[k] === id ? 'sel' : ''}" data-k="${k}" data-id="${id}" ${used ? 'disabled' : ''}>${ING[id].em} <b class="heb">${ING[id].nk}</b> <small>×${P.inv[id]}</small></button>`; }).join('') + '</div></div>').join('');
     $('#mBtns button').disabled = chosen.some(c => !c);
   };
-  modal(`${m.em} ${v === 1 ? 'Make' : 'Upgrade'}: ${m.en}`, `<div id="brewBody"></div><p class="small" style="opacity:.85;margin-top:8px">🪙 ${rec.coins} coins. Wrong answers cost nothing. You use up the ingredients only when the item is finished.</p>`, [['Start ▶', () => startForge(slot, chosen.slice())], ['Not now', null, true]]);
+  modal(`${magicIcon(slot)} ${v === 1 ? 'Make' : 'Upgrade'}: ${m.en}`, `<div id="brewBody"></div><p class="small" style="opacity:.85;margin-top:8px">🪙 ${rec.coins} coins. Wrong answers cost nothing. You use up the ingredients only when the item is finished.</p>`, [['Start ▶', () => startForge(slot, chosen.slice())], ['Not now', null, true]]);
   $('#brewBody').onclick = e => { const b = e.target.closest('.slotBtn'); if (!b || b.disabled) return; const k = +b.dataset.k; chosen[k] = chosen[k] === b.dataset.id ? null : b.dataset.id; render(); };
   render();
 }
@@ -2580,7 +2584,7 @@ function startForge(slot, ings) {
 }
 function forgeQuestion() {
   const C = G.craft, m = MAGIC[C.forge], last = C.i >= C.ings.length, total = C.ings.length + 1;
-  $('#foeName').textContent = 'Artificer'; $('#hearts').textContent = m.em; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / total) + '%';
+  $('#foeName').textContent = 'Artificer'; $('#hearts').innerHTML = magicIcon(C.forge); $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / total) + '%';
   $('#mid').innerHTML = `<b>🔨 Forging: ${m.en}</b><br>${Array.from({ length: total }, (_, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote">${last ? 'Last question: the name of the item!' : `Ingredient ${C.i + 1} of ${C.ings.length}. A wrong answer costs nothing.`}</div>`;
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = ((P.xp % 400) / 4) + '%'; $('#potBar').style.display = 'none';
   nameQuestion(last ? MAGIC_Q.find(x => x.id === C.forge) : ING[C.ings[C.i]], last ? MAGIC_Q : Object.values(ING),
@@ -2590,8 +2594,8 @@ function forgeDone() {
   const C = G.craft, slot = C.forge, v = itemVer(slot) + 1, rec = FORGE[v], m = MAGIC[slot];
   if (Math.floor(P.coins || 0) < rec.coins || C.ings.some(id => (P.inv[id] || 0) < 1)) { modal('😮 Something is missing', '<p>You no longer have everything for this item. Nothing was used up.</p>', [['Back to the workshop', openWorkshop]]); return; }
   C.ings.forEach(id => { P.inv[id] = Math.max(0, (P.inv[id] || 0) - 1); }); P.coins = Math.round((P.coins - rec.coins) * 1000) / 1000;
-  P.items[slot] = v; saveSoon(true); sfx.win(); confetti(['🛠️', '✨', m.em, v === 2 ? '🌟' : '💠']);
-  modal(`${m.em} ${v === 2 ? 'Legendary' : 'Epic'} ${m.en}!`, `<div style="text-align:center"><div style="width:6rem;margin:0 auto">${magicPic(slot, v)}</div><p><b class="heb" style="font-size:1.4rem">${m.nk}</b></p><p>${m.does}</p><p class="small">You are wearing it now!</p></div>`, [['Back to the workshop 🛠️', openWorkshop], ['Back to map', openMenu, true]]);
+  P.items[slot] = v; saveSoon(true); sfx.win(); confetti(['🛠️', '✨', v === 2 ? '🌟' : '💠']);
+  modal(`${magicIcon(slot)} ${v === 2 ? 'Legendary' : 'Epic'} ${m.en}!`, `<div style="text-align:center"><div style="width:6rem;margin:0 auto">${magicPic(slot, v)}</div><p><b class="heb" style="font-size:1.4rem">${m.nk}</b></p><p>${m.does}</p><p class="small">You are wearing it now!</p></div>`, [['Back to the workshop 🛠️', openWorkshop], ['Back to map', openMenu, true]]);
 }
 /* ----- item powers: once per quest (twice for a legendary item). They never answer a question for the student: a banished stop is not logged at all. Uses come back only when the quest is FINISHED (a restart after a knockout is the same quest). ----- */
 const blankUses = () => ({ amulet: 0, staff: 0, belt: 0 });
@@ -2604,7 +2608,7 @@ function itemBarHtml(q, where) {   // small glowing icons for the items you wear
 function renderItemBar() { const e = $('#itemBar'); if (!e) return; const q = G.quest, on = (q === 'battle' || q === 'peace') && MAGIC_SLOTS.some(s => itemVer(s)); e.style.display = on ? '' : 'none'; e.innerHTML = on ? itemBarHtml(q, 'fight') : ''; }
 function itemTap(s, where) {
   const q = where === 'fight' ? G.quest : J.q, left = itemLeft(q, s), m = MAGIC[s];
-  if (!left) { toast(`${m.em} Used up for this quest. It comes back when the quest is finished.`); return; }
+  if (!left) { toast(`Used up for this quest. It comes back when the quest is finished.`); return; }
   if (s === 'amulet') { toast(`🔮 ${m.nk}: it protects you by itself when you would be knocked out. ${left} use${left === 1 ? '' : 's'} left.`); return; }
   if (s === 'belt') { if (where === 'fight') toast('🎗️ The belt works on the path map. Go back to the path to use it.'); else useBelt(); return; }
   staffAsk(where);   // the staff
@@ -2922,6 +2926,49 @@ async function adminCall(action, extra) {
   const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, key: ADMKEY }, extra || {})) });
   return r.json();
 }
+/* ----- Demo run (teacher area): a pretend student with a small control panel, to try every feature. Nothing is saved anywhere (no cloud, no device storage); leaving the demo reloads the game. ----- */
+function startDemo() {
+  if (document.querySelector("#demoTab")) { openMenu(); return; }
+  saveSoon = () => {}; cloudSave = async () => {};   // the demo student is never saved
+  CFG.SCRIPT_URL = ''; window.__fast = false;
+  const w = ms => new Promise(r => setTimeout(r, ms));
+  P = newProfile('demo', 'Demo', 'm', '#3498db'); P.beard = 'long'; P.tier = 9; P.coins = 900; P.xp = 640;
+  P.inv = { star: 3, moon: 2, comet: 1, rainbow: 1, cloud: 1, diamond: 2, pearl: 1, crown: 1, leaf: 4, seed: 3, flower: 3, root: 2, mushroom: 2, g_fire: 2, g_water: 2, feather: 2 };
+  P.pot = { heart: 2, sound: 2, power: 2, second: 2, super: 1 }; P.own.decor = ['d_plant', 'd_cat', 'd_candle', 'd_picture', 'd_clock', 'd_rug']; P.own.caul = 1;
+  const blank = () => ({ amulet: 0, staff: 0, belt: 0 });
+  const goMenu = () => { document.querySelector('#modal').classList.remove('on'); openMenu(); };
+  const act = q => { document.querySelector('#modal').classList.remove('on'); P.quest[q].act = true; P.quest[q].len = 0; P.quest[q].path = null; P.quest[q].enc = 0; P.quest[q].at = 0; P.quest[q].hearts = 3; beginQuest(q); };
+  const D = {
+    level(t) { P.tier = +t; P.hist = []; saveSoon(); goMenu(); toast('Level ' + t + ': ' + TIERS[t]); },
+    stuff() { for (const id of ['star', 'moon', 'comet', 'rainbow', 'cloud', 'diamond', 'pearl', 'crown', 'dragonegg', 'leaf', 'seed', 'flower', 'root']) P.inv[id] = (P.inv[id] || 0) + 3; P.coins += 500; saveSoon(); toast('🎁 +500 coins and lots of ingredients'); if ($('#workshop').classList.contains('on')) renderWorkshop(); },
+    items(v) { P.items = { amulet: v, staff: v, belt: v }; P.itemUses = { battle: blank(), peace: blank() }; saveSoon(); toast(v ? (v === 2 ? '🌟 All three items: legendary' : '💠 All three items: epic') : 'Items removed'); },
+    refill() { P.itemUses = { battle: blank(), peace: blank() }; saveSoon(); toast('♻️ Item powers refilled'); },
+    map() { goMenu(); }, workshop() { document.querySelector('#modal').classList.remove('on'); if (P.tier < 8) { P.tier = 8; P.hist = []; } openWorkshop(); }, home() { document.querySelector('#modal').classList.remove('on'); openHome(); }, shop() { document.querySelector('#modal').classList.remove('on'); openShop(); },
+    fight() { act('battle'); }, village() { act('peace'); },
+    nearBoss() { const q = G.quest === 'peace' || J.q === 'peace' ? 'peace' : 'battle'; if (!P.quest[q].path) { toast('Start a quest first'); return; } P.quest[q].at = P.quest[q].path.length - 2; P.quest[q].enc = P.quest[q].len; openJourney(q); },
+    ko() { if (!$('#game').classList.contains('on') || !(G.quest === 'battle' || G.quest === 'peace')) { toast('Open a fight first'); return; } G.hearts = 0; P.quest[G.quest].hearts = 0; endOrSecond(G.quest === 'battle' ? knockout : villageFail); },
+    win() { if (!$('#game').classList.contains('on') || !G.mon && G.quest === 'battle') { toast('Open a fight first'); return; } if (G.quest === 'battle') { G.mon.hp = 0; victory(); } else { G.helped = G.need; villageDone(); } },
+    exit() { location.reload(); },
+    fresh() { P.ws = { on: false, hi: false }; P.tier = 7; P.hist = []; saveSoon(); goMenu(); toast('Level 7: the workshop is shuttered. Pick level 8 to see it light up.'); }
+  };
+  window.demo = D;
+  const css = document.createElement('style');
+  css.textContent = '#demoTab{position:fixed;right:8px;bottom:8px;z-index:9999;background:#ffd166;color:#3a2300;border:0;border-radius:22px;padding:10px 14px;font:600 .9rem system-ui;box-shadow:0 3px 0 #9b6411;cursor:pointer}#demoPanel{position:fixed;right:8px;bottom:56px;z-index:9999;width:min(330px,calc(100vw - 16px));max-height:70vh;overflow:auto;background:#1b1340ee;border:2px solid #ffd166;border-radius:16px;padding:10px;color:#fff;font:.85rem system-ui;display:none}#demoPanel.on{display:block}#demoPanel h4{margin:8px 0 4px;font-size:.8rem;color:#ffd166;letter-spacing:.05em;text-transform:uppercase}#demoPanel button{font:inherit;background:#fff2;color:#fff;border:1px solid #fff4;border-radius:10px;padding:6px 9px;margin:2px;cursor:pointer}#demoPanel button:active{background:#ffd16655}';
+  document.head.appendChild(css);
+  const panel = document.createElement('div'); panel.id = 'demoPanel';
+  const B = (label, call) => `<button data-d="${call}">${label}</button>`;
+  panel.innerHTML = '<b>🧪 Demo run: a pretend student</b> ' + B('✖ Exit demo', 'exit()') +
+    '<h4>Level</h4>' + [5, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(t => B(t, `level(${t})`)).join('') + B('Show locked workshop', 'fresh()') +
+    '<h4>Go to</h4>' + B('🗺️ Map', 'map()') + B('⚒️ Workshop', 'workshop()') + B('🏡 Home', 'home()') + B('🏪 Shop', 'shop()') +
+    '<h4>Quests</h4>' + B('⚔️ Start monster quest', 'fight()') + B('🌿 Start village quest', 'village()') + B('⏭️ Jump near the boss', 'nearBoss()') +
+    '<h4>In a fight</h4>' + B('💥 Lose all hearts (test amulet)', 'ko()') + B('🏆 Win this fight', 'win()') +
+    '<h4>Items and stuff</h4>' + B('💠 All items epic', 'items(1)') + B('🌟 All items legendary', 'items(2)') + B('❌ No items', 'items(0)') + B('♻️ Refill powers', 'refill()') + B('🎁 Coins + ingredients', 'stuff()');
+  panel.onclick = e => { const b = e.target.closest('[data-d]'); if (!b) return; try { new Function('demo', 'with(demo){' + b.dataset.d + '}')(D); } catch (x) { toast('Demo error: ' + x.message); } };
+  const tab = document.createElement('button'); tab.id = 'demoTab'; tab.textContent = '🧪 Demo'; tab.onclick = () => panel.classList.toggle('on');
+  document.body.appendChild(panel); document.body.appendChild(tab);
+  openMenu();
+}
+$('#admDemo').onclick = () => startDemo();
 function adminAsk() {
   if (APP) return;   // there is no teacher area in the app
   if (!CFG.SCRIPT_URL) { modal('Teacher area', '<p>The cloud is not set up, so there is no student data to show.</p>', [['OK', null]]); return; }
