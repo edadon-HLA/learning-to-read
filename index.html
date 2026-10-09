@@ -1435,11 +1435,11 @@ function drawScene() {
   if (b) {
     $('#foeBody').textContent = G.mon.body;
     $('#foeName').textContent = (G.mon.boss ? '👑 BOSS: ' : '') + G.mon.name; setMood('');
-    $('#mid').innerHTML = `<b>${AREAS[(qs.ch - 1) % AREAS.length]}</b><br>${'⚔️'.repeat(qs.enc)} ${G.mon.boss ? '👑' : '❓'}${runNote(qs, 'The monsters are getting stronger…', '⚠️ Danger! Something big is waiting ahead!')}<div class="runNote" id="rewardPill"></div>`;
+    $('#mid').innerHTML = `<b>${AREAS[(qs.ch - 1) % AREAS.length]}</b><br>${'⚔️'.repeat(qs.enc)} ${G.mon.boss ? '👑' : '❓'}${runNote(qs, 'The monsters are getting stronger…', '⚠️ Danger! Something big is waiting ahead!')}`;
   } else {
     $('#foeBody').textContent = G.folk;
     $('#foeName').textContent = G.big ? '📜 ' + G.fname + ': big request!' : G.fname; setMood('😟');
-    $('#mid').innerHTML = `<b>${VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="houses">${'🏠'.repeat(qs.enc)}${G.big ? '🏚️🏚️' : '🏚️'}</div>${runNote(qs, 'More and more people need help…', '⚠️ A big request is coming!')}<div class="runNote" id="rewardPill"></div><div class="bubble" id="bubble"></div>`;
+    $('#mid').innerHTML = `<b>${VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="houses">${'🏠'.repeat(qs.enc)}${G.big ? '🏚️🏚️' : '🏚️'}</div>${runNote(qs, 'More and more people need help…', '⚠️ A big request is coming!')}<div class="bubble" id="bubble"></div>`;
   }
   updateBars(); updateReward();
 }
