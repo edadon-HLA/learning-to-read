@@ -170,6 +170,7 @@ body.peace .foeBody{font-size:6rem}
 .tagOpt:active{transform:translateY(3px);box-shadow:0 1px 0 #6b5ca8}.tagOpt.good{background:linear-gradient(#b8ffd9,#6fe6a8);box-shadow:0 4px 0 #22875a}.tagOpt.bad{background:linear-gradient(#ffc0c8,#ff8b99);box-shadow:0 4px 0 #a8384a;opacity:.7}.tagOpt:disabled{cursor:default}
 .potIco{display:inline-block;vertical-align:middle;width:1.3em;height:1.7em}.potIco .potSvg{width:100%;height:100%;display:block}
 .shopRobe{display:block;height:4rem}.shopRobe svg{height:100%;width:auto;display:block;margin:0 auto}.shopRobe.big{height:6.4rem}
+.qRobe{display:inline-block;height:3.4rem}.qRobe svg{height:100%;width:auto;display:block}.craftEm .qRobe{height:5rem}
 .shMerchBody{display:block;width:6.4rem;margin:0 auto}.shMerchBody svg{display:block;width:100%;height:auto}
 @media (prefers-reduced-motion:reduce){.shMerchant,.shCau .flame{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
@@ -2305,9 +2306,10 @@ function startCraft(potion, ings) {
 }
 // One question that asks for an item's name, adapted to the student's level. Shared by crafting (ingredients) and the shop (items).
 // Levels 1-3 listen (the picture is shown above); 4-8 see the picture + written name and pick the word they HEAR; 9-10 read the name and pick the picture; 11+ type the name (English shown only here).
+const itemEm = x => (x.kind === 'wear' && x.wtype !== 'acc') ? `<span class="qRobe">${robePic(x)}</span>` : x.em;   // robes are drawn on the student's wizard, everything else is its emoji
 function nameQuestion(ing, universe, ctx) {
   const t = P.tier; let q; G.optSound = false;
-  const pic = $('#craftPic'); pic.style.display = t <= 8 ? '' : 'none'; pic.innerHTML = `<span class="craftEm ${ing.r === 4 ? 'shine' : ''}">${ing.em}</span>`;
+  const pic = $('#craftPic'); pic.style.display = (t <= 8 || (ing.kind === 'wear' && ing.wtype !== 'acc')) ? '' : 'none'; pic.innerHTML = `<span class="craftEm ${ing.r === 4 ? 'shine' : ''}">${itemEm(ing)}</span>`;
   if (t <= 3) { q = qLetter(t, false); }
   else if (t <= 8 && findHeVoice()) {
     const others = shuffle(universe.filter(x => x.id !== ing.id && x.he !== ing.he)).slice(0, 3);
@@ -2318,9 +2320,9 @@ function nameQuestion(ing, universe, ctx) {
   else if (t <= 10) {   // (also levels 4-8 on a device without a Hebrew voice)
     const others = shuffle(universe.filter(x => x.id !== ing.id && x.em !== ing.em)).slice(0, t <= 8 ? 2 : 3), txt = t <= 8 ? ing.nk : ing.he;
     q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: ctx.read, big: txt, sub: ctx.sub, say: txt,
-      options: shuffle([ing, ...others]).map(x => ({ html: `<span style="font-size:2.4rem" class="${x.r === 4 ? 'shine' : ''}">${x.em}</span>`, cls: '', ok: x.id === ing.id, em: x.em, note: `That is ${x.em}` })), explain: `<span class="he">${txt}</span> = ${ing.em}` };
+      options: shuffle([ing, ...others]).map(x => ({ html: `<span style="font-size:2.4rem" class="${x.r === 4 ? 'shine' : ''}">${itemEm(x)}</span>`, cls: '', ok: x.id === ing.id, em: x.em, note: `That is ${x.em}` })), explain: `<span class="he">${txt}</span> = ${ing.em}` };
   } else {
-    q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: ctx.write, big: ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
+    q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: ctx.write, big: ing.kind === 'wear' && ing.wtype !== 'acc' ? '' : ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
       explain: `<span class="he">${ing.he}</span> (${ing.en})`, say: ing.he };
   }
   G.q = q; G.lastKey = q.lastKey; G.noCount = true; G.snap = null; G.potUsed = true;
@@ -2525,7 +2527,7 @@ function startShopBuy(id) {
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').innerHTML = `<span class="shMerchBody">${merchantSVG(SH_SKINS[shopShelf().skin % SH_SKINS.length])}</span>`; $('#foeName').textContent = 'Merchant';
-  $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
+  $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${s.kind === 'wear' && s.wtype !== 'acc' ? 'this robe' : s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
   $('#hearts').textContent = '🪙 ' + s.price; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = '0%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = ((P.xp % 400) / 4) + '%'; $('#potBar').style.display = 'none';
   nameQuestion(s, Object.values(SHOP), { listen: '🧙 The merchant says… Listen!', read: 'Read the name and pick the picture!', sub: 'Which one are you buying?', write: 'The merchant wants the name written in Hebrew!' });
