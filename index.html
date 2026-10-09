@@ -66,6 +66,7 @@ input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px
 .packBottle.sm .potSvg{width:20px;height:27px}.packBottle.sm i{font-size:.75rem}
 .opt{position:relative}.optSnd{position:absolute;top:6px;right:8px;background:#fff;color:#000;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 2px 0 #0004;cursor:pointer}.optSnd:hover{transform:scale(1.12)}
 .potNote{opacity:.75;width:100%;text-align:center}
+.potTitle{font-size:.9rem;line-height:1.2}
 .potNames{display:block;opacity:.9;font-size:.72rem;color:#d9ccff}
 .potStat{display:inline-flex;margin-right:-4px}.potStat .potSvg{width:18px;height:24px;filter:none}
 .folkMood{position:absolute;top:-12px;right:10px;font-size:1.9rem;z-index:4;filter:drop-shadow(0 2px 3px #0006);transition:transform .2s}.folkMood.pop{animation:moodPop .5s}
@@ -1983,7 +1984,8 @@ function whyNot(s) {   // why this item cannot be bought right now ('' = it can)
 }
 function shopCard(s) {
   const why = whyNot(s), pic = s.kind === 'potion' ? `<span class="packBottle">${potionSVG(s.pid)}<i>${s.em}</i></span>` : `<span class="shopEm">${s.em}</span>`;
-  return `<button class="shopItem ${why ? 'off' : ''} ${owns(s) ? 'own' : ''}" data-buy="${s.id}">${pic}<b class="heb">${s.nk}</b>${s.kind === "potion" ? `<small class="potNames">${POTIONS[s.pid].name} / ${POTIONS[s.pid].vname}</small>` : ""}${P.tier >= 11 ? `<small>${s.en}</small>` : ''}<span class="price">${owns(s) ? '✓' : '🪙 ' + s.price}</span>${why && !owns(s) ? `<small class="why">${why}</small>` : ''}</button>`;
+  const name = s.kind === 'potion' ? `<b class="potTitle">${POTIONS[s.pid].name} / ${POTIONS[s.pid].vname} potion</b>` : `<b class="heb">${s.nk}</b>`;   // ONE name per card: potions show both names on one row, everything else its Hebrew name
+  return `<button class="shopItem ${why ? 'off' : ''} ${owns(s) ? 'own' : ''}" data-buy="${s.id}">${pic}${name}<span class="price">${owns(s) ? '✓' : '🪙 ' + s.price}</span>${why && !owns(s) ? `<small class="why">${why}</small>` : ''}</button>`;
 }
 function openShop() {
   G.quest = null; show('shop');
