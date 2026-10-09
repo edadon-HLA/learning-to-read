@@ -362,6 +362,43 @@ body.peace .stage{background:linear-gradient(#0000,#0005),linear-gradient(180deg
 .hpbar>i{display:block;height:100%;background:linear-gradient(90deg,#ff5d73,#ff9966);width:100%;transition:width .4s}
 body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .hearts{font-size:1.4rem;letter-spacing:2px}
+.potBar{gap:10px 14px;justify-content:space-between;padding:0 6px}.qbCoin{background:#0004;border-radius:14px;padding:3px 10px;font-weight:700}.qbCoin b{color:var(--gold,#ffd166)}
+.qbIngs{display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;flex:1;min-width:0}.qbIngs small{opacity:.6;font-size:.72rem}.qbIng{background:#0004;border-radius:10px;padding:1px 6px;font-size:.95rem;white-space:nowrap}.qbIng b{font-size:.7rem;margin-left:2px;opacity:.85}.qbIng.r3,.qbIng.r4{box-shadow:0 0 6px #ffd16688}
+.qbBag{position:relative;display:inline-flex;flex-direction:column;align-items:center;min-width:76px}.qbBottles{display:flex;gap:4px;align-items:flex-end;position:relative;z-index:1;margin-bottom:-14px;min-height:34px}.qbNone{opacity:.6;font-size:.7rem;align-self:center;margin-bottom:12px}
+.qbBagBody{position:relative;z-index:2;display:block;height:24px;min-width:76px;width:100%;border-radius:6px 6px 14px 14px;background:linear-gradient(#b3773f,#8a5a2b);border:2px solid #5d3b1b;box-shadow:inset 0 3px 0 #ffffff33,0 2px 3px #0006;pointer-events:none}.qbBagBody:after{content:"";position:absolute;left:12%;right:12%;top:7px;height:2px;border-top:2px dashed #e9c58d99}
+.qbBottles .potBtn{pointer-events:auto;padding:1px 3px;min-width:0;background:transparent;border-color:transparent}.qbBottles .potBtn .potSvg{width:22px;height:30px}.qbBottles .potBtn:not(:disabled):hover{transform:translateY(-4px);border-color:transparent}
+.packBagRow{display:flex;justify-content:center;margin:4px 0}.packBag{display:flex;gap:6px;padding:10px 12px 8px;border-radius:10px 10px 22px 22px;background:linear-gradient(#a8703c,#80522a);border:3px solid #5d3b1b;box-shadow:inset 0 3px 0 #ffffff33}
+.packSlot{display:flex;align-items:center;justify-content:center;width:44px;height:56px;border-radius:10px;background:#0004;border:2px dashed #ffffff44;padding:0}.packSlot.full{border-style:solid;border-color:#ffffff66;background:#0002;cursor:pointer}.packSlot .potSvg{width:30px;height:40px}.packSlot.full:hover{border-color:var(--gold,#ffd166)}
+.packCount{text-align:center;margin:4px 0}.packCards{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.packCard{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;background:#0003;color:#fff;border:2px solid #fff3;border-radius:14px;padding:8px 6px;cursor:pointer;font:inherit}.packCard small{font-size:.7rem;opacity:.8}.packCard:not(:disabled):hover{border-color:var(--gold,#ffd166);transform:translateY(-2px)}.packCard:disabled{opacity:.45;cursor:default}.packCard .potSvg{width:30px;height:40px}
+.packBottle.xs .potSvg{width:13px;height:18px}.packBottle.xs{margin:0 2px 0 6px}
+.sa{position:relative;height:6.4rem;margin:2px auto 6px;max-width:15rem;overflow:hidden;font-size:2.4rem;text-align:center}.sa span,.sa i{position:absolute}
+.saWell{left:50%;bottom:0;transform:translateX(-50%);font-size:3.4rem}.saBucket{left:44%;bottom:0;animation:saRise 1.2s ease-out forwards;opacity:0}
+.saDrop{top:0;font-size:1.1rem;opacity:0;animation:saFall .9s ease-in var(--d) forwards}
+.saB{opacity:0;transform:scale(.2);animation:saPop .5s ease-out var(--d) forwards}
+.saBlanket{position:absolute;left:8%;right:8%;bottom:0;height:34%;border-radius:8px 8px 4px 4px;background:repeating-linear-gradient(90deg,#d9534f 0 14px,#fff 14px 28px);opacity:.9}
+.saSlide{left:100%;bottom:2px;animation:saSlideIn .9s ease-out forwards}
+.saCoin{left:50%;top:-10px;font-size:1.6rem;transform:translateX(-50%);animation:saCoin 1.1s ease-in forwards}
+.saRing{left:50%;bottom:6px;width:10px;height:5px;border:2px solid #8fd3ff;border-radius:50%;transform:translateX(-50%) scale(.2);opacity:0;animation:saRing 1s ease-out var(--d) forwards}
+@keyframes saRise{0%{transform:translateY(46px);opacity:0}30%{opacity:1}100%{transform:translateY(-4px);opacity:1}}
+@keyframes saFall{0%{transform:translateY(0);opacity:1}100%{transform:translateY(60px);opacity:0}}
+@keyframes saPop{60%{transform:scale(1.25);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes saSlideIn{to{left:42%}}
+@keyframes saCoin{0%{top:-24px;opacity:1}70%{top:58px;opacity:1}100%{top:64px;opacity:0}}
+@keyframes saRing{0%{opacity:.9;transform:translateX(-50%) scale(.2)}100%{opacity:0;transform:translateX(-50%) scale(6)}}
+@media (prefers-reduced-motion:reduce){.saBucket,.saDrop,.saB,.saSlide,.saCoin,.saRing{animation-duration:.01s;animation-delay:0s}}
+.mgPulse{animation:mgPl 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes mgPl{0%,100%{opacity:.5;transform:scale(.92)}50%{opacity:1;transform:scale(1.1)}}
+.mgSpin{animation:mgSp 9s linear infinite;transform-box:view-box}.mgSpin.mgRev{animation-direction:reverse;animation-duration:14s}@keyframes mgSp{to{transform:rotate(360deg)}}
+.mgTw{animation:mgTw 1.4s ease-in-out infinite}@keyframes mgTw{0%,100%{opacity:.1}50%{opacity:1}}
+.mgFl{animation:mgF .6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}@keyframes mgF{from{transform:scale(.9,.86)}to{transform:scale(1.08,1.14)}}
+.mgSwing{animation:mgSg 2.6s ease-in-out infinite;transform-box:view-box}@keyframes mgSg{50%{transform:rotate(4deg)}}
+@media (prefers-reduced-motion:reduce){.mgPulse,.mgSpin,.mgTw,.mgFl,.mgSwing{animation:none!important}}
+.gIcon{display:block;width:100%;height:100%;overflow:visible}
+.rGear{position:absolute;z-index:7;pointer-events:none;width:calc(var(--u)*5.6);height:calc(var(--u)*5.6);transform:translate(-50%,-50%)}.rGear.off{opacity:.4;filter:grayscale(.6)}.rGear.none{opacity:.18}
+.stSlots{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.stSlot{font:inherit;color:#fff;background:#0003;border:2px solid #fff3;border-radius:12px;padding:4px 10px;cursor:pointer;display:flex;align-items:center;gap:6px}.stSlot.on{border-color:var(--gold);background:#ffd16622}.stSlot .gIco{width:30px;height:30px;flex:none}
+.stRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0}.stOpt{display:flex;align-items:center;gap:10px;flex:1 1 220px;background:#0003;border:2px solid #fff3;border-radius:12px;padding:8px 10px}.stOpt.on{border-color:var(--gold);background:#ffd16622}.stOpt.lock{opacity:.55}.stOpt .gIco{width:44px;height:44px;flex:none}.stOpt small{display:block;opacity:.8}
+.wdLook{display:flex;align-items:center;gap:8px;text-align:left}.wdLook .gIco{width:38px;height:38px;flex:none}.wdLook small{display:block;font-size:.65rem}
+.shopGear{display:block;width:4.2rem;height:4.2rem;margin:0 auto}.shopGear svg{width:100%;height:100%}.qPot .potSvg{width:34px;height:46px}.sw2{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.9rem}.qLook{display:inline-block;width:3.4rem;height:3.4rem}.qLook svg{width:100%;height:100%}.craftEm .qLook{width:5rem;height:5rem}
 .hBonus{filter:drop-shadow(0 0 5px #ffd166) drop-shadow(0 0 9px #ffb703) hue-rotate(-35deg) saturate(1.3);margin-left:4px;animation:hbPulse 2.2s ease-in-out infinite}@keyframes hbPulse{50%{filter:drop-shadow(0 0 8px #ffd166) drop-shadow(0 0 14px #ffb703) hue-rotate(-35deg) saturate(1.3)}}
 @media (prefers-reduced-motion:reduce){.hBonus{animation:none}}
 .float{position:absolute;font-weight:700;font-size:1.6rem;pointer-events:none;animation:up 1s forwards;text-shadow:0 2px 0 #000a}
@@ -651,7 +688,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 <section id="wardrobe" class="screen" style="max-width:760px">
   <div class="top"><button class="ib" id="wdBack" title="Back home">🏡</button><div class="grow"><div class="who">🚪 Wardrobe</div><div class="small">Try things on, then save your look. Locked things are sold in the shop.</div></div><button class="btn" id="wdSave">Save look ✔</button></div>
   <div class="card center" style="margin:8px auto"><div class="wdPrev" id="wdPrev"></div>
-    <div class="wdTabs"><button class="wdTab on" data-t="robe">👗 Robe</button><button class="wdTab" data-t="face">🧑 Skin &amp; hair</button><button class="wdTab" data-t="acc">🎩 Accessories</button></div>
+    <div class="wdTabs"><button class="wdTab on" data-t="robe">👗 Robe</button><button class="wdTab" data-t="face">🧑 Skin &amp; hair</button><button class="wdTab" data-t="acc">🎩 Accessories</button><button class="wdTab" data-t="looks">✨ Item looks</button></div>
     <div id="wdBody" style="text-align:left"></div></div>
 </section>
 
@@ -834,10 +871,10 @@ const VILL = [
  {he:'ספר',nk:'סֵפֶר',en:'book',em:'📖',need:'I want to read a wonderful story!'},
  {he:'בית',nk:'בַּיִת',en:'house',em:'🏠',need:'I have no place to live. I need a home!'},
  {he:'עץ',nk:'עֵץ',en:'tree',em:'🌳',need:'I need some shade from the hot sun!'},
- {he:'פרח',nk:'פֶּרַח',en:'flower',em:'🌸',need:"It's grandma's birthday! I need something pretty."},
+ {he:'פרח',nk:'פֶּרַח',en:'flower',em:'🌷',need:"It's grandma's birthday! I need something pretty."},
  {he:'נר',nk:'נֵר',en:'candle',em:'🕯️',need:"It's so dark in here! I need a little light."},
  {he:'מפתח',nk:'מַפְתֵּחַ',en:'key',em:'🔑',need:"I'm locked out of my house!"},
- {he:'כובע',nk:'כּוֹבַע',en:'hat',em:'🎩',need:'The sun is burning my head!'},
+ {he:'כובע',nk:'כּוֹבַע',en:'hat',em:'👒',need:'The sun is burning my head!'},
  {he:'גשר',nk:'גֶּשֶׁר',en:'bridge',em:'🌉',need:"I can't cross the river!"},
  {he:'דלת',nk:'דֶּלֶת',en:'door',em:'🚪',need:'My friend is knocking, but my house has no way in! I need a door!'},
  {he:'חלב',nk:'חָלָב',en:'milk',em:'🥛',need:'The baby needs a white drink.'},
@@ -864,7 +901,7 @@ const VILL = [
 const RARITY = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'];
 const ING = {};
 for (const [r, rows] of [
-  [0, [['leaf', 'עלה', 'עָלֶה', 'leaf', '🍃'], ['grass', 'עשב', 'עֵשֶׂב', 'grass', '🌾'], ['flower', 'פרח', 'פֶּרַח', 'flower', '🌸'], ['seed', 'זרע', 'זֶרַע', 'seed', '🌰'],
+  [0, [['leaf', 'עלה', 'עָלֶה', 'leaf', '🍃'], ['grass', 'עשב', 'עֵשֶׂב', 'grass', '🌾'], ['flower', 'פרח', 'פֶּרַח', 'flower', '🌷'], ['seed', 'זרע', 'זֶרַע', 'seed', '🌰'],
        ['root', 'שורש', 'שֹׁרֶשׁ', 'root', '🥕'], ['thorn', 'קוץ', 'קוֹץ', 'thorn', '🌵'], ['mushroom', 'פטרייה', 'פִּטְרִיָּה', 'mushroom', '🍄']]],
   [1, [['g_fire', 'אבן אש', 'אֶבֶן אֵשׁ', 'fire stone', '🔥💎'], ['g_water', 'אבן מים', 'אֶבֶן מַיִם', 'water stone', '💧💎'], ['g_wind', 'אבן רוח', 'אֶבֶן רוּחַ', 'wind stone', '💨💎'],
        ['g_earth', 'אבן אדמה', 'אֶבֶן אֲדָמָה', 'earth stone', '🌱💎'], ['g_ice', 'אבן קרח', 'אֶבֶן קֶרַח', 'ice stone', '🧊💎'], ['g_bolt', 'אבן ברק', 'אֶבֶן בָּרָק', 'lightning stone', '⚡💎'],
@@ -1102,18 +1139,69 @@ const SLOT_NAMES = { head: 'Head', face: 'Face', neck: 'Neck', back: 'Back', sta
 let heroSeq = 0;
 const BEARDS = [['none', 'No facial hair'], ['mustache', 'Mustache'], ['short', 'Short beard'], ['long', 'Long beard']];
 const beardRow = cur => `<div class="beardRow">${BEARDS.map(([id, nm]) => `<button class="beardBtn ${id === cur ? 'sel' : ''}" data-beard="${id}">${nm}</button>`).join('')}</div>`;
+/* ====================== MAGIC ITEM LOOKS, THE ARTIFACT STAND AND THE WARDROBE LOOKS ====================== */
+// Each slot (neck, hand, belt) holds ONE magic item. An item gives its power only while it is WORN (put on at the artifact stand at Home).
+// What the hero LOOKS like in a slot is separate: the magic look (epic / legendary) or a cosmetic look from the wardrobe. A cosmetic look never cancels the power.
+const GEAR_SLOTS = [['neck', 'Neck', 'amulet'], ['hand', 'Hand', 'staff'], ['belt', 'Belt', 'belt']];   // [stand slot, label, magic item]
+const LOOKS = {   // [id, English name, price, Hebrew, vowels]: the first look of each slot is the free default
+  neck: [['pendant', 'Plain pendant', 0], ['moon', 'Moon pendant', 25, 'ירח', 'יָרֵחַ'], ['heart', 'Heart locket', 30, 'לב', 'לֵב']],
+  hand: [['staff', 'Plain staff', 0], ['wood', 'Knotted staff', 30, 'מקל', 'מַקֵּל'], ['star', 'Star staff', 40, 'כוכב', 'כּוֹכָב']],
+  belt: [['leather', 'Leather belt', 0], ['gold', 'Gold belt', 35, 'חגורת זהב', 'חֲגוֹרַת זָהָב'], ['sash', 'Red sash', 25, 'אבנט', 'אַבְנֵט']]
+};
+const DEF_LOOK = { neck: 'pendant', hand: 'staff', belt: 'leather' };
+const gearTier = v => v === 2 ? 'legend' : 'epic';
+const itemWorn = (p, ms) => ((p.items || {})[ms] || 0) > 0 && (p.worn || {})[ms] !== false;
+const wornVer = s => P && itemWorn(P, s) ? ((P.items || {})[s] || 0) : 0;   // the version whose power works (0 = not made, or taken off)
+function gearOf(p, over) {   // what each slot looks like on this hero: { neck: {k, v}, ... }  (k = 'magic' or a cosmetic look id)
+  over = over || {}; const cos = over.cos || p.cos || {}, show = over.show || p.cosShow || {}, out = {};
+  for (const [slot, , ms] of GEAR_SLOTS) { const v = (p.items || {})[ms] || 0; out[slot] = itemWorn(p, ms) && show[slot] !== false ? { k: 'magic', v } : { k: cos[slot] || DEF_LOOK[slot], v: 0 }; }
+  return out;
+}
+const DEF_GEAR = { neck: { k: 'pendant', v: 0 }, hand: { k: 'staff', v: 0 }, belt: { k: 'leather', v: 0 } };
+const mgT = n => `<g class="mgTw" style="animation-delay:${n * .4}s">`;
+const mgStar = (cx, cy, r, c) => { const p = []; for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; p.push((cx + Math.cos(a) * rr).toFixed(1) + ',' + (cy + Math.sin(a) * rr).toFixed(1)); } return `<polygon points="${p.join(' ')}" fill="${c}"/>`; };
+const mgRays = (cx, cy, n, r1, r2, c, w = 1.6) => Array.from({ length: n }, (_, i) => { const a = i * 2 * Math.PI / n; return `<line x1="${(cx + Math.cos(a) * r1).toFixed(1)}" y1="${(cy + Math.sin(a) * r1).toFixed(1)}" x2="${(cx + Math.cos(a) * r2).toFixed(1)}" y2="${(cy + Math.sin(a) * r2).toFixed(1)}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`; }).join('');
+const mgGlow = (cx, cy, r, c, cls = 'mgPulse', op = .75) => `<defs><radialGradient id="mg${cx | 0}_${cy | 0}_${c.slice(1)}"><stop offset="0" stop-color="${c}" stop-opacity="${op}"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs><circle class="${cls}" cx="${cx}" cy="${cy}" r="${r}" fill="url(#mg${cx | 0}_${cy | 0}_${c.slice(1)})"/>`;
+function gearStaff(kind, tier) {   // the head of the staff (hand slot), drawn at the top of the staff pole
+  const prong = c => `<path d="M91 44 Q88 28 98.5 20 Q109 28 106 44" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  if (kind === 'staff') return `<circle cx="98.5" cy="30" r="9" fill="none" stroke="#7a4a21" stroke-width="3"/><polygon points="98.5,22 103,30 98.5,38 94,30" fill="#ff7a7a" stroke="#ffd166" stroke-width="1"/>`;
+  if (kind === 'wood') return `<path d="M92 42 Q89 26 98.5 22 Q108 26 105 42" stroke="#7a4a21" stroke-width="3.4" fill="none" stroke-linecap="round"/><circle cx="98.5" cy="27" r="5.4" fill="#8a5a2b"/><path d="M98.5 21 q6 -7 11 -2 q-5 7 -11 2z" fill="#4caf50"/>`;
+  if (kind === 'star') return mgStar(98.5, 27, 12, '#ffd166') + `<circle cx="98.5" cy="27" r="3" fill="#fff6c9"/>`;
+  if (tier === 'epic') return mgGlow(98.5, 28, 26, '#5fe3ff') + prong('#7a4a21') + `<polygon points="98.5,12 108,28 98.5,46 89,28" fill="#5fe3ff"/><polygon points="98.5,12 108,28 98.5,28" fill="#c8f6ff"/><polygon points="98.5,28 108,28 98.5,46" fill="#27a8c4"/>` + [[84, 16], [114, 22], [112, 42], [86, 40]].map(([x, y], i) => mgT(i) + `<path d="M${x} ${y - 4} v8 M${x - 4} ${y} h8" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></g>`).join('');
+  return mgGlow(98.5, 28, 34, '#ffd166') + `<g class="mgSpin" style="transform-origin:98.5px 28px">${mgRays(98.5, 28, 12, 20, 30, '#fff3a8', 1.8)}</g>` + prong('#7a4a21') + `<polygon points="98.5,8 110,28 98.5,50 87,28" fill="#ffe27a"/><polygon points="98.5,8 110,28 98.5,28" fill="#fffbe0"/><polygon points="98.5,28 110,28 98.5,50" fill="#e8a830"/><circle cx="98.5" cy="28" r="4" fill="#ff7a2e" class="mgPulse"/>`
+    + `<g class="mgSpin mgRev" style="transform-origin:98.5px 28px">${[0, 1, 2, 3, 4].map(i => { const a = i * 1.2566; return `<circle cx="${(98.5 + Math.cos(a) * 27).toFixed(1)}" cy="${(28 + Math.sin(a) * 27).toFixed(1)}" r="2.2" fill="#fff"/>`; }).join('')}</g>`;
+}
+function gearNeck(kind, tier) {   // the amulet / pendant (neck slot)
+  const cx = 60, cy = 102;
+  if (kind === 'pendant') return `<circle cx="${cx}" cy="${cy}" r="9" fill="#8a5cd6" opacity=".3"/><circle cx="${cx}" cy="${cy}" r="4.8" fill="#8a5cd6" stroke="#ffd166" stroke-width="1.6"/>`;
+  if (kind === 'moon') return `<path d="M${cx + 4} ${cy - 6} A7 7 0 1 0 ${cx + 4} ${cy + 7} A5.4 5.4 0 1 1 ${cx + 4} ${cy - 6}Z" fill="#ffd166" stroke="#c89a2a" stroke-width="1"/>`;
+  if (kind === 'heart') return `<path d="M${cx} ${cy + 7} C${cx - 11} ${cy - 1} ${cx - 6} ${cy - 9} ${cx} ${cy - 3} C${cx + 6} ${cy - 9} ${cx + 11} ${cy - 1} ${cx} ${cy + 7}Z" fill="#e5546b" stroke="#ffd166" stroke-width="1.2"/>`;
+  const big = tier === 'legend';   // the legendary look is calmer than a first idea: a softer glow and fewer sparks
+  return mgGlow(cx, cy, 26, big ? '#ffd166' : '#ff5d73', 'mgPulse', big ? .5 : .75) + `<g class="mgSpin" style="transform-origin:${cx}px ${cy}px">${mgRays(cx, cy, big ? 10 : 8, 12, big ? 22 : 21, big ? '#fff3a8' : '#ffb3bd', 1.8)}</g>`
+    + `<circle cx="${cx}" cy="${cy}" r="${big ? 13 : 11.5}" fill="#ffd166" stroke="#c89a2a" stroke-width="1.4"/><polygon points="${cx},${cy - (big ? 11 : 9.5)} ${cx + (big ? 9 : 8)},${cy} ${cx},${cy + (big ? 11 : 9.5)} ${cx - (big ? 9 : 8)},${cy}" fill="${big ? '#fff0a0' : '#ff3d5a'}"/><polygon points="${cx},${cy - (big ? 11 : 9.5)} ${cx + (big ? 9 : 8)},${cy} ${cx},${cy}" fill="#fff" opacity=".4"/>`
+    + (big ? [[-18, -10], [19, 14]].map(([x, y], i) => mgT(i) + `<path d="M${cx + x} ${cy + y - 3.4} v6.8 M${cx + x - 3.4} ${cy + y} h6.8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></g>`).join('') : '');
+}
+function gearBelt(kind, tier) {   // the belt band with its buckle, a sash, or the lantern that hangs from the belt (the potion vials are added by the hero drawing)
+  if (kind === 'leather') return `<rect x="44" y="112" width="32" height="6" fill="#4a2f1a"/><rect x="56" y="110.5" width="8" height="9" rx="1.5" fill="#e0b84a"/>`;
+  if (kind === 'gold') return `<rect x="43" y="111" width="34" height="7.5" fill="#e0b84a"/><rect x="43" y="111" width="34" height="2" fill="#fff0a0" opacity=".6"/><rect x="54" y="108.6" width="12" height="12" rx="2" fill="#ffd166" stroke="#a87a1a" stroke-width="1.2"/><rect x="57.5" y="112" width="5" height="5" fill="#a87a1a"/>`;
+  if (kind === 'sash') return `<path d="M42 110 H78 L80 120 H40Z" fill="#d9453a"/><path d="M42 110 H78 L79 113 H41Z" fill="#fff" opacity=".18"/><path d="M52 120 L48 136 L55 130 L58 138 L61 120Z" fill="#c4303a"/>`;
+  const big = tier === 'legend', x = big ? 36 : 40, y = 124, s = big ? 1.35 : 1;
+  return `<rect x="44" y="112" width="32" height="6" fill="#4a2f1a"/><rect x="56" y="110.5" width="8" height="9" rx="1.5" fill="#e0b84a"/>` + mgGlow(x, y + 8 * s, 32, '#ffd166', 'mgPulse', big ? .5 : .75)
+    + (big ? `<path d="M${x} ${y + 8} L${x - 30} ${y + 40} L${x + 30} ${y + 40}Z" fill="#ffe9a0" opacity=".12" class="mgPulse"/>` : '')
+    + `<g class="mgSwing" style="transform-origin:${x}px 118px"><path d="M${x} 118 L${x} ${y}" stroke="#c89a2a" stroke-width="1.4"/><g transform="translate(${x} ${y}) scale(${s}) translate(${-x} ${-y})"><path d="M${x - 4} ${y} Q${x} ${y - 5} ${x + 4} ${y}" stroke="#a87a1a" fill="none" stroke-width="1.6"/><rect x="${x - 6}" y="${y}" width="12" height="3" rx="1" fill="#a87a1a"/><rect x="${x - 5}" y="${y + 3}" width="10" height="14" rx="2" fill="#ffe29a" opacity=".92"/><path class="mgFl" d="M${x - 2.6} ${y + 15} Q${x - 4} ${y + 8} ${x} ${y + 4.5} Q${x + 4} ${y + 8} ${x + 2.6} ${y + 15}Z" fill="#ff9a3a"/><path class="mgFl" d="M${x - 1.2} ${y + 15} Q${x - 1.8} ${y + 10} ${x} ${y + 8} Q${x + 1.8} ${y + 10} ${x + 1.2} ${y + 15}Z" fill="#fff0a0"/><rect x="${x - 6}" y="${y + 16}" width="12" height="3" rx="1" fill="#a87a1a"/></g></g>`;
+}
+const gearArt = (slot, g) => slot === 'hand' ? gearStaff(g.k, gearTier(g.v)) : slot === 'neck' ? gearNeck(g.k, gearTier(g.v)) : gearBelt(g.k, gearTier(g.v));
+function gearIcon(slot, g, cls) {   // one item on its own (a pedestal, a list, a shop card): the hero's own drawing, cropped
+  const cos = g.k !== 'magic', vb = slot === 'hand' ? '78 4 42 52' : slot === 'neck' ? (cos ? '38 86 44 32' : '28 70 64 64') : (cos ? '36 104 48 36' : '14 104 50 50');
+  return `<svg class="${cls || 'gIcon'}" viewBox="${vb}" aria-hidden="true">${slot === 'hand' ? '<rect x="96" y="40" width="5" height="16" rx="2" fill="#7a4a21"/>' : ''}${gearArt(slot, g)}</svg>`;
+}
 /* The hero is ONE drawing made of layers (storybook wizard / witch): robe, skin, facial hair or hair, hat, shoulder cloak, belt with one vial per potion owned, amulet, staff,
    and the wardrobe extras. Call heroSVG(gender, robeColour, skin, hairColour, look) where look = { style, acc, beard, pots }. viewBox 0 -16 120 186. */
 function heroSVG(g, color, skinIn, hairIn, look) {
   look = look || {}; const acc = look.acc || {}, style = look.style || null, has = id => Object.values(acc).includes(id), uid = 'h' + (++heroSeq), f = g === 'f';
   const beardKind = f ? 'none' : (look.beard || 'short'), pots = look.pots || [];
-  // magic items (made by the Artificer): 0 none, 1 epic (blue glow), 2 legendary (gold glow)
-  const MI = look.items || {}, V = s => MI[s] || 0, VC = { 1: '#4aa8ff', 2: '#ffd166' }, pulse = (r0, r1) => `<animate attributeName="r" values="${r0};${r1};${r0}" dur="2s" repeatCount="indefinite"/>`;
-  const staffCrystal = V('staff') ? `<circle cx="98.5" cy="30" r="${V('staff') === 2 ? 15 : 12}" fill="${VC[V('staff')]}" opacity=".3">${pulse(V('staff') === 2 ? 13 : 10, V('staff') === 2 ? 17 : 14)}</circle><circle cx="98.5" cy="30" r="9" fill="none" stroke="${V('staff') === 2 ? '#e0b84a' : '#7a4a21'}" stroke-width="3"/><polygon points="98.5,21 104,30 98.5,39 93,30" fill="${VC[V('staff')]}" stroke="#fff" stroke-width="1.2"/>`
-    : `<circle cx="98.5" cy="30" r="9" fill="none" stroke="#7a4a21" stroke-width="3"/><polygon points="98.5,22 103,30 98.5,38 94,30" fill="#ff7a7a" stroke="#ffd166" stroke-width="1"/>`;   // staff head: a crystal in a ring
-  const buckle = `<rect x="56" y="110.5" width="8" height="9" rx="1.5" fill="#e0b84a"/>` + (V('belt') ? `<circle cx="60" cy="115" r="6" fill="${VC[V('belt')]}" opacity=".3">${pulse(5, 8)}</circle><circle cx="60" cy="115" r="2.6" fill="${VC[V('belt')]}" stroke="#fff" stroke-width=".6"/>` : '');
-  const amuletSvg = V('amulet') ? `<circle cx="60" cy="102" r="${V('amulet') === 2 ? 14 : 11}" fill="${VC[V('amulet')]}" opacity=".3">${pulse(V('amulet') === 2 ? 12 : 9, V('amulet') === 2 ? 16 : 13)}</circle><circle cx="60" cy="102" r="4.8" fill="${VC[V('amulet')]}" stroke="#ffd166" stroke-width="1.6"/>`
-    : `<circle cx="60" cy="102" r="9" fill="#8a5cd6" opacity=".3"/><circle cx="60" cy="102" r="4.8" fill="#8a5cd6" stroke="#ffd166" stroke-width="1.6"/>`;
+  // what each slot looks like: the magic item (epic = cyan / red / warm, legendary = gold, calmer) or a cosmetic look chosen in the wardrobe
+  const GR = look.gear || DEF_GEAR, staffCrystal = gearArt('hand', GR.hand), buckle = '', amuletSvg = gearArt('neck', GR.neck), beltArt = gearArt('belt', GR.belt);
   const dark = shade(color, -45), mid = shade(color, -22), light = shade(color, 40), skin = skinIn || DEFAULT_SKIN, lum = lumOf(skin);
   const hairCol = hairIn || (f ? '#7a4a21' : '#f2f2f2');
   const cheek = lum > 0.45 ? mixHex(skin, '#ff6f86', .5) : mixHex(skin, '#ff9a8a', .22), mouth = lum > 0.45 ? shade(skin, -85) : mixHex(skin, '#ffd0c0', .6), nose = shade(skin, -14);
@@ -1160,7 +1248,7 @@ function heroSVG(g, color, skinIn, hairIn, look) {
    <path d="${ROBE}" fill="${fill}"/><g clip-path="url(#c${uid})">${over}</g><path d="M${ROBE.split(' ')[0].slice(1)} 158 L${f ? '45' : '46'} 90 H${f ? '53' : '54'} L${f ? '38' : '47'} 158Z" fill="${dark}" opacity=".4"/>
    <path d="M${hemX[0] - 0.4} 158 L${hemX[0] + 0.4} 152 H${hemX[1] - 0.4} L${hemX[1] + 0.4} 158Z" fill="#e0b84a"/>
    <path d="M44 92 L26 128 L36 134 L52 102Z" fill="${mid}"/><path d="M76 94 L97 98 L94 108 L72 104Z" fill="${mid}"/><circle cx="97" cy="104" r="5" fill="${skin}"/><circle cx="30" cy="132" r="5" fill="${skin}"/>
-   <rect x="44" y="112" width="32" height="6" fill="#4a2f1a"/>${buckle}<path d="${strings}" stroke="#4a2f1a" stroke-width="1" fill="none"/>${vials}
+   ${beltArt}<path d="${strings}" stroke="#4a2f1a" stroke-width="1" fill="none"/>${vials}
    <path d="M42 160 Q30 160 30 168 Q36 171 48 166 L48 158Z" fill="#4a2f1a"/><path d="M72 158 V166 Q84 171 90 168 Q90 160 78 160Z" fill="#4a2f1a"/>
    <path d="M42 88 Q60 82 78 88 L86 106 Q60 114 34 106 Z" fill="#6b3fa8"/><path d="M34 106 Q60 114 86 106" fill="none" stroke="#8a5cd6" stroke-width="2.5"/><circle cx="60" cy="90" r="3" fill="#ffd166"/>
    ${amuletSvg}${neck}
@@ -1169,7 +1257,7 @@ function heroSVG(g, color, skinIn, hairIn, look) {
    <circle cx="43" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="77" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="60" cy="57" r="2.6" fill="${nose}"/>
    <path d="M53 64 Q60 69 67 64" fill="none" stroke="${mouth}" stroke-width="2" stroke-linecap="round"/>${beard}${faceAcc}${brows}${lashes}${fringe}${hat}${head}${pet}</svg>`;
 }
-const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc, beard: p.beard, items: p.items, pots: typeof POTION_IDS === 'undefined' ? [] : POTION_IDS.filter(id => ((p.pot || {})[id] || 0) + ((p.carry || {})[id] || 0) > 0) });
+const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc, beard: p.beard, gear: gearOf(p), pots: typeof POTION_IDS === 'undefined' ? [] : POTION_IDS.filter(id => ((p.pot || {})[id] || 0) + ((p.carry || {})[id] || 0) > 0) });
 // Villagers are people emoji: a skin-tone modifier goes right after the FIRST code point (before any zero-width joiner), e.g. 👩🏽‍🌾. Tones are dealt from a shuffled bag so they are evenly spread.
 const TONE_MODS = ['🏻', '🏼', '🏽', '🏾', '🏿'];
 const tonedEmoji = (e, k) => { const cp = [...e]; return cp[0] + TONE_MODS[k % 5] + cp.slice(1).join(''); };
@@ -1187,7 +1275,7 @@ function newProfile(id, nick, gender, color, real, cls, skin, hair) {
   return p;
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 12;
+const PROFILE_V = 13;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -1226,6 +1314,7 @@ function migrate(p) {
   if (v < 4 && p.inv && p.inv.mint) { p.inv.leaf = (p.inv.leaf || 0) + p.inv.mint; }   // version 4: the herb mint was removed; any mint becomes a leaf
   if (p.inv) delete p.inv.mint;
   p.carry = p.carry || {}; p.pot = p.pot || {};
+  p.worn = p.worn || {}; p.cos = p.cos || { neck: 'pendant', hand: 'staff', belt: 'leather' }; p.cosShow = p.cosShow || { neck: true, hand: true, belt: true };   // version 13: one magic item per slot is worn (existing items stay worn) and the wardrobe looks
   p.v = PROFILE_V;
   return p;
 }
@@ -1373,10 +1462,10 @@ function askLookOnce() {   // existing heroes: one friendly, skippable question
 let WD = null, wdTab = 'robe';
 const wdChip = (key, id, emo, on, locked, price, extra = '') => `<button class="wdChip ${on ? 'on' : ''} ${locked ? 'lock' : ''}" data-k="${key}" data-id="${id}">${emo}${locked ? `<small>🔒 ${price}</small>` : ''}${extra}</button>`;
 function openWardrobe() {
-  G.quest = null; WD = { color: P.color, style: P.style || null, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null, beard: P.beard || 'short', acc: Object.assign({}, P.acc) }; wdTab = 'robe'; show('wardrobe'); drawWardrobe();
+  G.quest = null; WD = { color: P.color, style: P.style || null, skin: P.skin || DEFAULT_SKIN, hair: P.hair || null, beard: P.beard || 'short', acc: Object.assign({}, P.acc), cos: Object.assign({}, P.cos), show: Object.assign({}, P.cosShow) }; wdTab = 'robe'; show('wardrobe'); drawWardrobe();
 }
 function drawWardrobe() {
-  $('#wdPrev').innerHTML = heroSVG(P.gender, WD.color, WD.skin, WD.hair, { style: WD.style, acc: WD.acc, beard: WD.beard });
+  $('#wdPrev').innerHTML = heroSVG(P.gender, WD.color, WD.skin, WD.hair, { style: WD.style, acc: WD.acc, beard: WD.beard, gear: gearOf(P, { cos: WD.cos, show: WD.show }) });
   document.querySelectorAll('.wdTab').forEach(b => b.classList.toggle('on', b.dataset.t === wdTab));
   const sw = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
   const dot = c => `<span class="wdDot" style="background:${c}"></span>`;
@@ -1386,6 +1475,13 @@ function drawWardrobe() {
       + `<div class="wdLbl">Robe style</div><div class="wdChips">${wdChip('style', '', '<span class="wdEm">✖️</span>', !WD.style, false, 0, '<small>plain</small>')}${ROBE_STYLES.map(s => { const own = P.wd.includes(s[0]); return wdChip('style', s[0], `<span class="wdEm">${s[4]}</span>`, WD.style === s[1], !own, s[6]); }).join('')}</div>`;
   } else if (wdTab === 'face') {
     h = `<div class="wdLbl">Skin</div><div class="swatches">${sw(SKINS, WD.skin, 'skin')}</div><div class="wdLbl">Hair and beard</div><div class="swatches">${sw(HAIRS, WD.hair || (P.gender === 'f' ? '#7a4a21' : '#f2f2f2'), 'hair')}</div>${P.gender === 'm' ? '<div class="wdLbl">Facial hair</div>' + beardRow(WD.beard) : ''}`;
+  } else if (wdTab === 'looks') {   // cosmetic looks for the magic items: they change how the item LOOKS, never what it does
+    h = `<div class="small" style="opacity:.85;margin-bottom:4px">A look changes how your magic item looks on you. It never turns the item off.</div>` + GEAR_SLOTS.map(([slot, label, ms]) => {
+      const has = itemWorn(P, ms), nm = MAGIC[ms].en;
+      return `<div class="wdLbl">${label}</div><div class="wdChips">${LOOKS[slot].map(([id, name, price]) => { const own = !price || P.wd.includes('lk_' + id); return wdChip('look-' + slot, id, `<span class="wdLook"><span class="gIco">${gearIcon(slot, { k: id, v: 0 })}</span><span>${name}</span></span>`, WD.cos[slot] === id && WD.show[slot] === false, !own, price); }).join('')}</div>
+        <label class="sw2"><input type="checkbox" data-show="${slot}" ${WD.show[slot] !== false ? 'checked' : ''}> Show the magic item on the hero${has ? '' : ' <small style="opacity:.7">(' + (itemVer(ms) ? 'taken off now' : 'not made yet') + ')</small>'}</label>
+        <p class="small" style="opacity:.75;margin:0 0 6px">${has ? `The ${nm} keeps its power whichever look you choose.` : 'No magic item is worn here, so the chosen look is shown.'}</p>`;
+    }).join('');
   } else {
     h = Object.keys(SLOT_NAMES).map(slot => `<div class="wdLbl">${SLOT_NAMES[slot]}</div><div class="wdChips">${wdChip('acc-' + slot, '', '<span class="wdEm">✖️</span>', !WD.acc[slot], false, 0, '<small>none</small>')}${ACCS.filter(a => a[1] === slot).map(a => { const own = P.wd.includes(a[0]); return wdChip('acc-' + slot, a[0], `<span class="wdEm">${a[4]}</span>`, WD.acc[slot] === a[0], !own, a[6]); }).join('')}</div>`).join('');
   }
@@ -1401,7 +1497,13 @@ $('#wardrobe').onclick = e => {
     else { const i = +sw.dataset.i; WD[k] = k === 'color' ? COLORS[i] : k === 'skin' ? SKINS[i] : HAIRS[i]; }
     drawWardrobe(); return;
   }
+  const shw = e.target.closest('[data-show]'); if (shw) { WD.show[shw.dataset.show] = shw.checked; drawWardrobe(); return; }
   const ch = e.target.closest('.wdChip');
+  if (ch && ch.dataset.k.startsWith('look-')) {
+    const slot = ch.dataset.k.slice(5), id = ch.dataset.id, price = LOOKS[slot].find(x => x[0] === id)[2];
+    if (price && !P.wd.includes('lk_' + id)) { toast(`🔒 This look is in the shop: 🪙 ${price}`); return; }
+    WD.cos[slot] = id; WD.show[slot] = false; drawWardrobe(); return;   // choosing a look shows it (the magic look comes back with the switch)
+  }
   if (ch) {
     const k = ch.dataset.k, id = ch.dataset.id;
     if (id && !P.wd.includes(id)) { toast(`🔒 This is in the shop: 🪙 ${SHOP[id].price}`); return; }
@@ -1410,7 +1512,7 @@ $('#wardrobe').onclick = e => {
     drawWardrobe(); return;
   }
 };
-$('#wdSave').onclick = () => { P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.beard = WD.beard; P.acc = WD.acc; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
+$('#wdSave').onclick = () => { P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.beard = WD.beard; P.acc = WD.acc; P.cos = WD.cos; P.cosShow = WD.show; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
 $('#wdBack').onclick = () => openHome();
 /* ----- install as an app (works from Chrome on Android) and keep a saved copy for offline play ----- */
 let installEvt = null;
@@ -1612,7 +1714,7 @@ function qSpell(t) {
   return { kind: 'choice', soft: true, key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: `A ${e.badge} ${e.label} monster blocks the way!`, big: `${mon.name}`, bigSm: true,
     sub: `Read the spells. One hurts it, one makes it stronger, ${nNeu === 1 ? 'one does' : 'two do'} nothing. A wrong spell lets the monster attack!`,
-    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 12 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em,
+    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 12 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em, spell: { el: w.el, kind: PHRASE_KIND[w.he] || 'word' },
       note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em} — ${reasonFor(w, mon)}`, say: txt(w) })),
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}. ${e.why}`, say: txt(target) };
 }
@@ -1627,32 +1729,32 @@ const VTAGS = { 'מים': ['drink'], 'לחם': ['food'], 'חתול': ['pet', 'an
   'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'], 'עוגה': ['food'], 'ענבים': ['food'], 'סירה': ['boat'], 'מטרייה': ['rain'], 'שמיכה': ['sleep'], 'פטיש': ['tool'], 'קמח': ['food'], 'מלח': ['food'], 'ברזל': ['metal'], 'אש': ['hot'], 'חבל': ['rope'], 'דלי': ['vessel'], 'כיסא': ['furniture'], 'זרע': ['plant'], 'שמש': ['sky', 'light'], 'חכה': ['fishing'], 'רשת': ['fishing'], 'קש': ['plant'], 'בד': ['cloth'], 'חוט': ['cloth'], 'מחט': ['cloth'], 'מיטה': ['sleep', 'furniture'], 'שמן': ['oil'], 'סולם': ['climb'], 'סל': ['vessel'], 'מסמר': ['metal', 'tool'], 'מסור': ['tool'], 'תוף': ['music'], 'חליל': ['music'], 'פעמון': ['music'], 'מנורה': ['light'], 'דגל': ['flag'], 'גבינה': ['food'] };
 // The two-word phrases for the village reading levels (12 and 13): a word from the village list plus an easy describing word.
 const VPH = [['מים', 'מים קרים', 'מַיִם קָרִים', 'cold water'], ['לחם', 'לחם חם', 'לֶחֶם חַם', 'warm bread'], ['חתול', 'חתול שחור', 'חָתוּל שָׁחֹר', 'black cat'], ['כלב', 'כלב גדול', 'כֶּלֶב גָּדוֹל', 'big dog'],
-  ['דג', 'דג קטן', 'דָּג קָטָן', 'small fish'], ['ספר', 'ספר גדול', 'סֵפֶר גָּדוֹל', 'big book'], ['בית', 'בית קטן', 'בַּיִת קָטָן', 'small house'], ['עץ', 'עץ גדול', 'עֵץ גָּדוֹל', 'big tree'],
+  ['דג', 'דג קטן', 'דָּג קָטָן', 'small fish'], ['ספר', 'ספר גדול', 'סֵפֶר גָּדוֹל', 'big book'], ['בית', 'בית קטן', 'בַּיִת קָטָן', 'small house'], ['עץ', 'עץ גדול', 'עֵץ גָּדוֹל', 'big tree'], ['עץ', 'עץ חזק', 'עֵץ חָזָק', 'strong wood', 'wood'],
   ['פרח', 'פרח יפה', 'פֶּרַח יָפֶה', 'pretty flower'], ['נר', 'נר קטן', 'נֵר קָטָן', 'small candle'], ['מפתח', 'מפתח זהב', 'מַפְתֵּחַ זָהָב', 'golden key'], ['כובע', 'כובע אדום', 'כּוֹבַע אָדֹם', 'red hat'],
   ['גשר', 'גשר ישן', 'גֶּשֶׁר יָשָׁן', 'old bridge'], ['דלת', 'דלת כחולה', 'דֶּלֶת כְּחֻלָּה', 'blue door'], ['חלב', 'חלב קר', 'חָלָב קַר', 'cold milk'], ['ביצה', 'ביצה לבנה', 'בֵּיצָה לְבָנָה', 'white egg'],
   ['תפוח', 'תפוח אדום', 'תַּפּוּחַ אָדֹם', 'red apple'], ['עוגה', 'עוגה מתוקה', 'עוּגָה מְתוּקָה', 'sweet cake'], ['ענבים', 'ענבים סגולים', 'עֲנָבִים סְגֻלִּים', 'purple grapes'], ['סירה', 'סירה כחולה', 'סִירָה כְּחֻלָּה', 'blue boat'],
-  ['מטרייה', 'מטרייה צהובה', 'מִטְרִיָּה צְהֻבָּה', 'yellow umbrella'], ['שמיכה', 'שמיכה חמה', 'שְׂמִיכָה חַמָּה', 'warm blanket'], ['פטיש', 'פטיש כבד', 'פַּטִּישׁ כָּבֵד', 'heavy hammer'], ['קמח', 'קמח לבן', 'קֶמַח לָבָן', 'white flour'], ['מלח', 'מלח לבן', 'מֶלַח לָבָן', 'white salt'], ['ברזל', 'ברזל חזק', 'בַּרְזֶל חָזָק', 'strong iron'], ['אש', 'אש חמה', 'אֵשׁ חַמָּה', 'hot fire'], ['חבל', 'חבל ארוך', 'חֶבֶל אָרֹךְ', 'long rope'], ['דלי', 'דלי כחול', 'דְּלִי כָּחֹל', 'blue bucket'], ['כיסא', 'כיסא קטן', 'כִּסֵּא קָטָן', 'small chair'], ['זרע', 'זרע קטן', 'זֶרַע קָטָן', 'tiny seed'], ['שמש', 'שמש חמה', 'שֶׁמֶשׁ חַמָּה', 'hot sun'], ['חכה', 'חכה ארוכה', 'חַכָּה אֲרֻכָּה', 'long fishing rod'], ['רשת', 'רשת גדולה', 'רֶשֶׁת גְּדוֹלָה', 'big net'], ['קש', 'קש יבש', 'קַשׁ יָבֵשׁ', 'dry straw'], ['בד', 'בד רך', 'בַּד רַךְ', 'soft cloth'], ['חוט', 'חוט אדום', 'חוּט אָדֹם', 'red thread'], ['מחט', 'מחט קטנה', 'מַחַט קְטַנָּה', 'small needle'], ['מיטה', 'מיטה רכה', 'מִטָּה רַכָּה', 'soft bed'], ['שמן', 'שמן חם', 'שֶׁמֶן חַם', 'warm oil'], ['סולם', 'סולם ארוך', 'סֻלָּם אָרֹךְ', 'long ladder'], ['סל', 'סל גדול', 'סַל גָּדוֹל', 'big basket'], ['מסמר', 'מסמר קטן', 'מַסְמֵר קָטָן', 'small nail'], ['מסור', 'מסור חד', 'מְסוֹר חַד', 'sharp saw'], ['תוף', 'תוף גדול', 'תֹּף גָּדוֹל', 'big drum'], ['חליל', 'חליל קטן', 'חָלִיל קָטָן', 'small flute'], ['פעמון', 'פעמון זהב', 'פַּעֲמוֹן זָהָב', 'golden bell'], ['מנורה', 'מנורה יפה', 'מְנוֹרָה יָפָה', 'pretty lamp'], ['דגל', 'דגל כחול', 'דֶּגֶל כָּחֹל', 'blue flag'], ['גבינה', 'גבינה לבנה', 'גְּבִינָה לְבָנָה', 'white cheese']].map(([w, he, nk, en]) => ({ w, he, nk, en }));
+  ['מטרייה', 'מטרייה צהובה', 'מִטְרִיָּה צְהֻבָּה', 'yellow umbrella'], ['שמיכה', 'שמיכה חמה', 'שְׂמִיכָה חַמָּה', 'warm blanket'], ['פטיש', 'פטיש כבד', 'פַּטִּישׁ כָּבֵד', 'heavy hammer'], ['קמח', 'קמח לבן', 'קֶמַח לָבָן', 'white flour'], ['מלח', 'מלח לבן', 'מֶלַח לָבָן', 'white salt'], ['ברזל', 'ברזל חזק', 'בַּרְזֶל חָזָק', 'strong iron'], ['אש', 'אש חמה', 'אֵשׁ חַמָּה', 'hot fire'], ['חבל', 'חבל ארוך', 'חֶבֶל אָרֹךְ', 'long rope'], ['דלי', 'דלי כחול', 'דְּלִי כָּחֹל', 'blue bucket'], ['כיסא', 'כיסא קטן', 'כִּסֵּא קָטָן', 'small chair'], ['זרע', 'זרע קטן', 'זֶרַע קָטָן', 'tiny seed'], ['שמש', 'שמש חמה', 'שֶׁמֶשׁ חַמָּה', 'hot sun'], ['חכה', 'חכה ארוכה', 'חַכָּה אֲרֻכָּה', 'long fishing rod'], ['רשת', 'רשת גדולה', 'רֶשֶׁת גְּדוֹלָה', 'big net'], ['קש', 'קש יבש', 'קַשׁ יָבֵשׁ', 'dry straw'], ['בד', 'בד רך', 'בַּד רַךְ', 'soft cloth'], ['חוט', 'חוט אדום', 'חוּט אָדֹם', 'red thread'], ['מחט', 'מחט קטנה', 'מַחַט קְטַנָּה', 'small needle'], ['מיטה', 'מיטה רכה', 'מִטָּה רַכָּה', 'soft bed'], ['שמן', 'שמן חם', 'שֶׁמֶן חַם', 'warm oil'], ['סולם', 'סולם ארוך', 'סֻלָּם אָרֹךְ', 'long ladder'], ['סל', 'סל גדול', 'סַל גָּדוֹל', 'big basket'], ['מסמר', 'מסמר קטן', 'מַסְמֵר קָטָן', 'small nail'], ['מסור', 'מסור חד', 'מְסוֹר חַד', 'sharp saw'], ['תוף', 'תוף גדול', 'תֹּף גָּדוֹל', 'big drum'], ['חליל', 'חליל קטן', 'חָלִיל קָטָן', 'small flute'], ['פעמון', 'פעמון זהב', 'פַּעֲמוֹן זָהָב', 'golden bell'], ['מנורה', 'מנורה יפה', 'מְנוֹרָה יָפָה', 'pretty lamp'], ['דגל', 'דגל כחול', 'דֶּגֶל כָּחֹל', 'blue flag'], ['גבינה', 'גבינה לבנה', 'גְּבִינָה לְבָנָה', 'white cheese']].map(([w, he, nk, en, k]) => ({ w, he, nk, en, k: k || '' }));   // k = 'wood': the second meaning of עץ
 function qHelpPhrase(t) {   // levels 12 (with vowel marks) and 13 (without): read two-word signs
-  const need = curNeed(), site = need ? VPH.find(p => p.w === need.he) : (G.site && VPH.find(p => p.w === G.site.he)), target = site || wpick(VPH, p => 'W:' + p.he, G.lastKey), tw = VILL.find(v => v.he === target.w);
-  const same = G.projs ? projNeeds(G.projs).map(n => n[0]) : [], pool = VPH.filter(p => p !== target && !same.includes(p.w));   // the other needs of the same project are never used as wrong signs
+  const need = curNeed(), site = need ? VPH.find(p => p.w === need.he && p.k === need.k) : (G.site && VPH.find(p => p.w === G.site.he && !p.k)), target = site || wpick(VPH.filter(p => !p.k), p => 'W:' + p.he, G.lastKey), tw = VILL.find(v => v.he === target.w);
+  const same = G.projs ? projNeeds(G.projs).map(n => n[0]) : [], pool = VPH.filter(p => p.w !== target.w && !same.includes(p.w));   // the other needs of the same project are never used as wrong signs
   const opts = [target];
   for (const p of shuffle(pool)) { if (opts.length >= 4) break; if (opts.every(x => !vtag(x.w).some(g => vtag(p.w).includes(g)))) opts.push(p); }
   for (const p of shuffle(pool)) { if (opts.length >= 4) break; if (!opts.includes(p)) opts.push(p); }   // safety net, normally unused
-  const txt = p => t === 12 ? p.nk : p.he, em = p => VILL.find(v => v.he === p.w).em;
+  const txt = p => t === 12 ? p.nk : p.he, em = p => p.k === 'wood' ? '🪵' : VILL.find(v => v.he === p.w).em;
   return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he, title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?', speech: need ? need.line : tw.need,
     options: shuffle(opts).map(p => ({ html: txt(p), cls: 'p', ok: p === target, em: em(p), note: `<span class="he">${txt(p)}</span> = ${p.en} ${em(p)}`, say: txt(p) })),
-    explain: `<span class="he">${txt(target)}</span> = ${target.en} ${em(target)}`, say: txt(target), reveal: tw.em };
+    explain: `<span class="he">${txt(target)}</span> = ${target.en} ${em(target)}`, say: txt(target), reveal: em(target) };
 }
 function qHelp(t) {
-  const need = curNeed(), target = (need && projWord(need.he)) || (G.site && VILL.find(w => w.he === G.site.he)) || wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 8 ? 3 : 4;   // levels 8-11 (levels 12-13 use qHelpPhrase)
+  const need = curNeed(), target0 = (need && projWord(need.he)) || (G.site && VILL.find(w => w.he === G.site.he)) || wpick(VILL, w => 'W:' + w.he, G.lastKey), target = need && need.em ? { ...target0, em: need.em, en: need.en } : target0, n = t === 8 ? 3 : 4;   // levels 8-11 (levels 12-13 use qHelpPhrase)
   const same = G.projs ? projNeeds(G.projs).map(x => x[0]) : [];   // the other needs of the same project are never used as wrong signs
-  let others = VILL.filter(w => w !== target && !same.includes(w.he));
+  let others = VILL.filter(w => w.he !== target.he && !same.includes(w.he));
   // tricky levels: prefer signs that LOOK similar; otherwise random. Either way, no two signs may mean similar things
   // (e.g. cat + dog are both pets, water + milk are both drinks), so exactly one sign fits what the villager needs.
   others = t === 11 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he) || Math.random() - .5).slice(0, 10) : shuffle(others);
   const opts = [target];
   for (const w of others) { if (opts.length >= n) break; if (opts.every(x => !vtag(x.he).some(g => vtag(w.he).includes(g)))) opts.push(w); }
-  for (const w of shuffle(VILL.filter(w => w !== target && !same.includes(w.he)))) { if (opts.length >= n) break; if (!opts.includes(w)) opts.push(w); }   // safety net, normally unused
+  for (const w of shuffle(VILL.filter(w => w.he !== target.he && !same.includes(w.he)))) { if (opts.length >= n) break; if (!opts.includes(w)) opts.push(w); }   // safety net, normally unused
   const txt = w => (t === 8 || t === 9) ? w.nk : w.he;
   return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?',
@@ -1671,7 +1773,7 @@ function qWriteSpell(t) {
 }
 function qWriteHelp(t) {
   const pool = VILL.filter(w => t === 14 ? w.he.length <= 3 : w.he.length >= 4);
-  const need = curNeed(), w = (need && projWord(need.he)) || (G.site && VILL.find(x => x.he === G.site.he)) || wpick(pool, x => 'W:' + x.he, G.lastKey), line = need ? need.line : w.need;
+  const need = curNeed(), w0 = (need && projWord(need.he)) || (G.site && VILL.find(x => x.he === G.site.he)) || wpick(pool, x => 'W:' + x.he, G.lastKey), w = need && need.em ? { ...w0, em: need.em, en: need.en } : w0, line = need ? need.line : w.need;
   return { kind: 'write', key: 'W:' + w.he, lastKey: 'W:' + w.he, accept: [w.he], keyOf: s => 'W:' + s,
     title: 'Write this word on the sign:', big: w.em, sub: `${w.en} — ${line}`, ref: [],
     explain: `<span class="he">${w.he}</span> = ${w.en} ${w.em}`, say: w.he, speech: line, reveal: w.em };
@@ -2136,15 +2238,15 @@ const PROJECTS = [
   { site: 'well', name: 'A full bucket', result: '🪣', needs: [['חבל', 'I need a long, thick string to lower the bucket.'], ['דלי', 'Now the thing with a handle that carries water.'], ['מים', 'And what goes inside? Something clear to drink.']] },
   { site: 'farm', name: 'A basket of goods', result: '🧺', needs: [['חלב', 'First, a white drink from the cow.'], ['ביצה', 'Next, something a hen laid this morning.'], ['תפוח', 'And a crunchy red fruit from a tree.']] },
   { site: 'library', name: 'A reading corner', result: '📖', needs: [['ספר', 'I need something full of stories to read.'], ['נר', 'Now a little light for the evening. It melts as it burns.'], ['כיסא', 'And somewhere to sit down.']] },
-  { site: 'garden', name: 'A flower', result: '🌸', needs: [['זרע', 'First, a tiny thing that I put in the soil.'], ['מים', 'It needs a clear drink every day.'], ['שמש', 'And warm light from the sky.']] },
+  { site: 'garden', name: 'A flower', result: '🌷', needs: [['זרע', 'First, a tiny thing that I put in the soil.'], ['מים', 'It needs a clear drink every day.'], ['שמש', 'And warm light from the sky.']] },
   { site: 'dock', name: 'A fishing trip', result: '🐟', needs: [['סירה', 'I need something that floats on the river.'], ['חכה', 'Now a long stick with a string for fishing.'], ['רשת', 'And something with holes to catch the fish.']] },
   { site: 'henhouse', name: 'A cosy nest', result: '🐥', needs: [['קש', 'I need dry yellow grass for the bottom of the nest.'], ['ביצה', 'Now something round and white that hens lay.'], ['מים', 'And a bowl of clear water to drink.']] },
-  { site: 'hats', name: 'A hat', result: '🎩', needs: [['בד', 'I need a soft material that clothes are made of.'], ['חוט', 'Now a thin string for sewing.'], ['מחט', 'And a tiny sharp thing that pulls the string through.']] },
+  { site: 'hats', name: 'A hat', result: '👒', needs: [['בד', 'I need a soft material that clothes are made of.'], ['חוט', 'Now a thin string for sewing.'], ['מחט', 'And a tiny sharp thing that pulls the string through.']] },
   { site: 'cottage', name: 'A cosy night', result: '🛏️', needs: [['מיטה', 'I need a place to sleep.'], ['שמיכה', 'Now something warm to cover me.'], ['נר', 'And a little light on the table.']] },
   { site: 'lamps', name: 'A lamp', result: '🏮', needs: [['נר', 'I need a wax stick with a little flame.'], ['שמן', 'Now something slippery that burns slowly in a lamp.'], ['אש', 'And something hot to light it.']] },
   { site: 'orchard', name: 'Picking apples', result: '🍎', needs: [['סולם', 'I need something with steps to climb up the tree.'], ['סל', 'Now something with a handle to carry the apples.'], ['תפוח', 'And what am I picking? A crunchy red fruit.']] },
-  { site: 'carpenter', name: 'A door', result: '🚪', needs: [['עץ', 'I need something strong to build with. It comes from trees.'], ['מסמר', 'Now a little sharp piece of metal that holds the boards.'], ['פטיש', 'And a heavy tool to knock it in.']] },
-  { site: 'carpenter', name: 'A table', result: '<svg class="icoSvg" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="3.6" rx="1" fill="#c98f52"/><rect x="2" y="10.6" width="20" height="1.6" fill="#8a5a2b"/><rect x="4" y="12" width="2.6" height="9" fill="#a8764a"/><rect x="17.4" y="12" width="2.6" height="9" fill="#a8764a"/></svg>', needs: [['עץ', 'I need something strong to build with. It comes from trees.'], ['מסור', 'Now a tool with teeth that cuts the wood.'], ['מסמר', 'And a little sharp piece of metal that holds the boards.']] }
+  { site: 'carpenter', name: 'A door', result: '🚪', needs: [['עץ', 'I need something strong to build with. It comes from trees.', '🪵', 'wood'], ['מסמר', 'Now a little sharp piece of metal that holds the boards.'], ['פטיש', 'And a heavy tool to knock it in.']] },
+  { site: 'carpenter', name: 'A table', result: '<svg class="icoSvg" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="3.6" rx="1" fill="#c98f52"/><rect x="2" y="10.6" width="20" height="1.6" fill="#8a5a2b"/><rect x="4" y="12" width="2.6" height="9" fill="#a8764a"/><rect x="17.4" y="12" width="2.6" height="9" fill="#a8764a"/></svg>', needs: [['עץ', 'I need something strong to build with. It comes from trees.', '🪵', 'wood'], ['מסור', 'Now a tool with teeth that cuts the wood.'], ['מסמר', 'And a little sharp piece of metal that holds the boards.']] }
 ];
 const FINALE_PROJECTS = [
   { site: 'festival', name: 'The feast', result: '🍽️', needs: [['לחם', 'For the feast, something freshly baked.'], ['גבינה', 'Next, something yellow that is made from milk.'], ['תפוח', 'And a crunchy red fruit.']] },
@@ -2159,18 +2261,18 @@ function pickProject(bg) {
 }
 const projNeeds = ps => ps.flatMap(p => p.needs);
 function curNeed() {   // the need the villager is asking for now: [word, request line]
-  if (!G.projs) return null; const k = Math.min(G.helped, G.need - 1), n = G.projs[Math.floor(k / 3)].needs[k % 3]; return { he: n[0], line: n[1] };
+  if (!G.projs) return null; const k = Math.min(G.helped, G.need - 1), n = G.projs[Math.floor(k / 3)].needs[k % 3]; return { he: n[0], line: n[1], em: n[2], en: n[3], k: n[3] ? 'wood' : '' };   // a need can carry its own picture (wood is not the tree)
 }
 const projWord = he => VILL.find(w => w.he === he);
 function renderTray() {   // three slots next to the villager that fill up with the items that were handed over
   const e = $('#projTray'); if (!e) return; if (!G.projs) { e.innerHTML = ''; return; }
   const pi = Math.min(Math.floor(G.helped / 3), G.projs.length - 1), p = G.projs[pi], k = G.helped >= G.need ? 3 : G.helped % 3;
   const done = G.projs.slice(0, pi).map(x => `<span class="trayDone" title="${x.name}">${x.result}</span>`).join('');
-  e.innerHTML = `<div class="trayName">${done} ${p.name}</div><div class="traySlots">${p.needs.map((n, i) => `<span class="traySlot ${i < k ? 'full' : ''}">${projWord(n[0]).em}</span>`).join('')}</div>`;
+  e.innerHTML = `<div class="trayName">${done} ${p.name}</div><div class="traySlots">${p.needs.map((n, i) => `<span class="traySlot ${i < k ? 'full' : ''}">${n[2] || projWord(n[0]).em}</span>`).join('')}</div>`;
 }
 async function projectDone(i) {   // the finished result appears with sparkles and the villager jumps
   const e = $('#projTray'), p = G.projs[i]; sfx.win(); if (e) e.innerHTML = `<div class="trayName">${p.name}</div><div class="trayResult">✨ ${p.result} ✨</div>`; confetti([p.result.includes('<') ? '🪵' : p.result, '✨', '💛']);
-  G.vmood = ''; setMood('😊'); await sleep(1900);
+  G.vmood = ''; setMood('😊'); vmResult(p.result); await sleep(2200);
 }
 /* ====================== JOURNEY MAP ====================== */
 // A quest is a walk along a winding path. Each stop is an encounter: a monster (or a villager at a site), a rest, a chest or gift basket, a signpost, and at the end the boss (or the festival hall).
@@ -2276,13 +2378,18 @@ function jSetFog(f) {
 /* ----- drawing ----- */
 const BOSS_EM = { treant: '🌳', mammoth: '🦣', titan: '🗿', roc: '🦅', dragon: '🐲', wraith: '💀' };   // the dark shape of the boss on the journey map
 const jBossOf = () => ({ body: BOSS_EM[AREA_MON[(P.quest[J.q].ch - 1) % 6].b] });
+const jVar = i => (((P.quest[J.q].seed || 0) + i) % 2);   // which of the two village rests / gifts this stop is (fixed for the run)
+const saPicnic = () => '<div class="sa"><div class="saBlanket"></div><span class="saB" style="--d:.1s;left:34%;bottom:8px">🧺</span><span class="saB" style="--d:.5s;left:52%;bottom:14px">🥪</span><span class="saB" style="--d:.8s;left:62%;bottom:6px">🍎</span><span class="saB" style="--d:1.1s;left:22%;bottom:6px">🥤</span></div>';
+const saWell = () => '<div class="sa"><span class="saWell">⛲</span><span class="saBucket">🪣</span><span class="saDrop" style="--d:1.3s;left:58%">💧</span><span class="saDrop" style="--d:1.6s;left:64%">💧</span><span class="saDrop" style="--d:1.9s;left:54%">💧</span></div>';
+const saBasket = () => '<div class="sa"><span class="saSlide">🧺</span><span class="saB" style="--d:.9s;left:44%;top:0">🍎</span><span class="saB" style="--d:1.2s;left:54%;top:-4px">🌷</span><span class="saB" style="--d:1.5s;left:49%;top:6px">💛</span></div>';
+const saFountain = () => '<div class="sa"><span class="saWell">⛲</span><span class="saCoin">🪙</span><i class="saRing" style="--d:1.1s"></i><i class="saRing" style="--d:1.4s"></i><i class="saRing" style="--d:1.7s"></i></div>';
 function jIcon(i, code) {
   const at = P.quest[J.q].at || 0, v = jVillage();
   if (i === 0) return '🚩';
   const t = code[0];
   if (t === 'B') return v ? '🏛️' : (i <= at ? '🏁' : jBossOf().body);
-  if (t === 'r') return v ? '🪑' : '⛺';
-  if (t === 'c') return v ? '🧺' : '🎁';
+  if (t === 'r') return v ? (jVar(i) ? '🍉' : '🪣') : '⛺';
+  if (t === 'c') return v ? (jVar(i) ? '⛲' : '🧺') : '🎁';
   if (t === 'g') return '🪧';
   if (t === 's') return SITES[+code.slice(1)].em;
   return i <= at ? '⚔️' : '❓';   // an unvisited monster stays a question mark until you arrive
@@ -2364,8 +2471,17 @@ function jArrive(i) {
   if (t === 'm' || t === 's' || t === 'B') { jDraw(); jHud(); enterFight(); return; }   // the normal fight / village screen
   qs.at = i; J.wizLen = null;   // a special stop is done the moment you arrive (so a refresh can not repeat it)
   let title, body;
-  if (t === 'r') { const before = qs.hearts, full = before >= CFG.BONUS_HEARTS; qs.hearts = Math.min(CFG.BONUS_HEARTS, qs.hearts + 1); title = v ? '🪑 A shady bench' : '⛺ A quiet campfire'; body = `<p>${v ? 'You sit for a moment. A villager smiles at you.' : 'You rest by the fire and feel better.'}</p><p>${full ? 'You are already full of energy!' : '+1 ' + (v ? '😊' : '❤️') + (qs.hearts > CFG.MAX_HEARTS ? ' <small>(a bonus one!)</small>' : '')}</p>`; }
-  else if (t === 'c') { const c = jCoins(2 + Math.floor(Math.random() * 3)); title = v ? '🧺 A basket of gifts' : '🎁 A treasure chest'; body = `<p style="font-size:1.3rem">🪙 +${c} coins</p>`; }
+  if (t === 'r') {
+    const full = qs.hearts >= CFG.BONUS_HEARTS, vr = jVar(i); qs.hearts = Math.min(CFG.BONUS_HEARTS, qs.hearts + 1);
+    const [ti, tx, an] = !v ? ['⛺ A quiet campfire', 'You rest by the fire and feel better.', ''] : vr ? ['🧺 A picnic in the shade', 'A villager shares a snack with you on a soft blanket.', saPicnic()] : ['⛲ The old well', 'You pull up the bucket and drink the cool, fresh water.', saWell()];
+    title = ti; body = `${an}<p>${tx}</p><p>${full ? 'You are already full of energy!' : '+1 ' + (v ? '😊' : '❤️') + (qs.hearts > CFG.MAX_HEARTS ? ' <small>(a bonus one!)</small>' : '')}</p>`;
+  }
+  else if (t === 'c') {
+    const c = jCoins(2 + Math.floor(Math.random() * 3));
+    if (!v) { title = '🎁 A treasure chest'; body = `<p style="font-size:1.3rem">🪙 +${c} coins</p>`; }
+    else if (!jVar(i)) { title = '🧺 A basket of gifts'; body = `${saBasket()}<p>A villager hands you a basket of fruit and flowers, with a few coins tucked inside.</p><p style="font-size:1.3rem">🪙 +${c} coins</p>`; }
+    else { const id = rnd(DROP.folk.common); P.inv[id] = (P.inv[id] || 0) + 1; title = '⛲ The wishing fountain'; body = `${saFountain()}<p>You drop a coin in the water, and the fountain gives you something back!</p><p style="font-size:1.3rem">🪙 +${c} coins</p><p>${ING[id].em} 1 ${ING[id].en}</p>`; }
+  }
   else { title = '🪧 A signpost'; body = `<p>${J_SIGNS[J.q][+code.slice(1)]}</p>`; }
   sfx.ok(); saveSoon(true); jDraw(); jHud();
   modal(title, body, [['Continue ▶', () => { jDraw(); jHud(); }]]);
@@ -2487,6 +2603,7 @@ function updateBars() {
   $('#hpFill').style.width = (b ? G.mon.hp / G.mon.max * 100 : G.helped / G.need * 100) + '%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`;
   $('#xpFill').style.width = ((P.xp % 400) / 4) + '%';
+  renderPotBar();   // the bottom bar shows the coins and ingredients too
 }
 /* ----- abandoning a quest: leave the run, keep coins and ingredients, start from the beginning next time ----- */
 function abandonQuest(q) {
@@ -2557,6 +2674,156 @@ function floatText(txt, color) {
   e.style.left = (f.left - s.left + f.width / 2 - 20) + 'px'; e.style.top = (f.top - s.top) + 'px';
   $('#stage').appendChild(e); setTimeout(() => e.remove(), 1000);
 }
+/* ====================== SPELL EFFECTS (fights) ====================== */
+// A word spell (water, fire...) is a simple blast (an orb) of its element. A phrase spell takes the shape of its words (an arrow, a fireball, a spear, a storm...).
+// The hero's RANK makes every spell bigger, brighter and longer-trailed. Every spell ends with an impact that fits the element. Everything has a timeout fallback,
+// so a fight can never get stuck even if the browser pauses animation frames (a background tab).
+const PHRASE_KIND = { 'חץ מים': 'arrow', 'חץ אש': 'arrow', 'חץ ברק': 'arrow', 'כדור שלג': 'ball', 'כדור אש': 'ball', 'חנית קרח': 'spear', 'סופת גשם': 'storm', 'סערת רוח': 'storm', 'קרני שמש': 'rays', 'קרן אור': 'beam', 'ענן חושך': 'cloud', 'סלע כבד': 'rock' };
+const SP_COL = { water: '#4aa8ff', rain: '#6ab8ff', snow: '#eaf6ff', ice: '#8fd6ff', fire: '#ff7a2e', sun: '#ffd166', light: '#fff3a8', dark: '#8a5cff', lightning: '#ffe14a', wind: '#cfe9ff', stone: '#a8a8b0' };
+const SP_RANK = [1, 1.1, 1.2, 1.3, 1.5, 1.7, 2];   // by rank: Apprentice, Spark Mage, Rune Reader, Spell Scribe, Sage, Archmage, Letter Legend
+const spScale = () => { try { return SP_RANK[Math.max(0, RANKS.indexOf(rankOf(P.xp)))] || 1; } catch (e) { return 1; } };
+const SPF = { svg: null, FROM: [82, 92], TO: [322, 120], s: 1 };
+const SVGNS = 'http://www.w3.org/2000/svg';
+function spSetup() {   // an overlay on the stage, in a 400-wide coordinate system, with the hero's staff and the monster found on the screen
+  const st = $('#stage'), s = st.getBoundingClientRect(), h = $('#heroSvg').getBoundingClientRect(), f = $('#foeBody').getBoundingClientRect(), k = 400 / Math.max(1, s.width);
+  let svg = $('#spFx'); if (!svg || svg.parentNode !== st) { svg = document.createElementNS(SVGNS, 'svg'); svg.id = 'spFx'; svg.setAttribute('aria-hidden', 'true'); svg.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:6;overflow:visible'; st.appendChild(svg); }
+  svg.setAttribute('viewBox', `0 0 400 ${(s.height * k).toFixed(1)}`); svg.innerHTML = '';
+  SPF.svg = svg; SPF.s = spScale();
+  SPF.FROM = [(h.left - s.left + h.width * .85) * k, (h.top - s.top + h.height * .25) * k]; SPF.TO = [(f.left - s.left + f.width / 2) * k, (f.top - s.top + f.height * .5) * k];
+}
+const spEl = (t, a = {}) => { const e = document.createElementNS(SVGNS, t); for (const k in a) e.setAttribute(k, a[k]); SPF.svg.appendChild(e); return e; };
+const spKill = (e, ms) => setTimeout(() => { try { e.remove(); } catch (x) {} }, ms);
+const spFade = (e, ms, dx = 0, dy = 0, sc = .3, delay = 0) => { try { const a = e.animate([{ transform: 'translate(0px,0px) scale(1)', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(${sc})`, opacity: 0 }], { duration: ms, delay, easing: 'ease-out', fill: 'forwards' }); spKill(e, ms + delay + 50); return a; } catch (x) { spKill(e, 50); } };
+const spDot = (x, y, r, c, ms, dx, dy, o = {}) => { const e = spEl('circle', { cx: x, cy: y, r, fill: c, opacity: o.op || 1 }); e.style.transformBox = 'fill-box'; e.style.transformOrigin = 'center'; spFade(e, ms, dx, dy, o.sc ?? .2, o.delay || 0); return e; };
+const spSpray = (x, y, n, c, spread, ms, r = 2.4, up = 0) => { for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, d = spread * (.4 + Math.random() * .8); spDot(x, y, r * (.6 + Math.random() * .8), c, ms * (.7 + Math.random() * .6), Math.cos(a) * d, Math.sin(a) * d - up); } };
+const spShape = (x, y, g) => { const e = spEl('g', {}); e.innerHTML = g; e.style.transform = `translate(${x}px,${y}px)`; return e; };
+function spFlash(c, ms = 300) { const e = spEl('rect', { x: -50, y: -50, width: 500, height: 400, fill: c, opacity: 0 }); try { e.animate([{ opacity: 0 }, { opacity: .4 }, { opacity: 0 }], { duration: ms }); } catch (x) {} spKill(e, ms + 30); }
+const spGlowDef = (id, c) => `<defs><radialGradient id="${id}"><stop offset="0" stop-color="${c}" stop-opacity=".9"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs>`;
+const spOrb = (c, r = 7, extra = '') => { const id = 'spo' + Math.random().toString(36).slice(2, 7); return spGlowDef(id, c) + `<circle r="${r * 2.4}" fill="url(#${id})"/><circle r="${r}" fill="${c}"/><circle r="${r * .45}" cx="${-r * .3}" cy="${-r * .3}" fill="#fff" opacity=".8"/>${extra}`; };
+const spFlame = (r = 8) => `<path d="M${-r} 0 Q${-r * 1.6} ${-r} ${-r * .2} ${-r * 2} Q${r * .2} ${-r} ${r} ${-r * .5} Q${r * 1.4} ${r * .8} 0 ${r}Z" fill="#ff7a2e" transform="rotate(90)"/><path d="M${-r * .5} 0 Q${-r * .8} ${-r * .6} 0 ${-r * 1.2} Q${r * .7} ${-r * .4} ${r * .5} ${r * .4}Z" fill="#ffe27a" transform="rotate(90)"/>`;
+const spRays = (cx, cy, n, r1, r2, c) => Array.from({ length: n }, (_, i) => { const a = i * 2 * Math.PI / n; return `<line x1="${(cx + Math.cos(a) * r1).toFixed(1)}" y1="${(cy + Math.sin(a) * r1).toFixed(1)}" x2="${(cx + Math.cos(a) * r2).toFixed(1)}" y2="${(cy + Math.sin(a) * r2).toFixed(1)}" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/>`; }).join('');
+const spWait = (a, ms) => Promise.race([a && a.finished ? a.finished.catch(() => {}) : Promise.resolve(), sleep(ms)]);
+function spFly(g, ms, trail, rot = true) {   // a shape flies from the staff to the monster along an arc, leaving a trail
+  return new Promise(res => {
+    const s = SPF.s, [x0, y0] = SPF.FROM, [x1, y1] = SPF.TO, lift = 28, wrap = spEl('g', {}); wrap.innerHTML = g; let alive = true;
+    const done = () => { if (!alive) return; alive = false; try { wrap.remove(); } catch (e) {} res(); };
+    const pos = t => [x0 + (x1 - x0) * t, y0 + (y1 - y0) * t - Math.sin(Math.PI * t) * lift], t0 = performance.now();
+    const step = now => { if (!alive) return; const t = Math.min(1, (now - t0) / ms), e = t * t, [x, y] = pos(e), [xn, yn] = pos(Math.min(1, e + .02)), an = rot ? Math.atan2(yn - y, xn - x) * 180 / Math.PI : 0;
+      wrap.setAttribute('transform', `translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${an.toFixed(1)}) scale(${s})`); if (trail && Math.random() < .9) trail(x, y, s); if (t < 1) requestAnimationFrame(step); else done(); };
+    setTimeout(done, ms + 300);   // if the browser pauses animation frames the spell still ends
+    wrap.setAttribute('transform', `translate(${x0} ${y0}) scale(${s})`); requestAnimationFrame(step);
+  });
+}
+function spImpact(el) {   // what the element does to the monster
+  const [x, y] = SPF.TO, s = SPF.s, n = Math.round(10 * s), c = SP_COL[el] || '#fff';
+  if (el === 'fire') { spFlash('#ff7a2e', 260); for (let i = 0; i < 3 + Math.round(s * 2); i++) { const f = spShape(x + (Math.random() - .5) * 46 * s, y + 18, spFlame(7 * s)); try { f.animate([{ transform: `${f.style.transform} scale(.3)`, opacity: 1 }, { transform: `${f.style.transform} translate(0px,-34px) scale(1.2)`, opacity: 0 }], { duration: 700 + Math.random() * 300, delay: i * 60, fill: 'forwards' }); } catch (e) {} spKill(f, 1200); } spSpray(x, y, n, '#ffd166', 40 * s, 600); }
+  else if (el === 'water' || el === 'rain') { const r = spEl('ellipse', { cx: x, cy: y + 14, rx: 6, ry: 2.4, fill: 'none', stroke: c, 'stroke-width': 2 }); try { r.animate([{ rx: 6, ry: 2.4, opacity: 1 }, { rx: 46 * s, ry: 12 * s, opacity: 0 }], { duration: 600, fill: 'forwards' }); } catch (e) {} spKill(r, 650); spSpray(x, y, n + 4, c, 36 * s, 650, 2.6, 22); }
+  else if (el === 'ice' || el === 'snow') { for (let i = 0; i < n; i++) { const a = Math.random() * 6.283, d = (22 + Math.random() * 24) * s, t = spEl('polygon', { points: '0,-7 3,0 0,7 -3,0', fill: i % 2 ? '#fff' : c, transform: `translate(${x} ${y})` }); t.style.transformBox = 'fill-box'; spFade(t, 650, Math.cos(a) * d, Math.sin(a) * d - 8, .3); } spFlash('#bfeaff', 240); }
+  else if (el === 'lightning') { spFlash('#fff6a8', 220); for (let k = 0; k < 2 + Math.round(s); k++) { const px = x + (k - 1) * 14 * s, p = spEl('polyline', { points: `${px},${y - 70} ${px - 7},${y - 40} ${px + 5},${y - 28} ${px - 5},${y - 6} ${px + 4},${y + 14}`, fill: 'none', stroke: '#ffe14a', 'stroke-width': 3 * Math.min(1.6, s), 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }); try { p.animate([{ opacity: 1 }, { opacity: .2 }, { opacity: 1 }, { opacity: 0 }], { duration: 420, delay: k * 70, fill: 'forwards' }); } catch (e) {} spKill(p, 600); } spSpray(x, y, n, '#fff3a8', 34 * s, 450, 1.8); }
+  else if (el === 'sun' || el === 'light') { spFlash(c, 280); for (let i = 0; i < 10; i++) { const a = i * .6283, ln = spEl('line', { x1: x, y1: y, x2: x + Math.cos(a) * 14, y2: y + Math.sin(a) * 14, stroke: c, 'stroke-width': 3, 'stroke-linecap': 'round' }); try { ln.animate([{ opacity: 1, transform: 'scale(.4)' }, { opacity: 0, transform: `scale(${2.2 * s})` }], { duration: 600, fill: 'forwards' }); } catch (e) {} ln.style.transformOrigin = `${x}px ${y}px`; spKill(ln, 650); } spDot(x, y, 10 * s, '#fff', 450, 0, 0, { sc: 3 }); }
+  else if (el === 'dark') { for (let i = 0; i < 6 + Math.round(s * 3); i++) spDot(x + (Math.random() - .5) * 40, y + (Math.random() - .5) * 30, (9 + Math.random() * 8) * s, i % 2 ? '#3a1f7a' : '#8a5cff', 900, (Math.random() - .5) * 20, -18, { op: .7, sc: 1.6 }); spSpray(x, y, n, '#c8a8ff', 30 * s, 700, 1.8); }
+  else if (el === 'wind') { for (let i = 0; i < 3; i++) { const r = spEl('path', { d: `M${x - 26 + i * 6} ${y - 18 + i * 14} q22 -10 44 0`, fill: 'none', stroke: c, 'stroke-width': 3, 'stroke-linecap': 'round' }); try { r.animate([{ opacity: 1, transform: 'translate(-14px,0)' }, { opacity: 0, transform: `translate(${26 * s}px,-6px)` }], { duration: 600, delay: i * 90, fill: 'forwards' }); } catch (e) {} spKill(r, 800); } spSpray(x, y, n, '#fff', 38 * s, 600, 1.6); }
+  else if (el === 'stone') { for (let i = 0; i < n; i++) { const a = -Math.PI * Math.random(), d = (20 + Math.random() * 26) * s, t = spEl('polygon', { points: '-3,-2 2,-3 4,1 -1,3', fill: i % 2 ? '#8a8a92' : '#6e6e76', transform: `translate(${x} ${y + 12})` }); spFade(t, 650, Math.cos(a) * d, Math.sin(a) * d, .6); } spDot(x, y + 14, 8 * s, '#cfc8bc', 700, 0, -8, { op: .5, sc: 2.2 }); }
+}
+const spArrow = (c, kind) => { const head = kind === 'fire' ? '#ff9a3a' : kind === 'lightning' ? '#ffe14a' : '#bfe3ff'; return `<line x1="-26" y1="0" x2="10" y2="0" stroke="#8a5a2b" stroke-width="2.6" stroke-linecap="round"/><polygon points="10,-5.5 24,0 10,5.5" fill="${head}"/><path d="M-26 0 l-7 -5.5 M-26 0 l-7 5.5 M-21 0 l-6 -4.5 M-21 0 l-6 4.5" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` + (kind === 'fire' ? `<g transform="translate(14 0)">${spFlame(5)}</g>` : kind === 'lightning' ? `<polyline points="-18,-5 -10,4 -2,-4 6,4" fill="none" stroke="#fff6a8" stroke-width="2" stroke-linejoin="round"/>` : `<circle cx="-4" cy="-6" r="2" fill="${c}"/><circle cx="-14" cy="6" r="1.6" fill="${c}"/>`) + spOrb(c, 4, ''); };
+const spTrail = el => (x, y, s) => { const c = SP_COL[el] || '#fff'; if (el === 'fire') spDot(x, y, 4 * s, Math.random() < .5 ? '#ff7a2e' : '#ffd166', 420, -10, -10 * s, { sc: .3 }); else if (el === 'lightning') spDot(x + (Math.random() - .5) * 8, y + (Math.random() - .5) * 8, 1.8, '#fff6a8', 260, 0, 0); else spDot(x, y, 3 * s, c, 380, -8, 6, { op: .8 }); };
+const spCasters = {
+  word: async el => { await spFly(spOrb(SP_COL[el] || '#fff', 6, el === 'fire' ? `<g>${spFlame(6)}</g>` : ''), 520, spTrail(el), false); spImpact(el); },
+  arrow: async el => { await spFly(spArrow(SP_COL[el], el), 560, spTrail(el)); spImpact(el); },
+  ball: async el => { const g = el === 'snow' ? `<circle r="10" fill="#fff"/><circle r="10" fill="none" stroke="#bfe3ff" stroke-width="1.6"/><circle cx="-3" cy="-3" r="1.6" fill="#bfe3ff"/><circle cx="3" cy="2" r="1.4" fill="#bfe3ff"/>` : spOrb('#ff7a2e', 9) + `<g transform="rotate(180)">${spFlame(8)}</g>`; await spFly(g, 620, spTrail(el), false); spImpact(el); },
+  spear: async el => { await spFly(`<line x1="-30" y1="0" x2="8" y2="0" stroke="#8aa8c4" stroke-width="3" stroke-linecap="round"/><polygon points="8,-6 30,0 8,6" fill="#bfeaff" stroke="#fff" stroke-width="1"/><polygon points="8,-6 30,0 8,0" fill="#fff" opacity=".6"/><path d="M-30 0 l-8 -4 M-30 0 l-8 4" stroke="#8fd6ff" stroke-width="2.4"/>` + spOrb('#8fd6ff', 3), 520, spTrail('ice')); spImpact('ice'); },
+  storm: async el => {
+    const [x, y] = SPF.TO, s = SPF.s, c = SP_COL[el], clo = spEl('g', { transform: `translate(${x} ${y - 70}) scale(${s})` }), cl = document.createElementNS(SVGNS, 'g'); clo.appendChild(cl);
+    cl.innerHTML = el === 'rain' ? `<ellipse cx="0" cy="0" rx="34" ry="12" fill="#6a7690"/><circle cx="-18" cy="-4" r="13" fill="#7a86a0"/><circle cx="8" cy="-8" r="15" fill="#8a96b0"/><circle cx="22" cy="-2" r="11" fill="#7a86a0"/>` : ''; try { cl.animate([{ opacity: 0, transform: 'translateY(-20px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 300, fill: 'forwards' }); } catch (e) {} spKill(clo, 1500);
+    if (el === 'rain') { for (let i = 0; i < Math.round(16 * s); i++) { const dx = (Math.random() - .5) * 60 * s, l = spEl('line', { x1: x + dx, y1: y - 62, x2: x + dx - 3, y2: y - 50, stroke: c, 'stroke-width': 2, 'stroke-linecap': 'round', opacity: 0 }); try { l.animate([{ opacity: 0, transform: 'translateY(0)' }, { opacity: 1, transform: 'translateY(30px)' }, { opacity: 0, transform: `translateY(${70 + Math.random() * 20}px)` }], { duration: 700, delay: 300 + Math.random() * 500, fill: 'forwards' }); } catch (e) {} spKill(l, 1700); } await sleep(700); spImpact('rain'); }
+    else { for (let k = 0; k < 4; k++) { const r = spEl('ellipse', { cx: x, cy: y + 18 - k * 18, rx: (10 + k * 8) * s, ry: (3 + k * 2.4) * s, fill: 'none', stroke: k % 2 ? '#fff' : c, 'stroke-width': 2.4, opacity: .9 }); try { r.animate([{ transform: 'translateX(-8px) scale(.8)', opacity: 0 }, { transform: 'translateX(8px) scale(1.05)', opacity: .95 }, { transform: 'translateX(-4px) scale(1)', opacity: 0 }], { duration: 1100, delay: k * 80, fill: 'forwards' }); } catch (e) {} spKill(r, 1300); } for (let i = 0; i < 8; i++) spDot(x + (Math.random() - .5) * 60, y + 10, 2, '#fff', 900, (Math.random() - .5) * 70, -50, { delay: i * 70 }); await sleep(600); spImpact('wind'); }
+  },
+  rays: async el => { const [x, y] = SPF.TO, s = SPF.s, sun = spEl('g', {}); sun.innerHTML = spOrb('#ffd166', 12) + spRays(0, 0, 12, 18, 28, '#fff3a8'); sun.setAttribute('transform', `translate(${x - 30} ${y - 72}) scale(${s})`); try { sun.animate([{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }], { duration: 1200 }); } catch (e) {} spKill(sun, 1250); await sleep(300);
+    for (let i = 0; i < 5; i++) { const l = spEl('line', { x1: x - 30, y1: y - 72, x2: x + (i - 2) * 18, y2: y + 6, stroke: '#fff3a8', 'stroke-width': 4 * Math.min(1.5, s), 'stroke-linecap': 'round', opacity: 0 }); try { l.animate([{ opacity: 0 }, { opacity: .95 }, { opacity: 0 }], { duration: 700, delay: i * 60, fill: 'forwards' }); } catch (e) {} spKill(l, 900); } await sleep(350); spImpact('sun'); },
+  beam: async el => { const [x0, y0] = SPF.FROM, [x, y] = SPF.TO, s = SPF.s; const mk = (w, c, op) => { const l = spEl('line', { x1: x0, y1: y0, x2: x0, y2: y0, stroke: c, 'stroke-width': w, 'stroke-linecap': 'round', opacity: op }); try { l.animate([{ x2: x0, y2: y0 }, { x2: x, y2: y }], { duration: 220, fill: 'forwards' }); l.animate([{ opacity: op }, { opacity: op }, { opacity: 0 }], { duration: 800, fill: 'forwards' }); } catch (e) { l.setAttribute('x2', x); l.setAttribute('y2', y); } spKill(l, 900); };
+    mk(14 * Math.min(1.5, s), '#fff3a8', .35); mk(7 * Math.min(1.5, s), '#fff8c8', .8); mk(2.4, '#fff', 1); spDot(x0, y0, 9, '#fff', 500, 0, 0, { sc: 2 }); await sleep(220); spImpact('light'); },
+  cloud: async el => { const [x0, y0] = SPF.FROM, [x, y] = SPF.TO, s = SPF.s, c = spShape(x0, y0 - 10, [[0, 0, 13, '#2a1a4a'], [-12, 4, 10, '#3a2468'], [12, 3, 11, '#3a2468'], [0, -6, 11, '#4a2f80']].map(([cx, cy, r, f]) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${f}"/>`).join('') + `<circle cx="-4" cy="-2" r="2.4" fill="#c8a8ff"/><circle cx="5" cy="-2" r="2.4" fill="#c8a8ff"/>`);
+    let a = null; try { a = c.animate([{ transform: `translate(${x0}px,${y0 - 10}px) scale(${s * .7})` }, { transform: `translate(${x}px,${y - 30}px) scale(${s * 1.3})` }], { duration: 900, easing: 'ease-in-out', fill: 'forwards' }); } catch (e) {} await spWait(a, 1100);
+    for (let i = 0; i < 3; i++) { const b = spEl('polyline', { points: `${x - 6 + i * 6},${y - 20} ${x - 10 + i * 6},${y} ${x - 2 + i * 6},${y + 4} ${x - 6 + i * 6},${y + 24}`, fill: 'none', stroke: '#c8a8ff', 'stroke-width': 2.4, 'stroke-linecap': 'round' }); try { b.animate([{ opacity: 1 }, { opacity: 0 }, { opacity: 1 }, { opacity: 0 }], { duration: 500, delay: i * 120, fill: 'forwards' }); } catch (e) {} spKill(b, 800); }
+    spImpact('dark'); try { c.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 600, delay: 300, fill: 'forwards' }); } catch (e) {} spKill(c, 1000); },
+  rock: async el => { const [x, y] = SPF.TO, s = SPF.s, r = spShape(x, -30, `<polygon points="-12,-6 -4,-14 10,-10 14,2 6,12 -8,10 -14,2" fill="#8a8a92"/><polygon points="-4,-14 10,-10 14,2 0,0" fill="#a8a8b0"/><polygon points="14,2 6,12 -8,10 0,0" fill="#6e6e76"/><path d="M-6 -2 l4 4 M4 -4 l3 5" stroke="#5a5a62" stroke-width="1.2"/>`);
+    let a = null; try { a = r.animate([{ transform: `translate(${x}px,-30px) scale(${s * 1.2}) rotate(0deg)` }, { transform: `translate(${x}px,${y}px) scale(${s * 1.2}) rotate(200deg)` }], { duration: 600, easing: 'cubic-bezier(.6,0,1,.8)', fill: 'forwards' }); } catch (e) {}
+    for (let i = 0; i < 6; i++) setTimeout(() => { try { spDot(x + (Math.random() - .5) * 12, 20 + i * 14, 2.2, '#cfc8bc', 300, 0, -6); } catch (e) {} }, i * 80);
+    await spWait(a, 800); spImpact('stone'); try { r.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, delay: 150, fill: 'forwards' }); } catch (e) {} spKill(r, 700); }
+};
+async function castSpell(o) {   // plays the spell of an answer (o.spell = { el, kind }); other answers keep the old flying emoji
+  if (!o || !o.spell || !spCasters[o.spell.kind]) return flySpell(o && o.em || '✨');
+  try { spSetup(); await Promise.race([spCasters[o.spell.kind](o.spell.el), sleep(3000)]); } catch (e) {}
+  setTimeout(() => { const g = $('#spFx'); if (g) g.innerHTML = ''; }, 1500);
+}
+/* ====================== VILLAGE HELP MAGIC ====================== */
+// When the student taps the right sign: the hero waves the staff, golden sparkles fly in an arc to the villager's hands, the item forms there with an effect that fits it
+// (water pours, bread steams, a flower blooms, a candle lights...), and the villager jumps. In a project the item then goes to its slot in the tray; a finished project shows its
+// result big, with sparkles and floating hearts. Unknown items use "appears". Everything has a timeout fallback so a request can never get stuck.
+const FX_KIND = { 'מים': ['pour', '#4aa8ff'], 'חלב': ['pour', '#ffffff'], 'שמן': ['pour', '#ffd166'], 'לחם': ['steam'], 'עוגה': ['steam'], 'גבינה': ['drop'], 'ביצה': ['drop'], 'קמח': ['drop'], 'ענבים': ['drop'],
+  'תפוח': ['bloom'], 'פרח': ['bloom'], 'זרע': ['bloom'], 'קש': ['bloom'], 'נר': ['flame'], 'מנורה': ['flame'], 'אש': ['flame'], 'פטיש': ['forge'], 'ברזל': ['forge'], 'מסור': ['forge'], 'מסמר': ['forge'], 'מחט': ['forge'],
+  'מפתח': ['shine'], 'מלח': ['shine'], 'שמש': ['shine'], 'חבל': ['weave'], 'דגל': ['weave'], 'בד': ['weave'], 'חוט': ['weave'], 'שמיכה': ['weave'], 'עץ': ['build'], 'כיסא': ['build'], 'דלת': ['build'], 'מיטה': ['build'], 'סולם': ['build'], 'בית': ['build'], 'גשר': ['build'],
+  'דג': ['splash'], 'סירה': ['splash'], 'דלי': ['splash'], 'חכה': ['splash'], 'רשת': ['splash'], 'תוף': ['music'], 'פעמון': ['music'], 'חליל': ['music'] };
+const VM_NOTE = ['♪', '♫', '♬'];
+const vmTxt = (x, y, ch, size = 24, extra = {}) => { const e = spEl('text', Object.assign({ x, y, 'font-size': size, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, extra)); e.textContent = ch; return e; };
+const vmRing = (x, y, c, r1 = 4, r2 = 40, ms = 600, w = 2.5) => { const e = spEl('circle', { cx: x, cy: y, r: r1, fill: 'none', stroke: c, 'stroke-width': w }); try { e.animate([{ r: r1, opacity: 1 }, { r: r2, opacity: 0 }], { duration: ms, fill: 'forwards' }); } catch (x) {} spKill(e, ms + 40); };
+const vmStar = (x, y, s, c, ms = 700, delay = 0) => { const e = spEl('path', { d: `M${x} ${y - s} Q${x} ${y} ${x + s} ${y} Q${x} ${y} ${x} ${y + s} Q${x} ${y} ${x - s} ${y} Q${x} ${y} ${x} ${y - s}Z`, fill: c }); e.style.transformBox = 'fill-box'; e.style.transformOrigin = 'center'; try { e.animate([{ transform: 'scale(.2) rotate(0)', opacity: 0 }, { transform: 'scale(1.2) rotate(45deg)', opacity: 1 }, { transform: 'scale(.1) rotate(90deg)', opacity: 0 }], { duration: ms, delay, fill: 'forwards' }); } catch (x) {} spKill(e, ms + delay + 60); };
+const vmFlame = (r = 8) => `<path d="M${-r} 0 Q${-r * 1.4} ${-r * 1.4} 0 ${-r * 2.6} Q${r * 1.4} ${-r * 1.4} ${r} 0 Q0 ${r * .9} ${-r} 0Z" fill="#ff7a2e"/><path d="M${-r * .5} 0 Q${-r * .8} ${-r} 0 ${-r * 1.6} Q${r * .8} ${-r} ${r * .5} 0 Q0 ${r * .5} ${-r * .5} 0Z" fill="#ffe27a"/>`;
+function vmPts() {   // the hero's staff and the villager's hands, in the overlay's 400-wide units
+  const st = $('#stage').getBoundingClientRect(), k = 400 / Math.max(1, st.width), h = $('#heroSvg').getBoundingClientRect(), v = $('#foeBody').getBoundingClientRect();
+  return { staff: [(h.left - st.left + h.width * (98.5 / 120)) * k, (h.top - st.top + h.height * (46 / 186)) * k], hand: [(v.left - st.left + v.width * .72) * k, (v.top - st.top + v.height * .62) * k] };
+}
+function vmConjure(from, to) {   // sparkles fly in an arc from the staff to the hands
+  return new Promise(res => {
+    const t0 = performance.now(), ms = 520; vmStar(from[0], from[1], 15, '#fff3a8', 500); vmRing(from[0], from[1], '#ffd166', 3, 30, 450, 2.6);
+    const step = now => { const t = Math.min(1, (now - t0) / ms), e = t * t * (3 - 2 * t), x = from[0] + (to[0] - from[0]) * e, y = from[1] + (to[1] - from[1]) * e - Math.sin(Math.PI * t) * 26;
+      spDot(x, y, 3.6 + Math.random() * 2, Math.random() < .5 ? '#ffd166' : '#fff', 520, (Math.random() - .5) * 14, 10 + Math.random() * 8); if (Math.random() < .4) vmStar(x + (Math.random() - .5) * 10, y + (Math.random() - .5) * 10, 6, '#fff3a8', 420);
+      if (t < 1) requestAnimationFrame(step); else res(); };
+    requestAnimationFrame(step); setTimeout(res, ms + 250);
+  });
+}
+function vmAppears(em, [x, y]) {   // the item forms in the hands, rests there for a moment, then fades
+  let t;
+  if (String(em).startsWith('<')) { t = spEl('foreignObject', { x: x - 18, y: y - 30, width: 36, height: 36 }); t.innerHTML = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:30px;line-height:36px;text-align:center;width:36px;height:36px">${em}</div>`; }
+  else t = vmTxt(x, y - 12, em, 36);
+  t.style.transformBox = 'fill-box'; t.style.transformOrigin = 'center';
+  try { t.animate([{ transform: 'translate(0px,10px) scale(.1)', opacity: 0 }, { transform: 'translate(0px,-4px) scale(1.35)', opacity: 1, offset: .55 }, { transform: 'translate(0px,0px) scale(1)', opacity: 1 }], { duration: 520, easing: 'ease-out', fill: 'forwards' }); setTimeout(() => { try { t.animate([{ opacity: 1 }, { opacity: 0, transform: 'translate(0px,-16px) scale(.8)' }], { duration: 500, fill: 'forwards' }); } catch (e) {} }, 650); } catch (e) {}
+  spKill(t, 1600); return t;
+}
+const VM_FX = {
+  pour: async (em, [x, y], col) => { const s = spEl('rect', { x: x - 5, y: y - 54, width: 10, height: 0, rx: 4, fill: col, opacity: .9 }); try { s.animate([{ height: 0 }, { height: 48 }, { height: 48, y: y - 6 }], { duration: 520, fill: 'forwards' }); } catch (e) {} spKill(s, 900); await sleep(420); vmRing(x, y, col, 3, 34, 520, 3.4); spSpray(x, y, 16, col, 36, 600, 3, 18); vmAppears(em, [x, y]); },
+  steam: async (em, [x, y]) => { vmAppears(em, [x, y]); for (let i = 0; i < 6; i++) spDot(x + (Math.random() - .5) * 16, y - 4, 6 + Math.random() * 5, '#fff', 1100, (Math.random() - .5) * 14, -34 - Math.random() * 14, { op: .6, sc: 2, delay: i * 90 }); spSpray(x, y - 4, 12, '#e8c88a', 30, 600, 2.2, 8); vmStar(x + 16, y - 20, 9, '#fff3a8', 600, 250); },
+  bloom: async (em, [x, y]) => { const stem = spEl('line', { x1: x, y1: y + 6, x2: x, y2: y + 6, stroke: '#4caf50', 'stroke-width': 3, 'stroke-linecap': 'round' }); try { stem.animate([{ y2: y + 6 }, { y2: y - 14 }], { duration: 380, fill: 'forwards' }); } catch (e) {} [[-9, -4], [9, -8]].forEach(([dx, dy], i) => { const l = spEl('ellipse', { cx: x + dx, cy: y + dy, rx: 6, ry: 3, fill: '#6fd06c', opacity: 0 }); try { l.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 300, delay: 200 + i * 80, fill: 'forwards' }); } catch (e) {} spKill(l, 1400); }); spKill(stem, 1400); await sleep(420); vmAppears(em, [x, y - 10]); spSpray(x, y - 12, 12, '#ff9ac4', 28, 800, 2.4, 10); vmStar(x - 14, y - 22, 5, '#fff', 700, 100); },
+  flame: async (em, [x, y]) => { vmAppears(em, [x, y + 2]); const f = spEl('g', { transform: `translate(${x} ${y - 12})` }); f.innerHTML = vmFlame(7); f.style.transformBox = 'fill-box'; f.style.transformOrigin = '50% 100%'; try { f.animate([{ transform: 'scale(.2)', opacity: 0 }, { transform: 'scale(1.1)', opacity: 1 }, { transform: 'scale(.95)', opacity: 1 }], { duration: 450, fill: 'forwards' }); } catch (e) {} const g = spEl('circle', { cx: x, cy: y - 10, r: 4, fill: '#ffd166', opacity: 0 }); try { g.animate([{ r: 4, opacity: 0 }, { r: 30, opacity: .35 }, { r: 22, opacity: 0 }], { duration: 1200 }); } catch (e) {} spKill(f, 1400); spKill(g, 1300); spSpray(x, y - 16, 8, '#ffb13a', 18, 700, 1.4, 14); },
+  forge: async (em, [x, y]) => { vmRing(x, y - 4, '#fff', 2, 34, 380, 3); const fl = spEl('circle', { cx: x, cy: y - 4, r: 16, fill: '#fff', opacity: .8 }); try { fl.animate([{ opacity: .8, r: 16 }, { opacity: 0, r: 30 }], { duration: 300, fill: 'forwards' }); } catch (e) {} spKill(fl, 340); for (let i = 0; i < 14; i++) { const a = -Math.PI * Math.random(), d = 20 + Math.random() * 30; spDot(x, y - 4, 1.8, i % 2 ? '#ffd166' : '#ff9a3a', 500, Math.cos(a) * d, Math.sin(a) * d, { sc: .4 }); } vmAppears(em, [x, y]); vmStar(x + 12, y - 14, 7, '#fff', 500, 120); },
+  shine: async (em, [x, y]) => { vmAppears(em, [x, y]); vmRing(x, y - 6, '#fff3a8', 4, 30, 700, 2.4); vmStar(x + 12, y - 16, 9, '#fff', 800, 200); vmStar(x - 12, y - 6, 6, '#fff3a8', 700, 350); vmStar(x + 2, y - 22, 5, '#fff', 700, 450); },
+  drop: async (em, [x, y]) => { const t = String(em).startsWith('<') ? vmAppears(em, [x, y]) : vmTxt(x, y - 52, em, 36); if (!String(em).startsWith('<')) { t.style.transformBox = 'fill-box'; t.style.transformOrigin = 'center'; try { t.animate([{ transform: 'translate(0px,0px) scale(1)', opacity: 0 }, { transform: 'translate(0px,18px) scale(1)', opacity: 1, offset: .2 }, { transform: 'translate(0px,50px) scale(1)', opacity: 1, offset: .62 }, { transform: 'translate(0px,42px) scale(1.1,.85)', opacity: 1, offset: .74 }, { transform: 'translate(0px,48px) scale(1)', opacity: 1 }], { duration: 760, fill: 'forwards' }); setTimeout(() => { try { t.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' }); } catch (e) {} }, 1000); } catch (e) {} spKill(t, 1700); } await sleep(480); spSpray(x, y + 2, 8, '#d8c9a8', 18, 450, 2, 2); vmStar(x + 14, y - 8, 5, '#fff3a8', 500); },
+  weave: async (em, [x, y]) => { ['#e5546b', '#ffd166', '#4aa8ff'].forEach((c, i) => { const p = spEl('path', { d: `M${x - 26} ${y + 10 - i * 8} q10 -14 22 -4 t26 -2`, fill: 'none', stroke: c, 'stroke-width': 3.2, 'stroke-linecap': 'round', 'stroke-dasharray': 80, 'stroke-dashoffset': 80 }); try { p.animate([{ strokeDashoffset: 80, opacity: 1 }, { strokeDashoffset: 0, opacity: 1, offset: .6 }, { strokeDashoffset: 0, opacity: 0 }], { duration: 900, delay: i * 90, fill: 'forwards' }); } catch (e) {} spKill(p, 1100); }); await sleep(450); vmAppears(em, [x, y]); vmStar(x + 12, y - 14, 6, '#fff', 600); },
+  build: async (em, [x, y]) => { for (let i = 0; i < 4; i++) { const px = x + [-30, 30, -24, 24][i], py = y + [-26, -22, 22, 26][i], b = spEl('rect', { x: -9, y: -3, width: 18, height: 6, rx: 1.5, fill: i % 2 ? '#a8794a' : '#8a5a2b', transform: `translate(${px} ${py}) rotate(${i * 40})` }); try { b.animate([{ transform: `translate(${px}px,${py}px) rotate(${i * 40}deg)`, opacity: 0 }, { transform: `translate(${px}px,${py}px) rotate(${i * 40}deg)`, opacity: 1, offset: .2 }, { transform: `translate(${x}px,${y - 4}px) rotate(0deg)`, opacity: 1 }], { duration: 520, delay: i * 70, easing: 'ease-in', fill: 'forwards' }); } catch (e) {} spKill(b, 900); } await sleep(560); for (let i = 0; i < 3; i++) setTimeout(() => { try { vmRing(x, y - 4, '#fff3a8', 2, 14, 220, 2); spSpray(x, y - 4, 4, '#ffd166', 12, 300, 1.4); } catch (e) {} }, i * 120); vmAppears(em, [x, y]); vmStar(x + 14, y - 14, 6, '#fff', 500, 300); },
+  splash: async (em, [x, y]) => { vmRing(x, y + 8, '#4aa8ff', 3, 34, 600, 3); const t = vmAppears(em, [x, y + 6]); try { t.animate([{ transform: 'translate(0px,20px)' }, { transform: 'translate(0px,-18px)' }, { transform: 'translate(0px,0px)' }], { duration: 600, easing: 'ease-out' }); } catch (e) {} spSpray(x, y + 4, 12, '#9fd6ff', 28, 600, 2.4, 16); },
+  music: async (em, [x, y]) => { vmAppears(em, [x, y]); for (let i = 0; i < 4; i++) { const n = vmTxt(x + (Math.random() - .5) * 16, y - 10, VM_NOTE[i % 3], 14 + Math.random() * 6, { fill: i % 2 ? '#ffd166' : '#fff' }); try { n.animate([{ transform: 'translate(0px,0px)', opacity: 0 }, { opacity: 1, offset: .2 }, { transform: `translate(${(Math.random() - .5) * 50}px,-46px)`, opacity: 0 }], { duration: 1000, delay: i * 140, fill: 'forwards' }); } catch (e) {} spKill(n, 1300); } vmRing(x, y - 6, '#fff3a8', 4, 28, 600, 2); vmRing(x, y - 6, '#fff3a8', 4, 40, 800, 1.6); },
+  sparkle: async (em, [x, y]) => { vmAppears(em, [x, y]); vmRing(x, y - 6, '#fff3a8', 3, 30, 600, 2.4); for (let i = 0; i < 6; i++) vmStar(x + (Math.random() - .5) * 40, y - 6 + (Math.random() - .5) * 34, 4 + Math.random() * 4, i % 2 ? '#fff' : '#ffd166', 700, i * 70); spSpray(x, y - 4, 8, '#ffd166', 26, 600, 1.8); }
+};
+async function helpMagic(q) {   // plays the help magic for the item the student just found (q = the question; q.key = 'W:<hebrew word>')
+  try {
+    const he = String(q.key || '').slice(2), k = FX_KIND[he] || ['sparkle'], em = q.reveal || '✨'; spSetup(); const p = vmPts(), hb = $('#heroBox');
+    try { hb.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(-7deg)' }, { transform: 'rotate(4deg)' }, { transform: 'rotate(0deg)' }], { duration: 480 }); } catch (e) {}
+    await Promise.race([(async () => {
+      await vmConjure(p.staff, p.hand);
+      const v = $('#foeBody'); try { v.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-14px)' }, { transform: 'translateY(0)' }, { transform: 'translateY(-6px)' }, { transform: 'translateY(0)' }], { duration: 700 }); } catch (e) {}
+      await VM_FX[k[0]](em, vmPts().hand, k[1]); await sleep(300);
+    })(), sleep(3200)]);
+  } catch (e) {}
+  setTimeout(() => { const g = $('#spFx'); if (g) g.innerHTML = ''; }, 1200);
+}
+function vmResult(result) {   // a finished project: the result appears large above the scene with sparkles and floating hearts
+  try {
+    spSetup(); const cx = 200, cy = 60; vmRing(cx, cy, '#ffd166', 6, 60, 800, 3);
+    for (let i = 0; i < 10; i++) vmStar(cx + (Math.random() - .5) * 90, cy + (Math.random() - .5) * 50, 5 + Math.random() * 5, i % 2 ? '#fff' : '#ffd166', 900, i * 60);
+    const big = String(result).startsWith('<') ? spEl('foreignObject', { x: cx - 30, y: cy - 30, width: 60, height: 60 }) : vmTxt(cx, cy, result, 52); if (String(result).startsWith('<')) big.innerHTML = `<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:56px;line-height:60px;text-align:center;width:60px;height:60px">${result}</div>`; big.style.transformBox = 'fill-box'; big.style.transformOrigin = 'center'; try { big.animate([{ transform: 'scale(.1)', opacity: 0 }, { transform: 'scale(1.3)', opacity: 1, offset: .5 }, { transform: 'scale(1)', opacity: 1 }], { duration: 700, fill: 'forwards' }); setTimeout(() => { try { big.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' }); } catch (e) {} }, 1500); } catch (e) {} spKill(big, 2200);
+    for (let i = 0; i < 8; i++) { const h = vmTxt(cx + (Math.random() - .5) * 120, cy + 30, '💛', 14); try { h.animate([{ transform: 'translate(0px,0px)', opacity: 0 }, { opacity: 1, offset: .2 }, { transform: 'translate(0px,-40px)', opacity: 0 }], { duration: 1200, delay: i * 90, fill: 'forwards' }); } catch (e) {} spKill(h, 1600); }
+  } catch (e) {}
+}
 async function flySpell(emoji) {
   try {
     const h = $('#heroSvg').getBoundingClientRect(), f = $('#foeBody').getBoundingClientRect(), s = $('#stage').getBoundingClientRect();
@@ -2592,12 +2859,12 @@ async function pickOption(i, btn) {
     sfx.ok(); if (q.say && P.tier >= 8) speakHe(q.say);
     $('#fb').innerHTML = `✅ ${q.explain}`;
     if (battle) {
-      await flySpell(o.em || '✨'); sfx.hit(); burst(o.em || '✨', 9); burst('💥', 3);
+      await castSpell(o); sfx.hit(); burst(o.em || '✨', 9); burst('💥', 3);
       const dmg = 1;   // a hot streak only makes the hero glow
       G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400);
       floatText('-' + dmg + (xp ? '  +' + xp + 'xp' : ''), '#ffd166');
     } else {
-      G.helped++; renderTray(); setMood('😊'); floatText(xp ? '+' + xp + 'xp' : '💛', '#ffd166');
+      await helpMagic(q); G.helped++; renderTray(); setMood('😊'); floatText(xp ? '+' + xp + 'xp' : '💛', '#ffd166');
       if (q.reveal) { $('#foeName').textContent = G.fname + ': ' + q.reveal.replace(/<[^>]*>/g, '') + ' Thank you!'; }
     }
     after(tr); updateBars();
@@ -2615,7 +2882,7 @@ async function pickOption(i, btn) {
       // A wrong spell passes the turn: it does nothing (or even heals the monster), then the monster attacks for 1.
       G.locked = true;
       document.querySelectorAll('.opt').forEach(b => { b.disabled = true; });
-      await flySpell(o.em || '✨');
+      await castSpell(o);
       if (o.fx === 'heal') { G.mon.hp = Math.min(G.mon.max, G.mon.hp + 1); floatText('+1 💚', '#7dffb0'); burst('💚', 8); $('#fb').innerHTML += '<br>The monster got stronger!'; }
       else if (o.fx === 'none') { floatText('0', '#d6d6e6'); burst('💨', 5); $('#fb').innerHTML += '<br>Nothing happens.'; }
       updateBars(); await sleep(500);
@@ -2672,8 +2939,8 @@ $('#castBtn').onclick = async () => {
     if (first) { G.combo++; tr = record(q.keyOf(hit), true); xp = gainXp(true) + (G.noCount ? 0 : 5); if (!G.noCount) P.xp += 5; }
     sfx.ok(); speakHe(hit);
     $('#fb').innerHTML = `✅ Perfect! ${q.explain}`;
-    if (battle) { await flySpell('✨'); sfx.hit(); burst('✨', 10); burst('💥', 3); const dmg = 1; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
-    else { G.helped++; renderTray(); setMood('😊'); floatText('+' + xp + 'xp', '#ffd166'); if (q.reveal) $('#foeName').textContent = G.fname + ': ' + q.reveal.replace(/<[^>]*>/g, '') + ' Thank you!'; }
+    if (battle) { const sw = [...SPELL, ...PHRASE].find(x => x.he === hit); await castSpell({ em: '✨', spell: sw ? { el: sw.el, kind: PHRASE_KIND[sw.he] || 'word' } : null }); sfx.hit(); burst('✨', 10); burst('💥', 3); const dmg = 1; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
+    else { await helpMagic(q); G.helped++; renderTray(); setMood('😊'); floatText('+' + xp + 'xp', '#ffd166'); if (q.reveal) $('#foeName').textContent = G.fname + ': ' + q.reveal.replace(/<[^>]*>/g, '') + ' Thank you!'; }
     after(tr); updateBars(); await sleep(battle ? 1000 : 1600);
     if (battle && G.mon.hp <= 0) return victory();
     if (!battle && G.projs && G.helped % 3 === 0) await projectDone(G.helped / 3 - 1);
@@ -2708,7 +2975,7 @@ $('#castBtn').onclick = async () => {
 // Rule: a potion may change the stakes of a question, but it never answers it. Any question a potion touches is left out of the learning
 // statistics (accuracy window, per-item stats, XP): G.noCount. Potions never change the coin or loot rewards.
 const POTIONS = {
-  heart:  { em: '❤️', name: 'Heart',        desc: 'Gives one more heart (up to 5)', vname: 'Happy', vdesc: 'Cheers up a villager: one more smiley (up to 5)' },
+  heart:  { em: '❤️', name: 'Heart',        desc: 'Gives one more heart (up to 3)', vname: 'Happy', vdesc: 'Cheers up a villager: one more smiley (up to 3)' },
   sound:  { em: '🔊', name: 'Sound',        desc: 'Plays the sound of the answer', vname: 'Whisper', vdesc: 'A whisper of the answer' },
   power:  { em: '💥', name: 'Power',        desc: 'The enemy needs one right answer less', vname: 'Helping-hands', vdesc: 'The request needs one answer less' },
   second: { em: '⏪', name: 'Second chance', desc: 'Undo a mistake and answer again', vname: 'Lucky', vdesc: 'A lucky second try: undo a mistake and answer again' },
@@ -2729,17 +2996,26 @@ function isLocked(place) {   // during a quest run you cannot go home, to the sh
   const a = runOf(); if (!a) return false;
   return place === 'gate' ? a !== 'battle' : place === 'board' ? a !== 'peace' : true;
 }
-function openPack(onStart) {   // before a quest run: choose up to POUCH potions to carry. The rest wait at Home.
-  if (carried() + athome() === 0) { onStart(); return; }
+const PACK_ORDER = ['heart', 'second', 'sound', 'power', 'super'];   // the order "Quick pack" takes the potions in
+function packEmpty() { for (const id of POTION_IDS) if ((P.carry[id] || 0) > 0) { P.pot[id] = (P.pot[id] || 0) + P.carry[id]; P.carry[id] = 0; } }   // everything goes back to the shelf
+function packQuick() {   // one of each type the student owns, then a second round of the same order until the bag is full or the shelf is empty
+  packEmpty(); let moved = true;
+  while (carried() < CFG.POUCH && moved) { moved = false; for (const id of PACK_ORDER) if (carried() < CFG.POUCH && (P.pot[id] || 0) > 0) { P.pot[id]--; P.carry[id] = (P.carry[id] || 0) + 1; moved = true; } }
+}
+function openPack(onStart) {   // before a quest run: the bag (5 places) starts EMPTY; choose what to bring. The rest wait at Home.
+  packEmpty();
+  if (athome() === 0) { saveSoon(); onStart(); return; }
   const render = () => {
-    $('#packBody').innerHTML = `<p style="margin:0 0 6px">You can carry <b>${CFG.POUCH}</b> potions on a quest. Once you start, you cannot go home until the quest is finished.</p>
-      <p style="margin:0 0 8px"><b>Pouch: ${carried()} / ${CFG.POUCH}</b></p>` +
-      POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="packRow"><span class="packName"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> <b>${pName(id)} potion</b><small>${pDesc(id)}</small></span>
-        <span class="packCtl"><button class="ib" data-id="${id}" data-d="-1" ${(P.carry[id] || 0) ? '' : 'disabled'}>➖</button><b class="packN">${P.carry[id] || 0}</b><button class="ib" data-id="${id}" data-d="1" ${(P.pot[id] || 0) && carried() < CFG.POUCH ? '' : 'disabled'}>➕</button>
-        <small class="packHome">🏡 ${P.pot[id] || 0} at home</small></span></div>`).join('');
+    const inBag = POTION_IDS.flatMap(id => Array((P.carry[id] || 0)).fill(id)), left = CFG.POUCH - inBag.length;
+    $('#packBody').innerHTML = `<p style="margin:0 0 6px">Your bag holds <b>${CFG.POUCH}</b> potions. Tap a potion to put it in. Tap a bottle in the bag to take it out. Once you start, you cannot go home until the quest is finished.</p>
+      <div class="packBagRow"><div class="packBag">${Array.from({ length: CFG.POUCH }, (_, k) => inBag[k] ? `<button class="packSlot full" data-id="${inBag[k]}" data-d="-1" title="Take it out of the bag" aria-label="Take ${pName(inBag[k])} potion out">${potionSVG(inBag[k])}</button>` : '<span class="packSlot"></span>').join('')}</div></div>
+      <p class="packCount"><b>${inBag.length} of ${CFG.POUCH}</b> in the bag · ${left} ${left === 1 ? 'place' : 'places'} left</p>
+      <p style="margin:2px 0 8px"><button class="btn sm" data-quick="1">⚡ Quick pack</button></p><div class="packCards">` +
+      POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<button class="packCard" data-id="${id}" data-d="1" ${(P.pot[id] || 0) && left > 0 ? '' : 'disabled'}><span class="packBottle">${potionSVG(id)}</span><b>${pName(id)}</b><small>${pDesc(id)}</small><small class="packHome">🏡 ${P.pot[id] || 0} at home</small></button>`).join('') + '</div>';
   };
-  modal('🧪 Pack your potions', '<div id="packBody"></div>', [['Start the quest ▶', onStart], ['Back to map', openMenu, true]]);
+  modal('🧪 Pack your potions', '<div id="packBody"></div>', [['Start the quest ▶', onStart], ['Back to map', () => { packEmpty(); saveSoon(); openMenu(); }, true]]);
   $('#packBody').onclick = e => {
+    if (e.target.closest('[data-quick]')) { packQuick(); render(); saveSoon(); return; }
     const b = e.target.closest('button[data-id]'); if (!b || b.disabled) return; const id = b.dataset.id, d = +b.dataset.d;
     if (d > 0 && (P.pot[id] || 0) > 0 && carried() < CFG.POUCH) { P.pot[id]--; P.carry[id] = (P.carry[id] || 0) + 1; }
     else if (d < 0 && (P.carry[id] || 0) > 0) { P.carry[id]--; P.pot[id] = (P.pot[id] || 0) + 1; }
@@ -2748,11 +3024,13 @@ function openPack(onStart) {   // before a quest run: choose up to POUCH potions
   render();
 }
 function renderPotBar() {
-  const bar = $('#potBar'); if (!bar || !P) return; if (inCraft()) { bar.style.display = 'none'; return; }
-  const ids = POTION_IDS.filter(id => (P.carry[id] || 0) > 0);
-  bar.style.display = ids.length ? '' : 'none';
-  bar.innerHTML = ids.map(id => `<button class="potBtn" data-id="${id}" ${G.potUsed ? 'disabled' : ''} title="${pName(id)} potion: ${pDesc(id)}">${potionSVG(id)}<i class="potSym">${POTIONS[id].em}</i><b>×${P.carry[id]}</b></button>`).join('') +
-    '';
+  const bar = $('#potBar'); if (!bar || !P) return; if (inCraft() || !(G.quest === 'battle' || G.quest === 'peace')) { bar.style.display = 'none'; return; }
+  // one row for the whole quest: the coins, the ingredients found so far (the satchel), and the potion bag with its bottles
+  const ids = POTION_IDS.filter(id => (P.carry[id] || 0) > 0), sat = Object.keys(ING).filter(id => (P.satchel[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
+  bar.style.display = '';
+  bar.innerHTML = `<span class="qbCoin" title="Your coins">🪙 <b>${Math.floor(P.coins || 0)}</b></span>` +
+    `<span class="qbIngs" title="Ingredients you found on this quest">${sat.length ? sat.map(id => `<span class="qbIng r${ING[id].r}" title="${ING[id].en}">${ING[id].em}<b>${P.satchel[id]}</b></span>`).join('') : '<small>no ingredients yet</small>'}</span>` +
+    `<span class="qbBag" title="Your potion bag"><span class="qbBottles">${ids.length ? ids.map(id => `<button class="potBtn" data-id="${id}" ${G.potUsed ? 'disabled' : ''} title="${pName(id)} potion: ${pDesc(id)}">${potionSVG(id)}<b>×${P.carry[id]}</b></button>`).join('') : '<small class="qbNone">empty</small>'}</span><span class="qbBagBody"></span></span>`;
 }
 function addOptionSounds() {
   document.querySelectorAll('#opts .opt').forEach((b, i) => {
@@ -2770,7 +3048,15 @@ const potionSVG = id => { const c = POTION_COL[id] || '#999'; return `<svg viewB
   <path d="M5 33c4-2 8 2 15 0s11-2 15 0c1 9-3 13-8.5 13.5h-12C7.5 46 4 42 5 33z" fill="${c}"/>
   <path d="M5 33c4-2 8 2 15 0s11-2 15 0" fill="none" stroke="#ffffff88" stroke-width="1.2"/>
   <ellipse cx="11.5" cy="30" rx="2" ry="5" fill="#fff" opacity=".45" transform="rotate(12 11.5 30)"/><circle cx="26" cy="38" r="1.4" fill="#fff" opacity=".5"/><circle cx="21" cy="41.5" r="1" fill="#fff" opacity=".4"/>
-  <rect x="14" y="6.5" width="12" height="2.5" rx="1" fill="#ffffff55"/></svg>`; };
+  <rect x="14" y="6.5" width="12" height="2.5" rx="1" fill="#ffffff55"/>${POTION_SYM[id] || ''}</svg>`; };
+// the symbol drawn on the liquid: one picture per potion (the same bottle is used on the shelf, in the recipes, in the shop, in the pack screen and in the bar)
+const POTION_SYM = {
+  heart: '<path d="M20 45.5c-6.5-4.2-7.6-8.4-5-10.2 1.7-1.1 3.9-.5 5 1.3 1.1-1.8 3.3-2.4 5-1.3 2.6 1.8 1.5 6-5 10.2z" fill="#fff" opacity=".95"/>',
+  sound: '<path d="M13.5 37.5h3l4.2-3.6v10.2l-4.2-3.6h-3z" fill="#fff" opacity=".95"/><path d="M23.3 36.6q2.1 2.4 0 4.8M26 34.6q3.6 4.4 0 8.8" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round" opacity=".95"/>',
+  power: '<path d="M22.5 31.5l-7 9.2h4.2l-2.2 6.6 8.2-10h-4.4z" fill="#fff" opacity=".95"/>',
+  second: '<path d="M26.4 41.2a6.2 6.2 0 1 1-2-5.2" stroke="#fff" stroke-width="1.9" fill="none" stroke-linecap="round" opacity=".95"/><path d="M20.8 33.4l4.6 2.4-.8 4.4z" fill="#fff" opacity=".95" transform="rotate(-18 23 36)"/>',
+  super: '<path d="M20 32l2.3 4.7 5.1.8-3.7 3.6.9 5.1-4.6-2.4-4.6 2.4.9-5.1-3.7-3.6 5.1-.8z" fill="#fff" opacity=".95"/>'
+};
 function takeSnap() {   // just before the first mistake of a question, so a Second chance potion can undo it completely
   if (G.snap || !G.q) return; const k = G.q.key;
   G.snap = { key: k, stat: P.stats[k] ? P.stats[k].slice() : null, n: P.n, ok: P.ok, hist: P.hist.slice(), tier: P.tier, xp: P.xp, hearts: G.hearts, qhearts: P.quest[G.quest].hearts,
@@ -2882,7 +3168,18 @@ function rmShell() {
     <g fill="#fff" opacity=".85"><circle cx="48" cy="20" r=".3"/><circle cx="50.5" cy="25" r=".25"/><circle cx="55" cy="27" r=".3"/><circle cx="47" cy="28" r=".25"/></g>
     <rect x="50.8" y="17" width=".5" height="14" fill="#2a1a3d"/><rect x="45" y="23.8" width="12" height=".5" fill="#2a1a3d"/><rect x="43" y="32" width="16" height="1.1" rx=".3" fill="#4a2f66"/>
     <polygon points="45,31 57,31 74,${RM.y1 + 24} 52,${RM.y1 + 24}" fill="url(#rmBeam)" opacity=".55"/>`;
-  return s + board(22, 41, 27) + board(22, 41, 41) + board(61, 78, 24) + board(61, 78, 35) + rmWardrobe();   // potion shelf, a small decoration shelf, two ingredient boards, the wardrobe on the left wall
+  return s + board(22, 41, 27) + board(22, 41, 41) + board(61, 78, 24) + board(61, 78, 35) + rmWardrobe() + rmStand();   // potion shelf, a small decoration shelf, two ingredient boards, the wardrobe on the left wall
+}
+// the artifact stand stands against the RIGHT wall (like the wardrobe on the left): a low wooden cabinet with one niche for each slot (neck, hand, belt)
+const STAND = { t0: .26, t1: .74, top: .34, nich: [[.3, .41], [.45, .56], [.6, .71]] };
+const stPt = (t, f) => [80 + 20 * t, 46 + 34 * t - f * (38 + 42 * t)];   // t = 0 back corner .. 1 front, f = height as a fraction of the wall
+function rmStand() {
+  const pt = (t, f) => stPt(t, f).map(n => n.toFixed(2)), q = (t0, t1, f0, f1, fill, extra) => `<polygon points="${[pt(t0, f0), pt(t1, f0), pt(t1, f1), pt(t0, f1)].map(p => p.join(',')).join(' ')}" fill="${fill}" ${extra || ''}/>`;
+  return `<g id="standBtn" role="button" tabindex="0" aria-label="Artifact stand: tap to wear your magic items" style="cursor:pointer">
+    ${q(STAND.t0 - .02, STAND.t1 + .02, -.02, .01, '#0006')}
+    ${q(STAND.t0, STAND.t1, 0, STAND.top - .03, '#7a4d27', 'stroke="#4d2f12" stroke-width=".25"')}
+    ${STAND.nich.map(([a, b]) => q(a, b, .04, .27, '#2a1a3d') + q(a + .01, b - .01, .05, .26, '#46316e') + q(a, b, .015, .04, '#c58f58')).join('')}
+    ${q(STAND.t0 - .02, STAND.t1 + .02, STAND.top - .03, STAND.top, '#a8743a')}</g>`;
 }
 // the wardrobe stands against the left wall, drawn in that wall's perspective (t = 0 at the back corner, 1 at the front; f = height as a fraction of the wall)
 function rmWardrobe() {
@@ -2980,7 +3277,11 @@ function renderRoom(disp) {   // disp = the ingredient counts to show (they fill
   const c = P.own.caul || 0, cau = RM_CAU[c] || RM_CAU[0], H = [];
   H.push(`<button class="rHit ${rmPanel === 'potions' ? 'on' : ''}" data-kind="potions" aria-label="Potion shelf: tap to look closer" style="left:22%;top:${20 * 1.25}%;width:19%;height:${9.5 * 1.25}%"></button>`);
   H.push(`<button class="rHit ${rmPanel === 'ing' ? 'on' : ''}" data-kind="ing" aria-label="Ingredient shelves: tap to look closer" style="left:60%;top:${16.5 * 1.25}%;width:19.5%;height:${20.5 * 1.25}%"></button>`);
-  POTION_IDS.forEach((id, i) => H.push(`<div class="rFlask ${(P.pot[id] || 0) ? '' : 'none'}" style="left:${24.8 + i * 3.7}%;top:${27 * 1.25}%">${potionSVG(id)}<i>${POTIONS[id].em}</i></div>`));
+  POTION_IDS.forEach((id, i) => H.push(`<div class="rFlask ${(P.pot[id] || 0) ? '' : 'none'}" style="left:${24.8 + i * 3.7}%;top:${27 * 1.25}%">${potionSVG(id)}</div>`));
+  { const [x0] = stPt(STAND.t0, 0), [x1, y1] = stPt(STAND.t1, 0), yt = stPt(STAND.t0, STAND.top)[1];   // the artifact stand: a tap target over the cabinet, and one item on each pedestal
+    H.push(`<button class="rHit ${rmPanel === 'stand' ? 'on' : ''}" data-kind="stand" aria-label="Artifact stand: tap to wear your magic items" style="left:${x0 - 1}%;top:${yt * 1.25}%;width:${x1 - x0 + 2}%;height:${(y1 - yt) * 1.25}%"></button>`);
+    GEAR_SLOTS.forEach(([slot, , ms], i) => { const [cx, cy] = stPt((STAND.nich[i][0] + STAND.nich[i][1]) / 2, .15), v = (P.items || {})[ms] || 0;
+      H.push(`<div class="rGear ${v ? (itemWorn(P, ms) ? '' : 'off') : 'none'}" style="left:${cx}%;top:${cy * 1.25}%">${gearIcon(slot, v ? { k: 'magic', v } : DEF_GEAR[slot])}</div>`); }); }
   rmShown(disp).slice(0, 6).forEach((id, i) => H.push(`<div class="rJar jarbox" data-jar="${id}" style="left:${JAR_SLOTS[i][0]}%;top:${JAR_SLOTS[i][1] * 1.25}%">${jarInner(id, disp[id])}</div>`));
   for (const id of Object.keys(ROOM_ITEMS)) {
     if (!P.own.decor.includes(id)) continue; const it = ROOM_ITEMS[id], d = SHOP[id], p = rmPos(id);
@@ -2990,13 +3291,21 @@ function renderRoom(disp) {   // disp = the ingredient counts to show (they fill
   H.push(`<button class="rCaul" id="caulBtn" aria-label="Brew potions: ${CAULDRONS[c]}" style="--liq:${cau.liq};--liqa:${cau.liqa};--cs:${cau.cs}"><span class="aura"></span>${cauldronArt(c)}${[0, 1, 2, 3].map(i => `<i class="bub" style="left:${34 + i * 11}%;animation-delay:${i * .6}s"></i>`).join('')}<span class="caulLbl">${CAULDRONS[c]} · tap to brew</span></button>`);
   $('#rmProps').innerHTML = H.join(''); renderRoomPanel();
 }
+let rmStandSlot = 'neck';
 function renderRoomPanel() {   // the close-up under the room: big flasks and jars that are readable on a phone
   const p = $('#roomPanel');
   if (!rmPanel) { p.hidden = true; return; }
   p.hidden = false;
   if (rmPanel === 'potions') {
     p.innerHTML = `<h3>🧴 Potion shelf <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="rCards">` + POTION_IDS.map(id => { const n = P.pot[id] || 0, cn = (P.carry || {})[id] || 0;
-      return `<button class="rCard ${n || cn ? '' : 'none'}" data-pot="${id}"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span><b>${POTIONS[id].name} / ${POTIONS[id].vname}</b><small>× ${n}${cn ? ` · 🎒 ${cn}` : ''}</small></button>`; }).join('') + '</div>';
+      return `<button class="rCard ${n || cn ? '' : 'none'}" data-pot="${id}"><span class="packBottle">${potionSVG(id)}</span><b>${POTIONS[id].name} / ${POTIONS[id].vname}</b><small>× ${n}${cn ? ` · 🎒 ${cn}` : ''}</small></button>`; }).join('') + '</div>';
+  } else if (rmPanel === 'stand') {   // the artifact stand: which magic item is worn in each slot (only worn items give their power in a quest)
+    const [sl, label, ms] = GEAR_SLOTS.find(x => x[0] === rmStandSlot) || GEAR_SLOTS[0], m = MAGIC[ms], v = itemVer(ms), worn = itemWorn(P, ms);
+    p.innerHTML = `<h3>🏺 Artifact stand <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="stSlots">${GEAR_SLOTS.map(([k, lb, mi]) => `<button class="stSlot ${k === sl ? 'on' : ''}" data-sslot="${k}"><span class="gIco">${gearIcon(k, itemVer(mi) ? { k: 'magic', v: itemVer(mi) } : DEF_GEAR[k])}</span>${lb}${itemVer(mi) ? (itemWorn(P, mi) ? ' ✅' : '') : ''}</button>`).join('')}</div>
+      <div class="stRow">${v ? `<div class="stOpt ${worn ? 'on' : ''}"><span class="gIco">${gearIcon(sl, { k: 'magic', v })}</span><div class="grow"><b>${m.en}</b><small>${VER_NAME[v]} · ${v === 2 ? 'twice' : 'once'} per quest</small><small>${m.does}</small></div><button class="btn" data-swear="${ms}">${worn ? 'Take off' : 'Wear'}</button></div>`
+      : `<div class="stOpt lock"><span class="gIco">${gearIcon(sl, DEF_GEAR[sl])}</span><div class="grow"><b>${m.en}</b><small>You have not made this yet. The artificer builds it in the workshop.</small></div></div>`}
+        <div class="stOpt lock"><span class="gIco" style="display:grid;place-items:center;font-size:1.6rem">🔒</span><div class="grow"><b>More ${label.toLowerCase()} items</b><small>Coming later. Each slot holds one item, and you choose which one.</small></div></div></div>
+      <p class="small" style="opacity:.8;margin:6px 0 0">Only items you wear give their power in a quest. How your hero looks is chosen in the wardrobe.</p>`;
   } else {
     const all = rmShown(rmDisp);
     p.innerHTML = `<h3>🌿 Ingredient shelves <button class="ib" data-close="1" aria-label="Close">✕</button></h3>` + (all.length ? `<div class="small" style="opacity:.8;margin-bottom:6px">Tap a jar to hear the word.</div><div class="rCards">` +
@@ -3032,7 +3341,7 @@ function openRecipes() {   // tapping the cauldron
   const c = P.own.caul || 0;
   modal(`🫕 ${CAULDRONS[c]}: brew a potion`, '<div id="homeRecipes"></div>', [['Close', null, true]]);
   $('#homeRecipes').innerHTML = POTION_IDS.map(id => { const r = RECIPES[id], locked = r.caul > c, ok = !locked && canBrew(id);
-    return `<div class="recipe ${locked ? 'locked' : ''}"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span>
+    return `<div class="recipe ${locked ? 'locked' : ''}"><span class="packBottle">${potionSVG(id)}</span>
       <div class="grow"><b>${POTIONS[id].name} / ${POTIONS[id].vname} potion</b><div class="small">${POTIONS[id].desc}</div><div class="small">Needs: ${slotsText(r)}${locked ? ` · 🔒 ${CAULDRONS[r.caul]}` : ''}</div></div>
       <button class="btn" data-brew="${id}" ${ok ? '' : 'disabled'}>${locked ? '🔒' : ok ? 'Brew ▶' : 'Need more'}</button></div>`; }).join('');
   $('#homeRecipes').onclick = e => { const b = e.target.closest('[data-brew]'); if (b && !b.disabled) pickIngredients(b.dataset.brew); };
@@ -3040,10 +3349,13 @@ function openRecipes() {   // tapping the cauldron
 $('#home').onclick = e => {
   if (e.target.closest('#caulBtn')) { openRecipes(); return; }
   if (e.target.closest('#wardBtn')) { openWardrobe(); return; }
+  if (e.target.closest('#standBtn')) { rmPanel = rmPanel === 'stand' ? null : 'stand'; renderRoom(rmDisp); if (rmPanel) $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  const ss = e.target.closest('[data-sslot]'); if (ss) { rmStandSlot = ss.dataset.sslot; renderRoom(rmDisp); return; }
+  const sw = e.target.closest('[data-swear]'); if (sw) { const ms = sw.dataset.swear; P.worn = P.worn || {}; P.worn[ms] = !itemWorn(P, ms); saveSoon(true); sfx.ok(); toast(P.worn[ms] ? `${MAGIC[ms].en}: now worn. Its power works on your quests!` : `${MAGIC[ms].en}: taken off. Its power is asleep.`); renderRoom(rmDisp); return; }
   if (e.target.closest('[data-close]')) { rmPanel = null; renderRoom(rmDisp); return; }
   const hit = e.target.closest('.rHit'); if (hit) { rmPanel = rmPanel === hit.dataset.kind ? null : hit.dataset.kind; renderRoom(rmDisp); if (rmPanel) $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const bt = e.target.closest('[data-pot]');
-  if (bt) { const id = bt.dataset.pot; modal(`${POTIONS[id].em} ${pBoth(id)}`, `<div style="text-align:center"><div style="display:inline-block;transform:scale(1.8);margin:20px"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span></div></div>
+  if (bt) { const id = bt.dataset.pot; modal(`${POTIONS[id].em} ${pBoth(id)}`, `<div style="text-align:center"><div style="display:inline-block;transform:scale(1.8);margin:20px"><span class="packBottle">${potionSVG(id)}</span></div></div>
       <p><b>${POTIONS[id].name} potion</b> (fights): ${POTIONS[id].desc}.</p><p><b>${POTIONS[id].vname} potion</b> (villages): ${POTIONS[id].vdesc}.</p><p class="small">🏡 ${P.pot[id] || 0} on the shelf${(P.carry[id] || 0) ? ' · 🎒 ' + P.carry[id] + ' in your quest pouch' : ''}. You can carry 5 on a quest.</p>`, [['OK', null]]); return; }
   const jr = e.target.closest('[data-ing]');
   if (jr) { const g = ING[jr.dataset.ing]; if (!findHeVoice()) toast(`${g.em} ${g.nk} (this device has no Hebrew voice)`); else playSound({ say: g.nk }); jr.classList.remove('pop'); void jr.offsetWidth; jr.classList.add('pop'); }
@@ -3071,10 +3383,10 @@ function startCraft(potion, ings) {
 }
 // One question that asks for an item's name, adapted to the student's level. Shared by crafting (ingredients) and the shop (items).
 // Levels 1-3 listen (the picture is shown above); 4-8 see the picture + written name and pick the word they HEAR; 9-10 read the name and pick the picture; 11+ type the name (English shown only here).
-const itemEm = x => x.magic ? magicIcon(x.id) : (x.kind === 'wear' && x.wtype !== 'acc') ? `<span class="qRobe">${robePic(x)}</span>` : x.em;   // robes are drawn on the student's wizard, everything else is its emoji
+const itemEm = x => x.magic ? magicIcon(x.id) : isRobeItem(x) ? `<span class="qRobe">${robePic(x)}</span>` : x.wtype === 'look' ? `<span class="qLook">${x.em}</span>` : x.kind === 'potion' ? `<span class="packBottle qPot">${potionSVG(x.pid)}</span>` : x.em;   // robes are drawn on the student's wizard, everything else is its emoji
 function nameQuestion(ing, universe, ctx) {
   const t = P.tier; let q; G.optSound = false;
-  const pic = $('#craftPic'); pic.style.display = (t <= 8 || ing.magic || (ing.kind === 'wear' && ing.wtype !== 'acc')) ? '' : 'none'; pic.innerHTML = `<span class="craftEm ${ing.r === 4 ? 'shine' : ''}">${itemEm(ing)}</span>`;
+  const pic = $('#craftPic'); pic.style.display = (t <= 8 || ing.magic || (isRobeItem(ing) || ing.wtype === 'look')) ? '' : 'none'; pic.innerHTML = `<span class="craftEm ${ing.r === 4 ? 'shine' : ''}">${itemEm(ing)}</span>`;
   if (t <= 3) { q = qLetter(t, false); }
   else if (t <= 8 && findHeVoice()) {
     const others = shuffle(universe.filter(x => x.id !== ing.id && x.he !== ing.he)).slice(0, 3);
@@ -3087,7 +3399,7 @@ function nameQuestion(ing, universe, ctx) {
     q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: ctx.read, big: txt, sub: ctx.sub, say: txt,
       options: shuffle([ing, ...others]).map(x => ({ html: `<span style="font-size:2.4rem" class="${x.r === 4 ? 'shine' : ''}">${itemEm(x)}</span>`, cls: '', ok: x.id === ing.id, em: x.em, note: `That is ${x.em}` })), explain: `<span class="he">${txt}</span> = ${ing.em}` };
   } else {
-    q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: ctx.write, big: ing.magic || (ing.kind === 'wear' && ing.wtype !== 'acc') ? '' : ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
+    q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: ctx.write, big: ing.magic || (isRobeItem(ing) || ing.wtype === 'look') ? '' : ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
       explain: `<span class="he">${ing.he}</span> (${ing.en})`, say: ing.he };
   }
   G.q = q; G.lastKey = q.lastKey; G.noCount = true; G.snap = null; G.potUsed = true;
@@ -3134,7 +3446,7 @@ function craftNext() {
   if (C.i < C.ings.length) { craftQuestion(); return; }
   C.ings.forEach(id => { P.inv[id] = Math.max(0, (P.inv[id] || 0) - 1); });   // the ingredients are used up only now
   P.pot[C.potion] = (P.pot[C.potion] || 0) + 1; saveSoon(true); sfx.win(); confetti(['🧪', '✨', '🫧', POTIONS[C.potion].em]);
-  modal('🧪 Your potion is ready!', `<div style="text-align:center"><div style="display:inline-block;transform:scale(2);margin:26px"><span class="packBottle">${potionSVG(C.potion)}<i>${POTIONS[C.potion].em}</i></span></div><p><b>${pBoth(C.potion)}</b> added to your shelf at Home.</p></div>`,
+  modal('🧪 Your potion is ready!', `<div style="text-align:center"><div style="display:inline-block;transform:scale(2);margin:26px"><span class="packBottle">${potionSVG(C.potion)}</span></div><p><b>${pBoth(C.potion)}</b> added to your shelf at Home.</p></div>`,
     [['Back home 🏡', openHome], ['Back to map', openMenu, true]]);
 }
 /* ====================== THE ARTIFICER'S WORKSHOP ====================== */
@@ -3270,13 +3582,13 @@ function forgeDone() {
 }
 /* ----- item powers: once per quest (twice for a legendary item). They never answer a question for the student: a banished stop is not logged at all. Uses come back only when the quest is FINISHED (a restart after a knockout is the same quest). ----- */
 const blankUses = () => ({ amulet: 0, staff: 0, belt: 0 });
-const itemLeft = (q, s) => Math.max(0, itemVer(s) - (((P.itemUses || {})[q] || {})[s] || 0));   // epic = 1 use, legendary = 2
+const itemLeft = (q, s) => Math.max(0, wornVer(s) - (((P.itemUses || {})[q] || {})[s] || 0));   // epic = 1 use, legendary = 2
 function useItem(q, s) { P.itemUses = P.itemUses || {}; P.itemUses[q] = P.itemUses[q] || blankUses(); P.itemUses[q][s] = (P.itemUses[q][s] || 0) + 1; saveSoon(true); }
 function itemBarHtml(q, where) {   // small glowing icons for the items you wear; greyed out when their power is used up for this quest
-  return MAGIC_SLOTS.filter(s => itemVer(s)).map(s => { const left = itemLeft(q, s), m = MAGIC[s];
-    return `<button class="itemBtn ${left ? 'glow v' + itemVer(s) : 'used'}" data-item="${s}" data-where="${where}" aria-label="${m.en}: ${left} use${left === 1 ? '' : 's'} left">${magicPic(s, left ? itemVer(s) : 0)}<b>×${left}</b></button>`; }).join('');
+  return MAGIC_SLOTS.filter(s => wornVer(s)).map(s => { const left = itemLeft(q, s), m = MAGIC[s];
+    return `<button class="itemBtn ${left ? 'glow v' + wornVer(s) : 'used'}" data-item="${s}" data-where="${where}" aria-label="${m.en}: ${left} use${left === 1 ? '' : 's'} left">${magicPic(s, left ? wornVer(s) : 0)}<b>×${left}</b></button>`; }).join('');
 }
-function renderItemBar() { const e = $('#itemBar'); if (!e) return; const q = G.quest, on = (q === 'battle' || q === 'peace') && MAGIC_SLOTS.some(s => itemVer(s)); e.style.display = on ? '' : 'none'; e.innerHTML = on ? itemBarHtml(q, 'fight') : ''; }
+function renderItemBar() { const e = $('#itemBar'); if (!e) return; const q = G.quest, on = (q === 'battle' || q === 'peace') && MAGIC_SLOTS.some(s => wornVer(s)); e.style.display = on ? '' : 'none'; e.innerHTML = on ? itemBarHtml(q, 'fight') : ''; }
 function itemTap(s, where) {
   const q = where === 'fight' ? G.quest : J.q, left = itemLeft(q, s), m = MAGIC[s];
   if (!left) { toast(`Used up for this quest. It comes back when the quest is finished.`); return; }
@@ -3336,6 +3648,9 @@ const DECOR = Object.values(SHOP).filter(s => s.kind === 'decor');
 for (const [id, hex, he, nk, em, en] of ROBE_EXTRA) SHOP[id] = { id, kind: 'wear', wtype: 'robe', hex, he, nk, em, en: en + ' robe', price: 30 };
 for (const [id, style, he, nk, em, en, price] of ROBE_STYLES) SHOP[id] = { id, kind: 'wear', wtype: 'style', style, he, nk, em, en: en + ' robe', price };
 for (const [id, slot, he, nk, em, en, price] of ACCS) SHOP[id] = { id, kind: 'wear', wtype: 'acc', slot, he, nk, em, en, price };
+const isRobeItem = x => x.kind === 'wear' && (x.wtype === 'robe' || x.wtype === 'style');
+for (const slot of Object.keys(LOOKS)) for (const [id, name, price, he, nk] of LOOKS[slot]) if (price) SHOP['lk_' + id] = { id: 'lk_' + id, kind: 'wear', wtype: 'look', slot, look: id, he, nk, en: name, price, em: gearIcon(slot, { k: id, v: 0 }, 'icoSvg') };   // cosmetic looks for the magic items (neck, hand, belt)
+const LOOK_IDS = Object.keys(SHOP).filter(id => SHOP[id].wtype === 'look');
 const owns = s => s.kind === 'caul' ? (P.own.caul || 0) >= s.lv : s.kind === 'decor' ? P.own.decor.includes(s.id) : s.kind === 'wear' ? P.wd.includes(s.id) : false;
 function whyNot(s) {   // why this item cannot be bought right now ('' = it can)
   if (owns(s)) return 'You have it ✓';
@@ -3344,7 +3659,7 @@ function whyNot(s) {   // why this item cannot be bought right now ('' = it can)
   return '';
 }
 function shopCard(s) {   // a card in the potions / wardrobe lists under the shop room
-  const why = whyNot(s), pic = s.kind === 'wear' && s.wtype !== 'acc' ? `<span class="shopRobe">${robePic(s)}</span>` : s.kind === 'potion' ? `<span class="packBottle">${potionSVG(s.pid)}<i>${s.em}</i></span>` : `<span class="shopEm">${s.em}</span>`;
+  const why = whyNot(s), pic = isRobeItem(s) ? `<span class="shopRobe">${robePic(s)}</span>` : s.wtype === 'look' ? `<span class="shopGear">${s.em}</span>` : s.kind === 'potion' ? `<span class="packBottle">${potionSVG(s.pid)}</span>` : `<span class="shopEm">${s.em}</span>`;
   const name = s.kind === 'potion' ? `<b class="potTitle">${POTIONS[s.pid].name} / ${POTIONS[s.pid].vname} potion</b>` : `<b class="heb">${s.nk}</b>`;   // ONE name per card
   return `<button class="shopItem ${why ? 'off' : ''} ${owns(s) ? 'own' : ''}" data-buy="${s.id}">${pic}${name}<span class="price">${owns(s) ? '✓' : '🪙 ' + s.price}</span>${why && !owns(s) ? `<small class="why">${why}</small>` : ''}</button>`;
 }
@@ -3407,7 +3722,7 @@ const shCounterSVG = () => `<defs><linearGradient id="shCsh" gradientUnits="user
   <polygon points="14,57 86,57 90,61 10,61" fill="#c58f58"/><polygon points="10,61 90,61 90,69.5 10,69.5" fill="#6e4222"/><polygon points="10,61 90,61 90,62.2 10,62.2" fill="#8a5a2b"/>
   ${[18, 34, 50, 66, 82].map(x => `<rect x="${x - 6}" y="63.4" width="12" height="4.6" rx=".8" fill="none" stroke="#4a2a14" stroke-width=".4"/>`).join('')}`;
 const robePic = s => s.wtype === 'robe' ? heroSVG(P.gender, s.hex, P.skin, P.hair, { beard: P.beard }) : s.wtype === 'style' ? heroSVG(P.gender, P.color, P.skin, P.hair, { style: s.style, beard: P.beard }) : '';   // robes are shown on the student's own wizard
-const shPic = s => s.kind === 'wear' && s.wtype !== 'acc' ? '<span class="shopRobe big">' + robePic(s) + '</span>' : s.kind === 'potion' ? `<span class="packBottle" style="transform:scale(1.8);margin:12px">${potionSVG(s.pid)}<i>${s.em}</i></span>` : s.kind === 'caul' ? cauldronArt(s.lv) : s.id === 'd_rug' ? '<span class="shRug" style="width:6rem;height:2.4rem"></span>' : s.em;
+const shPic = s => s.wtype === 'look' ? `<span class="shopGear" style="width:6rem;height:6rem">${s.em}</span>` : isRobeItem(s) ? '<span class="shopRobe big">' + robePic(s) + '</span>' : s.kind === 'potion' ? `<span class="packBottle" style="transform:scale(1.8);margin:12px">${potionSVG(s.pid)}</span>` : s.kind === 'caul' ? cauldronArt(s.lv) : s.id === 'd_rug' ? '<span class="shRug" style="width:6rem;height:2.4rem"></span>' : s.em;
 function renderShop() {
   const sh = shopShelf(), skin = SH_SKINS[sh.skin % SH_SKINS.length], c = P.own.caul || 0, next = SHOP['caul' + (c + 1)];
   $('#shBack').innerHTML = shBackSVG(); $('#shCounter').innerHTML = shCounterSVG();
@@ -3425,7 +3740,7 @@ let shopPanel = null;
 function renderShopPanel() {
   const p = $('#shopPanel'); if (!shopPanel) { p.hidden = true; return; } p.hidden = false;
   if (shopPanel === 'pots') p.innerHTML = `<h3><span><span class="potIco">${potionSVG('any')}</span> Potions</span> <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="shopGrid">${POTION_IDS.map(id => shopCard(SHOP['pot_' + id])).join('')}</div>`;
-  else p.innerHTML = `<h3>👗 Robes and accessories <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="shopGrid">${[...ROBE_EXTRA.map(r => r[0]), ...ROBE_STYLES.map(r => r[0]), ...ACCS.map(a => a[0])].map(id => shopCard(SHOP[id])).join('')}</div>`;
+  else p.innerHTML = `<h3>👗 Robes, accessories and item looks <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="shopGrid">${[...ROBE_EXTRA.map(r => r[0]), ...ROBE_STYLES.map(r => r[0]), ...ACCS.map(a => a[0]), ...LOOK_IDS].map(id => shopCard(SHOP[id])).join('')}</div>`;
 }
 function openShop() {
   G.quest = null; show('shop'); shopPanel = null;
@@ -3463,7 +3778,7 @@ function startShopBuy(id) {
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft'; setStageBg(); $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').innerHTML = `<span class="shMerchBody">${merchantSVG(SH_SKINS[shopShelf().skin % SH_SKINS.length])}</span>`; $('#foeName').textContent = 'Merchant';
-  $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${s.kind === 'wear' && s.wtype !== 'acc' ? 'this robe' : s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
+  $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${isRobeItem(s) ? 'this robe' : s.kind === 'potion' ? 'this potion' : s.wtype === 'look' ? 'this look' : s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
   $('#hearts').textContent = '🪙 ' + s.price; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = '0%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = ((P.xp % 400) / 4) + '%'; $('#potBar').style.display = 'none';
   nameQuestion(s, Object.values(SHOP), { listen: '🧙 The merchant says… Listen!', read: 'Read the name and pick the picture!', sub: 'Which one are you buying?', write: 'The merchant wants the name written in Hebrew!' });
@@ -3473,8 +3788,8 @@ function shopBought() {
   if (Math.floor(P.coins || 0) < s.price || owns(s)) { openShop(); return; }
   P.coins = Math.round((P.coins - s.price) * 1000) / 1000;
   if (s.kind === 'caul') P.own.caul = s.lv; else if (s.kind === 'potion') P.pot[s.pid] = (P.pot[s.pid] || 0) + 1; else if (s.kind === 'wear') P.wd.push(s.id); else P.own.decor.push(s.id);
-  saveSoon(true); sfx.win(); confetti(['🪙', '✨', s.em]); $('#shopCoins').textContent =Math.floor(P.coins || 0); renderShop(); renderShopPanel();
-  modal('🎉 Thank you!', `<p style="text-align:center;font-size:3rem;margin:6px">${s.em}</p><p style="text-align:center">You bought <b class="heb">${s.nk}</b>!${s.kind === 'potion' ? ' It is on your shelf at Home.' : s.kind === 'decor' ? ' It will be waiting in your room at Home.' : s.kind === 'wear' ? ' Find it in the wardrobe at Home!' : ' You can brew stronger potions now.'}</p>`,
+  saveSoon(true); sfx.win(); confetti(['🪙', '✨', s.kind === 'potion' || s.wtype === 'look' || s.em.startsWith('<') ? '💛' : s.em]); $('#shopCoins').textContent =Math.floor(P.coins || 0); renderShop(); renderShopPanel();
+  modal('🎉 Thank you!', `<p style="text-align:center;font-size:3rem;margin:6px">${shPic(s)}</p><p style="text-align:center">You bought <b class="heb">${s.nk}</b>!${s.kind === 'potion' ? ' It is on your shelf at Home.' : s.kind === 'decor' ? ' It will be waiting in your room at Home.' : s.wtype === 'look' ? ' Find it in the wardrobe at Home, on the Item looks tab!' : s.kind === 'wear' ? ' Find it in the wardrobe at Home!' : ' You can brew stronger potions now.'}</p>`,
     [['Keep shopping 🛒', openShop], ['Go home 🏡', openHome], ['Back to map', openMenu, true]]);
 }
 /* ----- loot: coins (for the shop) and ingredients (for potions), both given at the END of a won fight ----- */
@@ -3527,7 +3842,7 @@ $('#potBar').onclick = e => {
 };
 function openBag() {
   const have = Object.keys(ING).filter(id => (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r), sat = Object.keys(ING).filter(id => (P.satchel[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
-  const pots = POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="bagItem"><span class="packBottle sm">${potionSVG(id)}<i>${POTIONS[id].em}</i></span> ${POTIONS[id].name} <small class="vn">/ ${POTIONS[id].vname}</small><span class="bagN">🏡${P.pot[id] || 0}${(P.carry[id] || 0) ? ' 🎒' + P.carry[id] : ''}</span></div>`).join('');
+  const pots = POTION_IDS.filter(id => (P.pot[id] || 0) + (P.carry[id] || 0) > 0).map(id => `<div class="bagItem"><span class="packBottle sm">${potionSVG(id)}</span> ${POTIONS[id].name} <small class="vn">/ ${POTIONS[id].vname}</small><span class="bagN">🏡${P.pot[id] || 0}${(P.carry[id] || 0) ? ' 🎒' + P.carry[id] : ''}</span></div>`).join('');
   modal('🎒 My bag', `<p>🪙 <b>${Math.floor(P.coins || 0)}</b> coins</p>` + (pots ? `<p>Potions: <small style="opacity:.75">🏡 at home, 🎒 in your quest pouch</small></p><div class="bagGrid">${pots}</div>` : '') + (have.length ? '<p>🏡 Ingredients on your shelf:</p><div class="bagGrid">' + have.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.inv[id]}</span></div>`).join('') + '</div>' : '<p style="opacity:.8">No ingredients on your shelf yet. Beat monsters and help villagers to find some!</p>') + (sat.length ? '<p>🎒 In your satchel <small style="opacity:.75">(goes onto your shelf when you get home)</small>:</p><div class="bagGrid">' + sat.map(id => `<div class="bagItem">${ingHtml(id)}<span class="bagN">×${P.satchel[id]}</span></div>`).join('') + '</div>' : ''), [['Close', null]]);
 }
 // the live reward shown in the fight (what you would get if you won now)
@@ -3717,7 +4032,7 @@ async function adminStudent(id) {
     const mx = Math.max(60, ...days.map(x => x.s)), q = p.quest || {}, activeLast14 = days.filter(x => x.s >= 60).length, goalDays = days.filter(x => x.s >= CFG.DAILY_SEC).length;
     // world
     const rar = [0, 0, 0, 0, 0]; for (const [iid, n] of Object.entries(Object.assign({}, p.inv, ...Object.entries(p.satchel || {}).map(([k, v]) => ({ [k]: ((p.inv || {})[k] || 0) + v })))) ) if (ING[iid]) rar[ING[iid].r] += n;
-    const potTxt = POTION_IDS.filter(pid => ((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)).map(pid => `${POTIONS[pid].em} ${((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)}`).join('  ') || 'none';
+    const potTxt = POTION_IDS.filter(pid => ((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)).map(pid => `<span class="packBottle xs">${potionSVG(pid)}</span> ${((p.pot || {})[pid] || 0) + ((p.carry || {})[pid] || 0)}`).join('  ') || 'none';
     const cr = p.craft || { n: 0, ok: 0 };
     const sec2 = (title, html) => `<div class="stuSec"><b>${title}</b>${html}</div>`;
     box.innerHTML = `<div class="row" style="justify-content:space-between;align-items:flex-start;flex-wrap:nowrap"><div><b style="font-size:1.3rem">${esc(p.nick)}</b> <small style="opacity:.7">#${esc(p.id)}</small>
