@@ -79,35 +79,57 @@ body.peace .foeBody{font-size:6rem}
 .wdLbl{font-weight:600;margin:10px 0 4px}.wdChips{display:flex;flex-wrap:wrap;gap:6px}
 .wdChip{font:inherit;color:#fff;background:#0003;border:2px solid #fff3;border-radius:12px;padding:4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;min-width:54px}.wdChip.on{border-color:var(--gold);background:#ffd16622}.wdChip.lock{opacity:.55}.wdChip small{font-size:.65rem}.wdEm{font-size:1.5rem;line-height:1.1}
 .sw.lockSw{opacity:.55;font-size:.9rem;display:inline-flex;align-items:center;justify-content:center}
-.wardCell{grid-area:ward;font:inherit;color:#fff;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}.wardCell svg{width:min(96px,100%);filter:drop-shadow(0 3px 3px #0006);transition:transform .15s}.wardCell:hover svg{transform:scale(1.05)}.wardCell span{font-size:.7rem;background:#0006;border-radius:8px;padding:1px 6px;margin-top:2px}
-.jarPic i{white-space:nowrap}.jarPic i.two{font-size:.8rem;top:18px;letter-spacing:-2px}
-.roomBox{border-radius:18px;overflow:hidden;border:2px solid #fff3;background:linear-gradient(#6b4fa8 0%,#523a8c 62%,#3a2a66 62.1%)}
-.rmWall{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:6px;padding:10px 10px 4px;align-items:center;min-height:84px}
-.window svg{width:100%;max-width:92px;display:block}
-.spot{display:flex;align-items:center;justify-content:center;font-size:clamp(1.8rem,8vw,3rem);line-height:1;min-height:52px;border-radius:12px;cursor:pointer;position:relative;transition:transform .15s}
-.spot.have:hover{transform:scale(1.12)}.spot.ghost{opacity:.22;filter:grayscale(1);border:2px dashed #fff5;font-size:clamp(1.3rem,6vw,2rem)}
-.s-d_cat.have span{display:inline-block;animation:catTail 2.4s ease-in-out infinite}.s-d_owl.have span{animation:owlBob 3s ease-in-out infinite;display:inline-block}.s-d_clock.have span{animation:clockTick 2s steps(2) infinite;display:inline-block}
+/* ----- Home: the hero's room (2.5D). One perspective room drawn in SVG; props are placed in scene units (1 unit = 1% of the scene width). --u is that unit. ----- */
+.rScene{--u:1cqw;--dx:0;--dy:0;position:relative;width:100%;aspect-ratio:100/80;container-type:inline-size;isolation:isolate;border-radius:18px;overflow:hidden;border:2px solid #fff3;background:#1d1547;user-select:none;-webkit-user-select:none;touch-action:pan-y}
+.rShell{position:absolute;inset:0;width:100%;height:100%;display:block;transform:translate(calc(var(--dx)*var(--u)*-.7),calc(var(--dy)*var(--u)*-.4)) scale(1.025)}
+.rVig{position:absolute;inset:0;pointer-events:none;z-index:2000;background:radial-gradient(ellipse at 50% 38%,#0000 45%,#14082f88 100%),linear-gradient(#0000 70%,#14082f33)}
+.prop{position:absolute;left:calc(var(--x)*1%);top:calc(var(--y)*1.25%);z-index:var(--z,5);line-height:1;background:none;border:0;padding:0;margin:0;color:inherit;font:inherit}
+.prop.floor{transform:translate(calc(-50% + var(--dx)*var(--u)*var(--s)*-1.1),-100%);font-size:calc(var(--base)*var(--u)*var(--s))}
+.prop.wall{transform:translate(-50%,-50%);font-size:calc(var(--base)*var(--u))}
+.prop[data-id]{cursor:grab;touch-action:none}
+.prop.drag{cursor:grabbing;filter:drop-shadow(0 calc(var(--u)*.6) calc(var(--u)*.8) #0007);z-index:1500!important}
+.prop.drag.floor{transform:translate(-50%,calc(-100% - var(--u)*.8))}
+.prop .shadow{position:absolute;left:50%;bottom:-4%;width:92%;height:24%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(#000a,#0000 70%);pointer-events:none;z-index:-1}
+.prop .em{display:block}
+.prop.rugwrap{transform:translate(-50%,-50%);font-size:0}
+.rRug{width:calc(26*var(--u)*var(--s));height:calc(8.5*var(--u)*var(--s));border-radius:50%;background:radial-gradient(ellipse,#e0b36c 0 12%,#b3474d 13% 34%,#e0b36c 35% 40%,#6e3a7a 41% 66%,#e0b36c 67% 70%,#b3474d 71%);box-shadow:0 calc(var(--u)*.5) calc(var(--u)*.8) #0006;opacity:.96}
+.prop.fixedSvg{cursor:pointer}.prop.fixedSvg svg{display:block;width:calc(var(--u)*11*var(--s));height:auto;filter:drop-shadow(0 calc(var(--u)*.4) calc(var(--u)*.5) #0007)}
+.prop.fixedSvg:hover svg{filter:drop-shadow(0 0 calc(var(--u)*.8) #ffd166aa)}
+.prop[data-id=d_cat] .em{animation:catTail 2.4s ease-in-out infinite;transform-origin:50% 100%}.prop[data-id=d_owl] .em{animation:owlBob 3s ease-in-out infinite}.prop[data-id=d_clock] .em{animation:clockTick 2s steps(2) infinite}
 @keyframes catTail{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}@keyframes owlBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}@keyframes clockTick{0%{transform:rotate(-3deg)}100%{transform:rotate(3deg)}}
-.rmShelves{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;padding:6px 10px}
-@media(max-width:520px){.rmShelves{grid-template-columns:1fr}}
-.pShelf,.rack{background:#0002;border-radius:12px;padding:6px 8px 0;position:relative}.shelfTitle{font-size:.8rem;opacity:.85;margin-bottom:2px}
-.plank{height:9px;background:linear-gradient(#a8743a,#7a4f2a);border-radius:4px;margin:0 -4px;box-shadow:0 3px 3px #0005}
-.bottles{display:flex;gap:4px;justify-content:space-around;align-items:flex-end}
-.bottle{position:relative;font:inherit;color:#fff;background:none;border:0;padding:2px;display:flex;flex-direction:column;align-items:center;cursor:pointer;min-width:42px}.bottle .potSvg{width:30px;height:40px}.bottle i{font-style:normal;font-size:.8rem}.bottle b{position:absolute;top:-2px;right:0;background:#000b;border-radius:8px;padding:0 5px;font-size:.72rem}.bottle.none{opacity:.28;filter:grayscale(1)}
-.jars{display:flex;flex-wrap:wrap;gap:2px 6px;max-height:228px;overflow-y:auto;padding-bottom:2px}
-.jar{font:inherit;color:#fff;background:none;border:0;border-bottom:8px solid #8a5a2b;padding:0 2px 1px;display:flex;flex-direction:column;align-items:center;width:64px;cursor:pointer}
-.jarPic{position:relative;display:block;width:38px;height:46px}.jarSvg{width:38px;height:46px}.jarPic i{position:absolute;left:0;right:0;top:15px;text-align:center;font-style:normal;font-size:1.15rem}.jarPic b{position:absolute;top:-3px;right:-8px;background:#000b;border-radius:8px;padding:0 5px;font-size:.72rem}
-.jarLbl{font-size:.74rem;line-height:1.1;text-align:center;margin-top:1px}.rackEmpty{opacity:.7;font-size:.85rem;padding:10px 4px 14px}
-.jar.pop{animation:jarPop .7s ease}@keyframes jarPop{0%{transform:scale(1)}35%{transform:scale(1.28);filter:drop-shadow(0 0 10px #ffd166)}100%{transform:scale(1)}}
-.rmMantel{display:flex;justify-content:space-around;align-items:flex-end;padding:8px 12px 0;position:relative;flex-wrap:wrap}.rmMantel .plank{position:absolute;left:8px;right:8px;bottom:0}.rmMantel .spot{margin-bottom:8px;min-width:64px}
-.rmFloor{background:linear-gradient(#a2733d,#7a5128);margin-top:8px;padding:10px;display:grid;grid-template-columns:repeat(6,1fr);grid-template-areas:"ward ward caul caul plant chest" "ward ward caul caul cat egg" "ward ward caul caul owl .";gap:4px;align-items:end}
-.rmFloor .s-d_chest{grid-area:chest}.rmFloor .s-d_plant{grid-area:plant}.rmFloor .s-d_egg{grid-area:egg}.rmFloor .s-d_owl{grid-area:owl}.rmFloor .s-d_cat{grid-area:cat}
-.caulCell{grid-area:caul;position:relative;font:inherit;color:#fff;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:6px 0 0}
-.caulSvg{width:min(150px,100%);position:relative;z-index:1;filter:drop-shadow(0 4px 4px #0006);transition:transform .15s}.caulCell:hover .caulSvg{transform:scale(1.06)}
-.caulSvg .flames{animation:flick .5s ease-in-out infinite alternate;transform-origin:40px 66px}.caulSvg .bubb circle{animation:bubb 1.6s ease-in-out infinite}.caulSvg .tw{animation:twk 1.4s ease-in-out infinite}
-@keyframes flick{to{transform:scale(1.07,.93)}}@keyframes bubb{50%{transform:translateY(-3px)}}@keyframes twk{50%{opacity:.3}}
-.caulLbl{font-size:.75rem;background:#0006;border-radius:8px;padding:1px 8px;margin-top:2px;z-index:1}
-.rug{position:absolute;left:-6%;right:-6%;bottom:14px;height:44%;border-radius:50%;z-index:0}.rug.have{background:radial-gradient(#c0392b 0 30%,#f1c40f 31% 40%,#c0392b 41% 60%,#8e1f15 61%);box-shadow:0 2px 6px #0006}.rug.ghost{border:2px dashed #fff5;opacity:.5}
+/* cauldron: a round pot on three legs over a log fire */
+.rCaul{position:absolute;left:50%;top:calc(69*1.25%);z-index:90;transform:translate(-50%,-100%);cursor:pointer;width:calc(var(--u)*17*var(--cs,1));aspect-ratio:1/1;background:none;border:0;padding:0;color:#fff;font:inherit}
+.rCaul svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.rCaul .aura{position:absolute;left:50%;top:6%;width:84%;height:44%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(var(--liqa),#0000 68%);animation:rPulse 2.2s ease-in-out infinite;pointer-events:none}
+.rCaul .flame{transform-box:fill-box;transform-origin:50% 100%;animation:rFlick .55s ease-in-out infinite alternate}.rCaul .flame.f2{animation-duration:.42s;animation-delay:-.2s}.rCaul .flame.f3{animation-duration:.7s;animation-delay:-.35s}
+.rCaul .bub{position:absolute;top:30%;width:5%;height:5%;border-radius:50%;background:var(--liq);opacity:0;animation:rBub 2.4s ease-in infinite}
+@keyframes rBub{0%{transform:translateY(0) scale(.6);opacity:0}25%{opacity:.9}100%{transform:translateY(calc(var(--u)*-8)) scale(1.3);opacity:0}}
+@keyframes rFlick{from{transform:scale(.9,.85)}to{transform:scale(1.08,1.12)}}@keyframes rPulse{0%,100%{opacity:.55}50%{opacity:1}}
+.rCaul:hover{filter:drop-shadow(0 0 calc(var(--u)*1) #ffd16688)}
+.rCaul .caulLbl{position:absolute;left:50%;top:99%;transform:translateX(-50%);white-space:nowrap;font-size:max(.62rem,calc(var(--u)*2.5));background:#000a;border-radius:8px;padding:1px 8px}
+/* shelves on the back wall */
+.rHit{position:absolute;z-index:6;cursor:pointer;border-radius:calc(var(--u)*1);background:transparent;border:0;padding:0}
+.rHit:hover,.rHit:focus-visible,.rHit.on{outline:2px solid var(--gold);outline-offset:2px}
+.rFlask{position:absolute;z-index:7;pointer-events:none;width:calc(var(--u)*3.4);height:calc(var(--u)*4.6);transform:translate(-50%,-100%)}.rFlask .potSvg{width:100%;height:100%;display:block}
+.rFlask i{position:absolute;left:0;right:0;top:50%;text-align:center;font-style:normal;font-size:calc(var(--u)*1.5);line-height:1}.rFlask.none{opacity:.3}
+/* glass jar: used on the shelf (--w in scene units) and in the close-up panel (--w in px) */
+.jarbox{position:relative;width:var(--w);height:calc(var(--w)*1.4);font-size:var(--w);flex:none;display:block}
+.jarbox svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.jarbox b{position:absolute;left:0;right:0;top:32%;text-align:center;font-size:.42em;line-height:1;font-weight:400;white-space:nowrap;filter:drop-shadow(0 .02em .03em #0006)}.jarbox b.two{font-size:.3em;top:36%;letter-spacing:-.1em}
+.jarbox .tag{position:absolute;left:8%;right:8%;top:63%;height:20%;display:grid;place-items:center;background:#f3e6c4;border-radius:.07em;box-shadow:0 .02em .04em #0005;font-size:max(6px,.2em);font-weight:700;color:#3a2a14;line-height:1;white-space:nowrap}
+.jarbox .tag.heb{font-size:max(6px,.2em)}
+.jarbox em{position:absolute;right:-.06em;top:.1em;background:var(--gold);color:#3a2300;border-radius:99px;min-width:.3em;padding:0 .08em;font-size:max(7px,.2em);font-style:normal;font-weight:700;text-align:center;line-height:1.5}
+.rJar{position:absolute;z-index:7;pointer-events:none;--w:calc(var(--u)*5.6);transform:translate(-50%,-100%)}.rJar.pop{animation:rJpop .7s}
+@keyframes rJpop{40%{transform:translate(-50%,-100%) scale(1.22);filter:drop-shadow(0 0 8px #ffd166)}}
+.rFly{position:absolute;z-index:1800;font-size:calc(var(--u)*3.2);pointer-events:none;line-height:1}
+.rBar{display:flex;justify-content:flex-end;gap:8px;margin:8px 0 0}
+.rPanel{background:#0003;border:2px solid #fff3;border-radius:16px;padding:10px 12px;margin-top:10px}.rPanel[hidden]{display:none}
+.rPanel h3{margin:0 0 8px;font-size:1.05rem;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rCards{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;max-height:46vh;overflow-y:auto}
+.rCard{font:inherit;color:#fff;background:#0004;border:1px solid #fff3;border-radius:14px;padding:8px 4px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0}
+.rCard .heb{font-size:1rem;font-weight:700}.rCard small{opacity:.8}.rCard.none{opacity:.45}.rCard .packBottle{transform:scale(1.5);margin:10px 0 8px}
+.rCard.pop{animation:rJpop .6s}
+@media (prefers-reduced-motion:reduce){.rCaul .bub,.rCaul .flame,.rCaul .aura,.prop .em,.rJar.pop{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
 .or{opacity:.7;margin:8px 0}.regLbl{display:block;text-align:left;margin:10px 0 2px;font-weight:600}
 .bigId{font-size:3rem;font-weight:800;letter-spacing:.25em;background:#0005;border:3px dashed var(--gold);border-radius:16px;padding:10px 6px 10px 18px;margin:8px 0;font-family:ui-monospace,Consolas,monospace;user-select:all}
@@ -434,14 +456,11 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 </section>
 
 <section id="home" class="screen" style="max-width:760px">
-  <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏡 <span class="heb">בית</span> · Home</div><div class="small">Tap the cauldron to brew. Tap a bottle or a jar to look closer.</div></div></div>
-  <div class="roomBox">
-    <div class="rmWall" id="rmWall"></div>
-    <div class="rmShelves"><div class="pShelf" id="pShelf"></div><div class="rack" id="rack"></div></div>
-    <div class="rmMantel" id="rmMantel"></div>
-    <div class="rmFloor" id="rmFloor"></div>
-  </div>
-  <div class="small center" style="opacity:.7;margin:10px 0">🪴 Furniture and pets are sold in the shop 🏪. Each one has its own spot in your room.</div>
+  <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏡 <span class="heb">בית</span> · Home</div><div class="small">Tap the cauldron to brew, the wardrobe to dress up, a shelf to look closer. Drag your decorations to move them.</div></div></div>
+  <div class="rScene" id="rmScene" aria-label="Your room"><svg class="rShell" id="rmShell" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg><div id="rmProps"></div><div class="rVig"></div></div>
+  <div class="rBar"><button class="btn ghost" id="tidyBtn">🧹 Put everything back</button></div>
+  <section class="rPanel" id="roomPanel" hidden aria-live="polite"></section>
+  <div class="small center" style="opacity:.7;margin:10px 0">🪴 Furniture and pets are sold in the shop 🏪. When you buy one, it appears in your room.</div>
 </section>
 
 <section id="wardrobe" class="screen" style="max-width:760px">
@@ -923,7 +942,7 @@ function migrate(p) {
     const old = (p.own && p.own.decor) || []; p.own.decor = [...new Set(old.filter(d => d !== 'd_teddy').map(d => MAPD[d] || d))];
     if (old.includes('d_teddy')) p.coins = (p.coins || 0) + 60;   // the teddy bear is gone from the shop: refund it
   }
-  p.satchel = p.satchel || {};
+  p.satchel = p.satchel || {}; p.own = p.own || { caul: 0, decor: [] }; p.own.pos = p.own.pos || {};   // own.pos: where the student moved each decoration in the room
   if (v < 7) { p.style = p.style || null; p.acc = p.acc || {}; p.wd = p.wd || []; }   // version 7: the wardrobe (robe style, accessories, and what you own of them)
   p.acc = p.acc || {}; p.wd = p.wd || [];
   if (v < 6) { p.skin = p.skin || '#f6cfa6'; p.hair = p.hair || null; p.lookPrompt = true; }   // version 6: looks. Existing heroes keep their current look and get a one-time, skippable question.
@@ -1794,51 +1813,194 @@ function canBrew(id) {   // enough different ingredients of each needed rarity?
   const need = {}; RECIPES[id].slots.forEach(s => { need[s] = (need[s] || 0) + 1; });
   return Object.entries(need).every(([r, n]) => ownedOf(+r).length >= n);
 }
-/* ----- Home: one furnished room ----- */
-// Zones top to bottom: wall (window + 3 wall decorations), shelves (potion shelf + ingredient rack), mantel (3 spots), floor (cauldron on its rug + pets and furniture).
-// Every decoration has ONE fixed spot. Spots that are not bought yet show a faint outline, so the room visibly fills up.
-const cauldronSVG = lvl => { const col = ['#b5651d', '#5d6a75', '#cfd6df'][lvl] || '#b5651d', rim = ['#8a4a12', '#3e4851', '#a9b2bd'][lvl] || '#8a4a12';
-  return `<svg viewBox="0 0 80 78" class="caulSvg" aria-hidden="true">
-  <ellipse cx="40" cy="73" rx="26" ry="4" fill="#0004"/>
-  <g class="flames"><path d="M24 66c2-8 6-8 4-15 6 4 8 10 6 15zM36 68c1-10 7-10 4-19 8 6 10 13 6 19zM52 66c-1-7 3-9 2-14 5 3 6 9 4 14z" fill="#ff9f1c" opacity=".95"/><path d="M30 67c1-5 4-5 3-9 4 2 5 6 3 9zM44 68c1-6 4-7 3-11 4 3 4 8 2 11z" fill="#ffe08a"/></g>
-  <path d="M14 34c0 18 10 28 26 28s26-10 26-28z" fill="${col}"/>
-  <path d="M22 38c1 10 6 18 14 21" fill="none" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-linecap="round"/>
-  <ellipse cx="40" cy="34" rx="28" ry="7" fill="${rim}"/><ellipse cx="40" cy="34" rx="23" ry="4.6" fill="${lvl === 2 ? '#9fe8ff' : '#7dffb0'}"/>
-  <g class="bubb"><circle cx="31" cy="30" r="3" fill="#fff" opacity=".7"/><circle cx="44" cy="26" r="4" fill="#fff" opacity=".6"/><circle cx="52" cy="31" r="2.5" fill="#fff" opacity=".7"/></g>
-  <rect x="9" y="30" width="7" height="6" rx="3" fill="${rim}"/><rect x="64" y="30" width="7" height="6" rx="3" fill="${rim}"/>
-  ${lvl === 2 ? '<g fill="#fff"><path d="M12 14l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" class="tw"/><path d="M66 8l1 3 3 1-3 1-1 3-1-3-3-1 3-1z" class="tw"/></g>' : ''}</svg>`; };
-const jarSVG = r => { const c = ['#b9bfd0', '#3ddc97', '#4aa8ff', '#b56bff', '#ffd166'][r]; return `<svg viewBox="0 0 36 44" class="jarSvg" aria-hidden="true"><rect x="10" y="1.5" width="16" height="6" rx="2" fill="#b07a4c" stroke="#7a4f2a"/><path d="M11 7h14v3c5 1 7 4 7 9v17a6 6 0 0 1-6 6H10a6 6 0 0 1-6-6V19c0-5 2-8 7-9z" fill="#ffffff22" stroke="${c}" stroke-width="2"/><rect x="6" y="24" width="24" height="3" fill="${c}" opacity=".35"/></svg>`; };
-const WHERE = { d_picture: 'wall', d_clock: 'wall', d_banner: 'wall', d_lamp: 'mantel', d_candle: 'mantel', d_books: 'mantel', d_chest: 'floor', d_plant: 'floor', d_cat: 'floor', d_egg: 'floor', d_owl: 'floor', d_rug: 'rug' };
-const decorSpot = d => { const have = P.own.decor.includes(d.id);
-  return `<div class="spot z-${WHERE[d.id]} ${have ? 'have' : 'ghost'} s-${d.id}" data-d="${d.id}" title="${have ? d.en : 'Buy it in the shop'}"><span>${d.em}</span></div>`; };
-const dById = id => SHOP[id];
+/* ----- Home: the hero's room (2.5D: one perspective room drawn in SVG, props placed in scene units, 1 unit = 1% of the scene width) ----- */
+// Back wall x20..80, y8..46; floor trapezoid below it; vanishing point (50,30). Floor items get smaller and slip behind others toward the back wall.
+const RM = { x0: 20, x1: 80, y0: 8, y1: 46, front: 80, vpx: 50, vpy: 30 };
+const rmDepth = y => 0.5 + (y - RM.y1) / (RM.front - RM.y1) * 0.85;
+const rmFloorLeft = y => 20 * (RM.front - y) / (RM.front - RM.y1);
+const rmClamp = (v, a, b) => Math.max(a, Math.min(b, v));
+// t = wall | floor | rug; b = size in scene units; x,y = where it starts (the student can drag it anywhere that fits its type)
+const ROOM_ITEMS = {
+  d_picture: { t: 'wall', b: 7.5, x: 31, y: 13 }, d_clock: { t: 'wall', b: 5.5, x: 51, y: 11 }, d_banner: { t: 'wall', b: 6.5, x: 70, y: 12 },
+  d_lamp: { t: 'wall', b: 5.5, x: 26, y: 38 }, d_candle: { t: 'wall', b: 4.5, x: 32, y: 38.4 }, d_books: { t: 'wall', b: 5.5, x: 37.5, y: 38 },
+  d_chest: { t: 'floor', b: 8, x: 84, y: 72 }, d_plant: { t: 'floor', b: 8, x: 30, y: 70 }, d_cat: { t: 'floor', b: 7, x: 71, y: 74 },
+  d_egg: { t: 'floor', b: 5.5, x: 25, y: 57 }, d_owl: { t: 'floor', b: 7, x: 82, y: 58 }, d_rug: { t: 'rug', x: 50, y: 71 }
+};
+const rmPos = id => (P.own.pos && P.own.pos[id]) || { x: ROOM_ITEMS[id].x, y: ROOM_ITEMS[id].y };
+const rmZ = (id, y) => ROOM_ITEMS[id].t === 'wall' ? 8 : ROOM_ITEMS[id].t === 'rug' ? 3 : 10 + Math.round(y);
+const rmScale = (id, y) => ROOM_ITEMS[id].t === 'floor' ? rmDepth(y) : ROOM_ITEMS[id].t === 'rug' ? rmDepth(y) : 1;
+
+function rmShell() {
+  const planks = [];
+  for (let i = -8; i <= 8; i++) { const xf = 50 + i * 12.5, t = (RM.front - RM.y1) / (RM.front - RM.vpy), xb = xf + (RM.vpx - xf) * t;
+    planks.push(`<line x1="${xf}" y1="${RM.front}" x2="${xb.toFixed(2)}" y2="${RM.y1}" stroke="#5a3417" stroke-opacity=".55" stroke-width=".25"/>`); }
+  for (let i = 1; i < 9; i++) { const y = RM.y1 + (RM.front - RM.y1) * Math.pow(i / 9, 1.7);
+    planks.push(`<line x1="${rmFloorLeft(y).toFixed(2)}" y1="${y.toFixed(2)}" x2="${(100 - rmFloorLeft(y)).toFixed(2)}" y2="${y.toFixed(2)}" stroke="#5a3417" stroke-opacity=".35" stroke-width=".2"/>`); }
+  const board = (x0, x1, y) => `<polygon points="${x0},${y} ${x1},${y} ${x1 + .8},${y + 1.1} ${x0 - .8},${y + 1.1}" fill="#c58f58"/><rect x="${x0 - .8}" y="${y + 1.1}" width="${x1 - x0 + 1.6}" height="1.1" fill="#7a4d27"/>
+    <polygon points="${x0 + 2},${y + 2.2} ${x0 + 3.6},${y + 2.2} ${x0 + 2},${y + 4}" fill="#5e3a1d"/><polygon points="${x1 - 2},${y + 2.2} ${x1 - 3.6},${y + 2.2} ${x1 - 2},${y + 4}" fill="#5e3a1d"/>`;
+  let s = `<defs>
+    <linearGradient id="rmWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5d4ba3"/><stop offset="1" stop-color="#46397f"/></linearGradient>
+    <linearGradient id="rmSideL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2c2260"/><stop offset="1" stop-color="#3b3074"/></linearGradient>
+    <linearGradient id="rmSideR" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#2c2260"/><stop offset="1" stop-color="#3b3074"/></linearGradient>
+    <linearGradient id="rmFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a33"/><stop offset="1" stop-color="#b98450"/></linearGradient>
+    <linearGradient id="rmCeil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1547"/><stop offset="1" stop-color="#2a1f60"/></linearGradient>
+    <linearGradient id="rmSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d1b4c"/><stop offset="1" stop-color="#3a4f9a"/></linearGradient>
+    <linearGradient id="rmBeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe0ff" stop-opacity=".35"/><stop offset="1" stop-color="#cfe0ff" stop-opacity="0"/></linearGradient></defs>`;
+  s += `<polygon points="0,0 100,0 80,${RM.y0} 20,${RM.y0}" fill="url(#rmCeil)"/><polygon points="20,${RM.y0} 80,${RM.y0} 80,${RM.y1} 20,${RM.y1}" fill="url(#rmWall)"/>`;
+  for (let x = 26; x < 80; x += 6) s += `<line x1="${x}" y1="${RM.y0}" x2="${x}" y2="${RM.y1}" stroke="#fff" stroke-opacity=".05" stroke-width=".5"/>`;
+  s += `<polygon points="0,0 20,${RM.y0} 20,${RM.y1} 0,${RM.front}" fill="url(#rmSideL)"/><polygon points="100,0 80,${RM.y0} 80,${RM.y1} 100,${RM.front}" fill="url(#rmSideR)"/>
+    <polygon points="20,${RM.y1} 80,${RM.y1} 100,${RM.front} 0,${RM.front}" fill="url(#rmFloor)"/>${planks.join('')}
+    <polygon points="20,${RM.y1 - 1.6} 80,${RM.y1 - 1.6} 80,${RM.y1} 20,${RM.y1}" fill="#2a1a3d"/>
+    <polygon points="20,${RM.y1 - 1.6} 20,${RM.y1} 0,${RM.front} 0,${RM.front - 3.4}" fill="#241633"/><polygon points="80,${RM.y1 - 1.6} 80,${RM.y1} 100,${RM.front} 100,${RM.front - 3.4}" fill="#241633"/>
+    <rect x="44" y="16" width="14" height="16" rx="1" fill="#2a1a3d"/><rect x="45" y="17" width="12" height="14" fill="url(#rmSky)"/><circle cx="53" cy="21.5" r="2" fill="#fff6c9"/>
+    <g fill="#fff" opacity=".85"><circle cx="48" cy="20" r=".3"/><circle cx="50.5" cy="25" r=".25"/><circle cx="55" cy="27" r=".3"/><circle cx="47" cy="28" r=".25"/></g>
+    <rect x="50.8" y="17" width=".5" height="14" fill="#2a1a3d"/><rect x="45" y="23.8" width="12" height=".5" fill="#2a1a3d"/><rect x="43" y="32" width="16" height="1.1" rx=".3" fill="#4a2f66"/>
+    <polygon points="45,31 57,31 74,${RM.y1 + 24} 52,${RM.y1 + 24}" fill="url(#rmBeam)" opacity=".55"/>`;
+  return s + board(22, 41, 27) + board(22, 41, 41) + board(61, 78, 24) + board(61, 78, 35) + rmWardrobe();   // potion shelf, a small decoration shelf, two ingredient boards, the wardrobe on the left wall
+}
+// the wardrobe stands against the left wall, drawn in that wall's perspective (t = 0 at the back corner, 1 at the front; f = height as a fraction of the wall)
+function rmWardrobe() {
+  const pt = (t, f) => { const fy = 46 + 34 * t, H = 38 + 42 * t; return [(20 - 20 * t).toFixed(2), (fy - f * H).toFixed(2)]; };
+  const q = (t0, t1, f0, f1, fill, extra) => `<polygon points="${[pt(t0, f0), pt(t1, f0), pt(t1, f1), pt(t0, f1)].map(p => p.join(',')).join(' ')}" fill="${fill}" ${extra || ''}/>`;
+  const knob = (t, f) => { const p = pt(t, f); return `<circle cx="${p[0]}" cy="${p[1]}" r=".5" fill="#ffd166"/>`; };
+  const lab = pt(.5, .56), a = 0.28, b = 0.72;
+  return `<g id="wardBtn" role="button" tabindex="0" aria-label="Wardrobe: tap to dress up" style="cursor:pointer">
+    ${q(a - .02, b + .02, -.02, .01, '#0006')}
+    ${q(a, b, 0, .44, '#7a4d27', 'stroke="#4d2f12" stroke-width=".25"')}
+    ${q(a + .02, .5 - .01, .03, .41, '#a8743a')}${q(.5 + .01, b - .02, .03, .41, '#a8743a')}
+    ${q(a + .05, .5 - .04, .06, .2, '#0002')}${q(.5 + .04, b - .05, .06, .2, '#0002')}${q(a + .05, .5 - .04, .24, .38, '#0002')}${q(.5 + .04, b - .05, .24, .38, '#0002')}
+    ${q(a - .02, b + .02, .44, .48, '#5e3a1d')}${knob(.47, .22)}${knob(.53, .22)}
+    <text x="${lab[0]}" y="${lab[1]}" font-size="3.2" text-anchor="middle" transform="rotate(-8 ${lab[0]} ${lab[1]})">👗</text></g>`;
+}
+
+/* the cauldron: a round pot on three legs over a log fire. Level 0 clay, 1 iron (rivets), 2 silver (runes) */
+const RM_CAU = [
+  { body: '#b4603a', shade: '#7d3b22', rim: '#94502f', liq: '#7dffb0', liqa: '#7dffb08c', cs: 1 },
+  { body: '#4d5062', shade: '#2b2d3a', rim: '#62667c', liq: '#8dff7d', liqa: '#8dff7d8c', cs: 1.08 },
+  { body: '#c6cfe2', shade: '#8791ac', rim: '#e3e9f6', liq: '#c79bff', liqa: '#c79bff8c', cs: 1.16 }
+];
+function cauldronArt(l) {
+  const c = RM_CAU[l] || RM_CAU[0], flame = (d, cls, o, i) => `<g class="flame ${cls}"><path d="${d}" fill="${o}"/><path d="${i}" fill="#ffd166"/></g>`;
+  const rivets = l === 1 ? [22, 34, 50, 66, 78].map(x => `<circle cx="${x}" cy="${40 + Math.abs(x - 50) * .05}" r="1.7" fill="#9aa0b8"/>`).join('') : '';
+  const runes = l === 2 ? '<path d="M20 50 l4 4 l4 -4 l-4 -4z M34 56 l4 4 l4 -4 l-4 -4z M58 56 l4 4 l4 -4 l-4 -4z M72 50 l4 4 l4 -4 l-4 -4z" fill="#6b5aa6" opacity=".8"/>' : '';
+  const band = l === 0 ? '<path d="M10 44 C14 52 86 52 90 44" stroke="#e8c98a" stroke-width="3" fill="none" stroke-dasharray="4 3"/>' : '';
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">
+    ${flame('M50 98 C32 90 36 70 50 58 C64 70 68 90 50 98Z', 'f1', '#ff7a2e', 'M50 98 C42 92 44 82 50 76 C56 82 58 92 50 98Z')}
+    ${flame('M33 98 C25 92 27 82 33 75 C39 82 41 92 33 98Z', 'f2', '#ff9a3e', 'M33 98 C29 94 30 88 33 84 C36 88 37 94 33 98Z')}
+    ${flame('M67 98 C59 92 61 82 67 75 C73 82 75 92 67 98Z', 'f3', '#ff9a3e', 'M67 98 C63 94 64 88 67 84 C70 88 71 94 67 98Z')}
+    <rect x="20" y="92" width="60" height="6" rx="3" fill="#4a2c16"/><rect x="26" y="90" width="48" height="5" rx="2.5" fill="#6b4020" transform="rotate(-3 50 92)"/>
+    <path d="M25 66 L17 91 L27 91 L34 72Z" fill="${c.shade}"/><path d="M75 66 L83 91 L73 91 L66 72Z" fill="${c.shade}"/>
+    <path d="M13 42 C0 42 0 58 14 56" stroke="${c.shade}" stroke-width="4.5" fill="none" stroke-linecap="round"/><path d="M87 42 C100 42 100 58 86 56" stroke="${c.shade}" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <path d="M12 36 C6 60 22 80 50 80 C78 80 94 60 88 36Z" fill="${c.body}"/>
+    <path d="M12 36 C6 60 22 80 50 80 C78 80 94 60 88 36 C88 52 74 70 50 72 C26 70 12 52 12 36Z" fill="${c.shade}" opacity=".45"/>${band}${rivets}${runes}
+    <ellipse cx="50" cy="36" rx="38" ry="9" fill="${c.rim}"/><ellipse cx="50" cy="36" rx="33" ry="6.4" fill="#1d1226"/><ellipse cx="50" cy="36.6" rx="31" ry="5.4" fill="${c.liq}"/><ellipse cx="45" cy="35.4" rx="12" ry="1.6" fill="#fff" opacity=".35"/>
+    <path d="M21 46 C18 58 25 68 35 73" stroke="#fff" stroke-opacity=".28" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`;
+}
 const wardrobeSVG = () => `<svg viewBox="0 0 70 110" aria-hidden="true"><rect x="4" y="6" width="62" height="100" rx="4" fill="#8a5a2b" stroke="#5e3b17" stroke-width="2"/><rect x="9" y="12" width="25" height="86" rx="2" fill="#a8743a"/><rect x="36" y="12" width="25" height="86" rx="2" fill="#a8743a"/><rect x="13" y="20" width="17" height="30" rx="2" fill="#0002"/><rect x="40" y="20" width="17" height="30" rx="2" fill="#0002"/><rect x="13" y="58" width="17" height="30" rx="2" fill="#0002"/><rect x="40" y="58" width="17" height="30" rx="2" fill="#0002"/><circle cx="31" cy="56" r="2.6" fill="#ffd166"/><circle cx="39" cy="56" r="2.6" fill="#ffd166"/><rect x="1" y="102" width="68" height="6" rx="2" fill="#5e3b17"/><text x="35" y="4" font-size="12" text-anchor="middle">🎩</text></svg>`;
-function renderRoom(disp) {   // disp = the ingredient counts to show on the rack (they fill up one by one while the satchel is unpacked)
-  const c = P.own.caul || 0;
-  $('#rmWall').innerHTML = `<div class="window"><svg viewBox="0 0 60 60" aria-hidden="true"><rect width="60" height="60" rx="4" fill="#7a5a33"/><rect x="4" y="4" width="52" height="52" fill="#2a1f6e"/><rect x="4" y="30" width="52" height="26" fill="#3f9a63"/><circle cx="42" cy="16" r="6" fill="#ffe9a8"/><g fill="#fff"><circle cx="14" cy="12" r="1"/><circle cx="26" cy="20" r=".8"/><circle cx="48" cy="26" r=".8"/></g><path d="M30 4v52M4 30h52" stroke="#7a5a33" stroke-width="3"/></svg></div>` + ['d_picture', 'd_clock', 'd_banner'].map(i => decorSpot(dById(i))).join('');
-  // potion shelf: one bottle per owned potion with its count (tap for details)
-  $('#pShelf').innerHTML = `<div class="shelfTitle">🧴 Potions</div><div class="bottles">` + POTION_IDS.map(id => { const n = P.pot[id] || 0;
-    return `<button class="bottle ${n ? '' : 'none'}" data-pot="${id}" aria-label="${pBoth(id)}">${potionSVG(id)}<i>${POTIONS[id].em}</i>${n ? `<b>×${n}</b>` : ''}</button>`; }).join('') + `</div><div class="plank"></div>`;
-  // ingredient rack: one jar per ingredient type, labelled with the Hebrew word (tap to hear it)
-  const have = Object.keys(ING).filter(id => (disp[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r || ING[a].he.localeCompare(ING[b].he, 'he'));
-  $('#rack').innerHTML = `<div class="shelfTitle">🌿 Ingredients</div>` + (have.length ? `<div class="jars">${have.map(id => `<button class="jar" data-ing="${id}" aria-label="${ING[id].en}"><span class="jarPic">${jarSVG(ING[id].r)}<i class="${ING[id].r === 4 ? "shine" : ""}${[...ING[id].em].length > 1 && ING[id].r === 1 ? " two" : ""}">${ING[id].em}</i><b>${disp[id]}</b></span><span class="jarLbl heb">${ING[id].nk}</span></button>`).join('')}</div>` : '<div class="rackEmpty">Empty. Beat monsters and help villagers to find ingredients!</div>');
-  $('#rmMantel').innerHTML = ['d_lamp', 'd_candle', 'd_books'].map(i => decorSpot(dById(i))).join('') + '<div class="plank"></div>';
-  const has = id => P.own.decor.includes(id);
-  $("#rmFloor").innerHTML = `<button class="wardCell" id="wardBtn" aria-label="Wardrobe">${wardrobeSVG()}<span>👗 Wardrobe</span></button>${decorSpot(dById("d_chest"))}${decorSpot(dById('d_plant'))}<button class="caulCell" id="caulBtn" aria-label="Brew potions"><span class="rug ${has('d_rug') ? 'have' : 'ghost'}" data-d="d_rug"></span>${cauldronSVG(c)}<span class="caulLbl">${CAULDRONS[c]} · tap to brew</span></button>${decorSpot(dById('d_egg'))}${decorSpot(dById('d_owl'))}${decorSpot(dById('d_cat'))}`;
+
+/* glass jar: cork, glass, contents that rise with the count, a paper label with the Hebrew word */
+const JAR_COL = ['#b9bfd0', '#3ddc97', '#4aa8ff', '#b56bff', '#ffd166'];
+let jarN = 0;
+function jarInner(id, n) {
+  const g = ING[id], col = JAR_COL[g.r], h = Math.max(n ? 5 : 0, Math.round(43 * Math.min(1, n / 8))), cid = 'jc' + (++jarN), body = 'M8 24 Q8 17 15 17 H35 Q42 17 42 24 V60 Q42 67 35 67 H15 Q8 67 8 60 Z';
+  return `<svg viewBox="0 0 50 70" aria-hidden="true"><defs><clipPath id="${cid}"><path d="${body}"/></clipPath></defs>
+    <rect x="15" y="2.5" width="20" height="9" rx="2.8" fill="#b9814a"/><path d="M18 5.5 H32 M18 8.5 H32" stroke="#8a5a2e" stroke-width=".8" opacity=".6"/>
+    <rect x="17" y="11" width="16" height="7" fill="#ffffff22" stroke="#ffffff77" stroke-width="1"/><path d="${body}" fill="#ffffff1c"/>
+    <rect x="8" y="${67 - h}" width="34" height="${h}" fill="${col}" opacity=".6" clip-path="url(#${cid})"/><path d="${body}" fill="none" stroke="#ffffff99" stroke-width="1.4"/><rect x="12" y="23" width="3.2" height="30" rx="1.6" fill="#fff" opacity=".35"/></svg>
+    <b class="${[...g.em].length > 1 ? 'two' : ''}">${g.em}</b><span class="tag heb">${g.nk}</span><em>${n}</em>`;
+}
+const JAR_SLOTS = [[64.3, 24.3], [70.6, 24.3], [76.9, 24.3], [64.3, 35.3], [70.6, 35.3], [76.9, 35.3]];   // six jars fit on the two boards; the close-up shows the rest
+let rmInit = false, rmPanel = null, rmDisp = {}, rmDragging = false, rmTok = 0;
+function rmSetup() {
+  if (rmInit) return; rmInit = true;
+  const scene = $('#rmScene');
+  $('#rmShell').innerHTML = rmShell();
+  if (!(window.CSS && CSS.supports && CSS.supports('width', '1cqw'))) {   // older browsers: no container units, so the unit is set from the width instead
+    const fit = () => scene.style.setProperty('--u', (scene.clientWidth / 100) + 'px'); fit(); window.addEventListener('resize', fit);
+  }
+  scene.addEventListener('pointermove', e => {   // a tiny parallax shift for mouse users (never on touch, never while dragging)
+    if (rmDragging || e.pointerType !== 'mouse') return; const r = scene.getBoundingClientRect();
+    scene.style.setProperty('--dx', ((e.clientX - r.left) / r.width - .5) * 2); scene.style.setProperty('--dy', ((e.clientY - r.top) / r.height - .5) * 2);
+  });
+  scene.addEventListener('pointerleave', () => { scene.style.setProperty('--dx', 0); scene.style.setProperty('--dy', 0); });
+  scene.addEventListener('pointerdown', e => {   // drag decorations: pointer capture, works with mouse and touch; a tap without moving says the name
+    const el = e.target.closest('.prop[data-id]'); if (!el || e.button > 0) return;
+    const id = el.dataset.id, it = ROOM_ITEMS[id], r0 = scene.getBoundingClientRect(), p0 = rmPos(id);
+    const offX = p0.x - (e.clientX - r0.left) / r0.width * 100, offY = p0.y - (e.clientY - r0.top) / r0.width * 100, sx = e.clientX, sy = e.clientY; let moved = false;
+    try { el.setPointerCapture(e.pointerId); } catch (x) {}
+    const move = ev => {
+      if (!moved && Math.hypot(ev.clientX - sx, ev.clientY - sy) < 6) return;
+      if (!moved) { moved = true; rmDragging = true; el.classList.add('drag'); }
+      const r = scene.getBoundingClientRect(); let x = (ev.clientX - r.left) / r.width * 100 + offX, y = (ev.clientY - r.top) / r.width * 100 + offY;
+      if (it.t === 'wall') { x = rmClamp(x, RM.x0 + 3, RM.x1 - 3); y = rmClamp(y, RM.y0 + 3, RM.y1 - 4); }
+      else { y = rmClamp(y, RM.y1 + 2, RM.front - 1); const m = rmFloorLeft(y) + 4; x = rmClamp(x, m, 100 - m); }
+      P.own.pos = P.own.pos || {}; P.own.pos[id] = { x: +x.toFixed(1), y: +y.toFixed(1) }; rmPlace(el, id);
+    };
+    const up = () => {
+      el.removeEventListener('pointermove', move); el.removeEventListener('pointerup', up); el.removeEventListener('pointercancel', up);
+      el.classList.remove('drag'); rmDragging = false;
+      if (moved) saveSoon(true); else { const d = SHOP[id]; toast(`${d.em} ${d.nk}`); if (findHeVoice()) playSound({ say: d.nk }); }
+    };
+    el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  });
+  $('#tidyBtn').onclick = () => { P.own.pos = {}; renderRoom(rmDisp); saveSoon(true); toast('🧹 Everything is back in its place'); };
+}
+function rmPlace(el, id) {
+  const p = rmPos(id); el.style.setProperty('--x', p.x); el.style.setProperty('--y', p.y); el.style.setProperty('--s', rmScale(id, p.y)); el.style.setProperty('--z', rmZ(id, p.y));
+}
+function rmShown(disp) { return Object.keys(ING).filter(id => (disp[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r); }   // rarest first; ties keep the list order
+function renderRoom(disp) {   // disp = the ingredient counts to show (they fill up one by one while the satchel is unpacked)
+  rmSetup(); rmDisp = disp;
+  const c = P.own.caul || 0, cau = RM_CAU[c] || RM_CAU[0], H = [];
+  H.push(`<button class="rHit ${rmPanel === 'potions' ? 'on' : ''}" data-kind="potions" aria-label="Potion shelf: tap to look closer" style="left:22%;top:${20 * 1.25}%;width:19%;height:${9.5 * 1.25}%"></button>`);
+  H.push(`<button class="rHit ${rmPanel === 'ing' ? 'on' : ''}" data-kind="ing" aria-label="Ingredient shelves: tap to look closer" style="left:60%;top:${16.5 * 1.25}%;width:19.5%;height:${20.5 * 1.25}%"></button>`);
+  POTION_IDS.forEach((id, i) => H.push(`<div class="rFlask ${(P.pot[id] || 0) ? '' : 'none'}" style="left:${24.8 + i * 3.7}%;top:${27 * 1.25}%">${potionSVG(id)}<i>${POTIONS[id].em}</i></div>`));
+  rmShown(disp).slice(0, 6).forEach((id, i) => H.push(`<div class="rJar jarbox" data-jar="${id}" style="left:${JAR_SLOTS[i][0]}%;top:${JAR_SLOTS[i][1] * 1.25}%">${jarInner(id, disp[id])}</div>`));
+  for (const id of Object.keys(ROOM_ITEMS)) {
+    if (!P.own.decor.includes(id)) continue; const it = ROOM_ITEMS[id], d = SHOP[id], p = rmPos(id);
+    const inner = it.t === 'rug' ? '<div class="rRug"></div>' : it.t === 'floor' ? `<span class="shadow"></span><span class="em">${d.em}</span>` : `<span class="em">${d.em}</span>`;
+    H.push(`<div class="prop ${it.t === 'wall' ? 'wall' : 'floor'} ${it.t === 'rug' ? 'rugwrap' : ''}" data-id="${id}" aria-label="${d.en} (drag to move)" style="--x:${p.x};--y:${p.y};--base:${it.b || 8};--s:${rmScale(id, p.y)};--z:${rmZ(id, p.y)}">${inner}</div>`);
+  }
+  H.push(`<button class="rCaul" id="caulBtn" aria-label="Brew potions: ${CAULDRONS[c]}" style="--liq:${cau.liq};--liqa:${cau.liqa};--cs:${cau.cs}"><span class="aura"></span>${cauldronArt(c)}${[0, 1, 2, 3].map(i => `<i class="bub" style="left:${34 + i * 11}%;animation-delay:${i * .6}s"></i>`).join('')}<span class="caulLbl">${CAULDRONS[c]} · tap to brew</span></button>`);
+  $('#rmProps').innerHTML = H.join(''); renderRoomPanel();
+}
+function renderRoomPanel() {   // the close-up under the room: big flasks and jars that are readable on a phone
+  const p = $('#roomPanel');
+  if (!rmPanel) { p.hidden = true; return; }
+  p.hidden = false;
+  if (rmPanel === 'potions') {
+    p.innerHTML = `<h3>🧴 Potion shelf <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="rCards">` + POTION_IDS.map(id => { const n = P.pot[id] || 0, cn = (P.carry || {})[id] || 0;
+      return `<button class="rCard ${n || cn ? '' : 'none'}" data-pot="${id}"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span><b>${POTIONS[id].name} / ${POTIONS[id].vname}</b><small>× ${n}${cn ? ` · 🎒 ${cn}` : ''}</small></button>`; }).join('') + '</div>';
+  } else {
+    const all = rmShown(rmDisp);
+    p.innerHTML = `<h3>🌿 Ingredient shelves <button class="ib" data-close="1" aria-label="Close">✕</button></h3>` + (all.length ? `<div class="small" style="opacity:.8;margin-bottom:6px">Tap a jar to hear the word.</div><div class="rCards">` +
+      all.map(id => `<button class="rCard" data-ing="${id}" aria-label="${ING[id].en}"><span class="jarbox" style="--w:56px">${jarInner(id, rmDisp[id])}</span><small>${ING[id].en}</small></button>`).join('') + '</div>' : '<div style="opacity:.75;padding:8px 2px">Empty. Beat monsters and help villagers to find ingredients!</div>');
+  }
+}
+function rmFly(id, then) {   // one ingredient flies from the bottom of the room to its jar
+  const scene = $('#rmScene'), jar = scene.querySelector(`[data-jar="${id}"]`), r = scene.getBoundingClientRect(), t = jar ? jar.getBoundingClientRect() : { left: r.left + r.width * .7, top: r.top + r.height * .3, width: 0, height: 0 };
+  const f = document.createElement('div'); f.className = 'rFly'; f.textContent = ING[id].em; f.style.left = '47%'; f.style.top = '90%'; scene.appendChild(f);
+  const dx = t.left + t.width / 2 - (r.left + r.width * .47), dy = t.top + t.height / 2 - (r.top + r.height * .9);
+  if (!f.animate) { f.remove(); then(); return; }
+  const a = f.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${dx}px,${dy}px) scale(.6)`, opacity: .9 }], { duration: 650, easing: 'ease-in' });
+  a.onfinish = () => { f.remove(); then(); };
 }
 function openHome() {
-  G.quest = null; show('home');
-  const disp = Object.assign({}, P.inv), sat = Object.entries(P.satchel || {}).filter(([, n]) => n > 0);
+  G.quest = null; show('home'); rmSetup(); rmPanel = null;
+  const tok = ++rmTok, disp = Object.assign({}, P.inv), sat = Object.entries(P.satchel || {}).filter(([, n]) => n > 0);
   for (const [id, n] of sat) P.inv[id] = (P.inv[id] || 0) + n;   // the data is updated at once; only the picture fills up step by step
   P.satchel = {}; if (sat.length) saveSoon(true);
   renderRoom(disp);
   if (!sat.length) return;
   const total = sat.reduce((a, [, n]) => a + n, 0); toast(`🎒 Unpacking ${total} ingredient${total > 1 ? 's' : ''} onto your shelf…`);
   sat.forEach(([id, n], k) => setTimeout(() => {
-    if (!$('#home').classList.contains('on')) return;
-    disp[id] = (disp[id] || 0) + n; renderRoom(disp); sfx.ok();
-    const j = document.querySelector(`.jar[data-ing="${id}"]`); if (j) { j.classList.add('pop'); j.scrollIntoView({ block: 'nearest' }); }
-  }, 500 + k * 550));
+    if (tok !== rmTok || !$('#home').classList.contains('on')) return;
+    rmFly(id, () => {
+      if (tok !== rmTok || !$('#home').classList.contains('on')) return;
+      disp[id] = (disp[id] || 0) + n; renderRoom(disp); sfx.ok();
+      const j = $('#rmScene').querySelector(`[data-jar="${id}"]`); if (j) { j.classList.add('pop'); }
+    });
+  }, 500 + k * 450));
 }
 function openRecipes() {   // tapping the cauldron
   const c = P.own.caul || 0;
@@ -1852,13 +2014,13 @@ function openRecipes() {   // tapping the cauldron
 $('#home').onclick = e => {
   if (e.target.closest('#caulBtn')) { openRecipes(); return; }
   if (e.target.closest('#wardBtn')) { openWardrobe(); return; }
+  if (e.target.closest('[data-close]')) { rmPanel = null; renderRoom(rmDisp); return; }
+  const hit = e.target.closest('.rHit'); if (hit) { rmPanel = rmPanel === hit.dataset.kind ? null : hit.dataset.kind; renderRoom(rmDisp); if (rmPanel) $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const bt = e.target.closest('[data-pot]');
   if (bt) { const id = bt.dataset.pot; modal(`${POTIONS[id].em} ${pBoth(id)}`, `<div style="text-align:center"><div style="display:inline-block;transform:scale(1.8);margin:20px"><span class="packBottle">${potionSVG(id)}<i>${POTIONS[id].em}</i></span></div></div>
       <p><b>${POTIONS[id].name} potion</b> (fights): ${POTIONS[id].desc}.</p><p><b>${POTIONS[id].vname} potion</b> (villages): ${POTIONS[id].vdesc}.</p><p class="small">🏡 ${P.pot[id] || 0} on the shelf${(P.carry[id] || 0) ? ' · 🎒 ' + P.carry[id] + ' in your quest pouch' : ''}. You can carry 5 on a quest.</p>`, [['OK', null]]); return; }
   const jr = e.target.closest('[data-ing]');
-  if (jr) { const g = ING[jr.dataset.ing]; if (!findHeVoice()) toast(`${g.em} ${g.nk} (this device has no Hebrew voice)`); else playSound({ say: g.nk }); jr.classList.remove('pop'); void jr.offsetWidth; jr.classList.add('pop'); return; }
-  const sp = e.target.closest('.spot[data-d]');
-  if (sp) { const d = SHOP[sp.dataset.d]; if (P.own.decor.includes(d.id)) { toast(`${d.em} ${d.nk}`); if (findHeVoice()) playSound({ say: d.nk }); } else toast('🏪 You can buy this in the shop'); }
+  if (jr) { const g = ING[jr.dataset.ing]; if (!findHeVoice()) toast(`${g.em} ${g.nk} (this device has no Hebrew voice)`); else playSound({ say: g.nk }); jr.classList.remove('pop'); void jr.offsetWidth; jr.classList.add('pop'); }
 };
 $('#homeBack').onclick = () => { saveSoon(true); openMenu(); };
 function pickIngredients(potion) {   // the student chooses which ingredients to use (one for each slot, all different)
