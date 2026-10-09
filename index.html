@@ -919,9 +919,9 @@ function wpick(items, keyFn, avoid) {
 }
 
 /* ====================== AUDIO ====================== */
-let muted = lsGet('aq_mute') === '1', AC = null;
+let muted = lsGet('tq_mute') === '1', AC = null;
 // Volume for everything (spoken sounds and game effects). Soft by default; the slider on the map screen changes it.
-let vol = Math.min(1, Math.max(.1, Number(lsGet('aq_vol')) || .5));
+let vol = Math.min(1, Math.max(.1, Number(lsGet('tq_vol')) || .5));
 function tone(f, d, type = 'sine', g = 0.07, delay = 0) {
   if (muted) return;
   try {
@@ -1069,13 +1069,13 @@ function refreshVolUI() {
 }
 document.querySelectorAll('.vslider').forEach(s => {
   s.addEventListener('input', () => {
-    vol = Math.min(1, Math.max(.1, s.value / 100)); lsSet('aq_vol', String(vol));
-    if (muted) { muted = false; lsSet('aq_mute', '0'); }
+    vol = Math.min(1, Math.max(.1, s.value / 100)); lsSet('tq_vol', String(vol));
+    if (muted) { muted = false; lsSet('tq_mute', '0'); }
     refreshVolUI();
   });
   s.addEventListener('change', () => { if (!muted) playSound(soundFor('ב')); });
 });
-function setMute(m) { muted = m; lsSet('aq_mute', m ? '1' : '0'); refreshVolUI(); }
+function setMute(m) { muted = m; lsSet('tq_mute', m ? '1' : '0'); refreshVolUI(); }
 
 /* ====================== HERO ART ====================== */
 // Looks: skin tone, robe colour and hair/beard colour. Skin tones are plain colour circles (no labels): every student can pick the one that looks like them.
@@ -1248,7 +1248,7 @@ function setCloud(s) {
 function saveSoon(now) {
   if (!P) return;
   P.updated = Date.now(); pruneSec();
-  lsSet('aq_p_' + P.id, JSON.stringify(P));
+  lsSet('tq_p_' + P.id, JSON.stringify(P));
   clearTimeout(saveTimer);
   if (!CFG.SCRIPT_URL) { setCloud('none'); return; }
   setCloud('pend');
@@ -1264,14 +1264,14 @@ async function cloudSave() {
     const j = await r.json();
     if (j.deleted) { removedByTeacher(); return; }   // the teacher deleted this student
     if (j.conflict && j.data) {         // cloud copy is newer: adopt it
-      const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('aq_p_' + P.id, JSON.stringify(P));
+      const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('tq_p_' + P.id, JSON.stringify(P));
     }
     setCloud('ok');
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
   let local = null, cloud = null, offline = false, deleted = false;
-  try { const t = lsGet('aq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
+  try { const t = lsGet('tq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
       const r = await fetch(CFG.SCRIPT_URL + '?action=load&id=' + encodeURIComponent(id));
@@ -1283,7 +1283,7 @@ async function loadProfile(id) {
   }
   // the copy with more answers wins; on a tie, the one saved last (crafting and shopping do not add answers)
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
-  if (deleted) { try { localStorage.removeItem('aq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
+  if (deleted) { try { localStorage.removeItem('tq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
   return { profile: best, offline };
 }
@@ -1315,7 +1315,7 @@ function confetti(emojis = ['⭐', '✨', '🎉', '🪄']) {
 const norm = s => s.trim().toUpperCase().replace(/\s+/g, '');
 let pendingId = '', cr = { g: 'm', color: COLORS[1], skin: SKINS[2], hair: null };
 
-$('#sid').value = lsGet(APP ? 'aq_app_last' : 'aq_last') || '';
+$('#sid').value = lsGet(APP ? 'tq_app_last' : 'tq_last') || '';
 $('#sid').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginBtn').click(); });
 $('#loginBtn').onclick = async () => {
   const id = APP ? $('#sid').value.trim().toLowerCase() : norm($('#sid').value), msg = $('#loginMsg');
@@ -1324,7 +1324,7 @@ $('#loginBtn').onclick = async () => {
   msg.textContent = 'Looking for your hero…'; $('#loginBtn').disabled = true;
   const r = await loadProfile(id);
   $('#loginBtn').disabled = false; msg.textContent = '';
-  lsSet(APP ? 'aq_app_last' : 'aq_last', id);
+  lsSet(APP ? 'tq_app_last' : 'tq_last', id);
   if (r.profile) { P = r.profile; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
   if (APP) { modal('🌟 New hero?', `<p>There is no hero for <b>${esc(id)}</b> on this device yet.</p><p>Create a new hero? It will stay on this device only.</p>`, [['Yes, create my hero', () => { pendingId = id; pendingReal = pendingCls = ''; openCreator(); }], ['No, I mistyped', null, true]]); return; }
   if (r.deleted) { modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['I am new 🌟', () => $('#newBtn').click()], ['OK', null, true]]); return; }
@@ -1337,7 +1337,7 @@ let pendingReal = '', pendingCls = '';
 const ID_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // no I, O, 0, 1: they are easy to mix up when writing down
 function genId() { let s; do { s = ''; for (let i = 0; i < 5; i++) s += ID_CHARS[Math.floor(Math.random() * ID_CHARS.length)]; } while (!/[A-Z]/.test(s) || !/[2-9]/.test(s)); return s; }   // always some letters and some digits
 function removedByTeacher() {   // the teacher deleted this student: forget the local copy and go back to the start
-  const id = P && P.id; P = null; try { if (id) localStorage.removeItem('aq_p_' + id); } catch (e) {}
+  const id = P && P.id; P = null; try { if (id) localStorage.removeItem('tq_p_' + id); } catch (e) {}
   show('login'); modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['OK', null]]);
 }
 $('#newBtn').onclick = () => { $('#regName').value = ''; $('#regClass').value = ''; $('#regMsg').textContent = ''; $('#regMsg2').textContent = ''; $('#regTick').checked = false; $('#regForm').style.display = ''; $('#regDone').style.display = 'none'; show('register'); };
@@ -1351,7 +1351,7 @@ $('#regGo').onclick = async () => {
   for (let k = 0; k < 8 && !id; k++) { const c = genId(), r = await loadProfile(c); if (r.offline || (!r.profile && !r.deleted)) id = c; }   // a number nobody has used (offline, the chance of a clash is tiny)
   $('#regGo').disabled = false; msg.textContent = '';
   if (!id) { msg.textContent = 'Something went wrong. Please try again.'; return; }
-  pendingId = id; pendingReal = name; pendingCls = cls; lsSet(APP ? 'aq_app_last' : 'aq_last', id); $('#sid').value = id;
+  pendingId = id; pendingReal = name; pendingCls = cls; lsSet(APP ? 'tq_app_last' : 'tq_last', id); $('#sid').value = id;
   $('#regId').textContent = id; $('#regForm').style.display = 'none'; $('#regDone').style.display = '';
 };
 $('#regNext').onclick = () => { if (!$('#regTick').checked) { $('#regMsg2').textContent = 'Please write your number down and tick the box.'; return; } openCreator(); };
@@ -3812,11 +3812,11 @@ function openGate() { show('login'); }
 // The unlock is remembered only for this browser tab (so a refresh doesn't ask again), never across visits.
 const ssGet = k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
 const ssSet = (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} };
-try { localStorage.removeItem('aq_gate'); } catch (e) {}   // forget the old always-unlocked setting
+try { localStorage.removeItem('tq_gate'); } catch (e) {}   // forget the old always-unlocked setting
 (async () => {
-  if (!GATE_HASH || APP || ssGet('aq_gate') === GATE_HASH) return openGate();
+  if (!GATE_HASH || APP || ssGet('tq_gate') === GATE_HASH) return openGate();
   $('#gateBtn').onclick = async () => {
-    if (await tryGate($('#pass').value.trim())) { ssSet('aq_gate', GATE_HASH); openGate(); }
+    if (await tryGate($('#pass').value.trim())) { ssSet('tq_gate', GATE_HASH); openGate(); }
     else { $('#gateMsg').textContent = 'That passcode is not right.'; $('#pass').value = ''; }
   };
   $('#pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gateBtn').click(); });
@@ -3824,7 +3824,7 @@ try { localStorage.removeItem('aq_gate'); } catch (e) {}   // forget the old alw
 
 /* ----- app: sign up with an e-mail code (so the number of users is known), or play offline. Game data never leaves the device. ----- */
 function appHeroList() {   // heroes saved on this device by the app
-  const out = []; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (!k.startsWith('aq_p_')) continue; const p = JSON.parse(localStorage.getItem(k)); if (p && p.app) out.push(p); } } catch (e) {}
+  const out = []; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (!k.startsWith('tq_p_')) continue; const p = JSON.parse(localStorage.getItem(k)); if (p && p.app) out.push(p); } } catch (e) {}
   return out.sort((a, b) => (b.updated || 0) - (a.updated || 0));
 }
 function renderAppLogin() {
