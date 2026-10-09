@@ -261,6 +261,19 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
  .foeBody{font-size:3.8rem}.side svg{height:110px}.big{font-size:2.4rem}
  #kb{gap:4px}#kb button{font-size:1.2rem;padding:6px 0}
 }
+/* compact fight screen: smaller answers, so the stage is bigger and everything fits */
+.screen{padding:12px 12px calc(14px + env(safe-area-inset-bottom))}
+.stage{min-height:255px}
+.opts{gap:8px}
+.opt{font-size:2.3rem;min-height:66px;padding:6px;border-radius:14px;box-shadow:0 4px 0 #6b5ca8}.opt.w{font-size:1.7rem}.opt.p{font-size:1.3rem}
+.panel{margin-top:6px;padding:12px}.qtitle{font-size:1rem;margin:2px 0}.qsub{font-size:.85rem;margin-bottom:6px}
+.hearBtn{font-size:1.3rem;padding:6px 22px;box-shadow:0 4px 0 #9b6411}
+.big{font-size:2.6rem}.big.sm{font-size:1.5rem}.fb{margin-top:6px;font-size:.95rem;min-height:2.2em}
+@media (max-width:560px){.opt{font-size:1.9rem;min-height:56px}.opt.w{font-size:1.45rem}.opt.p{font-size:1.15rem}.stage{min-height:245px}.panel{padding:10px}}
+.stage{min-height:clamp(200px,33vh,330px)}
+#tierLbl{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.8rem;line-height:1.15}
+@media (max-width:560px){.stage{min-height:clamp(200px,33vh,330px)}.potBar{margin:2px auto}.fb{min-height:1.8em;margin-top:4px}.qsub{margin-bottom:4px}}
+@media (max-height:700px){.side svg{height:100px}.hearts{font-size:1.1rem}.mid{font-size:.8rem}.panel{padding:8px}.opt{min-height:52px;font-size:1.75rem}.opt.w{font-size:1.35rem}}
 </style>
 </head>
 <body>
@@ -1452,6 +1465,7 @@ function nextQuestion() { G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = fa
 function showQuestion() {   // draws G.q (a Second chance potion draws the same question again)
   $('#abandonBtn').style.display = (G.quest === 'battle' || G.quest === 'peace') ? '' : 'none';
   if (G.quest === 'peace') setMood(G.helped ? '🙂' : '😟');
+  if (!inCraft()) { const cp = $('#craftPic'); if (cp) cp.style.display = 'none'; }   // the ingredient picture belongs to brewing and the shop only
   G.locked = false; G.tries = 0; G.typed = ''; renderPotBar(); $('#castBtn').textContent = G.quest === 'craft' ? '🫕 Drop it in!' : G.quest === 'shop' ? '🛒 Answer' : '✨ Cast it!';
   const q = G.q;
   $('#qTitle').textContent = q.title;
