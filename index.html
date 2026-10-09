@@ -790,8 +790,8 @@ function loadSprite() {
         try { sprite = { buf: await AC.decodeAudioData(cached.wav.slice(0)), idx: cached.idx, ver: cached.ver }; return; } catch (e) { /* fall through to the built-in set */ }
       }
       const [wavBuf, idx] = await Promise.all([
-        fetch('syllables.wav?v=4').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
-        fetch('syllables.json?v=4').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
+        fetch('syllables.wav?v=5').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
+        fetch('syllables.json?v=5').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
       ]);
       AC = AC || new (window.AudioContext || window.webkitAudioContext)();
       sprite = { buf: await AC.decodeAudioData(wavBuf), idx };
@@ -2847,7 +2847,7 @@ async function auditionSet(id) {
 let builtinSprite = null;
 async function loadSpriteBuiltin() {
   if (builtinSprite) return;
-  const [wavBuf, idx] = await Promise.all([fetch('syllables.wav?v=4').then(r => r.arrayBuffer()), fetch('syllables.json?v=4').then(r => r.json())]);
+  const [wavBuf, idx] = await Promise.all([fetch('syllables.wav?v=5').then(r => r.arrayBuffer()), fetch('syllables.json?v=5').then(r => r.json())]);
   builtinSprite = { buf: await AC.decodeAudioData(wavBuf), idx };
 }
 $('#admSets').onclick = async e => {
