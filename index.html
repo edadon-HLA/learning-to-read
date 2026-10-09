@@ -362,6 +362,8 @@ body.peace .stage{background:linear-gradient(#0000,#0005),linear-gradient(180deg
 .hpbar>i{display:block;height:100%;background:linear-gradient(90deg,#ff5d73,#ff9966);width:100%;transition:width .4s}
 body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .hearts{font-size:1.4rem;letter-spacing:2px}
+.hBonus{filter:drop-shadow(0 0 5px #ffd166) drop-shadow(0 0 9px #ffb703) hue-rotate(-35deg) saturate(1.3);margin-left:4px;animation:hbPulse 2.2s ease-in-out infinite}@keyframes hbPulse{50%{filter:drop-shadow(0 0 8px #ffd166) drop-shadow(0 0 14px #ffb703) hue-rotate(-35deg) saturate(1.3)}}
+@media (prefers-reduced-motion:reduce){.hBonus{animation:none}}
 .float{position:absolute;font-weight:700;font-size:1.6rem;pointer-events:none;animation:up 1s forwards;text-shadow:0 2px 0 #000a}
 @keyframes up{to{transform:translateY(-60px);opacity:0}}
 .panel{margin-top:10px}
@@ -444,7 +446,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 @media (max-height:700px){.side svg{height:112px}.hearts{font-size:1.1rem}.mid{font-size:.8rem}.panel{padding:8px}.opt{min-height:52px;font-size:1.75rem}.opt.w{font-size:1.35rem}}
 </style>
 </head>
-<body>
+<body><div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e63946;color:#fff;font:700 11px sans-serif;text-align:center;padding:2px;pointer-events:none">🧪 TEST VERSION - saved on this device only, not the real game</div>
 
 <section id="gate" class="screen on">
   <h1>🔒 Learning to Read</h1>
@@ -740,18 +742,19 @@ const APP = (() => { try { return matchMedia('(display-mode: standalone)').match
 /* ====================== CONFIG ====================== */
 const CFG = {
   // Paste the Apps Script web app URL here to save progress to the school Google Sheet.
-  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby_WgFcze8lH_KTjGD1oI_m5BTocs8REMrOJwYrs6fkX5Pir_C1BzRGQJIkX-kG3ESN/exec',
+  SCRIPT_URL: '',
   DAILY_SEC: 600,           // 10 minutes a day
   MIN_FIGHTS: 5, MAX_FIGHTS: 10,   // normal encounters before the boss / big request (rolled at random when a quest starts, never shown)
-  MAX_HEARTS: 3,            // hearts (fights) or smileys (village) the student can have
+  MAX_HEARTS: 3,            // hearts (fights) or smileys (village) a quest starts with; healing (win, potion) stops here
+  BONUS_HEARTS: 5,          // camps, gifts and village rests can push hearts / smileys up to this
   HINT_AFTER: 5,            // from this encounter on, tell the student the monsters are getting stronger
-  VILLAGE_NEED: 3, BIG_NEED: 5, FINALE_FULL_FROM: 12,    // correct answers a villager needs; a big request needs more
+  VILLAGE_NEED: 3, BIG_NEED: 6, FINALE_FULL_FROM: 12,    // correct answers a villager needs; a big request needs more (fights match: 3 normal, 6 boss; from level 12 the festival and the boss take 9)
   COIN_BY_TIER: [0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4],   // coin "unit" by level (index = level): a won fight pays up to FIGHT_UNITS units, each mistake takes one unit away
   FIGHT_UNITS: 3,           // a normal fight or villager takes 3 right answers: maximum coins = 3 x the level base amount; each mistake takes one base amount away
   BOSS_MIN: 3, BOSS_MAX: 5, // a boss / big request pays the normal amount times a random number between these
   EARLY_MULT: 2,            // coins are doubled during the first 10 minutes of play each day
   ODDS_NORMAL: [60, 30, 10], ODDS_BOSS: [60, 30, 10],   // chance (%) of common/uncommon/rare in normal fights; rare/epic/legendary in boss fights
-  POUCH: 5, MAX_HEARTS_POT: 5,   // potions that can be carried on a quest run; most hearts with a Heart potion
+  POUCH: 5, MAX_HEARTS_POT: 3,   // potions that can be carried on a quest run; a Heart potion heals up to this many and does nothing above it
   SAFETY_RESTARTS: 2,       // after this many restarts in a row, the next try starts with one free extra heart (0 = off)
   UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10,   // levels 1-7: up at 85% over the last 8-10 answers
   READ_UP_ACC: 0.9, READ_MIN_WINDOW: 12, READ_MAX_WINDOW: 15, READ_FIGHTS: [8, 14], MAX_LEVEL: 15   // from level 8 (reading): up at 90% over the last 12-15 answers; quests have 8-14 normal stops
@@ -970,8 +973,8 @@ function loadSprite() {
         try { sprite = { buf: await AC.decodeAudioData(cached.wav.slice(0)), idx: cached.idx, ver: cached.ver }; return; } catch (e) { /* fall through to the built-in set */ }
       }
       const [wavBuf, idx] = await Promise.all([
-        fetch('syllables.wav?v=5').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
-        fetch('syllables.json?v=5').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
+        fetch('https://edadon-hla.github.io/learning-to-read/syllables.wav?v=5').then(r => { if (!r.ok) throw new Error('wav'); return r.arrayBuffer(); }),
+        fetch('https://edadon-hla.github.io/learning-to-read/syllables.json?v=5').then(r => { if (!r.ok) throw new Error('json'); return r.json(); })
       ]);
       AC = AC || new (window.AudioContext || window.webkitAudioContext)();
       sprite = { buf: await AC.decodeAudioData(wavBuf), idx };
@@ -1414,7 +1417,7 @@ let installEvt = null;
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; $('#installBtn').style.display = ''; });
 window.addEventListener('appinstalled', () => { installEvt = null; $('#installBtn').style.display = 'none'; toast('📲 The game is installed!'); });
 $('#installBtn').onclick = async () => { if (!installEvt) return; installEvt.prompt(); try { await installEvt.userChoice; } catch (e) {} installEvt = null; $('#installBtn').style.display = 'none'; };
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load', () => { Promise.resolve().catch(() => {}); });
 function openCreator() { cr = { g: 'm', color: rnd(COLORS), skin: SKINS[2], hair: null, beard: 'short' }; $('#nick').value = ''; $('#creatorMsg').textContent = ''; drawCreator(); show('creator'); }
 const swatchRow = (list, cur, key) => list.map((c, i) => `<button class="sw ${c === cur ? 'sel' : ''}" data-k="${key}" data-i="${i}" style="background:${c}" aria-label="${key}"></button>`).join('');
 function drawCreator() {
@@ -2319,8 +2322,8 @@ function jDraw() {
   document.querySelectorAll('#jMap .jnode.next').forEach(g => { g.onclick = () => jWalk(); g.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jWalk(); } }; });
 }
 function jHud() {
-  const qs = P.quest[J.q], v = jVillage(), hs = Math.max(0, qs.hearts), mx = Math.max(CFG.MAX_HEARTS, hs), th = jTheme(), nodes = jNodes(), next = nodes[(qs.at || 0) + 1];
-  $('#jHearts').textContent = v ? '😊'.repeat(hs) + '😐'.repeat(mx - hs) : '❤️'.repeat(hs) + '🖤'.repeat(mx - hs);
+  const qs = P.quest[J.q], v = jVillage(), th = jTheme(), nodes = jNodes(), next = nodes[(qs.at || 0) + 1];
+  $('#jHearts').innerHTML = heartsHtml(qs.hearts, !v);
   $('#jArea').textContent = (v ? VILLAGES : AREAS)[(qs.ch - 1) % 6]; $('#jStory').textContent = th.story;
   const b = $('#jBanner');
   if (next && next[0] === 'B') { b.textContent = v ? '🎉 The festival hall is just ahead!' : '⚠️ Something big is waiting just ahead…'; b.className = 'jBanner warn'; }
@@ -2361,7 +2364,7 @@ function jArrive(i) {
   if (t === 'm' || t === 's' || t === 'B') { jDraw(); jHud(); enterFight(); return; }   // the normal fight / village screen
   qs.at = i; J.wizLen = null;   // a special stop is done the moment you arrive (so a refresh can not repeat it)
   let title, body;
-  if (t === 'r') { qs.hearts = Math.min(CFG.MAX_HEARTS, qs.hearts + 1); title = v ? '🪑 A shady bench' : '⛺ A quiet campfire'; body = `<p>${v ? 'You sit for a moment. A villager smiles at you.' : 'You rest by the fire and feel better.'}</p><p>+1 ${v ? '😊' : '❤️'}</p>`; }
+  if (t === 'r') { const before = qs.hearts, full = before >= CFG.BONUS_HEARTS; qs.hearts = Math.min(CFG.BONUS_HEARTS, qs.hearts + 1); title = v ? '🪑 A shady bench' : '⛺ A quiet campfire'; body = `<p>${v ? 'You sit for a moment. A villager smiles at you.' : 'You rest by the fire and feel better.'}</p><p>${full ? 'You are already full of energy!' : '+1 ' + (v ? '😊' : '❤️') + (qs.hearts > CFG.MAX_HEARTS ? ' <small>(a bonus one!)</small>' : '')}</p>`; }
   else if (t === 'c') { const c = jCoins(2 + Math.floor(Math.random() * 3)); title = v ? '🧺 A basket of gifts' : '🎁 A treasure chest'; body = `<p style="font-size:1.3rem">🪙 +${c} coins</p>`; }
   else { title = '🪧 A signpost'; body = `<p>${J_SIGNS[J.q][+code.slice(1)]}</p>`; }
   sfx.ok(); saveSoon(true); jDraw(); jHud();
@@ -2397,7 +2400,7 @@ function newEncounter() {   // the stop the wizard just walked to: a monster or 
   G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier; G.potUsed = false; G.snap = null; G.noCount = false; G.projs = (G.quest === 'peace' && P.tier >= 8) ? (boss ? finaleProjects() : [pickProject(G.site ? G.site.bg : 'bakery')]) : null; G.need = G.projs ? G.projs.length * 3 : G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;   // mistakes in this fight (G.mist) lower the coins and the rarity of the loot
   if (G.quest === 'battle') {
     const ar = AREA_MON[(qs.ch - 1) % 6], mk = window.__forceMon || (boss ? ar.b : rnd(ar.n)), def = { ...MON_DEF[mk], key: mk };
-    const isBoss = !!def.boss; G.mon = { ...def, boss: isBoss, max: isBoss ? 6 : 3, hp: isBoss ? 6 : 3 };
+    const isBoss = !!def.boss, bhp = isBoss ? (P.tier >= CFG.FINALE_FULL_FROM ? 9 : 6) : 3; G.mon = { ...def, boss: isBoss, max: bhp, hp: bhp };   // one hit per right answer
   } else { const f0 = boss ? '👵' : rnd(FOLK); G.fname = FOLK_NAMES[f0] || 'The villager'; G.folk = tonedEmoji(f0, nextTone()); G.big = boss; G.mon = null; G.vkey = boss ? 'library' : (G.site ? G.site.bg : rnd(Object.keys(VNAMES))); G.fname = VNAMES[G.vkey]; }
   drawScene(); nextQuestion();
 }
@@ -2472,11 +2475,14 @@ function drawScene() {
   }
   updateBars(); updateReward();
 }
+function heartsHtml(n, fight) {   // the first 3 are normal; hearts above 3 (bonus ones from camps, gifts and village rests) glow gold
+  const hs = Math.max(0, n || 0), on = fight ? '❤️' : '😊', off = fight ? '🖤' : '😐', base = Math.min(hs, CFG.MAX_HEARTS);
+  return on.repeat(base) + off.repeat(CFG.MAX_HEARTS - base) + (hs > CFG.MAX_HEARTS ? `<span class="hBonus" title="Bonus!">${on.repeat(hs - CFG.MAX_HEARTS)}</span>` : '');
+}
 function updateBars() {
   if (inCraft()) return;
   const b = G.quest === 'battle';
-  const hs = Math.max(0, G.hearts), mx = Math.max(CFG.MAX_HEARTS, hs);
-  $('#hearts').textContent = b ? '❤️'.repeat(hs) + '🖤'.repeat(mx - hs) : '😊'.repeat(hs) + '😐'.repeat(mx - hs);
+  $('#hearts').innerHTML = heartsHtml(G.hearts, b);
   $('#heroBox').classList.toggle('heroGlow', b && G.combo >= 3);   // on a hot streak the hero glows
   $('#hpFill').style.width = (b ? G.mon.hp / G.mon.max * 100 : G.helped / G.need * 100) + '%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`;
@@ -2587,7 +2593,7 @@ async function pickOption(i, btn) {
     $('#fb').innerHTML = `✅ ${q.explain}`;
     if (battle) {
       await flySpell(o.em || '✨'); sfx.hit(); burst(o.em || '✨', 9); burst('💥', 3);
-      const dmg = 1 + (G.combo >= 3 ? 1 : 0);
+      const dmg = 1;   // a hot streak only makes the hero glow
       G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400);
       floatText('-' + dmg + (xp ? '  +' + xp + 'xp' : ''), '#ffd166');
     } else {
@@ -2666,7 +2672,7 @@ $('#castBtn').onclick = async () => {
     if (first) { G.combo++; tr = record(q.keyOf(hit), true); xp = gainXp(true) + (G.noCount ? 0 : 5); if (!G.noCount) P.xp += 5; }
     sfx.ok(); speakHe(hit);
     $('#fb').innerHTML = `✅ Perfect! ${q.explain}`;
-    if (battle) { await flySpell('✨'); sfx.hit(); burst('✨', 10); burst('💥', 3); const dmg = 2; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
+    if (battle) { await flySpell('✨'); sfx.hit(); burst('✨', 10); burst('💥', 3); const dmg = 1; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
     else { G.helped++; renderTray(); setMood('😊'); floatText('+' + xp + 'xp', '#ffd166'); if (q.reveal) $('#foeName').textContent = G.fname + ': ' + q.reveal.replace(/<[^>]*>/g, '') + ' Thank you!'; }
     after(tr); updateBars(); await sleep(battle ? 1000 : 1600);
     if (battle && G.mon.hp <= 0) return victory();
@@ -2780,7 +2786,7 @@ async function usePotion(id) {
   if (G.potUsed || !((P.carry || {})[id] > 0) || !G.q) return;
   const battle = G.quest === 'battle', qs = P.quest[G.quest], spend = () => { P.carry[id]--; G.potUsed = true; saveSoon(true); renderPotBar(); updateBars(); updateReward(); };
   if (id === 'heart') {
-    if (G.hearts >= CFG.MAX_HEARTS_POT) { toast(inVillage() ? 'Your smileys are already full!' : 'Your hearts are already full!'); return; }
+    if (G.hearts >= CFG.MAX_HEARTS_POT) { toast(G.hearts > CFG.MAX_HEARTS_POT ? 'You already have bonus ' + (inVillage() ? 'smileys' : 'hearts') + ' - the potion is saved!' : inVillage() ? 'Your smileys are already full!' : 'Your hearts are already full!'); return; }   // nothing happens and the potion is kept
     G.hearts++; qs.hearts = G.hearts; spend(); sfx.up(); burst('💖', 8); if (!battle) setMood('😄'); toast(inVillage() ? '😊 The villager smiles again! One more smiley!' : '❤️ One more heart!');
   } else if (id === 'power') {
     if (battle) { if (G.mon.hp <= 1) { toast('The monster is almost defeated already!'); return; } G.mon.hp--; G.mon.max = Math.max(G.mon.hp, G.mon.max - 1); }
@@ -3187,6 +3193,9 @@ function wsBackSVG() {
     <g fill="none" stroke="#9aa6b2" stroke-width=".6"><circle cx="30" cy="13" r="3"/><circle cx="30" cy="13" r="1.1"/><circle cx="70" cy="13" r="3"/><circle cx="70" cy="13" r="1.1"/></g>`;
 }
 let wsPanelOpen = null;
+function mannequinSVG() {   // the artificer's wooden dress dummy (the hero is never drawn in the workshop)
+  return `<svg viewBox="0 0 60 110" aria-hidden="true"><path d="M30 76 V104 M18 106 H42" stroke="#6b4423" stroke-width="3.2" stroke-linecap="round" fill="none"/><path d="M18 34 Q14 40 15 56 Q17 72 22 78 H38 Q43 72 45 56 Q46 40 42 34 Q36 30 30 30 Q24 30 18 34Z" fill="#c9a36b" stroke="#8a6a3b" stroke-width="1.3"/><rect x="26.5" y="22" width="7" height="9" rx="2" fill="#b98f55"/><ellipse cx="30" cy="14" rx="8.5" ry="10" fill="#d8b47c" stroke="#8a6a3b" stroke-width="1.3"/><path d="M22 52 Q30 56 38 52 M23 62 Q30 66 37 62" stroke="#a37c45" stroke-width="1" fill="none"/></svg>`;
+}
 function renderWorkshop() {
   const skin = WS_SKINS[(shopShelf().skin + 2) % WS_SKINS.length];
   $('#wsBack').innerHTML = wsBackSVG(); $('#wsCounter').innerHTML = shCounterSVG().replace(/shCsh/g, 'wsCsh').replace(/shCbl/g, 'wsCbl');
@@ -3195,7 +3204,7 @@ function renderWorkshop() {
   jars.slice(0, 8).forEach((id, i) => { const [x, y] = SH_SLOTS[i]; p += `<div class="rJar jarbox" style="left:${x}%;top:${y * 1.25}%">${jarInner(id, P.inv[id])}</div>`; });
   if (!jars.length) p += '<div class="shAt wsEmpty" style="--x:50;--y:30">Rare ingredients go on these shelves</div>';
   p += `<div class="shAt shMerchant" style="--x:50;--y:58.4" aria-label="The artificer">${artificerSVG(skin)}</div>`;
-  p += `<div class="shAt wsMan" style="--x:84;--y:80">${heroOf(P)}</div>`;
+  p += `<div class="shAt wsMan" style="--x:92;--y:78;z-index:45" aria-label="The artificer's mannequin">${mannequinSVG()}</div>`;
   $('#wsProps').innerHTML = p;
   $('#wsFront').innerHTML = `<div class="shAt shCau" style="--x:20;--y:74;pointer-events:none">${cauldronArt(2)}</div><div class="shAt shSay" id="wsSay" style="--x:72;--y:55">${wsSay}</div>`;
   if (!window.CSS || !CSS.supports || !CSS.supports('width', '1cqw')) { const sc = $('#wsScene'); sc.style.setProperty('--u', (sc.clientWidth / 100) + 'px'); }
@@ -3777,7 +3786,7 @@ async function auditionSet(id) {
 let builtinSprite = null;
 async function loadSpriteBuiltin() {
   if (builtinSprite) return;
-  const [wavBuf, idx] = await Promise.all([fetch('syllables.wav?v=5').then(r => r.arrayBuffer()), fetch('syllables.json?v=5').then(r => r.json())]);
+  const [wavBuf, idx] = await Promise.all([fetch('https://edadon-hla.github.io/learning-to-read/syllables.wav?v=5').then(r => r.arrayBuffer()), fetch('https://edadon-hla.github.io/learning-to-read/syllables.json?v=5').then(r => r.json())]);
   builtinSprite = { buf: await AC.decodeAudioData(wavBuf), idx };
 }
 $('#admSets').onclick = async e => {
