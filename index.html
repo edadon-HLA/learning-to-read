@@ -205,7 +205,7 @@ body.peace .foeBody{font-size:6rem}
 body.peace .foeWrap .foeBody{animation:none}
 .foeBody .vill{position:relative;display:inline-block;transform-origin:50% 100%;line-height:0}
 .foeBody .vill svg{display:block;overflow:visible;filter:drop-shadow(0 3px 3px #0008)}
-.vThought{position:absolute;left:58%;bottom:84%;width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.6rem;line-height:1;box-shadow:0 2px 0 #0003;animation:vkbub 2.4s ease-in-out infinite}
+.vThought{position:absolute;left:58%;bottom:84%;width:46px;height:46px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:1.6rem;line-height:1;box-shadow:0 2px 0 #0003;animation:vkbub 2.4s ease-in-out infinite}
 .vThought::after{content:"";position:absolute;left:4%;bottom:-9px;width:12px;height:12px;border-radius:50%;background:#fff}
 @keyframes vkbub{50%{transform:translateY(-3px)}}
 .vill.vkjump{animation:vkjump .8s ease-out 1}@keyframes vkjump{30%{transform:translateY(-14%)}60%{transform:translateY(0)}78%{transform:translateY(-5%)}}
@@ -264,6 +264,13 @@ body.peace .foeWrap .foeBody{animation:none}
 .tutFinBox{background:linear-gradient(160deg,#2a1d5e,#4b2a8c);border:2px solid var(--gold);border-radius:20px;padding:20px;text-align:center;max-width:340px}
 body.tutOn .screen{padding-bottom:230px}body.tutOn #homeBtn{visibility:hidden}
 @media (prefers-reduced-motion:reduce){.coach *,.tut-hl,.tutHand,.tutOwl.talk{animation:none!important}}
+.vk-a-saw{animation:vksaw .8s ease-in-out infinite}@keyframes vksaw{50%{transform:rotate(-18deg)}}
+.icoSvg{width:1em;height:1em;display:inline-block;vertical-align:-.12em}.vThought .icoSvg{width:1.7rem;height:1.7rem;vertical-align:middle}.trayResult .icoSvg{width:1.2em;height:1.2em}
+.projTray{margin-top:4px;font-size:.8rem;display:inline-block;background:#0007;border-radius:12px;padding:4px 8px}.trayName{opacity:.9;margin-bottom:2px}.trayDone{margin-right:2px}
+.traySlots{display:flex;gap:6px;justify-content:center}.traySlot{width:34px;height:34px;display:grid;place-items:center;font-size:1.3rem;border-radius:10px;background:#0005;border:2px dashed #fff4;opacity:.45;filter:grayscale(1)}
+.traySlot.full{opacity:1;filter:none;border:2px solid var(--gold);background:#ffd16633;animation:slotPop .5s}@keyframes slotPop{0%{transform:scale(.6)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.trayResult{font-size:1.7rem;animation:slotPop .6s}
+@media (prefers-reduced-motion:reduce){.vk-a-saw,.traySlot.full,.trayResult{animation:none!important}}
 .shMerchBody{display:block;width:6.4rem;margin:0 auto}.shMerchBody svg{display:block;width:100%;height:auto}
 @media (prefers-reduced-motion:reduce){.shMerchant,.shCau .flame{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
@@ -738,7 +745,7 @@ const CFG = {
   MIN_FIGHTS: 5, MAX_FIGHTS: 10,   // normal encounters before the boss / big request (rolled at random when a quest starts, never shown)
   MAX_HEARTS: 3,            // hearts (fights) or smileys (village) the student can have
   HINT_AFTER: 5,            // from this encounter on, tell the student the monsters are getting stronger
-  VILLAGE_NEED: 3, BIG_NEED: 5,    // correct answers a villager needs; a big request needs more
+  VILLAGE_NEED: 3, BIG_NEED: 5, FINALE_FULL_FROM: 12,    // correct answers a villager needs; a big request needs more
   COIN_BY_TIER: [0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4],   // coin "unit" by level (index = level): a won fight pays up to FIGHT_UNITS units, each mistake takes one unit away
   FIGHT_UNITS: 3,           // a normal fight or villager takes 3 right answers: maximum coins = 3 x the level base amount; each mistake takes one base amount away
   BOSS_MIN: 3, BOSS_MAX: 5, // a boss / big request pays the normal amount times a random number between these
@@ -834,6 +841,20 @@ const VILL = [
  {he:'ביצה',nk:'בֵּיצָה',en:'egg',em:'🥚',need:'I want to make an omelet!'},
  {he:'תפוח',nk:'תַּפּוּחַ',en:'apple',em:'🍎',need:'I want a crunchy red fruit.'},
 {he:'עוגה',nk:'עוּגָה',en:'cake',em:'🎂',need:"It's my birthday! I need something sweet to celebrate!"}, {he:'ענבים',nk:'עֲנָבִים',en:'grapes',em:'🍇',need:'I want a bunch of sweet purple fruit.'}, {he:'סירה',nk:'סִירָה',en:'boat',em:'⛵',need:'I want to sail across the lake!'}, {he:'מטרייה',nk:'מִטְרִיָּה',en:'umbrella',em:'☂️',need:"It is raining and I'm getting all wet!"}, {he:'שמיכה',nk:'שְׂמִיכָה',en:'blanket',em:'🛏️',need:'I am so cold at night. I need something warm to sleep under.'}, {he:'פטיש',nk:'פַּטִּישׁ',en:'hammer',em:'🔨',need:'My hammer broke and I cannot work!'},
+ {he:'קמח',nk:'קֶמַח',en:'flour',em:'🌾',need:'I need the white powder that is ground from wheat.'}, {he:'מלח',nk:'מֶלַח',en:'salt',em:'🧂',need:'I need a pinch of white crystals.'},
+ {he:'ברזל',nk:'בַּרְזֶל',en:'iron',em:'🔩',need:'I need a strong grey metal.'}, {he:'אש',nk:'אֵשׁ',en:'fire',em:'🔥',need:'I need something hot and glowing.'},
+ {he:'חבל',nk:'חֶבֶל',en:'rope',em:'🪢',need:'I need a long, thick string.'}, {he:'דלי',nk:'דְּלִי',en:'bucket',em:'🪣',need:'I need something that carries water.'},
+ {he:'כיסא',nk:'כִּסֵּא',en:'chair',em:'🪑',need:'I need somewhere to sit down.'}, {he:'זרע',nk:'זֶרַע',en:'seed',em:'🌰',need:'I need a tiny thing to plant.'},
+ {he:'שמש',nk:'שֶׁמֶשׁ',en:'sun',em:'☀️',need:'I need warm light from the sky.'}, {he:'חכה',nk:'חַכָּה',en:'fishing rod',em:'🎣',need:'I need a long stick with a string.'},
+ {he:'רשת',nk:'רֶשֶׁת',en:'net',em:'🥅',need:'I need something with holes to catch fish.'}, {he:'קש',nk:'קַשׁ',en:'straw',em:'🌿',need:'I need dry yellow grass.'},
+ {he:'בד',nk:'בַּד',en:'cloth',em:'👕',need:'I need a soft material.'}, {he:'חוט',nk:'חוּט',en:'thread',em:'🧵',need:'I need a thin string for sewing.'},
+ {he:'מחט',nk:'מַחַט',en:'needle',em:'🪡',need:'I need a tiny sharp thing for sewing.'}, {he:'מיטה',nk:'מִטָּה',en:'bed',em:'🛌',need:'I need a place to sleep.'},
+ {he:'שמן',nk:'שֶׁמֶן',en:'oil',em:'🛢️',need:'I need something slippery that burns slowly.'}, {he:'סולם',nk:'סֻלָּם',en:'ladder',em:'🪜',need:'I need something with steps to climb.'},
+ {he:'סל',nk:'סַל',en:'basket',em:'🧺',need:'I need something with a handle to carry things.'}, {he:'מסמר',nk:'מַסְמֵר',en:'nail',em:'<svg class="icoSvg" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="4" rx="1.8" fill="#5f6672"/><path d="M10 6h4v12l-2 4.5L10 18z" fill="#8a92a0"/><path d="M10 6h1.6v14.5L10 18z" fill="#fff" opacity=".45"/></svg>',need:'I need a little sharp piece of metal.'},
+ {he:'מסור',nk:'מְסוֹר',en:'saw',em:'🪚',need:'I need a tool with teeth.'}, {he:'תוף',nk:'תֹּף',en:'drum',em:'🥁',need:'I need a round thing to hit.'},
+ {he:'חליל',nk:'חָלִיל',en:'flute',em:'🎼',need:'I need a thin pipe to blow into.'}, {he:'פעמון',nk:'פַּעֲמוֹן',en:'bell',em:'🔔',need:'I need something that goes ding.'},
+ {he:'מנורה',nk:'מְנוֹרָה',en:'lamp',em:'🪔',need:'I need something to hold a light.'}, {he:'דגל',nk:'דֶּגֶל',en:'flag',em:'🚩',need:'I need a colourful cloth on a pole.'},
+ {he:'גבינה',nk:'גְּבִינָה',en:'cheese',em:'🧀',need:'I need something yellow made from milk.'},
 ];
 // Ingredients are words the student learns to read (and, later, to write). Ids, not words, are stored in the profile.
 // Rarity: 0 common (plants), 1 uncommon (element stones), 2 rare (creature parts), 3 epic (sky), 4 legendary (treasures)
@@ -1596,40 +1617,43 @@ function similarity(a, b) {
   let s = a.length === b.length ? 2 : 0; for (const ch of new Set(a)) if (b.includes(ch)) s++; return s + (a[0] === b[0] ? 1 : 0);
 }
 // What each village word is about. Two signs that share a tag are never shown together.
+const vtag = h => VTAGS[h] || [];
 const VTAGS = { 'מים': ['drink'], 'לחם': ['food'], 'חתול': ['pet', 'animal'], 'כלב': ['pet', 'animal'], 'דג': ['animal', 'food'],
   'ספר': ['read'], 'בית': ['home'], 'עץ': ['plant'], 'פרח': ['plant'], 'נר': ['light'], 'מפתח': ['home'], 'כובע': ['wear'],
   'גשר': ['cross'], 'ירח': ['sky', 'light'], 'כוכב': ['sky', 'light'], 'דלת': ['home'], 'חלב': ['drink', 'food'],
-  'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'], 'עוגה': ['food'], 'ענבים': ['food'], 'סירה': ['boat'], 'מטרייה': ['rain'], 'שמיכה': ['sleep'], 'פטיש': ['tool'] };
+  'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'], 'עוגה': ['food'], 'ענבים': ['food'], 'סירה': ['boat'], 'מטרייה': ['rain'], 'שמיכה': ['sleep'], 'פטיש': ['tool'], 'קמח': ['food'], 'מלח': ['food'], 'ברזל': ['metal'], 'אש': ['hot'], 'חבל': ['rope'], 'דלי': ['vessel'], 'כיסא': ['furniture'], 'זרע': ['plant'], 'שמש': ['sky', 'light'], 'חכה': ['fishing'], 'רשת': ['fishing'], 'קש': ['plant'], 'בד': ['cloth'], 'חוט': ['cloth'], 'מחט': ['cloth'], 'מיטה': ['sleep', 'furniture'], 'שמן': ['oil'], 'סולם': ['climb'], 'סל': ['vessel'], 'מסמר': ['metal', 'tool'], 'מסור': ['tool'], 'תוף': ['music'], 'חליל': ['music'], 'פעמון': ['music'], 'מנורה': ['light'], 'דגל': ['flag'], 'גבינה': ['food'] };
 // The two-word phrases for the village reading levels (12 and 13): a word from the village list plus an easy describing word.
 const VPH = [['מים', 'מים קרים', 'מַיִם קָרִים', 'cold water'], ['לחם', 'לחם חם', 'לֶחֶם חַם', 'warm bread'], ['חתול', 'חתול שחור', 'חָתוּל שָׁחֹר', 'black cat'], ['כלב', 'כלב גדול', 'כֶּלֶב גָּדוֹל', 'big dog'],
   ['דג', 'דג קטן', 'דָּג קָטָן', 'small fish'], ['ספר', 'ספר גדול', 'סֵפֶר גָּדוֹל', 'big book'], ['בית', 'בית קטן', 'בַּיִת קָטָן', 'small house'], ['עץ', 'עץ גדול', 'עֵץ גָּדוֹל', 'big tree'],
   ['פרח', 'פרח יפה', 'פֶּרַח יָפֶה', 'pretty flower'], ['נר', 'נר קטן', 'נֵר קָטָן', 'small candle'], ['מפתח', 'מפתח זהב', 'מַפְתֵּחַ זָהָב', 'golden key'], ['כובע', 'כובע אדום', 'כּוֹבַע אָדֹם', 'red hat'],
   ['גשר', 'גשר ישן', 'גֶּשֶׁר יָשָׁן', 'old bridge'], ['דלת', 'דלת כחולה', 'דֶּלֶת כְּחֻלָּה', 'blue door'], ['חלב', 'חלב קר', 'חָלָב קַר', 'cold milk'], ['ביצה', 'ביצה לבנה', 'בֵּיצָה לְבָנָה', 'white egg'],
   ['תפוח', 'תפוח אדום', 'תַּפּוּחַ אָדֹם', 'red apple'], ['עוגה', 'עוגה מתוקה', 'עוּגָה מְתוּקָה', 'sweet cake'], ['ענבים', 'ענבים סגולים', 'עֲנָבִים סְגֻלִּים', 'purple grapes'], ['סירה', 'סירה כחולה', 'סִירָה כְּחֻלָּה', 'blue boat'],
-  ['מטרייה', 'מטרייה צהובה', 'מִטְרִיָּה צְהֻבָּה', 'yellow umbrella'], ['שמיכה', 'שמיכה חמה', 'שְׂמִיכָה חַמָּה', 'warm blanket'], ['פטיש', 'פטיש כבד', 'פַּטִּישׁ כָּבֵד', 'heavy hammer']].map(([w, he, nk, en]) => ({ w, he, nk, en }));
+  ['מטרייה', 'מטרייה צהובה', 'מִטְרִיָּה צְהֻבָּה', 'yellow umbrella'], ['שמיכה', 'שמיכה חמה', 'שְׂמִיכָה חַמָּה', 'warm blanket'], ['פטיש', 'פטיש כבד', 'פַּטִּישׁ כָּבֵד', 'heavy hammer'], ['קמח', 'קמח לבן', 'קֶמַח לָבָן', 'white flour'], ['מלח', 'מלח לבן', 'מֶלַח לָבָן', 'white salt'], ['ברזל', 'ברזל חזק', 'בַּרְזֶל חָזָק', 'strong iron'], ['אש', 'אש חמה', 'אֵשׁ חַמָּה', 'hot fire'], ['חבל', 'חבל ארוך', 'חֶבֶל אָרֹךְ', 'long rope'], ['דלי', 'דלי כחול', 'דְּלִי כָּחֹל', 'blue bucket'], ['כיסא', 'כיסא קטן', 'כִּסֵּא קָטָן', 'small chair'], ['זרע', 'זרע קטן', 'זֶרַע קָטָן', 'tiny seed'], ['שמש', 'שמש חמה', 'שֶׁמֶשׁ חַמָּה', 'hot sun'], ['חכה', 'חכה ארוכה', 'חַכָּה אֲרֻכָּה', 'long fishing rod'], ['רשת', 'רשת גדולה', 'רֶשֶׁת גְּדוֹלָה', 'big net'], ['קש', 'קש יבש', 'קַשׁ יָבֵשׁ', 'dry straw'], ['בד', 'בד רך', 'בַּד רַךְ', 'soft cloth'], ['חוט', 'חוט אדום', 'חוּט אָדֹם', 'red thread'], ['מחט', 'מחט קטנה', 'מַחַט קְטַנָּה', 'small needle'], ['מיטה', 'מיטה רכה', 'מִטָּה רַכָּה', 'soft bed'], ['שמן', 'שמן חם', 'שֶׁמֶן חַם', 'warm oil'], ['סולם', 'סולם ארוך', 'סֻלָּם אָרֹךְ', 'long ladder'], ['סל', 'סל גדול', 'סַל גָּדוֹל', 'big basket'], ['מסמר', 'מסמר קטן', 'מַסְמֵר קָטָן', 'small nail'], ['מסור', 'מסור חד', 'מְסוֹר חַד', 'sharp saw'], ['תוף', 'תוף גדול', 'תֹּף גָּדוֹל', 'big drum'], ['חליל', 'חליל קטן', 'חָלִיל קָטָן', 'small flute'], ['פעמון', 'פעמון זהב', 'פַּעֲמוֹן זָהָב', 'golden bell'], ['מנורה', 'מנורה יפה', 'מְנוֹרָה יָפָה', 'pretty lamp'], ['דגל', 'דגל כחול', 'דֶּגֶל כָּחֹל', 'blue flag'], ['גבינה', 'גבינה לבנה', 'גְּבִינָה לְבָנָה', 'white cheese']].map(([w, he, nk, en]) => ({ w, he, nk, en }));
 function qHelpPhrase(t) {   // levels 12 (with vowel marks) and 13 (without): read two-word signs
-  const site = G.site && VPH.find(p => p.w === G.site.he), target = site || wpick(VPH, p => 'W:' + p.he, G.lastKey), tw = VILL.find(v => v.he === target.w);
+  const need = curNeed(), site = need ? VPH.find(p => p.w === need.he) : (G.site && VPH.find(p => p.w === G.site.he)), target = site || wpick(VPH, p => 'W:' + p.he, G.lastKey), tw = VILL.find(v => v.he === target.w);
+  const same = G.projs ? projNeeds(G.projs).map(n => n[0]) : [], pool = VPH.filter(p => p !== target && !same.includes(p.w));   // the other needs of the same project are never used as wrong signs
   const opts = [target];
-  for (const p of shuffle(VPH.filter(p => p !== target))) { if (opts.length >= 4) break; if (opts.every(x => !VTAGS[x.w].some(g => VTAGS[p.w].includes(g)))) opts.push(p); }
-  for (const p of shuffle(VPH)) { if (opts.length >= 4) break; if (!opts.includes(p)) opts.push(p); }   // safety net, normally unused
+  for (const p of shuffle(pool)) { if (opts.length >= 4) break; if (opts.every(x => !vtag(x.w).some(g => vtag(p.w).includes(g)))) opts.push(p); }
+  for (const p of shuffle(pool)) { if (opts.length >= 4) break; if (!opts.includes(p)) opts.push(p); }   // safety net, normally unused
   const txt = p => t === 12 ? p.nk : p.he, em = p => VILL.find(v => v.he === p.w).em;
-  return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he, title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?', speech: tw.need,
+  return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he, title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?', speech: need ? need.line : tw.need,
     options: shuffle(opts).map(p => ({ html: txt(p), cls: 'p', ok: p === target, em: em(p), note: `<span class="he">${txt(p)}</span> = ${p.en} ${em(p)}`, say: txt(p) })),
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${em(target)}`, say: txt(target), reveal: tw.em };
 }
 function qHelp(t) {
-  const target = (G.site && VILL.find(w => w.he === G.site.he)) || wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 8 ? 3 : 4;   // levels 8-11 (levels 12-13 use qHelpPhrase)
-  let others = VILL.filter(w => w !== target);
+  const need = curNeed(), target = (need && projWord(need.he)) || (G.site && VILL.find(w => w.he === G.site.he)) || wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 8 ? 3 : 4;   // levels 8-11 (levels 12-13 use qHelpPhrase)
+  const same = G.projs ? projNeeds(G.projs).map(x => x[0]) : [];   // the other needs of the same project are never used as wrong signs
+  let others = VILL.filter(w => w !== target && !same.includes(w.he));
   // tricky levels: prefer signs that LOOK similar; otherwise random. Either way, no two signs may mean similar things
   // (e.g. cat + dog are both pets, water + milk are both drinks), so exactly one sign fits what the villager needs.
   others = t === 11 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he) || Math.random() - .5).slice(0, 10) : shuffle(others);
   const opts = [target];
-  for (const w of others) { if (opts.length >= n) break; if (opts.every(x => !VTAGS[x.he].some(g => VTAGS[w.he].includes(g)))) opts.push(w); }
-  for (const w of shuffle(VILL)) { if (opts.length >= n) break; if (!opts.includes(w)) opts.push(w); }   // safety net, normally unused
+  for (const w of others) { if (opts.length >= n) break; if (opts.every(x => !vtag(x.he).some(g => vtag(w.he).includes(g)))) opts.push(w); }
+  for (const w of shuffle(VILL.filter(w => w !== target && !same.includes(w.he)))) { if (opts.length >= n) break; if (!opts.includes(w)) opts.push(w); }   // safety net, normally unused
   const txt = w => (t === 8 || t === 9) ? w.nk : w.he;
   return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?',
-    speech: target.need,
+    speech: need ? need.line : target.need,
     options: shuffle(opts).map(w => ({ html: txt(w), cls: 'w', ok: w === target, em: w.em,
       note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em}`, say: txt(w) })),
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}`, say: txt(target), reveal: target.em };
@@ -1644,10 +1668,10 @@ function qWriteSpell(t) {
 }
 function qWriteHelp(t) {
   const pool = VILL.filter(w => t === 14 ? w.he.length <= 3 : w.he.length >= 4);
-  const w = (G.site && VILL.find(x => x.he === G.site.he)) || wpick(pool, x => 'W:' + x.he, G.lastKey);
+  const need = curNeed(), w = (need && projWord(need.he)) || (G.site && VILL.find(x => x.he === G.site.he)) || wpick(pool, x => 'W:' + x.he, G.lastKey), line = need ? need.line : w.need;
   return { kind: 'write', key: 'W:' + w.he, lastKey: 'W:' + w.he, accept: [w.he], keyOf: s => 'W:' + s,
-    title: 'Write this word on the sign:', big: w.em, sub: `${w.en} — ${w.need}`, ref: [],
-    explain: `<span class="he">${w.he}</span> = ${w.en} ${w.em}`, say: w.he, speech: w.need, reveal: w.em };
+    title: 'Write this word on the sign:', big: w.em, sub: `${w.en} — ${line}`, ref: [],
+    explain: `<span class="he">${w.he}</span> = ${w.en} ${w.em}`, say: w.he, speech: line, reveal: w.em };
 }
 function makeQ() {
   const t = P.tier, b = G.quest === 'battle';
@@ -1791,7 +1815,7 @@ function tutScreen(view) {   // dress the real fight screen for the tutorial: a 
     $('#foeBody').innerHTML = `<div class="mnWrap"><svg viewBox="0 0 140 140" aria-hidden="true">${MON_ART.MON.imp()}</svg></div>`;
     $('#foeName').textContent = 'Ember Imp'; $('#hpFill').style.width = '100%'; $('#mid').innerHTML = '<b>Dragon Peak</b>';
   } else {
-    G.mon = null; G.site = SITES.find(s => s.name === 'Bakery'); G.vkey = 'bakery'; G.vskin = rnd(STAGE_BG.SKINS); G.vmood = ''; G.vkeyState = ''; G.q = { reveal: '🍞' };
+    G.mon = null; G.projs = null; G.site = SITES.find(s => s.name === 'Bakery'); G.vkey = 'bakery'; G.vskin = rnd(STAGE_BG.SKINS); G.vmood = ''; G.vkeyState = ''; G.q = { reveal: '🍞' };
     $('#stage').className = 'stage'; setStageBg('v:bakery'); $('#aura').innerHTML = ''; $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').textContent = '';
     $('#foeName').textContent = 'Baker Ori'; $('#hpFill').style.width = '0%';
     $('#mid').innerHTML = `<b>🥖 Bakery</b><div class="bubble" id="bubble">The festival is tomorrow and the oven is full of dough. I need bread for the table!</div>`; setMood('😟');
@@ -1996,6 +2020,19 @@ const VILLAGE = {
     for (const [x, y, s] of [[120, 132, .5], [280, 132, .5], [60, 140, .75], [340, 140, .75], [20, 160, 1.15], [380, 160, 1.15], [200, 134, .45]]) { o += oak(x, y, s, '#4a9a48'); for (let i = 0; i < 6; i++) o += C(f1(x + (r() - .5) * 46 * s), f1(y - 44 * s + (r() - .5) * 36 * s), 2.6 * s + 1, '#e5322d'); }
     return o + persp(128, '#2c5a2a', .15) + T(110, 168, 15, '🧺') + T(222, 172, 13, '🍎') + T(300, 170, 13, '🍎') + T(250, 52, 12, '🐦', 'class="bg-bob bg-drift"') + R(60, 150, 4, 28, '#8c5a3a') + R(74, 150, 4, 28, '#8c5a3a') + [0, 1, 2, 3].map(i => R(60, 156 + i * 7, 18, 1.8, '#8c5a3a')).join(''); }
 };
+VILLAGE.carpenter = () => { const r = rng(31);
+  let o = sunny() + grassPlane(130) + cobble(148, '#cdbd9e', '#a6957a', 18) + oak(34, 140, .8) + shadow(200, 150, 108, .35)
+    + wall(100, 66, 200, 84, '#b88a55', true) + roof(100, 300, 66, 34, '#7a3b2a') + R(256, 30, 18, 36, '#8c5a3a') + R(254, 28, 22, 4, '#6b3f26')
+    + R(116, 90, 92, 60, '#2a1c10', 3) + radial(162, 120, 50, '#ffd98a', .3)                                     // the open workshop bay
+    + [0, 1, 2, 3].map(i => R(124, 98 + i * 8, 76, 4, ['#d9b27a', '#c9a064', '#e0bd88', '#c9a064'][i], 1)).join('')           // boards stacked on the shelf
+    + R(122, 94, 3, 56, '#5a3a22') + R(199, 94, 3, 56, '#5a3a22')
+    + door(222, 100, 34, 50, '#6a4426') + win(266, 100, 20, 18, '#ffe29a')
+    + `<g class="bg-sway" style="transform-origin:140px 70px">${T(140, 76, 20, '🪚')}</g>` + T(176, 78, 11, '📏')
+    + R(40, 138, 56, 5, '#8c5a3a') + R(46, 143, 4, 14, '#6b4426') + R(86, 143, 4, 14, '#6b4426') + R(48, 130, 40, 8, '#d9b27a', 1) + R(52, 124, 32, 6, '#c9a064', 1)   // a sawhorse with boards
+    + [[322, 150, 9], [338, 150, 9], [330, 138, 9], [352, 152, 8]].map(([x, y, rr]) => C(x, y, rr, '#a8764a') + C(x, y, rr * .6, '#c9945a') + C(x, y, rr * .25, '#a8764a')).join('')   // logs
+    + P('300,158 330,158 322,150 308,150', '#6b4426', 'opacity=".35"');
+  for (let i = 0; i < 14; i++) { const x = 70 + r() * 250, y = 150 + r() * 40; o += `<path d="M${f1(x)} ${f1(y)} q4 -5 8 0 q-3 4 -7 1" stroke="#e8c88a" stroke-width="1.4" fill="none" opacity=".85"/>`; }   // wood shavings
+  return o + [0, 1, 2].map(i => C(150 + i * 12, 96, 1.5, '#f4e2b8', `class="bg-rise" style="animation-delay:${i * .8}s"`)).join(''); };
 const SKINS = ['#f6cfa6', '#e8b98a', '#c68d5e', '#8d5a3b', '#5c3a24'];
 const VSPEC = {
   bakery: {top: '#f4f0e6', bottom: '#6b5a48', hat: 'chef', stache: '#6b4a2a', hair: '#6b4a2a', apron: '#ffffff', prop: 'pin', anim: 'knead', need: '🍞'},
@@ -2011,6 +2048,7 @@ const VSPEC = {
   lamps: {dress: '#2f5a5a', apron: '#e8d8b0', hair: '#4a2f1a', bun: true, hat: 'goggles', prop: 'lamp', anim: 'lamp', need: '🕯️'},
   orchard: {top: '#f4f0e6', bottom: '#4a5a3a', vest: '#8a5a2e', hat: 'cap', hatCol: '#3f7a45', hair: '#5a3a22', prop: 'apples', anim: 'pick', need: '🍎'}
 };
+VSPEC.carpenter = {top: '#d9c8a0', bottom: '#4a5a7a', hat: 'cap', hatCol: '#c55a3a', hair: '#6b4a2a', stache: '#6b4a2a', apron: '#9a6a3a', prop: 'saw', anim: 'saw', need: '🪚'};
 function vFace(mood, skin) {
   const dk = shade(skin, -24); let eyes, brows = '', mouth, extra = '';
   if (mood === 'happy') {
@@ -2056,6 +2094,7 @@ function vProp(p, hx, hy) {
     case 'hat': return E(hx, hy - 3, 11, 2.6, '#4a3070') + R(hx - 7, hy - 16, 14, 14, '#5a3d8a', 1.5) + R(hx - 7, hy - 6, 14, 2.6, '#ffd166');
     case 'keys': return `<circle cx="${hx}" cy="${hy + 4}" r="4" fill="none" stroke="#d9b44a" stroke-width="1.6"/>` + [-4, 0, 4].map(d => R(hx + d - 1, hy + 8, 2.2, 10 + Math.abs(d), '#d9b44a', 1)).join('');
     case 'lamp': return R(hx - 5, hy - 2, 10, 14, '#ffd98a', 2) + R(hx - 6.5, hy - 4, 13, 3, '#4a3320', 1) + R(hx - 6.5, hy + 11, 13, 3, '#4a3320', 1) + `<path d="M${hx - 3} ${hy - 4} Q${hx} ${hy - 12} ${hx + 3} ${hy - 4}" stroke="#4a3320" fill="none" stroke-width="1.6"/>` + radial(hx, hy + 5, 22, '#ffd166', .5);
+    case 'saw': return R(hx - 3, hy - 4, 11, 7, '#8a5a2b', 2.5) + P(`${hx + 8},${hy - 8} ${hx + 36},${hy - 3} ${hx + 36},${hy + 6} ${hx + 8},${hy + 5}`, '#c9c2b4') + Array.from({length: 7}, (_, i) => P(`${hx + 9 + i * 4},${hy + 5.4} ${hx + 11 + i * 4},${hy + 9} ${hx + 13 + i * 4},${hy + 5.6}`, '#9a9aa6')).join('');
     case 'apples': return E(hx, hy + 6, 11, 6.4, '#c28c55') + `<path d="M${hx - 11} ${hy + 5} Q${hx} ${hy - 10} ${hx + 11} ${hy + 5}" stroke="#8a5e34" stroke-width="1.6" fill="none"/>` + [-5, 0, 5].map(d => C(hx + d, hy + 1.5 - Math.abs(d) * .15, 3.6, '#e5322d')).join('');
   }
   return '';
@@ -2084,6 +2123,52 @@ function villagerSVG(key, skin, mood) {
 }
 return { FIGHT, VILLAGE, villagerSVG, VSPEC, SKINS };
 })();
+/* ====================== VILLAGE PROJECTS ====================== */
+// From the reading levels (8 and up) a village visit is ONE PROJECT: three different, related needs in a row (the baker makes a cake: flour, an egg, milk) and the finished result is shown at the end.
+// The festival finale is three mini projects in a row (9 answers). Each need has its own request line that describes the item without naming it. Words are the plain short everyday words of the village list.
+const PROJECTS = [
+  { site: 'bakery', name: 'Cake', result: '🎂', needs: [['קמח', 'I need the white powder that is ground from wheat.'], ['ביצה', 'Now something round and white that a hen lays.'], ['חלב', 'And a white drink that cows give us.']] },
+  { site: 'bakery', name: 'Bread', result: '🍞', needs: [['קמח', 'I need the white powder that is ground from wheat.'], ['מים', 'Now a clear drink, to make the dough soft.'], ['מלח', 'And a pinch of white crystals that make it tasty.']] },
+  { site: 'smith', name: 'A sword', result: '⚔️', needs: [['ברזל', 'I need a strong grey metal to make a blade.'], ['אש', 'Now something hot and glowing to melt it.'], ['פטיש', 'And a heavy tool to bang it into shape.']] },
+  { site: 'well', name: 'A full bucket', result: '🪣', needs: [['חבל', 'I need a long, thick string to lower the bucket.'], ['דלי', 'Now the thing with a handle that carries water.'], ['מים', 'And what goes inside? Something clear to drink.']] },
+  { site: 'farm', name: 'A basket of goods', result: '🧺', needs: [['חלב', 'First, a white drink from the cow.'], ['ביצה', 'Next, something a hen laid this morning.'], ['תפוח', 'And a crunchy red fruit from a tree.']] },
+  { site: 'library', name: 'A reading corner', result: '📖', needs: [['ספר', 'I need something full of stories to read.'], ['נר', 'Now a little light for the evening. It melts as it burns.'], ['כיסא', 'And somewhere to sit down.']] },
+  { site: 'garden', name: 'A flower', result: '🌸', needs: [['זרע', 'First, a tiny thing that I put in the soil.'], ['מים', 'It needs a clear drink every day.'], ['שמש', 'And warm light from the sky.']] },
+  { site: 'dock', name: 'A fishing trip', result: '🐟', needs: [['סירה', 'I need something that floats on the river.'], ['חכה', 'Now a long stick with a string for fishing.'], ['רשת', 'And something with holes to catch the fish.']] },
+  { site: 'henhouse', name: 'A cosy nest', result: '🐥', needs: [['קש', 'I need dry yellow grass for the bottom of the nest.'], ['ביצה', 'Now something round and white that hens lay.'], ['מים', 'And a bowl of clear water to drink.']] },
+  { site: 'hats', name: 'A hat', result: '🎩', needs: [['בד', 'I need a soft material that clothes are made of.'], ['חוט', 'Now a thin string for sewing.'], ['מחט', 'And a tiny sharp thing that pulls the string through.']] },
+  { site: 'cottage', name: 'A cosy night', result: '🛏️', needs: [['מיטה', 'I need a place to sleep.'], ['שמיכה', 'Now something warm to cover me.'], ['נר', 'And a little light on the table.']] },
+  { site: 'lamps', name: 'A lamp', result: '🏮', needs: [['נר', 'I need a wax stick with a little flame.'], ['שמן', 'Now something slippery that burns slowly in a lamp.'], ['אש', 'And something hot to light it.']] },
+  { site: 'orchard', name: 'Picking apples', result: '🍎', needs: [['סולם', 'I need something with steps to climb up the tree.'], ['סל', 'Now something with a handle to carry the apples.'], ['תפוח', 'And what am I picking? A crunchy red fruit.']] },
+  { site: 'carpenter', name: 'A door', result: '🚪', needs: [['עץ', 'I need something strong to build with. It comes from trees.'], ['מסמר', 'Now a little sharp piece of metal that holds the boards.'], ['פטיש', 'And a heavy tool to knock it in.']] },
+  { site: 'carpenter', name: 'A table', result: '<svg class="icoSvg" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="3.6" rx="1" fill="#c98f52"/><rect x="2" y="10.6" width="20" height="1.6" fill="#8a5a2b"/><rect x="4" y="12" width="2.6" height="9" fill="#a8764a"/><rect x="17.4" y="12" width="2.6" height="9" fill="#a8764a"/></svg>', needs: [['עץ', 'I need something strong to build with. It comes from trees.'], ['מסור', 'Now a tool with teeth that cuts the wood.'], ['מסמר', 'And a little sharp piece of metal that holds the boards.']] }
+];
+const FINALE_PROJECTS = [
+  { site: 'festival', name: 'The feast', result: '🍽️', needs: [['לחם', 'For the feast, something freshly baked.'], ['גבינה', 'Next, something yellow that is made from milk.'], ['תפוח', 'And a crunchy red fruit.']] },
+  { site: 'festival', name: 'The decorations', result: '🎊', needs: [['מנורה', 'Something to hold a light for the hall.'], ['דגל', 'A colourful cloth that waves on a pole.'], ['פרח', 'And something pretty from the garden.']] },
+  { site: 'festival', name: 'The music', result: '🎶', needs: [['תוף', 'A round thing that you hit to go boom.'], ['חליל', 'A thin pipe that you blow into.'], ['פעמון', 'And something that goes ding.']] }
+];
+const finaleProjects = () => P.tier >= CFG.FINALE_FULL_FROM ? FINALE_PROJECTS : [FINALE_PROJECTS[0], FINALE_PROJECTS[2]];   // the feast and the music (6 answers); from level 12 the decorations are added too (9 answers)
+let lastProj = {};   // the project each site had last, so it is not picked twice in a row
+function pickProject(bg) {
+  const list = PROJECTS.filter(p => p.site === bg), pool = list.length > 1 ? list.filter(p => p !== lastProj[bg]) : list, p = rnd(pool.length ? pool : PROJECTS.filter(x => x.site === 'bakery'));
+  lastProj[bg] = p; return p;
+}
+const projNeeds = ps => ps.flatMap(p => p.needs);
+function curNeed() {   // the need the villager is asking for now: [word, request line]
+  if (!G.projs) return null; const k = Math.min(G.helped, G.need - 1), n = G.projs[Math.floor(k / 3)].needs[k % 3]; return { he: n[0], line: n[1] };
+}
+const projWord = he => VILL.find(w => w.he === he);
+function renderTray() {   // three slots next to the villager that fill up with the items that were handed over
+  const e = $('#projTray'); if (!e) return; if (!G.projs) { e.innerHTML = ''; return; }
+  const pi = Math.min(Math.floor(G.helped / 3), G.projs.length - 1), p = G.projs[pi], k = G.helped >= G.need ? 3 : G.helped % 3;
+  const done = G.projs.slice(0, pi).map(x => `<span class="trayDone" title="${x.name}">${x.result}</span>`).join('');
+  e.innerHTML = `<div class="trayName">${done} ${p.name}</div><div class="traySlots">${p.needs.map((n, i) => `<span class="traySlot ${i < k ? 'full' : ''}">${projWord(n[0]).em}</span>`).join('')}</div>`;
+}
+async function projectDone(i) {   // the finished result appears with sparkles and the villager jumps
+  const e = $('#projTray'), p = G.projs[i]; sfx.win(); if (e) e.innerHTML = `<div class="trayName">${p.name}</div><div class="trayResult">✨ ${p.result} ✨</div>`; confetti([p.result.includes('<') ? '🪵' : p.result, '✨', '💛']);
+  G.vmood = ''; setMood('😊'); await sleep(1900);
+}
 /* ====================== JOURNEY MAP ====================== */
 // A quest is a walk along a winding path. Each stop is an encounter: a monster (or a villager at a site), a rest, a chest or gift basket, a signpost, and at the end the boss (or the festival hall).
 // A stop that is a fight or a villager opens the normal fight/village screen; afterwards the wizard is back on the map. The length of the path is random and is NEVER shown.
@@ -2093,7 +2178,7 @@ const SITES = [   // a villager asks for the thing that belongs to the place: 'h
   { name: 'Garden', em: '🌷', he: 'פרח', bg: 'garden' }, { name: 'Fishing dock', em: '⚓', he: 'דג', bg: 'dock' }, { name: 'Henhouse', em: '🐔', he: 'ביצה', bg: 'henhouse' }, { name: 'Hat shop', em: '🧢', he: 'כובע', bg: 'hats' },
   { name: 'Cottage', em: '🏠', he: 'מפתח', bg: 'cottage' }, { name: 'Lamp shop', em: '🕯️', he: 'נר', bg: 'lamps' }, { name: 'Orchard', em: '🍎', he: 'תפוח', bg: 'orchard' },
   { name: 'Pastry shop', em: '🧁', he: 'עוגה', bg: 'bakery' }, { name: 'Vineyard', em: '🍇', he: 'ענבים', bg: 'orchard' }, { name: 'Boat dock', em: '🛶', he: 'סירה', bg: 'dock' }, { name: 'Umbrella shop', em: '🌂', he: 'מטרייה', bg: 'hats' }, { name: 'Inn', em: '🛎️', he: 'שמיכה', bg: 'cottage' },
-  { name: 'Blacksmith', em: '⚒️', he: 'פטיש', bg: 'smith' }, { name: 'Pet shop', em: '🐾', he: 'חתול', bg: 'farm' }, { name: 'Kennel', em: '🦴', he: 'כלב', bg: 'henhouse' }, { name: 'Old bridge', em: '🌉', he: 'גשר', bg: 'dock' }, { name: 'Carpenter', em: '🪚', he: 'דלת', bg: 'smith' }
+  { name: 'Blacksmith', em: '⚒️', he: 'פטיש', bg: 'smith' }, { name: 'Pet shop', em: '🐾', he: 'חתול', bg: 'farm' }, { name: 'Kennel', em: '🦴', he: 'כלב', bg: 'henhouse' }, { name: 'Old bridge', em: '🌉', he: 'גשר', bg: 'dock' }, { name: 'Carpenter', em: '🪚', he: 'דלת', bg: 'carpenter' }
 ];
 const J_THEMES = {
   battle: [
@@ -2135,7 +2220,7 @@ function ensurePath(q) {   // returns true when a brand-new run was rolled
 }
 function buildPath(q) {
   const qs = P.quest[q], n = qs.len, done = Math.min(qs.enc || 0, n), village = q === 'peace';   // done > 0 only when an older save without a path is handed over
-  const fits = s => P.tier === 14 ? s.he.length <= 3 : P.tier === 15 ? s.he.length >= 4 : true;   // the writing levels keep their word lengths
+  const fits = () => true;   // (from the reading levels the villager asks for the words of a project, so every site works at every level)
   let pool = shuffle(SITES.filter(fits)); if (!pool.length) pool = shuffle(SITES);
   const ord = []; for (let i = 0; i < n; i++) ord.push(village ? 's' + SITES.indexOf(pool[i % pool.length]) : 'm');
   const signs = shuffle([0, 1, 2, 3]), out = []; let specials = 0, si = 0;
@@ -2309,7 +2394,7 @@ function newEncounter() {   // the stop the wizard just walked to: a monster or 
   const qs = P.quest[G.quest]; ensurePath(G.quest);
   const stop = qs.path[qs.at || 0] || 'm', boss = stop[0] === 'B';
   G.site = stop[0] === 's' ? SITES[+stop.slice(1)] : null;
-  G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier; G.potUsed = false; G.snap = null; G.noCount = false; G.need = G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;   // mistakes in this fight (G.mist) lower the coins and the rarity of the loot
+  G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier; G.potUsed = false; G.snap = null; G.noCount = false; G.projs = (G.quest === 'peace' && P.tier >= 8) ? (boss ? finaleProjects() : [pickProject(G.site ? G.site.bg : 'bakery')]) : null; G.need = G.projs ? G.projs.length * 3 : G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;   // mistakes in this fight (G.mist) lower the coins and the rarity of the loot
   if (G.quest === 'battle') {
     const ar = AREA_MON[(qs.ch - 1) % 6], mk = window.__forceMon || (boss ? ar.b : rnd(ar.n)), def = { ...MON_DEF[mk], key: mk };
     const isBoss = !!def.boss; G.mon = { ...def, boss: isBoss, max: isBoss ? 6 : 3, hp: isBoss ? 6 : 3 };
@@ -2350,7 +2435,7 @@ function runNote(qs, hint, warn) {
   return t ? `<div class="runNote${qs.enc === qs.len - 1 ? ' warn' : ''}">${t}</div>` : '';
 }
 function loseHeart() { G.hearts--; P.quest[G.quest].hearts = G.hearts; saveSoon(); }
-const VNAMES = { bakery: 'Baker Ori', smith: 'Smith Omer', well: 'Dana at the well', farm: 'Farmer Moshe', library: 'Grandma Rina', garden: 'Little Tom', dock: 'Fisher Ezra', henhouse: 'Little Maya', hats: 'Hatter Alex', cottage: 'Grandpa Dov', lamps: 'Lamp keeper Lia', orchard: 'Picker Noam' };   // one name for each villager
+const VNAMES = { bakery: 'Baker Ori', smith: 'Smith Omer', well: 'Dana at the well', farm: 'Farmer Moshe', library: 'Grandma Rina', garden: 'Little Tom', dock: 'Fisher Ezra', henhouse: 'Little Maya', hats: 'Hatter Alex', cottage: 'Grandpa Dov', lamps: 'Lamp keeper Lia', orchard: 'Picker Noam', carpenter: 'Carpenter Gil' };   // one name for each villager
 function renderVillager() {   // the villager of the site: waiting (worried, with a thought bubble of what they need), happy (a little jump) or sad
   if (G.quest !== 'peace' || !G.vkey) return;
   const em = G.vmood === 'wait' && G.q && G.q.reveal ? G.q.reveal : '';
@@ -2383,7 +2468,7 @@ function drawScene() {
   } else {
     G.vskin = rnd(STAGE_BG.SKINS); G.vmood = ''; G.vkeyState = ''; $('#foeBody').textContent = '';
     $('#foeName').textContent = G.big ? '📜 ' + G.fname + ': big request!' : G.fname; setMood('😟');
-    $('#mid').innerHTML = `<b>${G.site ? G.site.em + ' ' + G.site.name : G.big ? '🏛️ Festival hall' : VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="bubble" id="bubble"></div>`;
+    $('#mid').innerHTML = `<b>${G.site ? G.site.em + ' ' + G.site.name : G.big ? '🏛️ Festival hall' : VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="bubble" id="bubble"></div><div class="projTray" id="projTray"></div>`; renderTray();
   }
   updateBars(); updateReward();
 }
@@ -2408,7 +2493,7 @@ $('#abandonMapBtn').onclick = () => abandonQuest(runOf());
 function nextQuestion() { G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = false; G.snap = null; G.optSound = false; showQuestion(); }
 function showQuestion() {   // draws G.q (a Second chance potion draws the same question again)
   $('#abandonBtn').style.display = (G.quest === 'battle' || G.quest === 'peace') ? '' : 'none';
-  if (G.quest === 'peace') setMood(G.helped ? '🙂' : '😟');
+  if (G.quest === 'peace') { renderTray(); setMood(G.helped ? '🙂' : '😟'); }
   if (!inCraft()) { const cp = $('#craftPic'); if (cp) cp.style.display = 'none'; }   // the ingredient picture belongs to brewing and the shop only
   G.locked = false; G.tries = 0; G.typed = ''; renderPotBar(); renderItemBar(); $('#castBtn').textContent = G.quest === 'craft' ? '🫕 Drop it in!' : G.quest === 'shop' ? '🛒 Answer' : G.quest === 'forge' ? '🔨 Forge it!' : '✨ Cast it!';
   const q = G.q;
@@ -2506,12 +2591,13 @@ async function pickOption(i, btn) {
       G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400);
       floatText('-' + dmg + (xp ? '  +' + xp + 'xp' : ''), '#ffd166');
     } else {
-      G.helped++; setMood('😊'); floatText(xp ? '+' + xp + 'xp' : '💛', '#ffd166');
-      if (q.reveal) { $('#foeName').textContent = G.fname + ': ' + q.reveal + ' Thank you!'; }
+      G.helped++; renderTray(); setMood('😊'); floatText(xp ? '+' + xp + 'xp' : '💛', '#ffd166');
+      if (q.reveal) { $('#foeName').textContent = G.fname + ': ' + q.reveal.replace(/<[^>]*>/g, '') + ' Thank you!'; }
     }
     after(tr); updateBars();
     await sleep(battle ? 900 : 1500);
     if (battle && G.mon.hp <= 0) return victory();
+    if (!battle && G.projs && G.helped % 3 === 0) await projectDone(G.helped / 3 - 1);
     if (!battle && G.helped >= G.need) return villageDone();
     nextQuestion();
   } else {
@@ -2581,9 +2667,10 @@ $('#castBtn').onclick = async () => {
     sfx.ok(); speakHe(hit);
     $('#fb').innerHTML = `✅ Perfect! ${q.explain}`;
     if (battle) { await flySpell('✨'); sfx.hit(); burst('✨', 10); burst('💥', 3); const dmg = 2; G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); floatText('-' + dmg + '  +' + xp + 'xp', '#ffd166'); }
-    else { G.helped++; setMood('😊'); floatText('+' + xp + 'xp', '#ffd166'); if (q.reveal) $('#foeName').textContent = G.fname + ': ' + q.reveal + ' Thank you!'; }
+    else { G.helped++; renderTray(); setMood('😊'); floatText('+' + xp + 'xp', '#ffd166'); if (q.reveal) $('#foeName').textContent = G.fname + ': ' + q.reveal.replace(/<[^>]*>/g, '') + ' Thank you!'; }
     after(tr); updateBars(); await sleep(battle ? 1000 : 1600);
     if (battle && G.mon.hp <= 0) return victory();
+    if (!battle && G.projs && G.helped % 3 === 0) await projectDone(G.helped / 3 - 1);
     if (!battle && G.helped >= G.need) return villageDone();
     nextQuestion();
   } else {
@@ -2697,7 +2784,14 @@ async function usePotion(id) {
     G.hearts++; qs.hearts = G.hearts; spend(); sfx.up(); burst('💖', 8); if (!battle) setMood('😄'); toast(inVillage() ? '😊 The villager smiles again! One more smiley!' : '❤️ One more heart!');
   } else if (id === 'power') {
     if (battle) { if (G.mon.hp <= 1) { toast('The monster is almost defeated already!'); return; } G.mon.hp--; G.mon.max = Math.max(G.mon.hp, G.mon.max - 1); }
-    else { if (G.need - G.helped <= 1) { toast('Only one answer is left already!'); return; } G.need--; }
+    else {
+      if (G.need - G.helped <= 1) { toast('Only one answer is left already!'); return; }
+      if (G.projs) {   // a project: the helping hands hand over the item that is asked for now (that question is skipped and not logged)
+        spend(); sfx.up(); burst('🤝', 8); toast('🤝 Helping hands! This one is handed over for you!'); G.helped++; renderTray(); setMood('😊');
+        if (G.helped % 3 === 0) await projectDone(G.helped / 3 - 1); return nextQuestion();
+      }
+      G.need--;
+    }
     spend(); sfx.up(); burst(battle ? '💥' : '🤝', 8); toast(battle ? '💥 The monster is weaker!' : '🤝 Helping hands! One less answer is needed!');
   } else if (id === 'sound') {
     if (G.locked) { toast('Wait for your turn first.'); return; }
@@ -3468,7 +3562,7 @@ function villageDone() {
   setMood('🥰');
   sfx.win(); confetti(['💛', '🏠', '🌸', '⭐']);
   const big = G.big, bonus = big ? 70 : 40; P.xp += bonus; const loot = giveLoot("folk", big, G.mist); const done = advanceQuest(); saveSoon(true);
-  modal(big ? '📜 The big request is done!' : '🏠 The villagers are happy!', `<p>You helped everyone and a house was rebuilt! +${bonus} XP</p>` + lootHtml(loot) + (done ? `<p>🏆 The whole village is restored! Next stop: <b>${VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length]}</b></p>` : '<p>😊 You feel a bit happier.</p>'),
+  modal(big ? '📜 The big request is done!' : '🏠 The villagers are happy!', (big ? `<p style="text-align:center;font-size:3.2rem;margin:4px">🎪🎉</p><p>The festival can begin! You helped with ${G.projs ? G.projs.map(p => p.name.toLowerCase()).join(' and ') : 'everything'}. +${bonus} XP</p>` : `<p>You helped everyone and a house was rebuilt! +${bonus} XP</p>`) + lootHtml(loot) + (done ? `<p>🏆 The whole village is restored! Next stop: <b>${VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length]}</b></p>` : '<p>😊 You feel a bit happier.</p>'),
     [[done ? 'Next village 🌿' : 'Back to the path ▶', nextRun], ['Back to map', openMenu, true]]);
 }
 
@@ -3521,6 +3615,7 @@ function startDemo() {
     ko() { if (!$('#game').classList.contains('on') || !(G.quest === 'battle' || G.quest === 'peace')) { toast('Open a fight first'); return; } G.hearts = 0; P.quest[G.quest].hearts = 0; endOrSecond(G.quest === 'battle' ? knockout : villageFail); },
     win() { if (!$('#game').classList.contains('on') || !G.mon && G.quest === 'battle') { toast('Open a fight first'); return; } if (G.quest === 'battle') { G.mon.hp = 0; victory(); } else { G.helped = G.need; villageDone(); } },
     tutorial() { document.querySelector('#modal').classList.remove('on'); document.querySelector('#demoPanel').classList.remove('on'); startTutorial(); },
+    finale() { act('peace', ['s0', 'B']); P.quest.peace.at = 1; openJourney('peace'); },
     exit() { location.reload(); },
     fresh() { P.ws = { on: false, hi: false }; P.tier = 7; P.hist = []; saveSoon(); goMenu(); toast('Level 7: the workshop is shuttered. Pick level 8 to see it light up.'); }
   };
@@ -3533,8 +3628,8 @@ function startDemo() {
   panel.innerHTML = '<b>🧪 Demo run: a pretend student</b> ' + B('✖ Exit demo', 'exit()') + B('🦉 Play the tutorial', 'tutorial()') +
     '<h4>Level</h4>' + [5, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(t => B(t, `level(${t})`)).join('') + B('Show locked workshop', 'fresh()') +
     '<h4>Go to</h4>' + B('🗺️ Map', 'map()') + B('⚒️ Workshop', 'workshop()') + B('🏡 Home', 'home()') + B('🏪 Shop', 'shop()') +
-    '<h4>Quests</h4>' + B('⚔️ Start monster quest', 'fight()') + B('🌿 Start village quest', 'village()') + B('⏭️ Jump near the boss', 'nearBoss()') +
-    '<h4>Fight areas (backgrounds)</h4>' + [1, 2, 3, 4, 5, 6].map(n => B(AREAS[n - 1], `area(${n})`)).join('') + '<h4>Monsters (storm and stone are new)</h4>' + Object.keys(MON_DEF).map(k => B(MON_DEF[k].name + (MON_DEF[k].boss ? ' 👑' : ''), `mon("${k}")`)).join('') + '<h4>Village sites (backgrounds)</h4>' + SITES.slice(0, 12).concat(SITES.filter(s => s.name === 'Blacksmith')).map(s => B(s.name, `site(${SITES.indexOf(s)})`)).join('') +
+    '<h4>Quests</h4>' + B('⚔️ Start monster quest', 'fight()') + B('🌿 Start village quest', 'village()') + B('⏭️ Jump near the boss', 'nearBoss()') + B('🏛️ Festival finale (village)', 'finale()') +
+    '<h4>Fight areas (backgrounds)</h4>' + [1, 2, 3, 4, 5, 6].map(n => B(AREAS[n - 1], `area(${n})`)).join('') + '<h4>Monsters (storm and stone are new)</h4>' + Object.keys(MON_DEF).map(k => B(MON_DEF[k].name + (MON_DEF[k].boss ? ' 👑' : ''), `mon("${k}")`)).join('') + '<h4>Village sites (backgrounds)</h4>' + SITES.filter((s, i) => i < 12 || ['Blacksmith', 'Carpenter'].includes(s.name)).map(s => B(s.name, `site(${SITES.indexOf(s)})`)).join('') +
     '<h4>In a fight</h4>' + B('💥 Lose all hearts (test amulet)', 'ko()') + B('🏆 Win this fight', 'win()') +
     '<h4>Items and stuff</h4>' + B('💠 All items epic', 'items(1)') + B('🌟 All items legendary', 'items(2)') + B('❌ No items', 'items(0)') + B('♻️ Refill powers', 'refill()') + B('🎁 Coins + ingredients', 'stuff()');
   panel.onclick = e => { const b = e.target.closest('[data-d]'); if (!b) return; try { new Function('demo', 'with(demo){' + b.dataset.d + '}')(D); } catch (x) { toast('Demo error: ' + x.message); } };
