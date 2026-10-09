@@ -189,6 +189,56 @@ body.peace .foeBody{font-size:6rem}
 @media (prefers-reduced-motion:reduce){.itemBtn.glow{animation:none}}
 .miInl{display:inline-block;vertical-align:middle;line-height:1}.miInl .magicSvg{width:1.5em;height:1.5em;display:block}
 .craftEm .miInl .magicSvg{width:4.4rem;height:4.4rem}.opt .miInl .magicSvg{width:3rem;height:3rem}
+/* ----- stage backgrounds ----- */
+.stageBg{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+.stageVig{position:absolute;inset:0;pointer-events:none;z-index:1;border-radius:20px;background:radial-gradient(ellipse at 50% 42%,#0000 52%,#10062899 100%),linear-gradient(#0000 72%,#10062833)}
+.stage>.side,.stage>.mid{position:relative;z-index:2}
+.bg-drift{animation:bgdrift 24s ease-in-out infinite alternate}.bg-drift2{animation:bgdrift 38s ease-in-out infinite alternate-reverse}
+@keyframes bgdrift{from{transform:translateX(-22px)}to{transform:translateX(22px)}}
+.bg-rise{animation:bgrise 3.8s ease-in infinite}@keyframes bgrise{0%{transform:translateY(0);opacity:0}20%{opacity:.75}100%{transform:translateY(-30px);opacity:0}}
+.bg-twinkle{animation:bgtw 2.8s ease-in-out infinite}@keyframes bgtw{0%,100%{opacity:.2}50%{opacity:1}}
+.bg-flick{animation:bgfl .6s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}@keyframes bgfl{from{transform:scale(.92,.88);opacity:.85}to{transform:scale(1.08,1.12);opacity:1}}
+.bg-bob{animation:bgbb 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes bgbb{50%{transform:translateY(-4px)}}
+.bg-sway{animation:bgsw 4.5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}@keyframes bgsw{50%{transform:rotate(2.5deg)}}
+@media (prefers-reduced-motion:reduce){.stageBg *{animation:none!important}}
+/* ----- villagers: full-body characters with a job animation ----- */
+body.peace .foeWrap .foeBody{animation:none}
+.foeBody .vill{position:relative;display:inline-block;transform-origin:50% 100%;line-height:0}
+.foeBody .vill svg{display:block;overflow:visible;filter:drop-shadow(0 3px 3px #0008)}
+.vThought{position:absolute;left:58%;bottom:84%;width:46px;height:46px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.6rem;line-height:1;box-shadow:0 2px 0 #0003;animation:vkbub 2.4s ease-in-out infinite}
+.vThought::after{content:"";position:absolute;left:4%;bottom:-9px;width:12px;height:12px;border-radius:50%;background:#fff}
+@keyframes vkbub{50%{transform:translateY(-3px)}}
+.vill.vkjump{animation:vkjump .8s ease-out 1}@keyframes vkjump{30%{transform:translateY(-14%)}60%{transform:translateY(0)}78%{transform:translateY(-5%)}}
+.vk-idle{animation:vkidle 3.4s ease-in-out infinite}@keyframes vkidle{50%{transform:translateY(-1.3px)}}
+.vk-arm{transform-box:view-box}
+.vk-a-knead{animation:vkknead 1.1s ease-in-out infinite}@keyframes vkknead{50%{transform:rotate(14deg)}}
+.vk-a-hammer{animation:vkhammer 1.1s ease-in infinite}@keyframes vkhammer{0%{transform:rotate(-70deg)}55%{transform:rotate(12deg)}70%{transform:rotate(4deg)}100%{transform:rotate(-70deg)}}
+.vk-a-haul{animation:vkhaul 2.2s ease-in-out infinite}@keyframes vkhaul{50%{transform:translateY(-6px)}}
+.vk-a-sway{animation:vkvsway 3.6s ease-in-out infinite}@keyframes vkvsway{50%{transform:rotate(7deg)}}
+.vk-a-flip{animation:vkflip 2.8s ease-in-out infinite}@keyframes vkflip{40%{transform:rotate(-12deg)}70%{transform:rotate(6deg)}}
+.vk-a-water{animation:vkwater 2.6s ease-in-out infinite}@keyframes vkwater{50%{transform:rotate(-24deg)}}
+.vk-a-rod{animation:vkrod 2.4s ease-in-out infinite}@keyframes vkrod{50%{transform:rotate(9deg)}}
+.vk-a-bob{animation:vkvbob 1.6s ease-in-out infinite}@keyframes vkvbob{50%{transform:translateY(-3px)}}
+.vk-a-tip{animation:vktip 3s ease-in-out infinite}@keyframes vktip{40%,60%{transform:translateY(-9px) rotate(-14deg)}}
+.vk-a-pat{animation:vkpat 1.4s ease-in-out infinite}@keyframes vkpat{50%{transform:translateY(5px)}}
+.vk-a-lamp{animation:vklamp 3s ease-in-out infinite}@keyframes vklamp{50%{transform:rotate(-8deg)}}
+.vk-a-pick{animation:vkpick 2.4s ease-in-out infinite}@keyframes vkpick{40%{transform:rotate(-38deg)}70%{transform:rotate(-6deg)}}
+@media (prefers-reduced-motion:reduce){.foeBody .vill *,.vThought,.vill.vkjump{animation:none!important}}
+/* ----- monsters: drawn and animated (idle, hit, attack, defeated come from the usual foeBody classes) ----- */
+.stage.el-storm{--aura:#ffe14acc}.stage.el-stone{--aura:#b0b6c0cc}
+.foeWrap .foeBody.art{animation:none;font-size:0;line-height:0}
+.foeBody .mnWrap{display:block}.foeBody .mnWrap svg{display:block;overflow:visible;height:158px;width:auto}
+.foeBody.boss .mnWrap svg{height:188px}
+.foeBody.hit .mnWrap svg{filter:brightness(2.2) saturate(.3)}
+.mn-body{animation:mnidle 2.8s ease-in-out infinite;transform-box:view-box;transform-origin:70px 130px}@keyframes mnidle{50%{transform:translateY(-3px) scale(1.012,.99)}}
+.mn-blink{animation:mnblink 4.6s infinite;transform-box:fill-box;transform-origin:center}@keyframes mnblink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.mn-flame{animation:mnfl .5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:50% 100%}@keyframes mnfl{from{transform:scale(.9,.86);opacity:.85}to{transform:scale(1.08,1.14);opacity:1}}
+.mn-wing{animation:mnwing 1s ease-in-out infinite;transform-box:fill-box;transform-origin:100% 60%}.mn-wing.r{transform-origin:0% 60%;animation-direction:reverse}@keyframes mnwing{50%{transform:scaleY(.78) rotate(6deg)}}
+.mn-tail{animation:mntail 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:0% 100%}@keyframes mntail{50%{transform:rotate(8deg)}}
+.mn-float{animation:mnflt 3.2s ease-in-out infinite}@keyframes mnflt{50%{transform:translateY(-5px)}}
+.mn-spark{animation:mnspk 1.1s steps(2) infinite}@keyframes mnspk{50%{opacity:.2}}
+.mn-rise{animation:mnrise 3.4s ease-in infinite}@keyframes mnrise{0%{transform:translateY(0);opacity:0}25%{opacity:.8}100%{transform:translateY(-26px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.foeBody .mnWrap *{animation:none!important}}
 .shMerchBody{display:block;width:6.4rem;margin:0 auto}.shMerchBody svg{display:block;width:100%;height:auto}
 @media (prefers-reduced-motion:reduce){.shMerchant,.shCau .flame{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
@@ -257,10 +307,10 @@ body.peace .stage{background:linear-gradient(#0000,#0005),linear-gradient(180deg
 @keyframes ptUp{0%{opacity:0;transform:translateY(14px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translateY(-52px) scale(1.15)}}
 @keyframes ptDown{0%{opacity:0;transform:translateY(-30px) rotate(0)}20%{opacity:1}100%{opacity:0;transform:translateY(46px) rotate(200deg)}}
 @keyframes ptDrift{0%{opacity:0;transform:translate(0,10px) rotate(0)}25%{opacity:.95}100%{opacity:0;transform:translate(var(--dx,20px),-40px) rotate(160deg)}}
-.stage.el-fire{--aura:#ff7a2ecc;background:linear-gradient(#0000,#0007),linear-gradient(180deg,#3a0c0c,#7e2610 58%,#3a0e08);box-shadow:inset 0 -46px 60px -26px #ff6a1a99}
-.stage.el-ice{--aura:#7fdcffcc;background:linear-gradient(#0000,#0006),linear-gradient(180deg,#0d2747,#2b6798 58%,#16334f);box-shadow:inset 0 -46px 60px -26px #aeeaff88}
-.stage.el-dark{--aura:#a070ffcc;background:linear-gradient(#0000,#0008),linear-gradient(180deg,#0b061c,#27144d 58%,#0a0516);box-shadow:inset 0 -46px 60px -26px #7a4dff77}
-.stage.el-plant{--aura:#6ee06ecc;background:linear-gradient(#0000,#0007),linear-gradient(180deg,#0b2812,#217035 58%,#0d2a15);box-shadow:inset 0 -46px 60px -26px #62d96288}
+.stage.el-fire{--aura:#ff7a2ecc}
+.stage.el-ice{--aura:#7fdcffcc}
+.stage.el-dark{--aura:#a070ffcc}
+.stage.el-plant{--aura:#6ee06ecc}
 .stage.flash::after{content:'';position:absolute;inset:0;background:radial-gradient(circle,#ff2a4a00 30%,#ff2a4aaa);animation:flash .45s forwards;pointer-events:none;z-index:6;border-radius:20px}
 @keyframes flash{from{opacity:1}to{opacity:0}}
 .heroGlow svg{filter:drop-shadow(0 0 12px #ffd166) drop-shadow(0 0 22px #ffb703)}
@@ -592,6 +642,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="vctl"><button class="ib" id="muteBtn" title="Sound on/off">🔊</button><input type="range" class="vslider" min="10" max="100" step="5" aria-label="Volume"></div>
   </div>
   <div class="stage" id="stage">
+    <svg class="stageBg" id="stageBg" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg><div class="stageVig" id="stageVig" style="display:none"></div>
     <div class="side hero" id="heroBox"><div id="heroSvg"></div><div class="hearts" id="hearts"></div></div>
     <div class="mid" id="mid"></div>
     <div class="side foe"><div id="foeName" class="small"></div><div class="hpbar"><i id="hpFill"></i></div><div class="foeWrap"><div class="aura" id="aura"></div><div class="foeBody" id="foeBody"></div></div></div>
@@ -712,17 +763,22 @@ const EL = {
  fire:{label:'FIRE',badge:'🔥',weak:['water','rain','snow','ice'],heal:['fire','sun','wind'],why:'Fire monsters hate water and cold!'},
  ice:{label:'ICE',badge:'❄️',weak:['fire','sun'],heal:['ice','snow'],why:'Ice melts in the heat!'},
  dark:{label:'SHADOW',badge:'🌑',weak:['light','sun','lightning'],heal:['dark'],why:'Shadows are scared of light!'},
- plant:{label:'PLANT',badge:'🌿',weak:['fire','lightning'],heal:['water','rain','sun'],why:'Plants burn, but water and sun help them grow!'}
+ plant:{label:'PLANT',badge:'🌿',weak:['fire','lightning'],heal:['water','rain','sun'],why:'Plants burn, but water and sun help them grow!'},
+ storm:{label:'STORM',badge:'⛈️',weak:['stone','ice'],heal:['lightning','wind','rain'],why:'Storms crash against hard stone and freeze in the cold!'},
+ stone:{label:'STONE',badge:'🪨',weak:['water','rain','lightning'],heal:['stone','dark'],why:'Water and lightning crack stone, but more stone and shadow make it stronger!'}
 };
-const MONS = [
- {el:'fire',body:'👹',name:'Ember Imp'},{el:'fire',body:'🦎',name:'Flame Lizard',tint:'hue-rotate(-105deg) saturate(1.8) brightness(1.1)'},
- {el:'ice',body:'🐻‍❄️',name:'Frost Bear'},{el:'ice',body:'🐧',name:'Icy Penguin'},
- {el:'dark',body:'👻',name:'Shadow Ghost'},{el:'dark',body:'🦇',name:'Night Bat'},
- {el:'plant',body:'🌵',name:'Thorn Cactus'},{el:'plant',body:'🍄',name:'Spore Shroom'}
-];
-const BOSSES = [
- {el:'fire',body:'🐲',name:'Fire Dragon'},{el:'ice',body:'🦣',name:'Ice Mammoth'},
- {el:'dark',body:'💀',name:'Night Wraith'},{el:'plant',body:'🌳',name:'Giant Treant'}
+// Every monster has an element (it decides which spells work) and a drawing in MON_ART. Each area has its own monsters and its own boss.
+const MON_DEF = {
+  imp: { el: 'fire', name: 'Ember Imp' }, lizard: { el: 'fire', name: 'Flame Lizard' }, bear: { el: 'ice', name: 'Frost Bear' }, penguin: { el: 'ice', name: 'Icy Penguin' },
+  ghost: { el: 'dark', name: 'Shadow Ghost' }, bat: { el: 'dark', name: 'Night Bat' }, spider: { el: 'dark', name: 'Cave Spider' }, cactus: { el: 'plant', name: 'Thorn Cactus' },
+  shroom: { el: 'plant', name: 'Spore Shroom' }, toad: { el: 'plant', name: 'Swamp Toad' }, harpy: { el: 'storm', name: 'Storm Harpy' }, wisp: { el: 'storm', name: 'Thunder Wisp' },
+  golem: { el: 'stone', name: 'Stone Golem' }, crab: { el: 'stone', name: 'Rock Crab' },
+  dragon: { el: 'fire', name: 'Fire Dragon', boss: true }, mammoth: { el: 'ice', name: 'Ice Mammoth', boss: true }, wraith: { el: 'dark', name: 'Night Wraith', boss: true },
+  treant: { el: 'plant', name: 'Giant Treant', boss: true }, roc: { el: 'storm', name: 'Storm Roc', boss: true }, titan: { el: 'stone', name: 'Mountain Titan', boss: true }
+};
+const AREA_MON = [   // same order as AREAS
+  { n: ['shroom', 'cactus', 'toad'], b: 'treant' }, { n: ['spider', 'bat', 'penguin', 'bear'], b: 'mammoth' }, { n: ['golem', 'crab', 'ghost'], b: 'titan' },
+  { n: ['harpy', 'wisp', 'penguin'], b: 'roc' }, { n: ['imp', 'lizard', 'golem'], b: 'dragon' }, { n: ['toad', 'ghost', 'shroom'], b: 'wraith' }
 ];
 const AREAS = ['Whispering Woods','Crystal Caves','Sunken Ruins','Sky Citadel','Dragon Peak','Moonlit Marsh'];
 const VILLAGES = ['Little Brook','Sunny Hill','Maple Bridge','Starlight Bay','Golden Fields','Cloud Meadow'];
@@ -744,7 +800,7 @@ const VILL = [
  {he:'חלב',nk:'חָלָב',en:'milk',em:'🥛',need:'The baby needs a white drink.'},
  {he:'ביצה',nk:'בֵּיצָה',en:'egg',em:'🥚',need:'I want to make an omelet!'},
  {he:'תפוח',nk:'תַּפּוּחַ',en:'apple',em:'🍎',need:'I want a crunchy red fruit.'},
-{he:'עוגה',nk:'עוּגָה',en:'cake',em:'🎂',need:"It's my birthday! I need something sweet to celebrate!"}, {he:'ענבים',nk:'עֲנָבִים',en:'grapes',em:'🍇',need:'I want a bunch of sweet purple fruit.'}, {he:'סירה',nk:'סִירָה',en:'boat',em:'⛵',need:'I want to sail across the lake!'}, {he:'מטרייה',nk:'מִטְרִיָּה',en:'umbrella',em:'☂️',need:"It is raining and I'm getting all wet!"}, {he:'שמיכה',nk:'שְׂמִיכָה',en:'blanket',em:'🛏️',need:'I am so cold at night. I need something warm to sleep under.'},
+{he:'עוגה',nk:'עוּגָה',en:'cake',em:'🎂',need:"It's my birthday! I need something sweet to celebrate!"}, {he:'ענבים',nk:'עֲנָבִים',en:'grapes',em:'🍇',need:'I want a bunch of sweet purple fruit.'}, {he:'סירה',nk:'סִירָה',en:'boat',em:'⛵',need:'I want to sail across the lake!'}, {he:'מטרייה',nk:'מִטְרִיָּה',en:'umbrella',em:'☂️',need:"It is raining and I'm getting all wet!"}, {he:'שמיכה',nk:'שְׂמִיכָה',en:'blanket',em:'🛏️',need:'I am so cold at night. I need something warm to sleep under.'}, {he:'פטיש',nk:'פַּטִּישׁ',en:'hammer',em:'🔨',need:'My hammer broke and I cannot work!'},
 ];
 // Ingredients are words the student learns to read (and, later, to write). Ids, not words, are stored in the profile.
 // Rarity: 0 common (plants), 1 uncommon (element stones), 2 rare (creature parts), 3 epic (sky), 4 legendary (treasures)
@@ -765,6 +821,7 @@ const RARE_POOL = { 2: ['feather', 'scale', 'horn', 'tooth', 'wing'], 3: ['star'
 const DROP = {
   fire: { common: ['thorn', 'root', 'seed'], uncommon: ['g_fire', 'g_wind'] }, ice: { common: ['seed', 'leaf', 'grass'], uncommon: ['g_ice', 'g_water'] },
   dark: { common: ['mushroom', 'root', 'thorn'], uncommon: ['g_dark', 'g_bolt'] }, plant: { common: ['grass', 'flower', 'leaf', 'seed'], uncommon: ['g_earth', 'g_water'] },
+  storm: { common: ['grass', 'leaf', 'seed'], uncommon: ['g_bolt', 'g_wind'] }, stone: { common: ['root', 'thorn', 'mushroom'], uncommon: ['g_earth', 'g_dark'] },
   folk: { common: ['flower', 'grass', 'leaf', 'seed'], uncommon: ['g_light', 'g_water', 'g_wind'] }
 };
 const FOLK = ['🧓','👩‍🌾','👨‍🌾','🧑‍🍳','👵','👴','🧒','👧','🧑‍🔧','👩‍🎤'];
@@ -1505,14 +1562,14 @@ function similarity(a, b) {
 const VTAGS = { 'מים': ['drink'], 'לחם': ['food'], 'חתול': ['pet', 'animal'], 'כלב': ['pet', 'animal'], 'דג': ['animal', 'food'],
   'ספר': ['read'], 'בית': ['home'], 'עץ': ['plant'], 'פרח': ['plant'], 'נר': ['light'], 'מפתח': ['home'], 'כובע': ['wear'],
   'גשר': ['cross'], 'ירח': ['sky', 'light'], 'כוכב': ['sky', 'light'], 'דלת': ['home'], 'חלב': ['drink', 'food'],
-  'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'], 'עוגה': ['food'], 'ענבים': ['food'], 'סירה': ['boat'], 'מטרייה': ['rain'], 'שמיכה': ['sleep'] };
+  'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'], 'עוגה': ['food'], 'ענבים': ['food'], 'סירה': ['boat'], 'מטרייה': ['rain'], 'שמיכה': ['sleep'], 'פטיש': ['tool'] };
 // The two-word phrases for the village reading levels (12 and 13): a word from the village list plus an easy describing word.
 const VPH = [['מים', 'מים קרים', 'מַיִם קָרִים', 'cold water'], ['לחם', 'לחם חם', 'לֶחֶם חַם', 'warm bread'], ['חתול', 'חתול שחור', 'חָתוּל שָׁחֹר', 'black cat'], ['כלב', 'כלב גדול', 'כֶּלֶב גָּדוֹל', 'big dog'],
   ['דג', 'דג קטן', 'דָּג קָטָן', 'small fish'], ['ספר', 'ספר גדול', 'סֵפֶר גָּדוֹל', 'big book'], ['בית', 'בית קטן', 'בַּיִת קָטָן', 'small house'], ['עץ', 'עץ גדול', 'עֵץ גָּדוֹל', 'big tree'],
   ['פרח', 'פרח יפה', 'פֶּרַח יָפֶה', 'pretty flower'], ['נר', 'נר קטן', 'נֵר קָטָן', 'small candle'], ['מפתח', 'מפתח זהב', 'מַפְתֵּחַ זָהָב', 'golden key'], ['כובע', 'כובע אדום', 'כּוֹבַע אָדֹם', 'red hat'],
   ['גשר', 'גשר ישן', 'גֶּשֶׁר יָשָׁן', 'old bridge'], ['דלת', 'דלת כחולה', 'דֶּלֶת כְּחֻלָּה', 'blue door'], ['חלב', 'חלב קר', 'חָלָב קַר', 'cold milk'], ['ביצה', 'ביצה לבנה', 'בֵּיצָה לְבָנָה', 'white egg'],
   ['תפוח', 'תפוח אדום', 'תַּפּוּחַ אָדֹם', 'red apple'], ['עוגה', 'עוגה מתוקה', 'עוּגָה מְתוּקָה', 'sweet cake'], ['ענבים', 'ענבים סגולים', 'עֲנָבִים סְגֻלִּים', 'purple grapes'], ['סירה', 'סירה כחולה', 'סִירָה כְּחֻלָּה', 'blue boat'],
-  ['מטרייה', 'מטרייה צהובה', 'מִטְרִיָּה צְהֻבָּה', 'yellow umbrella'], ['שמיכה', 'שמיכה חמה', 'שְׂמִיכָה חַמָּה', 'warm blanket']].map(([w, he, nk, en]) => ({ w, he, nk, en }));
+  ['מטרייה', 'מטרייה צהובה', 'מִטְרִיָּה צְהֻבָּה', 'yellow umbrella'], ['שמיכה', 'שמיכה חמה', 'שְׂמִיכָה חַמָּה', 'warm blanket'], ['פטיש', 'פטיש כבד', 'פַּטִּישׁ כָּבֵד', 'heavy hammer']].map(([w, he, nk, en]) => ({ w, he, nk, en }));
 function qHelpPhrase(t) {   // levels 12 (with vowel marks) and 13 (without): read two-word signs
   const site = G.site && VPH.find(p => p.w === G.site.he), target = site || wpick(VPH, p => 'W:' + p.he, G.lastKey), tw = VILL.find(v => v.he === target.w);
   const opts = [target];
@@ -1570,16 +1627,324 @@ function makeQ() {
   return b ? qWriteSpell(t) : qWriteHelp(t);
 }
 
+/* ====================== MONSTER ARTWORK ====================== */
+// 14 monsters and 6 bosses drawn as cute-spooky animated characters (140x140 SVG). Reused from the approved preview.
+const MON_ART = (() => {
+const R = (x, y, w, h, f, rx = 0, x2 = '') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" ${x2}/>`;
+const P = (p, f, x2 = '') => `<polygon points="${p}" fill="${f}" ${x2}/>`;
+const C = (x, y, r, f, x2 = '') => `<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${x2}/>`;
+const E = (x, y, rx, ry, f, x2 = '') => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${f}" ${x2}/>`;
+const PA = (d, f, x2 = '') => `<path d="${d}" fill="${f}" ${x2}/>`;
+const ST = (d, c, w = 3, x2 = '') => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" ${x2}/>`;
+const gs = (x = 70, y = 130, rx = 36) => E(x, y, rx, 5, '#000', 'opacity=".3"');
+const eye = (x, y, r = 7, o = {}) => `<g class="mn-blink"><circle cx="${x}" cy="${y}" r="${r}" fill="${o.w || '#fff'}"/><circle cx="${x + (o.dx || 0)}" cy="${y + (o.dy ?? 1)}" r="${(r * .52).toFixed(1)}" fill="${o.p || '#2a2340'}"/><circle cx="${(x + (o.dx || 0) - r * .2).toFixed(1)}" cy="${(y - r * .2).toFixed(1)}" r="${(r * .2).toFixed(1)}" fill="#fff"/></g>`;
+const gEye = (x, y, r, c) => C(x, y, r * 1.9, c, 'opacity=".25"') + E(x, y, r, r * 1.15, c) + E(x, y, r * .32, r * .8, '#fff', 'opacity=".85"');
+const brow = (x1, y1, x2, y2, c = '#2a1a14', w = 2.6) => ST(`M${x1} ${y1} L${x2} ${y2}`, c, w);
+const fangs = (x, y, s = 1, c = '#fff') => PA(`M${x - 7 * s} ${y} l${2.4 * s} ${6 * s} l${2.4 * s} -${6 * s}Z M${x + 2.2 * s} ${y} l${2.4 * s} ${6 * s} l${2.4 * s} -${6 * s}Z`, c);
+const flame = (x, y, s = 1, c1 = '#ffb13a', c2 = '#fff0a0', cls = 'mn-flame') => `<g class="${cls}">${PA(`M${x - 6 * s} ${y} Q${x - 8 * s} ${y - 18 * s} ${x} ${y - 28 * s} Q${x + 8 * s} ${y - 18 * s} ${x + 6 * s} ${y}Z`, c1)}${PA(`M${x - 3 * s} ${y} Q${x - 4 * s} ${y - 10 * s} ${x} ${y - 16 * s} Q${x + 4 * s} ${y - 10 * s} ${x + 3 * s} ${y}Z`, c2)}</g>`;
+const bolt = (x, y, s = 1, c = '#ffe14a') => PA(`M${x} ${y} l${7 * s} 0 l${-4 * s} ${9 * s} l${8 * s} 0 l${-14 * s} ${16 * s} l${3 * s} ${-11 * s} l${-7 * s} 0Z`, c, 'class="mn-spark"');
+const body = inner => `<g class="mn-body">${inner}</g>`;
+const MON = {
+  imp: () => gs() + body(`<g class="mn-tail">${ST('M96 104 Q126 100 122 76', '#c8401f', 6)}</g>${flame(122, 76, .7)}` + E(70, 94, 30, 28, '#e8552e') + E(70, 100, 19, 20, '#ffb36b') + E(43, 96, 6.5, 12, '#c8401f', 'transform="rotate(18 43 96)"') + E(97, 96, 6.5, 12, '#c8401f', 'transform="rotate(-18 97 96)"') + E(56, 123, 11, 5.5, '#a8341a') + E(84, 123, 11, 5.5, '#a8341a')
+    + C(70, 58, 28, '#e8552e') + E(60, 46, 13, 7, '#ff8a5e', 'opacity=".5"') + P('46,42 38,16 60,34', '#3a1a14') + P('94,42 102,16 80,34', '#3a1a14') + flame(70, 34, 1) + eye(58, 58, 7.2, {w: '#fff6c0'}) + eye(82, 58, 7.2, {w: '#fff6c0'}) + brow(50, 49, 64, 54) + brow(90, 49, 76, 54)
+    + PA('M57 72 Q70 84 83 72 Q70 77 57 72Z', '#3a1a14') + fangs(70, 73, .8)),
+  lizard: () => gs() + body(`<g class="mn-tail">${ST('M96 104 Q130 104 126 78 Q124 66 114 70', '#d96a26', 9)}</g>${flame(114, 70, .6)}` + E(70, 94, 28, 28, '#e8842e') + E(70, 100, 17, 21, '#ffd7a0') + E(46, 100, 6, 11, '#c8601e') + E(94, 100, 6, 11, '#c8601e') + E(56, 124, 11, 5, '#b8501a') + E(84, 124, 11, 5, '#b8501a')
+    + E(70, 58, 27, 24, '#e8842e') + E(70, 70, 17, 10, '#f09a50') + E(60, 70, 1.6, 1.2, '#7a2a10') + E(80, 70, 1.6, 1.2, '#7a2a10') + C(53, 42, 10, '#e8842e') + C(87, 42, 10, '#e8842e') + eye(53, 42, 7, {w: '#fff6c0'}) + eye(87, 42, 7, {w: '#fff6c0'})
+    + [48, 62, 78, 92].map((x, i) => P(`${x - 4},34 ${x},${22 - (i % 2) * 5} ${x + 4},34`, '#ffb13a', 'class="mn-flame"')).join('') + ST('M62 77 Q70 82 78 77', '#7a2a10', 2) + brow(46, 34, 58, 38, '#7a2a10') + brow(94, 34, 82, 38, '#7a2a10')),
+  bear: () => gs() + body(E(70, 92, 36, 34, '#dbeaf6') + E(70, 98, 24, 24, '#f4fbff') + E(36, 98, 9, 14, '#c4d9ea', 'transform="rotate(20 36 98)"') + E(104, 98, 9, 14, '#c4d9ea', 'transform="rotate(-20 104 98)"') + E(52, 124, 13, 6, '#b3cadd') + E(88, 124, 13, 6, '#b3cadd')
+    + P('38,70 30,46 50,60', '#8fd6ff', 'opacity=".85"') + P('102,70 110,46 90,60', '#8fd6ff', 'opacity=".85"') + P('48,60 44,36 60,54', '#bfe9ff', 'opacity=".8"') + P('92,60 96,36 80,54', '#bfe9ff', 'opacity=".8"')
+    + C(46, 38, 10, '#dbeaf6') + C(94, 38, 10, '#dbeaf6') + C(46, 38, 5, '#8fb3cf') + C(94, 38, 5, '#8fb3cf') + C(70, 58, 28, '#dbeaf6') + E(70, 68, 14, 10, '#f4fbff') + E(70, 64, 5, 3.6, '#23405a') + eye(58, 54, 6.4, {p: '#1a2a4a'}) + eye(82, 54, 6.4, {p: '#1a2a4a'}) + brow(50, 45, 63, 50, '#23405a') + brow(90, 45, 77, 50, '#23405a')
+    + ST('M62 72 Q70 78 78 72', '#23405a', 2) + P('66,73 68,79 70,73', '#fff') + P('70,73 72,79 74,73', '#fff')),
+  penguin: () => gs() + body(E(70, 90, 30, 38, '#26344f') + E(70, 98, 20, 30, '#eaf6ff') + `<g class="mn-wing">${E(36, 92, 8, 20, '#1d2a42', 'transform="rotate(14 36 92)"')}</g><g class="mn-wing r">${E(104, 92, 8, 20, '#1d2a42', 'transform="rotate(-14 104 92)"')}</g>` + E(56, 126, 12, 5, '#ff9a3a') + E(84, 126, 12, 5, '#ff9a3a')
+    + C(70, 52, 26, '#26344f') + E(70, 58, 19, 17, '#eaf6ff') + P('62,40 58,20 70,34', '#8fd6ff') + P('78,40 82,20 70,34', '#8fd6ff') + P('70,36 70,14 76,36', '#bfe9ff') + eye(60, 52, 6.4) + eye(80, 52, 6.4) + brow(52, 44, 65, 48, '#1a2a4a') + brow(88, 44, 75, 48, '#1a2a4a') + P('62,60 78,60 70,72', '#ff9a3a') + P('62,60 78,60 70,64', '#ffc27a')),
+  ghost: () => gs(70, 130, 30) + `<g class="mn-float">` + body(PA('M34 126 V70 Q34 24 70 24 Q106 24 106 70 V126 Q98 116 90 126 Q82 116 74 126 Q66 116 58 126 Q50 116 42 126 Q38 120 34 126Z', '#b89cff', 'opacity=".92"') + PA('M34 70 Q34 24 70 24 Q86 24 96 36 Q60 36 50 70Z', '#dccbff', 'opacity=".5"')
+    + E(36, 86, 8, 16, '#b89cff', 'opacity=".9" transform="rotate(30 36 86)"') + E(104, 86, 8, 16, '#b89cff', 'opacity=".9" transform="rotate(-30 104 86)"') + gEye(56, 62, 7, '#7a3fe0') + gEye(84, 62, 7, '#7a3fe0') + brow(46, 52, 62, 57, '#3a1a6a') + brow(94, 52, 78, 57, '#3a1a6a')
+    + E(70, 84, 11, 9, '#3a1a6a') + E(70, 88, 6, 4, '#7a3fe0')) + `</g>` + [0, 1, 2].map(i => C(40 + i * 30, 40 + i * 6, 2, '#e7dcff', `class="mn-rise" style="animation-delay:${i}s"`)).join(''),
+  bat: () => gs() + `<g class="mn-float">` + body(`<g class="mn-wing">${PA('M52 70 Q20 44 6 66 Q18 66 20 78 Q30 72 36 84 Q46 76 54 90Z', '#4a2a7a')}</g><g class="mn-wing r">${PA('M88 70 Q120 44 134 66 Q122 66 120 78 Q110 72 104 84 Q94 76 86 90Z', '#4a2a7a')}</g>`
+    + E(70, 86, 24, 30, '#5a3490') + E(70, 94, 14, 20, '#8a62c8') + P('50,48 46,22 64,40', '#5a3490') + P('90,48 94,22 76,40', '#5a3490') + P('52,44 50,30 60,40', '#c8a0ff') + P('88,44 90,30 80,40', '#c8a0ff') + C(70, 56, 24, '#5a3490') + gEye(60, 54, 6.4, '#ffe14a') + gEye(80, 54, 6.4, '#ffe14a') + brow(52, 46, 64, 50, '#1a0a3a') + brow(88, 46, 76, 50, '#1a0a3a') + P('66,62 70,68 74,62', '#c8a0ff', 'opacity="0"') + PA('M62 66 Q70 72 78 66 Q70 69 62 66Z', '#1a0a3a') + fangs(70, 66, .6) + E(58, 120, 5, 3, '#3a2060') + E(82, 120, 5, 3, '#3a2060')) + `</g>`,
+  spider: () => gs() + body([[-1, 1], [1, 1]].map(([s]) => [0, 1, 2, 3].map(i => ST(`M${70 + s * 18} ${86 + i * 6} Q${70 + s * (44 + i * 3)} ${70 + i * 4} ${70 + s * (50 + i * 2)} ${112 + i * 4}`, '#3a2a60', 4)).join('')).join('')
+    + E(70, 90, 28, 24, '#4a2f80') + E(70, 94, 16, 14, '#7a52c0') + PA('M60 82 l5 -5 l5 5 l-5 5Z M72 90 l5 -5 l5 5 l-5 5Z', '#c8a0ff', 'opacity=".5"') + C(70, 62, 22, '#4a2f80') + E(58, 50, 10, 6, '#7a52c0', 'opacity=".4"') + gEye(60, 58, 6.4, '#7dffb0') + gEye(80, 58, 6.4, '#7dffb0') + C(70, 50, 3, '#7dffb0') + C(62, 48, 2.2, '#7dffb0') + C(78, 48, 2.2, '#7dffb0')
+    + brow(52, 50, 64, 55, '#1a0a3a') + brow(88, 50, 76, 55, '#1a0a3a') + PA('M62 70 Q70 76 78 70 Q70 73 62 70Z', '#1a0a3a') + P('64,70 62,80 67,72', '#fff') + P('76,70 78,80 73,72', '#fff')),
+  cactus: () => gs() + body(R(50, 56, 40, 72, '#4caf50', 20) + R(50, 56, 14, 72, '#6fd06c', 7, 'opacity=".5"') + R(76, 56, 14, 72, '#2f7a38', 7, 'opacity=".4"') + R(22, 66, 32, 14, '#4caf50', 7) + R(22, 44, 14, 36, '#4caf50', 7) + R(86, 78, 32, 14, '#4caf50', 7) + R(104, 56, 14, 36, '#4caf50', 7)
+    + Array.from({length: 18}, (_, i) => { const x = 54 + (i * 13) % 34, y = 60 + Math.floor(i / 3) * 12; return `<path d="M${x} ${y} l-3 -3 M${x} ${y} l3 -3" stroke="#e8f5c8" stroke-width="1.3" stroke-linecap="round"/>`; }).join('') + `<g class="mn-flame">${C(70, 50, 8, '#ff7ab0')}${C(63, 52, 6, '#ff9ac4')}${C(77, 52, 6, '#ff9ac4')}${C(70, 50, 3.4, '#ffe14a')}</g>`
+    + eye(61, 82, 6.4, {p: '#1a3a1a'}) + eye(79, 82, 6.4, {p: '#1a3a1a'}) + brow(53, 74, 66, 78, '#1a3a1a') + brow(87, 74, 74, 78, '#1a3a1a') + PA('M62 96 Q70 104 78 96 Q70 100 62 96Z', '#1a3a1a') + E(56, 128, 12, 4, '#8a5a2b')),
+  shroom: () => gs() + body(R(52, 74, 36, 52, '#f2e6d0', 16) + R(52, 74, 12, 52, '#fff6e6', 6, 'opacity=".6"') + R(78, 74, 10, 52, '#c9b595', 5, 'opacity=".4"') + E(70, 76, 50, 12, '#b83a3a', 'opacity=".4"') + PA('M16 76 Q16 20 70 20 Q124 20 124 76 Q70 90 16 76Z', '#d9453a') + PA('M16 76 Q16 20 70 20 Q50 30 40 60 Q30 74 16 76Z', '#ff7a6a', 'opacity=".45"') + [[40, 44, 7], [70, 34, 8], [98, 46, 6.5], [56, 62, 5], [86, 64, 5.5], [112, 66, 4]].map(([x, y, r]) => E(x, y, r, r * .8, '#fff6e6')).join('')
+    + eye(60, 92, 6.4, {p: '#3a1a14'}) + eye(80, 92, 6.4, {p: '#3a1a14'}) + brow(52, 84, 65, 88, '#6a3a2a') + brow(88, 84, 75, 88, '#6a3a2a') + PA('M62 104 Q70 112 78 104 Q70 108 62 104Z', '#6a2a2a') + E(54, 127, 12, 4, '#c9b595') + E(86, 127, 12, 4, '#c9b595')) + [0, 1, 2, 3].map(i => C(30 + i * 28, 20 - (i % 2) * 6, 2.2, '#cfe8a0', `class="mn-rise" style="animation-delay:${i * .8}s"`)).join(''),
+  toad: () => gs() + body(E(70, 100, 46, 26, '#6a8a3a') + E(70, 108, 32, 17, '#cfd68a') + E(30, 112, 12, 8, '#587a2e') + E(110, 112, 12, 8, '#587a2e') + E(48, 126, 14, 5, '#587a2e') + E(92, 126, 14, 5, '#587a2e')
+    + E(70, 66, 38, 26, '#7a9c42') + E(56, 54, 14, 8, '#a2c25c', 'opacity=".45"') + C(50, 42, 13, '#7a9c42') + C(90, 42, 13, '#7a9c42') + eye(50, 42, 9, {w: '#fff6c0', p: '#2a3a10'}) + eye(90, 42, 9, {w: '#fff6c0', p: '#2a3a10'}) + brow(40, 33, 56, 38, '#2a3a10') + brow(100, 33, 84, 38, '#2a3a10')
+    + ST('M44 76 Q70 92 96 76', '#2a3a10', 3) + fangs(60, 80, .6) + fangs(80, 80, .6) + [[58, 62], [82, 60], [70, 56], [96, 66], [46, 68]].map(([x, y]) => C(x, y, 2.4, '#5a7a2e')).join('') + E(70, 132, 40, 6, '#3f9a6a', 'opacity=".7"')),
+  harpy: () => gs() + `<g class="mn-float">` + body(`<g class="mn-wing">${PA('M52 66 Q12 40 4 80 Q16 70 22 82 Q30 72 38 86 Q46 76 54 92Z', '#6a86b8')}${PA('M52 66 Q22 52 14 74 Q26 66 30 78Z', '#9ab4e0', 'opacity=".6"')}</g><g class="mn-wing r">${PA('M88 66 Q128 40 136 80 Q124 70 118 82 Q110 72 102 86 Q94 76 86 92Z', '#6a86b8')}${PA('M88 66 Q118 52 126 74 Q114 66 110 78Z', '#9ab4e0', 'opacity=".6"')}</g>`
+    + E(70, 90, 22, 30, '#7a96c8') + E(70, 98, 13, 22, '#e8f0ff') + PA('M60 118 l-6 12 l8 -4 l2 6 l4 -14Z M80 118 l6 12 l-8 -4 l-2 6 l-4 -14Z', '#ffb13a') + C(70, 54, 22, '#7a96c8') + P('62,36 56,12 70,32', '#ffe14a') + P('70,34 70,6 78,34', '#fff08a') + P('78,36 86,14 74,32', '#ffe14a') + eye(60, 54, 6.4, {p: '#1a2a4a'}) + eye(80, 54, 6.4, {p: '#1a2a4a'}) + brow(52, 46, 64, 50, '#1a2a4a') + brow(88, 46, 76, 50, '#1a2a4a') + P('62,62 78,62 70,76', '#ffb13a') + P('62,62 78,62 70,66', '#ffd27a')) + `</g>`,
+  wisp: () => gs(70, 130, 28) + `<g class="mn-float">` + body(E(70, 66, 40, 28, '#8a96b0') + C(38, 74, 20, '#8a96b0') + C(102, 74, 20, '#8a96b0') + C(54, 46, 22, '#a2aec6') + C(88, 48, 20, '#a2aec6') + E(70, 78, 44, 16, '#6a7690') + E(62, 50, 18, 8, '#d0d8ea', 'opacity=".5"')
+    + gEye(56, 62, 7, '#ffe14a') + gEye(84, 62, 7, '#ffe14a') + brow(46, 52, 62, 57, '#2a3450') + brow(94, 52, 78, 57, '#2a3450') + PA('M60 74 Q70 82 80 74 Q70 78 60 74Z', '#2a3450') + fangs(70, 75, .6)) + `</g>` + bolt(56, 92, 1) + bolt(76, 96, .8),
+  golem: () => gs() + body(R(36, 66, 68, 54, '#8a8f96', 8) + R(36, 66, 20, 54, '#a8adb4', 8, 'opacity=".5"') + R(84, 66, 20, 54, '#5e636a', 8, 'opacity=".5"') + R(14, 70, 24, 44, '#7a8088', 10) + R(102, 70, 24, 44, '#7a8088', 10) + R(10, 106, 32, 20, '#6a7078', 8) + R(98, 106, 32, 20, '#6a7078', 8) + R(44, 118, 22, 12, '#6a7078', 4) + R(74, 118, 22, 12, '#6a7078', 4)
+    + R(48, 24, 44, 40, '#9a9fa6', 8) + R(48, 24, 14, 40, '#b8bdc4', 8, 'opacity=".5"') + `<g class="mn-flame">${PA('M54 20 q6 -10 12 0 q4 -8 10 0 q6 -6 10 2Z', '#4caf50')}</g>` + gEye(60, 42, 5.6, '#ffae3a') + gEye(80, 42, 5.6, '#ffae3a') + brow(52, 34, 65, 38, '#3a3e44', 3) + brow(88, 34, 75, 38, '#3a3e44', 3) + R(60, 54, 20, 4, '#3a3e44', 2)
+    + `<path d="M62 78 v14 M70 74 v22 M78 78 v14" stroke="#ffae3a" stroke-width="3" stroke-linecap="round" class="mn-spark"/>` + ST('M42 70 l10 8 l-6 10', '#4a4e54', 1.6) + C(40, 84, 4, '#4caf50', 'opacity=".7"')),
+  crab: () => gs() + body([-1, 1].map(s => [0, 1, 2].map(i => ST(`M${70 + s * 24} ${104 + i * 5} Q${70 + s * 44} ${100 + i * 5} ${70 + s * (46 + i * 2)} ${126}`, '#6a4a3a', 4)).join('')).join('') + `<g class="mn-wing">${ST('M44 82 Q22 76 22 54', '#8a5a4a', 7)}${PA('M10 52 Q14 30 30 40 Q26 46 34 52 Q22 60 10 52Z', '#b86a4a')}</g><g class="mn-wing r">${ST('M96 82 Q118 76 118 54', '#8a5a4a', 7)}${PA('M130 52 Q126 30 110 40 Q114 46 106 52 Q118 60 130 52Z', '#b86a4a')}</g>`
+    + E(70, 96, 38, 24, '#8a6a58') + E(70, 88, 32, 14, '#a88a76', 'opacity=".6"') + [[52, 84], [74, 78], [90, 92], [60, 100]].map(([x, y]) => P(`${x - 5},${y + 4} ${x},${y - 6} ${x + 5},${y + 4}`, '#7ad0e8')).join('') + R(54, 68, 3, 14, '#6a4a3a') + R(83, 68, 3, 14, '#6a4a3a') + eye(55, 64, 6.4, {p: '#2a1a14'}) + eye(85, 64, 6.4, {p: '#2a1a14'}) + brow(48, 56, 60, 60, '#2a1a14') + brow(92, 56, 80, 60, '#2a1a14') + PA('M60 100 Q70 108 80 100 Q70 104 60 100Z', '#2a1a14'))
+};
+/* ---------- bosses ---------- */
+const BOSS = {
+  dragon: () => gs(70, 132, 50) + body(`<g class="mn-wing">${PA('M52 70 Q10 20 4 68 Q18 56 24 76 Q34 62 42 82 Q50 72 56 92Z', '#a8341a')}</g><g class="mn-wing r">${PA('M88 70 Q130 20 136 68 Q122 56 116 76 Q106 62 98 82 Q90 72 84 92Z', '#a8341a')}</g><g class="mn-tail">${ST('M96 108 Q132 112 128 84', '#c8401f', 11)}</g>${P('124,76 134,62 136,82', '#ffb13a')}`
+    + E(70, 98, 36, 32, '#d9452a') + E(70, 106, 22, 24, '#ffd7a0') + [0, 1, 2, 3].map(i => `<line x1="48" y1="${100 + i * 5}" x2="92" y2="${100 + i * 5}" stroke="#c8801e" stroke-opacity=".5"/>`).join('') + E(46, 126, 14, 6, '#a8341a') + E(94, 126, 14, 6, '#a8341a') + E(36, 100, 8, 14, '#c8401f') + E(104, 100, 8, 14, '#c8401f')
+    + P('52,72 56,56 62,72', '#ffb13a') + P('62,66 70,50 78,66', '#ffb13a') + P('78,72 84,56 88,72', '#ffb13a') + C(70, 56, 26, '#d9452a') + E(70, 66, 18, 12, '#e8683a') + E(60, 66, 2, 3, '#4a1a10') + E(80, 66, 2, 3, '#4a1a10') + P('48,44 38,14 62,36', '#3a1a14') + P('92,44 102,14 78,36', '#3a1a14') + gEye(58, 52, 6.6, '#ffe14a') + gEye(82, 52, 6.6, '#ffe14a') + brow(48, 43, 64, 48, '#2a0a06', 3) + brow(92, 43, 76, 48, '#2a0a06', 3) + PA('M58 74 Q70 82 82 74 Q70 78 58 74Z', '#4a1a10') + fangs(70, 75, .6) + flame(70, 82, .7, '#ff7a2e', '#ffe14a')),
+  mammoth: () => gs(70, 132, 52) + body(E(70, 96, 48, 36, '#7a9cc0') + PA('M26 80 Q30 120 22 134 Q34 126 38 134 Q42 120 40 90Z', '#9ab8d8') + PA('M114 80 Q110 120 118 134 Q106 126 102 134 Q98 120 100 90Z', '#9ab8d8') + E(70, 104, 30, 28, '#bfd6ec', 'opacity=".5"') + E(48, 128, 14, 6, '#5a7aa0') + E(92, 128, 14, 6, '#5a7aa0')
+    + [[40, 60], [58, 50], [78, 48], [98, 56]].map(([x, y]) => P(`${x - 6},${y + 12} ${x},${y - 10} ${x + 6},${y + 12}`, '#dff4ff', 'opacity=".95"')).join('') + C(70, 64, 28, '#8aaccc') + E(60, 52, 14, 8, '#b8d4ec', 'opacity=".5"') + C(40, 62, 11, '#7a9cc0') + C(100, 62, 11, '#7a9cc0') + C(40, 62, 6, '#a8c4de') + C(100, 62, 6, '#a8c4de')
+    + PA('M66 70 Q60 100 66 118 Q72 126 78 118 L74 100 Q74 84 76 70Z', '#7a9cc0') + PA('M52 76 Q38 92 46 112 Q50 104 52 96Z', '#fffbe8') + PA('M88 76 Q102 92 94 112 Q90 104 88 96Z', '#fffbe8') + eye(58, 60, 6.6, {p: '#14284a'}) + eye(82, 60, 6.6, {p: '#14284a'}) + brow(48, 51, 64, 56, '#14284a', 3) + brow(92, 51, 76, 56, '#14284a', 3) + P('64,46 70,36 76,46', '#dff4ff')),
+  wraith: () => gs(70, 132, 40) + `<g class="mn-float">` + body(PA('M30 128 Q26 70 44 44 Q70 18 96 44 Q114 70 110 128 Q102 116 96 128 Q88 114 80 128 Q72 112 64 128 Q56 114 48 128 Q40 118 30 128Z', '#2a2050') + PA('M44 44 Q70 18 96 44 Q80 40 70 56 Q58 40 44 44Z', '#4a3a80', 'opacity=".7"') + E(70, 64, 22, 24, '#0e0820') + gEye(60, 62, 6.6, '#b58bff') + gEye(80, 62, 6.6, '#b58bff') + brow(50, 52, 64, 57, '#b58bff', 2) + brow(90, 52, 76, 57, '#b58bff', 2) + PA('M58 76 Q70 84 82 76 Q70 80 58 76Z', '#b58bff', 'opacity=".8"')
+    + E(34, 96, 7, 14, '#2a2050', 'transform="rotate(24 34 96)"') + E(106, 96, 7, 14, '#2a2050', 'transform="rotate(-24 106 96)"') + R(114, 22, 4, 100, '#4a3a2a') + `<g class="mn-flame">${C(116, 18, 9, '#b58bff', 'opacity=".5"')}${PA('M110 22 Q112 6 116 2 Q120 6 122 22Z', '#b58bff')}</g>`) + `</g>` + [0, 1, 2].map(i => C(30 + i * 36, 44 + i * 4, 2.2, '#b58bff', `class="mn-rise" style="animation-delay:${i * .9}s"`)).join(''),
+  treant: () => gs(70, 132, 46) + body(R(46, 56, 48, 72, '#7a5230', 14) + R(46, 56, 16, 72, '#9a6a3c', 8, 'opacity=".5"') + R(78, 56, 16, 72, '#4a3018', 8, 'opacity=".4"') + [0, 1, 2, 3, 4].map(i => `<path d="M${52 + i * 9} 62 Q${50 + i * 9} 96 ${54 + i * 9} 126" stroke="#3a2412" stroke-opacity=".35" fill="none"/>`).join('')
+    + PA('M46 100 Q20 96 12 70 Q22 72 30 66 Q28 80 46 88Z', '#7a5230') + PA('M94 100 Q120 96 128 70 Q118 72 110 66 Q112 80 94 88Z', '#7a5230') + C(14, 66, 8, '#4caf50') + C(126, 66, 8, '#4caf50') + PA('M40 126 Q30 132 22 128 Q34 124 44 118Z', '#5a3a1e') + PA('M100 126 Q110 132 118 128 Q106 124 96 118Z', '#5a3a1e')
+    + C(70, 30, 30, '#2f8a3c') + C(42, 40, 20, '#3f9a45') + C(98, 40, 20, '#3f9a45') + C(56, 18, 16, '#4aa850') + C(86, 20, 16, '#4aa850') + C(66, 14, 10, '#6fd06c', 'opacity=".6"') + [[40, 36], [100, 36], [70, 12], [56, 44]].map(([x, y]) => C(x, y, 3, '#ff7ab0')).join('')
+    + gEye(60, 72, 6.6, '#ffe14a') + gEye(80, 72, 6.6, '#ffe14a') + brow(50, 63, 65, 68, '#2a1608', 3) + brow(90, 63, 75, 68, '#2a1608', 3) + PA('M58 92 Q70 102 82 92 Q70 97 58 92Z', '#2a1608') + P('64,92 66,98 68,92', '#fff')),
+  roc: () => gs(70, 132, 44) + `<g class="mn-float">` + body(`<g class="mn-wing">${PA('M52 62 Q4 20 2 74 Q14 60 20 82 Q30 66 38 90 Q48 74 56 98Z', '#4a6aa8')}${PA('M52 62 Q20 40 10 70 Q24 58 28 76Z', '#7a9ae0', 'opacity=".6"')}</g><g class="mn-wing r">${PA('M88 62 Q136 20 138 74 Q126 60 120 82 Q110 66 102 90 Q92 74 84 98Z', '#4a6aa8')}${PA('M88 62 Q120 40 130 70 Q116 58 112 76Z', '#7a9ae0', 'opacity=".6"')}</g>`
+    + E(70, 92, 26, 32, '#5a7ac0') + E(70, 100, 15, 24, '#e8f0ff') + PA('M58 120 l-8 14 l10 -5 l2 7 l5 -16Z M82 120 l8 14 l-10 -5 l-2 7 l-5 -16Z', '#ffb13a') + C(70, 52, 24, '#5a7ac0') + P('60,34 52,8 70,30', '#ffe14a') + P('70,32 70,2 80,32', '#fff08a') + P('80,34 90,10 74,30', '#ffe14a') + gEye(60, 52, 6.4, '#ffe14a') + gEye(80, 52, 6.4, '#ffe14a') + brow(50, 43, 64, 48, '#14284a', 3) + brow(90, 43, 76, 48, '#14284a', 3) + P('60,60 80,60 70,80', '#ffb13a') + P('60,60 80,60 70,66', '#ffd27a')) + `</g>` + bolt(18, 96, 1.2) + bolt(112, 100, 1.2),
+  titan: () => gs(70, 132, 52) + body(R(30, 64, 80, 62, '#7a8088', 10) + R(30, 64, 24, 62, '#a0a6ae', 10, 'opacity=".5"') + R(90, 64, 20, 62, '#4e545c', 10, 'opacity=".5"') + R(6, 68, 28, 54, '#6a7078', 12) + R(106, 68, 28, 54, '#6a7078', 12) + R(2, 112, 36, 20, '#5a6068', 9) + R(102, 112, 36, 20, '#5a6068', 9) + R(40, 120, 26, 12, '#5a6068', 4) + R(74, 120, 26, 12, '#5a6068', 4)
+    + R(54, 82, 32, 32, '#2a2e34', 10) + C(70, 98, 11, '#ffae3a', 'class="mn-flame"') + C(70, 98, 20, '#ffae3a', 'opacity=".25"') + P('36,64 70,2 104,64', '#8a9098') + P('70,2 104,64 76,64', '#000', 'opacity=".2"') + P('58,22 70,2 82,22 74,18 70,26 66,18', '#f4f8ff') + P('44,52 50,32 56,52', '#7ad0e8') + P('84,52 90,32 96,52', '#7ad0e8')
+    + gEye(60, 46, 6.6, '#ffae3a') + gEye(80, 46, 6.6, '#ffae3a') + brow(50, 37, 65, 42, '#2a2e34', 3.4) + brow(90, 37, 75, 42, '#2a2e34', 3.4) + R(58, 58, 24, 5, '#2a2e34', 2.5) + ST('M38 76 l12 10 l-8 12', '#3a3e44', 2))
+};
+return { MON, BOSS };
+})();
+/* ====================== STAGE BACKGROUNDS ====================== */
+// One scene for each fight area and each village site (400x200 SVG, drawn with depth like the home and shop). Reused from the approved preview.
+const STAGE_BG = (() => {
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const f1 = n => (+n).toFixed(1);
+const R = (x, y, w, h, f, rx = 0, x2 = '') => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}" ${x2}/>`;
+const P = (p, f, x2 = '') => `<polygon points="${p}" fill="${f}" ${x2}/>`;
+const C = (x, y, r, f, x2 = '') => `<circle cx="${x}" cy="${y}" r="${r}" fill="${f}" ${x2}/>`;
+const E = (x, y, rx, ry, f, x2 = '') => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="${f}" ${x2}/>`;
+const T = (x, y, s, ch, x2 = '') => `<text x="${x}" y="${y}" font-size="${s}" text-anchor="middle" dominant-baseline="central" ${x2}>${ch}</text>`;
+let UID = 0; const uid = () => 'bg' + (UID++);
+const gradDef = (a, b, h) => { const id = uid(); return [id, `<defs><linearGradient id="${id}" x1="0" y1="0" x2="${h ? 1 : 0}" y2="${h ? 0 : 1}"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>`]; };
+const fillG = (x, y, w, h, a, b, hz) => { const [id, d] = gradDef(a, b, hz); return d + R(x, y, w, h, `url(#${id})`); };
+const radial = (cx, cy, r, col, op = .4) => { const id = uid(); return `<defs><radialGradient id="${id}"><stop offset="0" stop-color="${col}" stop-opacity="${op}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient></defs>` + C(cx, cy, r, `url(#${id})`); };
+const shadow = (x, y, rx, op = .32) => E(x, y, rx, rx * .2, '#000', `opacity="${op}"`);
+const haze = (y, h, col, op = .35) => { const id = uid(); return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="0"/><stop offset=".55" stop-color="${col}" stop-opacity="${op}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>` + R(0, y, 400, h, `url(#${id})`); };
+const beam = (x0, x1, y1, col = '#fff', op = .12) => { const id = uid(); return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="${op}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>` + P(`${x0},0 ${x0 + 24},0 ${x1 + 40},${y1} ${x1},${y1}`, `url(#${id})`); };
+const ground = (y0, a, b) => fillG(0, y0, 400, 200 - y0, a, b);
+const persp = (y0, col, op = .2, n = 11) => { let o = ''; for (let i = -n; i <= n; i++) o += `<line x1="200" y1="${y0}" x2="${200 + i * 46}" y2="200" stroke="${col}" stroke-opacity="${op}" stroke-width=".8"/>`; for (let k = 1; k < 7; k++) { const y = y0 + (200 - y0) * Math.pow(k / 7, 1.7); o += `<line x1="0" y1="${f1(y)}" x2="400" y2="${f1(y)}" stroke="${col}" stroke-opacity="${op * .8}" stroke-width=".7"/>`; } return o; };
+const cobble = (y0, base, stone, seed = 1) => { const r = rng(seed); let o = ground(y0, base, shade(base, -30)); for (let k = 0; k < 9; k++) { const t = k / 9, y = y0 + (200 - y0) * Math.pow(t, 1.45) + 3, rx = 3 + t * 14, step = rx * 2.25; for (let x = -((k % 2) * rx); x < 420; x += step) o += E(f1(x + r() * 3), f1(y), rx, f1(rx * .4), stone, `opacity="${(.28 + r() * .26).toFixed(2)}" stroke="#000" stroke-opacity=".12" stroke-width=".5"`); } return o; };
+const stars = (r, n, h) => Array.from({length: n}, () => C((r() * 400).toFixed(0), (r() * h).toFixed(0), .7 + r() * .6, '#fff', `class="bg-twinkle" style="animation-delay:${(r() * 3).toFixed(1)}s"`)).join('');
+const flies = (r, n, y0, y1, col = '#e8ff7a') => Array.from({length: n}, () => { const x = (20 + r() * 360).toFixed(0), y = (y0 + r() * (y1 - y0)).toFixed(0); return radial(x, y, 6, col, .5) + C(x, y, 1.3, col, `class="bg-twinkle" style="animation-delay:${(r() * 3).toFixed(1)}s"`); }).join('');
+const smoke = (x, y, col = '#fff') => [0, 1, 2, 3].map(i => C(x + i * 2.5, y, 4 + i * 2, col, `class="bg-rise" opacity=".45" style="animation-delay:${i * 1}s"`)).join('');
+/* trees */
+const pine = (x, y, s = 1, c1 = '#1f4a3a', c2 = '#2f7a58') => shadow(x, y, 17 * s) + R(x - 2.2 * s, y - 14 * s, 4.4 * s, 14 * s, '#3a2616') + [0, 1, 2, 3].map(i => { const w = (32 - i * 6.5) * s, top = y - (36 + i * 15) * s, bot = y - (10 + i * 13) * s; return P(`${f1(x - w / 2)},${f1(bot)} ${x},${f1(top)} ${f1(x + w / 2)},${f1(bot)}`, c1) + P(`${x},${f1(top)} ${f1(x + w / 2)},${f1(bot)} ${f1(x + w * .08)},${f1(bot)}`, c2, 'opacity=".5"'); }).join('');
+const oak = (x, y, s = 1, c = '#3f9a45') => shadow(x, y, 24 * s) + `<path d="M${x - 4 * s} ${y} Q${x - 3 * s} ${y - 18 * s} ${x - 1 * s} ${y - 32 * s} L${x + 3 * s} ${y - 32 * s} Q${x + 3 * s} ${y - 16 * s} ${x + 5 * s} ${y}Z" fill="#6b4426"/><path d="M${x + 1 * s} ${y} Q${x + 1 * s} ${y - 18 * s} ${x + 2 * s} ${y - 32 * s} L${x + 3 * s} ${y - 32 * s} Q${x + 3 * s} ${y - 16 * s} ${x + 5 * s} ${y}Z" fill="#000" opacity=".2"/>`
+  + C(x, f1(y - 44 * s), 27 * s, shade(c, -30)) + C(f1(x - 15 * s), f1(y - 36 * s), 19 * s, shade(c, -12)) + C(f1(x + 15 * s), f1(y - 36 * s), 19 * s, c) + C(f1(x - 7 * s), f1(y - 52 * s), 14 * s, shade(c, 26), 'opacity=".75"') + C(f1(x + 10 * s), f1(y - 46 * s), 9 * s, shade(c, 40), 'opacity=".4"');
+/* buildings */
+const win = (x, y, w, h, glow = '#ffd98a', arch = false) => R(x - 2, y - 2, w + 4, h + 4, '#4a3320', 2) + (arch ? `<path d="M${x} ${y + h} V${y + w / 2} A${w / 2} ${w / 2} 0 0 1 ${x + w} ${y + w / 2} V${y + h}Z" fill="${glow}"/>` : R(x, y, w, h, glow)) + R(x + w / 2 - .6, y, 1.2, h, '#4a3320') + R(x, y + h / 2 - .6, w, 1.2, '#4a3320') + radial(x + w / 2, y + h / 2, w * 1.3, glow, .3) + R(x - 3, y + h + 1, w + 6, 3, '#6b5238', 1);
+const roof = (x0, x1, yb, peak, col) => { const cx = (x0 + x1) / 2, hw = (x1 - x0) / 2 + 8, n = Math.floor(peak / 5); let o = P(`${x0 - 8},${yb} ${cx},${yb - peak} ${x1 + 8},${yb}`, col); for (let i = 1; i < n; i++) { const h = i * 5, w = hw * (1 - h / peak); o += `<line x1="${f1(cx - w)}" y1="${yb - h}" x2="${f1(cx + w)}" y2="${yb - h}" stroke="#000" stroke-opacity=".2"/>`; } return o + P(`${cx},${yb - peak} ${x1 + 8},${yb} ${cx + 5},${yb}`, '#000', 'opacity=".16"') + R(x0 - 8, yb, x1 - x0 + 16, 3, '#000', 0, 'opacity=".25"'); };
+const wall = (x, y, w, h, col, planks = false) => R(x, y, w, h, col) + R(x + w * .86, y, w * .14, h, '#000', 0, 'opacity=".14"') + R(x, y + h - 5, w, 5, '#000', 0, 'opacity=".18"') + (planks ? Array.from({length: Math.floor(w / 7)}, (_, i) => `<line x1="${x + 3 + i * 7}" y1="${y}" x2="${x + 3 + i * 7}" y2="${y + h}" stroke="#000" stroke-opacity=".18"/>`).join('') : '');
+const beams = (x, y, w, h) => R(x, y, 3, h, '#5a3a22') + R(x + w - 3, y, 3, h, '#5a3a22') + R(x, y + h * .5, w, 2.5, '#5a3a22') + R(x, y, w, 2.5, '#5a3a22') + `<line x1="${x}" y1="${y + h * .5}" x2="${x + w * .3}" y2="${y}" stroke="#5a3a22" stroke-width="2"/><line x1="${x + w}" y1="${y + h * .5}" x2="${x + w * .7}" y2="${y}" stroke="#5a3a22" stroke-width="2"/>`;
+const door = (x, y, w, h, col = '#6a4426', round = true) => (round ? `<path d="M${x} ${y + h} V${y + w / 2} A${w / 2} ${w / 2} 0 0 1 ${x + w} ${y + w / 2} V${y + h}Z" fill="${col}"/>` : R(x, y, w, h, col)) + R(x + w / 2 - .5, y, 1, h, '#000', 0, 'opacity=".25"') + C(x + w - 5, y + h * .55, 1.3, '#d9b44a') + R(x - 3, y + h, w + 6, 3, '#9a9186');
+const fence = (x0, x1, y, col = '#c8a36a') => { let o = R(x0, y - 5, x1 - x0, 2.4, col) + R(x0, y - 11, x1 - x0, 2.4, col); for (let x = x0; x <= x1; x += 8) o += R(x, y - 15, 3, 17, col) + R(x + 2, y - 15, 1, 17, '#000', 0, 'opacity=".2"'); return o + shadow((x0 + x1) / 2, y + 2, (x1 - x0) / 2, .18); };
+const sunny = (a = '#79bff2', b = '#dff2ff') => fillG(0, 0, 400, 130, a, b) + radial(335, 30, 46, '#fff3a8', .6) + C(335, 30, 13, '#fff6c9') + beam(300, 240, 200, '#fff6c9', .12)
+  + `<g class="bg-drift">${E(90, 34, 36, 8, '#fff', 'opacity=".85"') + E(110, 30, 24, 8, '#fff', 'opacity=".9"')}</g><g class="bg-drift2">${E(240, 52, 30, 6, '#fff', 'opacity=".7"')}</g>`
+  + P('0,118 60,92 130,112 200,86 280,112 360,90 400,106 400,130 0,130', '#8fb59b', 'opacity=".55"') + P('0,126 80,104 170,124 260,102 340,122 400,108 400,134 0,134', '#6fa070', 'opacity=".7"') + haze(112, 30, '#dff2ff', .5);
+const grassPlane = (y0 = 130) => ground(y0, '#6fae56', '#3f7a3a') + persp(y0, '#2c5a2a', .12);
+const FIGHT = {
+  woods: () => { const r = rng(3);
+    let o = fillG(0, 0, 400, 150, '#121d3e', '#46666c') + radial(322, 36, 60, '#fff6c9', .35) + C(322, 36, 15, '#fff6c9') + stars(r, 16, 60) + beam(250, 150, 190, '#cfe6ff', .1) + beam(300, 250, 190, '#cfe6ff', .08);
+    for (let x = -10; x < 420; x += 20) o += pine(x, 128, .8 + r() * .3, '#1a3434', '#25504a').replace(/<ellipse[^>]*\/>/, '');
+    o += haze(86, 56, '#8ba7b0', .35);
+    for (let x = 10; x < 420; x += 38) o += pine(x + r() * 10, 142, 1 + r() * .35, '#1d4637', '#2c6e50');
+    o += ground(138, '#2d5a3a', '#14301f') + persp(138, '#0e2416', .25) + P('196,138 206,138 300,200 100,200', '#7d6c4c', 'opacity=".55"') + P('200,138 206,138 300,200 250,200', '#000', 'opacity=".14"');
+    o += pine(30, 192, 2.1, '#16352c', '#245044') + pine(372, 196, 2.3, '#16352c', '#245044') + haze(120, 50, '#9fc0c8', .22);
+    o += `<g class="bg-drift">${E(200, 148, 220, 10, '#cfe6e0', 'opacity=".14"')}</g>` + flies(r, 10, 90, 170) + T(120, 176, 13, '🍄') + T(290, 184, 12, '🌿') + T(70, 168, 11, '🍄');
+    return o; },
+  caves: () => { const r = rng(7);
+    let o = fillG(0, 0, 400, 150, '#0a0e28', '#1e2c5c') + beam(150, 170, 160, '#8fd8ff', .1) + beam(262, 280, 160, '#c9a8ff', .08);
+    for (let x = -6; x < 410; x += 22) { const h = 20 + r() * 40; o += P(`${x},0 ${x + 11},${f1(h)} ${x + 22},0`, '#080b1e') + P(`${x + 11},${f1(h)} ${x + 22},0 ${x + 15},0`, '#1b2a55', 'opacity=".7"'); }
+    o += P('0,150 40,118 90,130 150,110 220,126 290,106 350,124 400,112 400,150', '#141c40') + P('0,150 60,134 130,142 200,132 280,142 340,130 400,142 400,150', '#0e1432') + haze(110, 44, '#5f7fc8', .3);
+    const cr = (x, y, s, c) => radial(x, y - 18 * s, 34 * s, c, .35) + P(`${x - 9 * s},${y} ${x - 5 * s},${y - 26 * s} ${x},${y - 40 * s} ${x + 6 * s},${y - 24 * s} ${x + 10 * s},${y}`, c, 'opacity=".9" class="bg-twinkle"') + P(`${x},${y - 40 * s} ${x + 6 * s},${y - 24 * s} ${x + 10 * s},${y} ${x + 2 * s},${y}`, '#fff', 'opacity=".28"') + P(`${x - 17 * s},${y} ${x - 12 * s},${y - 20 * s} ${x - 7 * s},${y}`, c, 'opacity=".75"') + P(`${x + 10 * s},${y} ${x + 15 * s},${y - 18 * s} ${x + 20 * s},${y}`, c, 'opacity=".7"');
+    o += ground(146, '#1b2352', '#090c24') + persp(146, '#5f7fc8', .12) + E(200, 178, 150, 14, '#6ee7ff', 'opacity=".07"') + cr(52, 156, 1.1, '#5fe3ff') + cr(110, 168, .7, '#b58bff') + cr(318, 154, 1.2, '#5fe3ff') + cr(362, 170, .8, '#ff8be0') + cr(238, 152, .5, '#b58bff');
+    for (const x of [26, 376]) o += R(x - 5, 86, 10, 4, '#2a2a34') + R(x - 1.5, 88, 3, 28, '#3a2e22') + radial(x, 80, 38, '#ffb347', .45) + `<path d="M${x - 6} 86 Q${x} 56 ${x + 6} 86Z" fill="#ff8a2e" class="bg-flick"/><path d="M${x - 3} 86 Q${x} 68 ${x + 3} 86Z" fill="#ffd166" class="bg-flick"/>`;
+    for (let i = 0; i < 14; i++) o += C((r() * 400).toFixed(0), (60 + r() * 100).toFixed(0), 1.1, '#cfe6ff', `class="bg-twinkle" style="animation-delay:${(r() * 3).toFixed(1)}s"`);
+    return o; },
+  ruins: () => { const r = rng(11);
+    let o = fillG(0, 0, 400, 150, '#10303a', '#2d7b82') + beam(110, 130, 170, '#c8fbff', .2) + beam(240, 270, 170, '#c8fbff', .15) + beam(330, 330, 170, '#c8fbff', .1);
+    const col = (x, y, h, w, broken) => shadow(x + w / 2, y, w * 1.4) + R(x, y - h, w, h, '#8aa5a2') + R(x + w * .72, y - h, w * .28, h, '#000', 0, 'opacity=".18"') + Array.from({length: Math.floor(h / 12)}, (_, i) => R(x - 1, y - h + 8 + i * 12, w + 2, 2, '#000', 0, 'opacity=".12"')).join('') + R(x - 3, y - 4, w + 6, 4, '#7a9693') + (broken ? P(`${x},${y - h} ${x + w * .3},${y - h - 8} ${x + w * .55},${y - h + 2} ${x + w * .8},${y - h - 6} ${x + w},${y - h}`, '#8aa5a2') : R(x - 3, y - h - 5, w + 6, 6, '#a0bcb8'));
+    o += `<path d="M130 138 V92 Q200 24 270 92 V138" fill="none" stroke="#7c9895" stroke-width="13"/><path d="M130 138 V92 Q200 24 270 92 V138" fill="none" stroke="#000" stroke-opacity=".14" stroke-width="13" stroke-dasharray="1 8"/>` + haze(80, 60, '#7ec7cc', .3);
+    o += col(66, 144, 86, 18, true) + col(316, 146, 100, 20, false) + col(24, 156, 110, 24, true) + col(366, 158, 90, 24, true);
+    o += ground(140, '#4f7a77', '#1f4442') + persp(140, '#0f2a2a', .28) + [0, 1, 2, 3, 4].map(i => E(60 + i * 70, 164 + (i % 2) * 12, 34, 5, '#a8efff', `opacity=".28" class="bg-drift" style="animation-delay:${-i * 4}s"`)).join('') + E(200, 180, 160, 14, '#8ad6d9', 'opacity=".2" class="bg-drift2"');
+    for (let i = 0; i < 12; i++) o += C((r() * 400).toFixed(0), (100 + r() * 90).toFixed(0), 1.6 + r() * 1.8, '#d8fbff', `opacity=".5" class="bg-rise" style="animation-delay:${(r() * 3).toFixed(1)}s"`);
+    return o + T(210, 150, 12, '🐚') + T(90, 184, 12, '🪸') + T(345, 178, 11, '🌿'); },
+  citadel: () => { const r = rng(5);
+    let o = fillG(0, 0, 400, 150, '#4fa8f5', '#d9f0ff') + radial(70, 40, 60, '#fff7c7', .55) + C(70, 40, 16, '#fff7c7');
+    const cloud = (x, y, s, op) => `<g opacity="${op}">${E(x, y, 44 * s, 10 * s, '#fff')}${E(x - 18 * s, y - 6 * s, 22 * s, 9 * s, '#fff')}${E(x + 16 * s, y - 7 * s, 26 * s, 10 * s, '#fff')}${E(x, y + 4 * s, 40 * s, 5 * s, '#c9dff2')}</g>`;
+    o += `<g class="bg-drift">${cloud(120, 62, 1, .9)}</g><g class="bg-drift2">${cloud(320, 40, 1.2, .85)}${cloud(250, 100, .8, .7)}</g>`;
+    const tower = (x, y, w, h, c) => R(x, y - h, w, h, c) + R(x + w * .74, y - h, w * .26, h, '#000', 0, 'opacity=".14"') + P(`${x - 3},${y - h} ${x + w / 2},${y - h - w * .9} ${x + w + 3},${y - h}`, '#b5473a') + R(x + w / 2 - 2, y - h * .6, 4, 8, '#5a6c8a');
+    o += tower(230, 118, 16, 54, '#d6d0c2') + tower(256, 118, 12, 38, '#cbc4b4') + tower(210, 118, 12, 30, '#cbc4b4') + E(235, 120, 38, 8, '#a89f8b') + P('197,122 273,122 255,136 215,136', '#8a8270') + haze(100, 40, '#e6f3ff', .35);
+    o += ground(146, '#d3ccbc', '#a69e8b');
+    for (let k = 0; k < 7; k++) { const t = k / 7, y = 146 + 54 * Math.pow(t, 1.6); o += `<line x1="0" y1="${f1(y)}" x2="400" y2="${f1(y)}" stroke="#7d7564" stroke-opacity=".35"/>`; } for (let i = -9; i <= 9; i++) o += `<line x1="200" y1="146" x2="${200 + i * 50}" y2="200" stroke="#7d7564" stroke-opacity=".3"/>`;
+    o += R(0, 138, 400, 8, '#e9e3d4') + R(0, 146, 400, 3, '#000', 0, 'opacity=".2"');
+    for (const x of [12, 388]) o += shadow(x, 170, 30) + R(x - 12, 56, 24, 100, '#e9e3d4') + R(x + 5, 56, 7, 100, '#000', 0, 'opacity=".14"') + R(x - 16, 50, 32, 8, '#f6f1e3') + R(x - 16, 154, 32, 8, '#c4bdac') + Array.from({length: 6}, (_, i) => R(x - 12, 66 + i * 15, 24, 1.5, '#000', 0, 'opacity=".1"')).join('');
+    return o + T(160, 100, 13, '🕊️', 'class="bg-bob"') + T(330, 118, 11, '🕊️', 'class="bg-bob" style="animation-delay:-1.5s"'); },
+  peak: () => { const r = rng(9);
+    let o = fillG(0, 0, 400, 150, '#2a1240', '#e8773c') + radial(200, 122, 90, '#ffb24d', .5) + stars(r, 12, 44);
+    const mt = (x, w, h, y, c, sn) => P(`${x - w / 2},${y} ${x},${y - h} ${x + w / 2},${y}`, c) + P(`${x},${y - h} ${x + w / 2},${y} ${x + w * .08},${y}`, '#000', 'opacity=".26"') + (sn ? P(`${x - w * .13},${y - h * .78} ${x},${y - h} ${x + w * .13},${y - h * .78} ${x + w * .05},${y - h * .84} ${x},${y - h * .72} ${x - w * .05},${y - h * .84}`, '#f4efff', 'opacity=".92"') : '');
+    o += mt(50, 130, 80, 140, '#5e3e68', true) + mt(330, 150, 98, 140, '#5e3e68', true) + haze(96, 50, '#e8773c', .3) + mt(130, 130, 62, 146, '#46304f', false) + mt(250, 150, 70, 146, '#41294a', false) + mt(200, 90, 40, 150, '#2f1c3a', false);
+    o += ground(146, '#3d2733', '#150b14') + persp(146, '#ff7a2e', .1) + `<path d="M40 200 Q120 170 190 178 T360 168" stroke="#ff7a2e" stroke-width="2.2" fill="none" opacity=".75" class="bg-twinkle"/><path d="M0 188 Q70 176 140 184" stroke="#ffb24d" stroke-width="1.4" fill="none" opacity=".6" class="bg-twinkle"/>` + radial(200, 178, 80, '#ff7a2e', .22);
+    for (let i = 0; i < 14; i++) o += C((r() * 400).toFixed(0), (100 + r() * 90).toFixed(0), 1.6, '#ff9a3a', `class="bg-rise" style="animation-delay:${(r() * 3).toFixed(1)}s"`);
+    return o + T(215, 98, 15, '🐉', 'opacity=".5"') + T(360, 176, 12, '🪨') + T(34, 186, 12, '🪨'); },
+  marsh: () => { const r = rng(13);
+    let o = fillG(0, 0, 400, 140, '#080720', '#2a2a62') + stars(r, 20, 80) + radial(128, 50, 70, '#f4efc9', .3) + C(128, 50, 25, '#f4efc9') + C(120, 44, 6, '#d9d3a9', 'opacity=".5"');
+    o += P('0,132 40,120 90,128 150,116 220,126 290,114 360,124 400,118 400,140 0,140', '#16143a') + haze(110, 40, '#6d7bc8', .3);
+    o += ground(138, '#1f2a5e', '#0b1030') + R(112, 138, 32, 62, '#f4efc9', 0, 'opacity=".1"') + [0, 1, 2, 3, 4, 5].map(i => E(128, 146 + i * 9, 14 - i, 1.4, '#f4efc9', `opacity="${(.35 - i * .05).toFixed(2)}"`)).join('') + persp(138, '#8fa0ff', .1);
+    for (let x = 4; x < 400; x += 14 + r() * 12) { const h = 24 + r() * 40, back = r() < .5; o += `<path d="M${x} ${back ? 146 : 168} Q${x + 4} ${(back ? 146 : 168) - h / 2} ${x + 2} ${(back ? 146 : 168) - h}" stroke="${back ? '#1f5a4d' : '#2f7b63'}" stroke-width="${back ? 1.6 : 2.4}" fill="none" class="bg-sway"/>`; if (r() < .25) o += R(x - 1.2, (back ? 146 : 168) - h - 9, 3.4, 10, '#6b4a2a', 2, 'class="bg-sway"'); }
+    o += `<g class="bg-drift">${E(200, 150, 220, 10, '#c8d2ff', 'opacity=".14"')}</g>`;
+    for (const [x, y, rx] of [[310, 178, 20], [70, 188, 16], [230, 192, 14]]) o += E(x, y, rx, rx * .3, '#2f6b57') + P(`${x},${y} ${x + rx},${y - 2} ${x + rx},${y + 2}`, '#0b1030') + E(x - 3, y - 1, rx * .5, rx * .1, '#4a9a78', 'opacity=".6"');
+    return o + flies(r, 12, 90, 170) + `<path d="M340 150 q-6 -30 -2 -48 M338 120 q-14 -8 -22 -2 M339 106 q10 -12 22 -8" stroke="#10102e" stroke-width="3" fill="none"/>`; }
+};
+/* ---------- village sites ---------- */
+const VILLAGE = {
+  bakery: () => sunny() + grassPlane(132) + oak(34, 140, .85) + oak(372, 142, .8) + cobble(150, '#cdbd9e', '#a6957a', 4) + shadow(200, 150, 100, .3)
+    + wall(120, 84, 160, 66, '#ead9b4') + beams(120, 84, 160, 66) + roof(120, 280, 84, 38, '#b5453a') + R(236, 44, 14, 36, '#8c5a3a') + R(234, 42, 18, 4, '#6b3f26') + smoke(243, 38)
+    + win(182, 100, 44, 28, '#ffd98a') + T(204, 125, 11, '🥖') + T(214, 125, 9, '🍞') + door(136, 104, 30, 46) + win(240, 104, 28, 22, '#ffd98a')
+    + R(176, 90, 56, 8, '#e5546b') + [0, 1, 2, 3, 4, 5, 6].map(i => R(176 + i * 8, 90, 4, 8, '#fff0d6')).join('') + R(70, 120, 28, 24, '#b98a52') + R(72, 126, 24, 2, '#6b4a2a') + R(72, 134, 24, 2, '#6b4a2a') + T(84, 114, 10, '🧺') + T(300, 140, 14, '🌾'),
+  smith: () => fillG(0, 0, 400, 130, '#3b2e55', '#e08a50') + radial(200, 110, 140, '#ff9a4a', .25) + P('0,120 70,96 140,114 220,92 300,112 400,98 400,130 0,130', '#5a4658', 'opacity=".6"') + ground(130, '#5c4c3e', '#2e241d') + persp(130, '#000', .2) + cobble(152, '#5e4e42', '#43362d', 6)
+    + oak(36, 140, .8, '#4a7a40') + shadow(200, 152, 110, .4) + wall(100, 70, 200, 82, '#7b6e62') + Array.from({length: 7}, (_, r2) => Array.from({length: 11}, (_, c) => R(102 + c * 18 + (r2 % 2) * 9, 74 + r2 * 11, 16, 9, shade('#7b6e62', ((r2 * 3 + c * 5) % 7) - 3), 1, 'opacity=".55"')).join('')).join('') + roof(100, 300, 70, 36, '#3f3a38')
+    + R(262, 30, 18, 40, '#59514b') + R(260, 28, 22, 5, '#3a3430') + smoke(271, 24, '#cfc8c0') + R(122, 98, 96, 54, '#1b1410') + radial(170, 130, 60, '#ff7a2e', .55) + `<path d="M140 150 Q170 100 200 150Z" fill="#ff7a2e" class="bg-flick"/><path d="M152 150 Q170 116 188 150Z" fill="#ffd166" class="bg-flick"/>` + R(116, 94, 108, 6, '#4a3e36')
+    + P('228,146 276,146 268,152 236,152', '#2c2c34') + R(240,134,24,12,'#3c3c46') + P('240,134 264,134 270,138 236,138', '#555560') + T(292, 136, 16, '🔨') + T(96, 148, 14, '🛡️') + T(312, 148, 12, '⚔️')
+    + [0, 1, 2, 3, 4].map(i => C(208 + i * 5, 118, 1.5, '#ffd166', `class="bg-rise" style="animation-delay:${i * .6}s"`)).join(''),
+  well: () => sunny() + grassPlane(132) + oak(46, 138, 1) + oak(356, 140, .95) + cobble(146, '#cdbd9e', '#a6957a', 8) + shadow(200, 148, 54, .38)
+    + `<path d="M150 140 V122 A50 14 0 0 1 250 122 V140 A50 14 0 0 1 150 140Z" fill="#a39d94"/>` + Array.from({length: 4}, (_, i) => `<line x1="152" y1="${122 + i * 5}" x2="248" y2="${122 + i * 5}" stroke="#000" stroke-opacity=".15"/>`).join('') + R(228, 122, 22, 18, '#000', 0, 'opacity=".14"')
+    + E(200, 122, 50, 14, '#c5bfb4') + E(200, 123, 40, 10, '#1d6b92') + E(196, 122, 20, 3, '#9fd6f0', 'opacity=".5"') + R(154, 70, 6, 54, '#7a4f2e') + R(240, 70, 6, 54, '#7a4f2e') + R(197, 80, 6, 26, '#caa56a') + roof(156, 244, 74, 26, '#b5453a') + T(200, 108, 13, '🪣', 'class="bg-bob"')
+    + R(70, 134, 40, 6, '#8c5a3a') + R(72, 140, 4, 8, '#6b3f26') + R(104, 140, 4, 8, '#6b3f26') + T(300, 150, 12, '🌼') + T(322, 154, 12, '🌻'),
+  farm: () => sunny() + `<g>${Array.from({length: 9}, (_, i) => P(`${-40 + i * 60},200 ${180 + (i - 4) * 4},132 ${-10 + i * 60},200`, i % 2 ? '#8ab854' : '#74a446', 'opacity=".85"')).join('')}</g>` + ground(132, '#7fbd56', '#4a8a3a').replace(/<rect/, '<rect opacity=".6"') + persp(132, '#2c5a2a', .2) + shadow(200, 148, 80, .35)
+    + wall(130, 66, 130, 82, '#b4443a', true) + roof(130, 260, 66, 40, '#6e2a24') + R(176, 78, 38, 40, '#8a2f27') + R(178, 80, 34, 36, '#2a1612') + T(195, 100, 14, '🌾') + R(172, 112, 46, 36, '#9a3a30') + `<path d="M172 112 L218 148 M218 112 L172 148" stroke="#f3dccf" stroke-width="3"/>` + R(172, 112, 46, 36, 'none', 0, 'stroke="#f3dccf" stroke-width="3"')
+    + fence(14, 110, 150) + fence(290, 388, 152) + R(284, 112, 22, 36, '#d6b45a') + P('281,114 295,98 309,114', '#e8c86a') + T(60, 160, 18, '🐄') + T(340, 156, 14, '🌾', 'class="bg-sway"'),
+  library: () => fillG(0, 0, 400, 130, '#6d4f9a', '#f2c481') + radial(300, 100, 100, '#ffd98a', .3) + P('0,112 80,96 160,110 250,92 330,110 400,98 400,130 0,130', '#6a5a82', 'opacity=".55"') + ground(130, '#5c7a55', '#34492e') + persp(130, '#000', .15) + cobble(152, '#a09389', '#7d7268', 10)
+    + oak(30, 142, .85, '#4a8a50') + shadow(200, 152, 106, .35) + wall(104, 52, 192, 100, '#9a7fb0') + Array.from({length: 8}, (_, r2) => `<line x1="104" y1="${60 + r2 * 12}" x2="296" y2="${60 + r2 * 12}" stroke="#000" stroke-opacity=".1"/>`).join('') + roof(104, 296, 52, 38, '#4a3868') + R(188, 22, 24, 22, '#b9a4d6') + R(190, 24, 20, 18, '#2a2040') + C(200, 33, 6, '#ffe29a', 'class="bg-twinkle"')
+    + [126, 164, 236, 274].map(x => win(x - 9, 74, 18, 36, '#ffe29a', true)).join('') + door(182, 100, 36, 52, '#5a3d2a') + R(172, 150, 56, 5, '#cfc8bb') + R(164, 155, 72, 5, '#bdb6a9') + [112, 288].map(x => R(x - 5, 60, 10, 92, '#c9bfb3') + R(x - 7, 58, 14, 4, '#e0d8cc') + R(x + 2, 60, 3, 92, '#000', 0, 'opacity=".14"')).join('')
+    + T(86, 148, 15, '📚') + T(316, 148, 15, '📚') + R(318, 118, 3, 34, '#3b281a') + C(319, 114, 6, '#ffd166', 'class="bg-flick"') + radial(319, 114, 30, '#ffd166', .4),
+  garden: () => sunny() + grassPlane(128) + oak(30, 134, .8) + oak(372, 136, .85) + R(0, 128, 130, 18, '#3f8a3c', 6) + R(270, 128, 130, 18, '#3f8a3c', 6) + R(0, 128, 130, 5, '#5aae52', 6) + R(270, 128, 130, 5, '#5aae52', 6)
+    + P('180,146 220,146 290,200 110,200', '#d8c79a', 'opacity=".85"') + persp(146, '#8a7a50', .2, 5) + shadow(200, 146, 50, .25)
+    + `<path d="M154 148 V94 Q200 48 246 94 V148" fill="none" stroke="#7a4f2e" stroke-width="7"/><path d="M154 148 V94 Q200 48 246 94 V148" fill="none" stroke="#000" stroke-opacity=".15" stroke-width="7" stroke-dasharray="1 7"/>` + Array.from({length: 11}, (_, i) => T(155 + i * 9, 82 + Math.abs(5 - i) * 6, 11, ['🌸', '🌺'][i % 2])).join('')
+    + R(96, 156, 70, 22, '#7a4f2e', 4) + R(236, 156, 70, 22, '#7a4f2e', 4) + Array.from({length: 7}, (_, i) => T(102 + i * 10, 158, 12, ['🌷', '🌻', '🌼'][i % 3], 'class="bg-sway" style="animation-delay:' + (-i * .5).toFixed(1) + 's"')).join('') + Array.from({length: 7}, (_, i) => T(242 + i * 10, 158, 12, ['🌼', '🌷', '🌻'][i % 3], 'class="bg-sway" style="animation-delay:' + (-i * .4).toFixed(1) + 's"')).join('')
+    + T(100, 96, 13, '🦋', 'class="bg-drift bg-bob"') + T(310, 104, 11, '🦋', 'class="bg-drift2 bg-bob"'),
+  dock: () => sunny('#8dcdf8', '#e6f6ff') + fillG(0, 104, 400, 96, '#3a97c8', '#14577e') + [0, 1, 2, 3, 4, 5].map(i => `<g class="bg-drift" style="animation-delay:${-i * 3}s">${E(40 + i * 68, 116 + i * 12, 30 + i * 3, 2.4 + i * .5, '#cfeeff', 'opacity=".38"')}</g>`).join('') + radial(335, 112, 46, '#fff6c9', .2)
+    + P('140,104 260,104 360,200 40,200', '#8b5a30') + Array.from({length: 13}, (_, i) => `<line x1="${150 + i * 8.4}" y1="104" x2="${46 + i * 25}" y2="200" stroke="#3a2412" stroke-opacity=".55"/>`).join('') + Array.from({length: 7}, (_, k) => { const y = 104 + 96 * Math.pow((k + 1) / 8, 1.5); return `<line x1="${f1(140 - (y - 104) * 1.04)}" y1="${f1(y)}" x2="${f1(260 + (y - 104) * 1.04)}" y2="${f1(y)}" stroke="#3a2412" stroke-opacity=".4"/>`; }).join('')
+    + R(138, 82, 6, 26, '#4a2f1a') + R(256, 82, 6, 26, '#4a2f1a') + C(141, 80, 3, '#ffd166', 'class="bg-flick"') + radial(141, 80, 18, '#ffd166', .4) + shadow(200, 104, 60, .2)
+    + T(318, 96, 26, '⛵', 'class="bg-bob"') + T(84, 118, 15, '🐟', 'class="bg-bob"') + T(300, 140, 13, '🐟', 'class="bg-bob" style="animation-delay:-1.2s"') + T(70, 168, 16, '🪣') + T(232, 150, 16, '🎣') + P('0,104 40,92 90,102 130,96 140,104', '#4f8a6a', 'opacity=".6"'),
+  henhouse: () => sunny() + grassPlane(130) + oak(36, 138, .85) + P('172,150 218,150 236,200 154,200', '#a8794a', 'opacity=".9"') + shadow(190, 148, 80, .35)
+    + wall(130, 78, 112, 70, '#c28c55', true) + roof(130, 242, 78, 36, '#8a3f2b') + R(168, 98, 34, 50, '#5a3a20') + P('166,148 204,148 224,166 148,166', '#8a5e34') + win(142, 92, 18, 16, '#ffe29a') + R(204, 110, 26, 22, '#3a2412') + R(204, 132, 26, 3, '#e0c070', 0, 'opacity=".8"')
+    + fence(262, 386, 148) + T(300, 152, 18, '🐔') + T(348, 156, 14, '🐥', 'class="bg-bob"') + T(84, 154, 17, '🐔') + T(56, 158, 13, '🐥', 'class="bg-bob" style="animation-delay:-1s"') + R(246, 120, 22, 28, '#d6b45a') + P('243,122 257,106 271,122', '#e8c86a') + T(112, 128, 14, '🌾') + T(280, 118, 13, '🌻'),
+  hats: () => sunny('#8dcdf8', '#e6f6ff') + grassPlane(130) + cobble(148, '#cdbd9e', '#a6957a', 14) + oak(30, 140, .8) + oak(374, 140, .8) + shadow(200, 150, 100, .32)
+    + wall(104, 76, 192, 74, '#7d5da8') + beams(104, 76, 192, 74).replace(/#5a3a22/g, '#4a3270') + R(104, 76, 192, 14, '#c55a8a') + Array.from({length: 10}, (_, i) => `<path d="M${104 + i * 19.2} 90 q9.6 12 19.2 0" fill="${i % 2 ? '#fff0d6' : '#e5546b'}"/>`).join('')
+    + R(124, 104, 100, 46, '#ffeabb', 3) + R(120, 100, 108, 5, '#5a3d2a') + R(120, 150, 108, 4, '#5a3d2a') + R(124, 104, 100, 46, '#ffe9b8', 3, 'opacity=".5"') + R(130, 125, 88, 2.5, '#8c5a3a') + radial(174, 126, 60, '#ffe29a', .3)
+    + T(146, 116, 15, '🎩') + T(172, 116, 15, '👒') + T(198, 116, 14, '🧢') + T(152, 140, 14, '👑') + T(180, 140, 14, '🎓') + T(206, 140, 14, '🎩') + door(242, 106, 38, 44, '#5a3d2a') + R(180, 50, 40, 20, '#4a2f1a', 3) + T(200, 60, 13, '🎩') + R(199, 70, 2, 8, '#3a2412'),
+  cottage: () => sunny() + grassPlane(130) + oak(366, 136, .95) + oak(40, 140, .8) + shadow(200, 148, 70, .35) + P('180,148 220,148 262,200 138,200', '#d8c79a', 'opacity=".9"') + persp(148, '#8a7a50', .2, 5)
+    + wall(138, 90, 124, 58, '#f0e2c4') + beams(138, 90, 124, 58) + roof(138, 262, 90, 42, '#c9a24a') + Array.from({length: 11}, (_, i) => `<line x1="${150 + i * 10}" y1="${60 + (i % 3) * 3}" x2="${146 + i * 11}" y2="90" stroke="#a8842f" stroke-opacity=".5"/>`).join('') + R(228, 44, 14, 32, '#9a6b3f') + smoke(235, 40)
+    + door(180, 108, 28, 40, '#7a4a2a') + win(150, 104, 20, 18, '#ffe29a') + win(228, 104, 20, 18, '#ffe29a') + fence(30, 128, 150, '#f4f0e6') + fence(274, 372, 152, '#f4f0e6') + T(90, 154, 12, '🌷') + T(116, 158, 11, '🌼') + T(318, 154, 12, '🌻') + R(158, 128, 22, 7, '#3f8a3c', 3) + R(222, 128, 22, 7, '#3f8a3c', 3),
+  lamps: () => fillG(0, 0, 400, 130, '#33265e', '#ea9a5e') + radial(200, 120, 160, '#ff9a4a', .22) + P('0,112 90,96 170,110 260,92 340,110 400,98 400,130 0,130', '#5a4668', 'opacity=".55"') + ground(130, '#5a4a3c', '#2a2018') + cobble(150, '#5e4e42', '#43362d', 17)
+    + shadow(200, 152, 106, .4) + wall(100, 62, 200, 90, '#5c3f2a', true) + R(100, 62, 200, 12, '#3b281a') + R(100, 62, 200, 3, '#7a5a3a') + roof(100, 300, 62, 22, '#3b281a')
+    + R(112, 86, 90, 50, '#2a1c10', 4) + R(222, 86, 62, 50, '#2a1c10', 4) + radial(157, 112, 80, '#ffd98a', .3) + radial(253, 112, 60, '#ffd98a', .25)
+    + [124, 150, 178, 236, 262].map((x, i) => R(x, 74, 1.5, 12 + (i % 2) * 14, '#3b281a') + T(x + .7, 98 + (i % 2) * 14, 17, i % 2 ? '🪔' : '🕯️', 'class="bg-flick" style="animation-delay:' + (-i * .15).toFixed(2) + 's"') + radial(x, 98 + (i % 2) * 14, 18, '#ffd166', .3)).join('')
+    + [26, 374].map(x => R(x - 2.5, 76, 5, 76, '#3b281a') + R(x - 7, 72, 14, 5, '#3b281a') + C(x, 66, 7, '#ffd166', 'class="bg-flick"') + radial(x, 66, 34, '#ffd166', .42) + E(x, 154, 36, 7, '#ffd98a', 'opacity=".22"')).join(''),
+  orchard: () => { const r = rng(21); let o = sunny() + grassPlane(128) + P('150,128 250,128 370,200 30,200', '#8abf5f', 'opacity=".5"');
+    for (const [x, y, s] of [[120, 132, .5], [280, 132, .5], [60, 140, .75], [340, 140, .75], [20, 160, 1.15], [380, 160, 1.15], [200, 134, .45]]) { o += oak(x, y, s, '#4a9a48'); for (let i = 0; i < 6; i++) o += C(f1(x + (r() - .5) * 46 * s), f1(y - 44 * s + (r() - .5) * 36 * s), 2.6 * s + 1, '#e5322d'); }
+    return o + persp(128, '#2c5a2a', .15) + T(110, 168, 15, '🧺') + T(222, 172, 13, '🍎') + T(300, 170, 13, '🍎') + T(250, 52, 12, '🐦', 'class="bg-bob bg-drift"') + R(60, 150, 4, 28, '#8c5a3a') + R(74, 150, 4, 28, '#8c5a3a') + [0, 1, 2, 3].map(i => R(60, 156 + i * 7, 18, 1.8, '#8c5a3a')).join(''); }
+};
+const SKINS = ['#f6cfa6', '#e8b98a', '#c68d5e', '#8d5a3b', '#5c3a24'];
+const VSPEC = {
+  bakery: {top: '#f4f0e6', bottom: '#6b5a48', hat: 'chef', stache: '#6b4a2a', hair: '#6b4a2a', apron: '#ffffff', prop: 'pin', anim: 'knead', need: '🍞'},
+  smith: {top: '#c9c2b4', bottom: '#4a4a54', hair: '#3a2a1a', beard: '#3a2a1a', apron: '#7a4a2a', prop: 'hammer', anim: 'hammer', need: '🔨'},
+  well: {dress: '#b5584d', apron: '#f0e6d0', hat: 'scarf', hatCol: '#e8d27a', hair: '#7a4a21', prop: 'bucket', anim: 'haul', need: '💧'},
+  farm: {top: '#c4483c', bottom: '#3a6ea5', overalls: '#3a6ea5', hat: 'straw', hair: '#6b4a2a', prop: 'fork', anim: 'sway', need: '🥛'},
+  library: {dress: '#7d5da8', hair: '#cfcfcf', bun: true, glasses: true, prop: 'book', anim: 'flip', need: '📖', scale: .96},
+  garden: {top: '#6bb24a', bottom: '#8c5a3a', hat: 'sunhat', hatCol: '#f0a8c0', hair: '#7a4a21', prop: 'can', anim: 'water', need: '🌸', scale: .8},
+  dock: {top: '#e8b830', bottom: '#3a5a7a', hat: 'sou', beard: '#e8e8e8', hair: '#e8e8e8', prop: 'rod', anim: 'rod', need: '🐟', scale: .98},
+  henhouse: {dress: '#d99a5a', apron: '#ffffff', hat: 'kerchief', hatCol: '#d9453a', hair: '#7a4a21', braids: true, prop: 'eggs', anim: 'bob', need: '🥚', scale: .84},
+  hats: {top: '#6d4a9a', bottom: '#3a2a50', hat: 'tophat', stache: '#2a2a2a', hair: '#2a2a2a', tape: true, prop: 'hat', anim: 'tip', need: '🎩'},
+  cottage: {top: '#8a7a52', bottom: '#5a4a3a', hair: '#d6d6d6', glasses: true, prop: 'keys', anim: 'pat', need: '🔑', scale: .96},
+  lamps: {dress: '#2f5a5a', apron: '#e8d8b0', hair: '#4a2f1a', bun: true, hat: 'goggles', prop: 'lamp', anim: 'lamp', need: '🕯️'},
+  orchard: {top: '#f4f0e6', bottom: '#4a5a3a', vest: '#8a5a2e', hat: 'cap', hatCol: '#3f7a45', hair: '#5a3a22', prop: 'apples', anim: 'pick', need: '🍎'}
+};
+function vFace(mood, skin) {
+  const dk = shade(skin, -24); let eyes, brows = '', mouth, extra = '';
+  if (mood === 'happy') {
+    eyes = `<path d="M39 41 Q43.5 36 48 41 M52 41 Q56.5 36 61 41" stroke="#2a2340" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+    mouth = `<path d="M42.5 48.5 Q50 59 57.5 48.5Z" fill="#8a2a3a"/><path d="M45.5 54 Q50 57 54.5 54" fill="#e58a8a"/>`;
+  } else {
+    eyes = `<ellipse cx="43.5" cy="42" rx="3.6" ry="4" fill="#fff"/><ellipse cx="56.5" cy="42" rx="3.6" ry="4" fill="#fff"/><circle cx="44.2" cy="${mood === 'wait' ? 41.2 : 43}" r="2" fill="#2a2340"/><circle cx="55.8" cy="${mood === 'wait' ? 41.2 : 43}" r="2" fill="#2a2340"/>`;
+    if (mood === 'wait') { brows = `<path d="M38.5 36.5 L47 33 M53 33 L61.5 36.5" stroke="#4a2f1a" stroke-width="1.8" stroke-linecap="round"/>`; mouth = `<path d="M45 53 Q47.5 50.5 50 53 Q52.5 55.5 55 53" stroke="#8a3a2a" stroke-width="1.7" fill="none" stroke-linecap="round"/>`; }
+    else { brows = `<path d="M38 38.5 L47 32.5 M53 32.5 L62 38.5" stroke="#4a2f1a" stroke-width="1.9" stroke-linecap="round"/>`; mouth = `<path d="M44 55 Q50 49.5 56 55" stroke="#8a3a2a" stroke-width="1.8" fill="none" stroke-linecap="round"/>`; extra = `<path d="M62 46 q-2.4 4.4 0 6.6 q2.4 -2.2 0 -6.6z" fill="#7ac8ff"/>`; }
+  }
+  return eyes + brows + `<circle cx="50" cy="46.8" r="2.4" fill="${dk}"/>` + `<circle cx="37.5" cy="48" r="3.2" fill="#ff9aa2" opacity="${mood === 'happy' ? .6 : .38}"/><circle cx="62.5" cy="48" r="3.2" fill="#ff9aa2" opacity="${mood === 'happy' ? .6 : .38}"/>` + mouth + extra;
+}
+function vHat(s, skin) {
+  const hc = s.hair || '#5a3a22'; let o = '';
+  const cap = c => `<path d="M33 39 Q33 20 50 20 Q67 20 67 39 Q60 29 50 29 Q40 29 33 39Z" fill="${c}"/>`;
+  switch (s.hat) {
+    case 'chef': o = cap(hc) + R(36, 16, 28, 14, '#fff', 4) + C(40, 14, 9, '#fff') + C(50, 10, 10.5, '#fff') + C(60, 14, 9, '#fff') + R(36, 25, 28, 6, '#f4f0e6', 2) + R(36, 29, 28, 1.5, '#000', 0, 'opacity=".12"'); break;
+    case 'scarf': o = `<path d="M31 40 Q31 18 50 18 Q69 18 69 40 L66 34 Q50 22 34 34Z" fill="${s.hatCol}"/><path d="M62 24 L74 32 L66 36Z" fill="${shade(s.hatCol, -25)}"/>`; break;
+    case 'straw': o = cap(hc) + E(50, 29, 30, 5.6, '#d9b860') + `<path d="M35 29 Q35 10 50 10 Q65 10 65 29Z" fill="#ebd080"/>` + R(35, 24, 30, 4, '#c4483c') + `<path d="M22 29 Q50 36 78 29" stroke="#b8963f" stroke-width="1" fill="none"/>`; break;
+    case 'sunhat': o = cap(hc) + E(50, 27, 28, 5, s.hatCol) + `<path d="M36 27 Q36 11 50 11 Q64 11 64 27Z" fill="${shade(s.hatCol, 18)}"/>` + R(36, 22, 28, 3.6, '#fff', 0, 'opacity=".7"') + C(58, 20, 3.4, '#e5546b'); break;
+    case 'sou': o = `<path d="M30 36 Q50 12 70 36 L78 46 Q50 38 22 46Z" fill="#f0c030"/><path d="M30 36 Q50 12 70 36 Q50 30 30 36Z" fill="#000" opacity=".1"/><path d="M34 30 Q50 22 66 30" stroke="#b88a10" stroke-width="1.2" fill="none"/>`; break;
+    case 'kerchief': o = cap(hc) + `<path d="M33 38 Q50 14 67 38 Q60 30 50 30 Q40 30 33 38Z" fill="${s.hatCol}"/>` + C(50, 22, 1.6, '#fff', 'opacity=".8"') + C(42, 27, 1.4, '#fff', 'opacity=".8"') + C(58, 27, 1.4, '#fff', 'opacity=".8"') + `<path d="M62 24 L72 20 L68 30Z" fill="${shade(s.hatCol, -25)}"/>`; break;
+    case 'tophat': o = cap(hc) + R(38, 4, 24, 24, '#5a3d8a', 2) + R(38, 22, 24, 4, '#ffd166') + E(50, 28, 20, 4, '#4a3070') + R(38, 4, 6, 24, '#000', 0, 'opacity=".12"'); break;
+    case 'cap': o = cap(hc) + `<path d="M33 36 Q33 18 50 18 Q67 18 67 36Z" fill="${s.hatCol}"/><path d="M60 33 Q76 33 78 38 Q66 38 58 36Z" fill="${shade(s.hatCol, -25)}"/><path d="M50 18 V36" stroke="#000" stroke-opacity=".18"/>`; break;
+    case 'goggles': o = cap(hc) + R(34, 24, 32, 5, '#3a2a1a', 2) + C(43, 22, 6, '#8aa4b0') + C(57, 22, 6, '#8aa4b0') + C(43, 22, 6, 'none', 'stroke="#d9b44a" stroke-width="1.6"') + C(57, 22, 6, 'none', 'stroke="#d9b44a" stroke-width="1.6"') + C(41, 20, 1.6, '#fff', 'opacity=".7"'); break;
+    default: o = cap(hc);
+  }
+  if (s.bun) o += C(50, 14, 8, hc) + `<path d="M42 16 Q50 20 58 16" stroke="#000" stroke-opacity=".15" fill="none"/>`;
+  if (s.braids) o += R(32, 40, 6, 24, hc, 3) + R(62, 40, 6, 24, hc, 3) + C(35, 66, 3.6, '#d9453a') + C(65, 66, 3.6, '#d9453a');
+  if (['tophat', 'chef', 'cap', 'straw', 'sunhat'].includes(s.hat)) o += `<path d="M33 42 Q31 52 36 54 L36 42Z M67 42 Q69 52 64 54 L64 42Z" fill="${hc}" opacity=".9"/>`;
+  return o;
+}
+function vProp(p, hx, hy) {
+  switch (p) {
+    case 'pin': return R(hx - 13, hy - 2.5, 26, 5, '#d9b27a', 2.5) + R(hx - 17, hy - 2, 5, 4, '#b98a52', 2) + R(hx + 12, hy - 2, 5, 4, '#b98a52', 2);
+    case 'hammer': return R(hx - 1.6, hy - 22, 3.2, 28, '#8a5a2b', 1) + R(hx - 9, hy - 28, 18, 9, '#6b6b78', 1.5) + R(hx - 9, hy - 28, 18, 2.4, '#9a9aa6', 1);
+    case 'bucket': return `<line x1="${hx}" y1="${hy}" x2="${hx}" y2="${hy + 12}" stroke="#7a5a3a" stroke-width="1.4"/><path d="M${hx - 8} ${hy + 12} h16 l-2 14 h-12z" fill="#8a5a2b"/>` + R(hx - 8, hy + 12, 16, 2.4, '#5a3a1a') + `<path d="M${hx - 8} ${hy + 12} Q${hx} ${hy + 4} ${hx + 8} ${hy + 12}" stroke="#5a3a1a" fill="none" stroke-width="1.2"/>`;
+    case 'fork': return R(hx - 1.2, hy - 52, 2.4, 92, '#8a5a2b') + `<path d="M${hx - 6} ${hy - 62} v10 q6 4 12 0 v-10 M${hx} ${hy - 62} v10" stroke="#9a9aa6" stroke-width="1.8" fill="none" stroke-linecap="round"/>`;
+    case 'book': return R(hx - 9, hy - 8, 18, 15, '#6a3f9a', 1.5) + R(hx - 7.6, hy - 6.6, 15.2, 12, '#f4ede0', 1) + `<line x1="${hx}" y1="${hy - 6.6}" x2="${hx}" y2="${hy + 5.4}" stroke="#000" stroke-opacity=".25"/>`;
+    case 'can': return R(hx - 8, hy - 2, 16, 12, '#3f9a8a', 2) + `<path d="M${hx + 8} ${hy + 2} L${hx + 20} ${hy - 6}" stroke="#3f9a8a" stroke-width="3" stroke-linecap="round"/><path d="M${hx - 6} ${hy - 2} Q${hx - 2} ${hy - 12} ${hx + 4} ${hy - 2}" stroke="#2f7a6a" stroke-width="2" fill="none"/>`;
+    case 'rod': return `<line x1="${hx - 3}" y1="${hy + 4}" x2="${hx + 32}" y2="${hy - 58}" stroke="#6b4a2a" stroke-width="2" stroke-linecap="round"/><line x1="${hx + 32}" y1="${hy - 58}" x2="${hx + 32}" y2="${hy - 14}" stroke="#fff" stroke-opacity=".7" stroke-width=".8"/><circle cx="${hx + 32}" cy="${hy - 13}" r="1.8" fill="#c9c2b4"/>`;
+    case 'eggs': return E(hx, hy + 6, 11, 6.4, '#c28c55') + `<path d="M${hx - 11} ${hy + 5} Q${hx} ${hy - 10} ${hx + 11} ${hy + 5}" stroke="#8a5e34" stroke-width="1.6" fill="none"/>` + [-5, 0, 5].map(d => E(hx + d, hy + 2 - Math.abs(d) * .2, 3.2, 4, '#fff8ee')).join('');
+    case 'hat': return E(hx, hy - 3, 11, 2.6, '#4a3070') + R(hx - 7, hy - 16, 14, 14, '#5a3d8a', 1.5) + R(hx - 7, hy - 6, 14, 2.6, '#ffd166');
+    case 'keys': return `<circle cx="${hx}" cy="${hy + 4}" r="4" fill="none" stroke="#d9b44a" stroke-width="1.6"/>` + [-4, 0, 4].map(d => R(hx + d - 1, hy + 8, 2.2, 10 + Math.abs(d), '#d9b44a', 1)).join('');
+    case 'lamp': return R(hx - 5, hy - 2, 10, 14, '#ffd98a', 2) + R(hx - 6.5, hy - 4, 13, 3, '#4a3320', 1) + R(hx - 6.5, hy + 11, 13, 3, '#4a3320', 1) + `<path d="M${hx - 3} ${hy - 4} Q${hx} ${hy - 12} ${hx + 3} ${hy - 4}" stroke="#4a3320" fill="none" stroke-width="1.6"/>` + radial(hx, hy + 5, 22, '#ffd166', .5);
+    case 'apples': return E(hx, hy + 6, 11, 6.4, '#c28c55') + `<path d="M${hx - 11} ${hy + 5} Q${hx} ${hy - 10} ${hx + 11} ${hy + 5}" stroke="#8a5e34" stroke-width="1.6" fill="none"/>` + [-5, 0, 5].map(d => C(hx + d, hy + 1.5 - Math.abs(d) * .15, 3.6, '#e5322d')).join('');
+  }
+  return '';
+}
+function villagerSVG(key, skin, mood) {
+  const s = VSPEC[key], sc = s.scale || 1, top = s.dress || s.top;
+  const arm = (x1, y1, x2, y2, side) => `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${top}" stroke-width="8.4" stroke-linecap="round"/><path d="M${x1} ${y1} L${x2} ${y2}" stroke="#000" stroke-opacity=".1" stroke-width="3" stroke-linecap="round"/><circle cx="${x2 + (side > 0 ? 1 : -1)}" cy="${y2 + 3}" r="4.6" fill="${skin}"/>`;
+  const rArm = `<g class="vk-arm vk-a-${s.anim}" style="transform-origin:66px 68px">${arm(66, 68, 76, 96, 1)}${vProp(s.prop, 77, 99)}</g>`;
+  const lArm = `<g class="vk-arm ${(s.anim === 'pat' || s.anim === 'haul') ? 'vk-a-' + s.anim : ''}" style="transform-origin:34px 68px">${arm(34, 68, 24, 96, -1)}</g>`;
+  let body;
+  if (s.dress) body = `<path d="M34 66 Q50 60 66 66 L79 140 Q50 148 21 140Z" fill="${s.dress}"/><path d="M50 62 L79 140 Q50 148 50 148Z" fill="#000" opacity=".1"/>`;
+  else body = `<rect x="41" y="108" width="7.4" height="38" fill="${s.bottom}"/><rect x="51.6" y="108" width="7.4" height="38" fill="${s.bottom}"/><path d="M33 66 Q50 60 67 66 L69 112 Q50 117 31 112Z" fill="${top}"/><path d="M50 62 L67 66 L69 112 Q60 114 50 115Z" fill="#000" opacity=".1"/>`;
+  if (s.overalls) body += `<path d="M38 80 H62 V112 Q50 116 38 112Z" fill="${s.overalls}"/><rect x="40" y="66" width="4" height="16" fill="${s.overalls}"/><rect x="56" y="66" width="4" height="16" fill="${s.overalls}"/>` + C(42, 82, 1.6, '#ffd166') + C(58, 82, 1.6, '#ffd166');
+  if (s.vest) body += `<path d="M35 66 L45 66 L46 112 L33 111Z M65 66 L55 66 L54 112 L67 111Z" fill="${s.vest}"/>`;
+  if (s.apron) body += `<path d="M39 78 H61 L64 ${s.dress ? 136 : 116} Q50 ${s.dress ? 142 : 120} 36 ${s.dress ? 136 : 116}Z" fill="${s.apron}"/><path d="M42 66 L40 78 M58 66 L60 78" stroke="${s.apron}" stroke-width="3"/>` + R(39, 78, 22, 2, '#000', 0, 'opacity=".08"');
+  if (s.tape) body += `<path d="M42 64 Q50 78 58 64" stroke="#ffd166" stroke-width="3" fill="none"/>`;
+  const shoes = s.dress ? '' : E(44.7, 147, 6.4, 3.4, '#4a2f1a') + E(55.3, 147, 6.4, 3.4, '#4a2f1a');
+  const neck = R(46, 54, 8, 10, shade(skin, -12));
+  const beard = s.beard ? `<path d="M34 46 Q36 66 50 68 Q64 66 66 46 Q60 57 50 56 Q40 57 34 46Z" fill="${s.beard}"/>` : '';
+  const stache = s.stache ? `<path d="M50 50 C45 46 38 47 35 51 C37 55 43 54 50 52 C57 54 63 55 65 51 C62 47 55 46 50 50Z" fill="${s.stache}"/>` : '';
+  const glasses = s.glasses ? `<circle cx="43.5" cy="42" r="6" fill="none" stroke="#4a3320" stroke-width="1.4"/><circle cx="56.5" cy="42" r="6" fill="none" stroke="#4a3320" stroke-width="1.4"/><path d="M49.5 41 H50.5" stroke="#4a3320" stroke-width="1.4"/>` : '';
+  return `<svg viewBox="0 0 100 160" aria-hidden="true"><g transform="translate(50 150) scale(${sc}) translate(-50 -150)"><g class="vk-idle">
+    <ellipse cx="50" cy="150" rx="24" ry="4" fill="#000" opacity=".3"/>${body}${shoes}${lArm}${neck}
+    <circle cx="33.2" cy="43" r="3.6" fill="${skin}"/><circle cx="66.8" cy="43" r="3.6" fill="${skin}"/><circle cx="50" cy="41" r="17" fill="${skin}"/>
+    ${vFace(mood, skin)}${glasses}${beard}${stache}${vHat(s, skin)}${rArm}</g></g></svg>`;
+}
+return { FIGHT, VILLAGE, villagerSVG, VSPEC, SKINS };
+})();
 /* ====================== JOURNEY MAP ====================== */
 // A quest is a walk along a winding path. Each stop is an encounter: a monster (or a villager at a site), a rest, a chest or gift basket, a signpost, and at the end the boss (or the festival hall).
 // A stop that is a fight or a villager opens the normal fight/village screen; afterwards the wizard is back on the map. The length of the path is random and is NEVER shown.
 // Saved per quest in the profile: path = list of stop codes ('m' monster, 's<n>' village site n, 'r' rest, 'c' chest/basket, 'g<n>' signpost n, 'B' boss/finale), at = how many stops are done, seed = for the scenery.
 const SITES = [   // a villager asks for the thing that belongs to the place: 'he' is the word they need
-  { name: 'Bakery', em: '🥖', he: 'לחם' }, { name: 'Old well', em: '⛲', he: 'מים' }, { name: 'Farm', em: '🐄', he: 'חלב' }, { name: 'Library', em: '📚', he: 'ספר' },
-  { name: 'Garden', em: '🌷', he: 'פרח' }, { name: 'Fishing dock', em: '⚓', he: 'דג' }, { name: 'Henhouse', em: '🐔', he: 'ביצה' }, { name: 'Hat shop', em: '🧢', he: 'כובע' },
-  { name: 'Cottage', em: '🏠', he: 'מפתח' }, { name: 'Lamp shop', em: '🕯️', he: 'נר' }, { name: 'Orchard', em: '🍎', he: 'תפוח' },
-  { name: 'Pastry shop', em: '🧁', he: 'עוגה' }, { name: 'Vineyard', em: '🍇', he: 'ענבים' }, { name: 'Boat dock', em: '🛶', he: 'סירה' }, { name: 'Umbrella shop', em: '🌂', he: 'מטרייה' }, { name: 'Inn', em: '🛎️', he: 'שמיכה' },
-  { name: 'Pet shop', em: '🐾', he: 'חתול' }, { name: 'Kennel', em: '🦴', he: 'כלב' }, { name: 'Old bridge', em: '🌉', he: 'גשר' }, { name: 'Carpenter', em: '🪚', he: 'דלת' }
+  { name: 'Bakery', em: '🥖', he: 'לחם', bg: 'bakery' }, { name: 'Old well', em: '⛲', he: 'מים', bg: 'well' }, { name: 'Farm', em: '🐄', he: 'חלב', bg: 'farm' }, { name: 'Library', em: '📚', he: 'ספר', bg: 'library' },
+  { name: 'Garden', em: '🌷', he: 'פרח', bg: 'garden' }, { name: 'Fishing dock', em: '⚓', he: 'דג', bg: 'dock' }, { name: 'Henhouse', em: '🐔', he: 'ביצה', bg: 'henhouse' }, { name: 'Hat shop', em: '🧢', he: 'כובע', bg: 'hats' },
+  { name: 'Cottage', em: '🏠', he: 'מפתח', bg: 'cottage' }, { name: 'Lamp shop', em: '🕯️', he: 'נר', bg: 'lamps' }, { name: 'Orchard', em: '🍎', he: 'תפוח', bg: 'orchard' },
+  { name: 'Pastry shop', em: '🧁', he: 'עוגה', bg: 'bakery' }, { name: 'Vineyard', em: '🍇', he: 'ענבים', bg: 'orchard' }, { name: 'Boat dock', em: '🛶', he: 'סירה', bg: 'dock' }, { name: 'Umbrella shop', em: '🌂', he: 'מטרייה', bg: 'hats' }, { name: 'Inn', em: '🛎️', he: 'שמיכה', bg: 'cottage' },
+  { name: 'Blacksmith', em: '⚒️', he: 'פטיש', bg: 'smith' }, { name: 'Pet shop', em: '🐾', he: 'חתול', bg: 'farm' }, { name: 'Kennel', em: '🦴', he: 'כלב', bg: 'henhouse' }, { name: 'Old bridge', em: '🌉', he: 'גשר', bg: 'dock' }, { name: 'Carpenter', em: '🪚', he: 'דלת', bg: 'smith' }
 ];
 const J_THEMES = {
   battle: [
@@ -1672,7 +2037,8 @@ function jSetFog(f) {
 }
 
 /* ----- drawing ----- */
-const jBossOf = () => BOSSES[(P.quest[J.q].ch - 1) % BOSSES.length];
+const BOSS_EM = { treant: '🌳', mammoth: '🦣', titan: '🗿', roc: '🦅', dragon: '🐲', wraith: '💀' };   // the dark shape of the boss on the journey map
+const jBossOf = () => ({ body: BOSS_EM[AREA_MON[(P.quest[J.q].ch - 1) % 6].b] });
 function jIcon(i, code) {
   const at = P.quest[J.q].at || 0, v = jVillage();
   if (i === 0) return '🚩';
@@ -1796,14 +2162,15 @@ function newEncounter() {   // the stop the wizard just walked to: a monster or 
   G.site = stop[0] === 's' ? SITES[+stop.slice(1)] : null;
   G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier; G.potUsed = false; G.snap = null; G.noCount = false; G.need = G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;   // mistakes in this fight (G.mist) lower the coins and the rarity of the loot
   if (G.quest === 'battle') {
-    const def = boss ? BOSSES[(qs.ch - 1) % BOSSES.length] : rnd(MONS);
-    G.mon = { ...def, boss, max: boss ? 6 : 3, hp: boss ? 6 : 3 };
-  } else { const f0 = boss ? '👵' : rnd(FOLK); G.fname = FOLK_NAMES[f0] || 'The villager'; G.folk = tonedEmoji(f0, nextTone()); G.big = boss; G.mon = null; }
+    const ar = AREA_MON[(qs.ch - 1) % 6], mk = window.__forceMon || (boss ? ar.b : rnd(ar.n)), def = { ...MON_DEF[mk], key: mk };
+    const isBoss = !!def.boss; G.mon = { ...def, boss: isBoss, max: isBoss ? 6 : 3, hp: isBoss ? 6 : 3 };
+  } else { const f0 = boss ? '👵' : rnd(FOLK); G.fname = FOLK_NAMES[f0] || 'The villager'; G.folk = tonedEmoji(f0, nextTone()); G.big = boss; G.mon = null; G.vkey = boss ? 'library' : (G.site ? G.site.bg : rnd(Object.keys(VNAMES))); G.fname = VNAMES[G.vkey]; }
   drawScene(); nextQuestion();
 }
 // Each element has its own battlefield colours, glow and drifting particles (flames, snowflakes, wisps, leaves).
 const AURA = { fire: { em: ['🔥', '🔥', '✨', '🔥'], mode: 'up', y: [38, 85] }, ice: { em: ['❄️', '❄️', '✨', '🧊'], mode: 'down', y: [0, 35] },
-  dark: { em: ['💜', '✨', '🌑', '🔮'], mode: 'drift', y: [25, 80] }, plant: { em: ['🍃', '🌿', '🍃', '🌸'], mode: 'drift', y: [25, 80] } };
+  dark: { em: ['💜', '✨', '🌑', '🔮'], mode: 'drift', y: [25, 80] }, plant: { em: ['🍃', '🌿', '🍃', '🌸'], mode: 'drift', y: [25, 80] },
+  storm: { em: ['⚡', '💨', '✨', '🌩️'], mode: 'drift', y: [20, 80] }, stone: { em: ['🪨', '✨', '💨', '🪨'], mode: 'up', y: [50, 90] } };
 function setAura(el) {
   const a = $('#aura'); a.innerHTML = ''; a.style.display = '';
   const c = AURA[el]; if (!c) return;
@@ -1834,21 +2201,37 @@ function runNote(qs, hint, warn) {
   return t ? `<div class="runNote${qs.enc === qs.len - 1 ? ' warn' : ''}">${t}</div>` : '';
 }
 function loseHeart() { G.hearts--; P.quest[G.quest].hearts = G.hearts; saveSoon(); }
-function setMood() {}   // (the villager no longer shows a face)
+const VNAMES = { bakery: 'Baker Ori', smith: 'Smith Omer', well: 'Dana at the well', farm: 'Farmer Moshe', library: 'Grandma Rina', garden: 'Little Tom', dock: 'Fisher Ezra', henhouse: 'Little Maya', hats: 'Hatter Alex', cottage: 'Grandpa Dov', lamps: 'Lamp keeper Lia', orchard: 'Picker Noam' };   // one name for each villager
+function renderVillager() {   // the villager of the site: waiting (worried, with a thought bubble of what they need), happy (a little jump) or sad
+  if (G.quest !== 'peace' || !G.vkey) return;
+  const em = G.vmood === 'wait' && G.q && G.q.reveal ? G.q.reveal : '';
+  $('#foeBody').innerHTML = `<div class="vill${G.vmood === 'happy' ? ' vkjump' : ''}">${STAGE_BG.villagerSVG(G.vkey, G.vskin, G.vmood)}${em ? `<div class="vThought" aria-hidden="true">${em}</div>` : ''}</div>`;
+}
+function setMood(m) {   // called with the old face emojis from the village answer handling
+  if (G.quest !== 'peace') return; const mood = m === '😢' ? 'sad' : (m === '😊' || m === '🥰') ? 'happy' : 'wait';
+  const k = mood + '|' + (G.q && G.q.reveal || ''); if (k === G.vkeyState && $('#foeBody .vill')) return; G.vkeyState = k; G.vmood = mood; renderVillager();
+}
+const FIGHT_BG = ['woods', 'caves', 'ruins', 'citadel', 'peak', 'marsh'];   // same order as AREAS
+function setStageBg() {   // the picture behind the wizard and the monster or villager: the area (fights) or the site the wizard just walked to (villages)
+  const e = $('#stageBg'); if (!e) return; const q = G.quest; let key = '', fn = null;
+  if (q === 'battle') { key = 'f:' + FIGHT_BG[(P.quest.battle.ch - 1) % 6]; fn = STAGE_BG.FIGHT[key.slice(2)]; }
+  else if (q === 'peace') { const b = G.site ? G.site.bg : 'garden'; key = 'v:' + b; fn = STAGE_BG.VILLAGE[b]; }
+  if (e.dataset.key === key) return; e.dataset.key = key; e.innerHTML = fn ? fn() : ''; $('#stageVig').style.display = fn ? '' : 'none';
+}
 function drawScene() {
   const qs = P.quest[G.quest], b = G.quest === 'battle';
-  $('#stage').className = 'stage' + (b ? ' el-' + G.mon.el : '');
+  $('#stage').className = 'stage' + (b ? ' el-' + G.mon.el : ''); setStageBg();
   setAura(b ? G.mon.el : null);
-  $('#foeBody').className = 'foeBody' + (b && G.mon.boss ? ' boss' : '');
+  $('#foeBody').className = 'foeBody' + (b ? ' art' : '') + (b && G.mon.boss ? ' boss' : '');
   // element-coloured glow around every monster; the fire lizard is also tinted orange-red
   $('#foeBody').style.filter = b ? `${G.mon.tint || ''} drop-shadow(0 0 14px var(--aura)) drop-shadow(0 0 28px var(--aura)) drop-shadow(0 6px 8px #0008)` : '';
   $('#heroBox').classList.remove('hurt');
   if (b) {
-    $('#foeBody').textContent = G.mon.body;
+    $('#foeBody').innerHTML = `<div class="mnWrap"><svg viewBox="0 0 140 140" aria-hidden="true">${MON_ART[G.mon.boss ? 'BOSS' : 'MON'][G.mon.key]()}</svg></div>`;
     $('#foeName').textContent = (G.mon.boss ? '👑 BOSS: ' : '') + G.mon.name; setMood('');
     $('#mid').innerHTML = `<b>${AREAS[(qs.ch - 1) % AREAS.length]}</b>`;
   } else {
-    $('#foeBody').textContent = G.folk;
+    G.vskin = rnd(STAGE_BG.SKINS); G.vmood = ''; G.vkeyState = ''; $('#foeBody').textContent = '';
     $('#foeName').textContent = G.big ? '📜 ' + G.fname + ': big request!' : G.fname; setMood('😟');
     $('#mid').innerHTML = `<b>${G.site ? G.site.em + ' ' + G.site.name : G.big ? '🏛️ Festival hall' : VILLAGES[(qs.ch - 1) % VILLAGES.length]}</b><div class="bubble" id="bubble"></div>`;
   }
@@ -2432,7 +2815,7 @@ function pickIngredients(potion) {   // the student chooses which ingredients to
 function startCraft(potion, ings) {
   G.quest = 'craft'; G.craft = { potion, ings, i: 0, done: [] }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = false;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
-  $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
+  $('#stage').className = 'stage craft'; setStageBg(); $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = 'drop-shadow(0 0 12px #ffd16688)'; $('#foeBody').textContent = '🫕';
   craftQuestion();
 }
@@ -2613,7 +2996,7 @@ function pickForge(slot) {   // choose which ingredients to use (one for each ne
 function startForge(slot, ings) {
   G.quest = 'forge'; G.craft = { forge: slot, ings, i: 0 }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = false;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
-  $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
+  $('#stage').className = 'stage craft'; setStageBg(); $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').innerHTML = `<span class="shMerchBody">${artificerSVG(WS_SKINS[(shopShelf().skin + 2) % WS_SKINS.length])}</span>`;
   forgeQuestion();
 }
@@ -2825,7 +3208,7 @@ function readTag(s) {   // "Read my tags!": a picture and three written words (w
 function startShopBuy(id) {
   const s = SHOP[id]; G.quest = 'shop'; G.shop = { id }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = true;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
-  $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
+  $('#stage').className = 'stage craft'; setStageBg(); $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').innerHTML = `<span class="shMerchBody">${merchantSVG(SH_SKINS[shopShelf().skin % SH_SKINS.length])}</span>`; $('#foeName').textContent = 'Merchant';
   $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${s.kind === 'wear' && s.wtype !== 'acc' ? 'this robe' : s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
   $('#hearts').textContent = '🪙 ' + s.price; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = '0%';
@@ -2972,14 +3355,18 @@ function startDemo() {
   P.pot = { heart: 2, sound: 2, power: 2, second: 2, super: 1 }; P.own.decor = ['d_plant', 'd_cat', 'd_candle', 'd_picture', 'd_clock', 'd_rug']; P.own.caul = 1;
   const blank = () => ({ amulet: 0, staff: 0, belt: 0 });
   const goMenu = () => { document.querySelector('#modal').classList.remove('on'); openMenu(); };
-  const act = q => { document.querySelector('#modal').classList.remove('on'); P.quest[q].act = true; P.quest[q].len = 0; P.quest[q].path = null; P.quest[q].enc = 0; P.quest[q].at = 0; P.quest[q].hearts = 3; beginQuest(q); };
+  const act = (q, path) => { document.querySelector('#modal').classList.remove('on'); const qs = P.quest[q]; qs.act = true; qs.path = path || null; qs.len = path ? path.length - 1 : 0; qs.enc = 0; qs.at = 0; qs.seeTo = 0; qs.seed = qs.seed || 7; qs.hearts = 3; beginQuest(q); };
   const D = {
     level(t) { P.tier = +t; P.hist = []; saveSoon(); goMenu(); toast('Level ' + t + ': ' + TIERS[t]); },
     stuff() { for (const id of ['star', 'moon', 'comet', 'rainbow', 'cloud', 'diamond', 'pearl', 'crown', 'dragonegg', 'leaf', 'seed', 'flower', 'root']) P.inv[id] = (P.inv[id] || 0) + 3; P.coins += 500; saveSoon(); toast('🎁 +500 coins and lots of ingredients'); if ($('#workshop').classList.contains('on')) renderWorkshop(); },
     items(v) { P.items = { amulet: v, staff: v, belt: v }; P.itemUses = { battle: blank(), peace: blank() }; saveSoon(); toast(v ? (v === 2 ? '🌟 All three items: legendary' : '💠 All three items: epic') : 'Items removed'); },
     refill() { P.itemUses = { battle: blank(), peace: blank() }; saveSoon(); toast('♻️ Item powers refilled'); },
     map() { goMenu(); }, workshop() { document.querySelector('#modal').classList.remove('on'); if (P.tier < 8) { P.tier = 8; P.hist = []; } openWorkshop(); }, home() { document.querySelector('#modal').classList.remove('on'); openHome(); }, shop() { document.querySelector('#modal').classList.remove('on'); openShop(); },
-    fight() { act('battle'); }, village() { act('peace'); },
+    fight() { window.__forceMon = null; act('battle'); }, village() { act('peace'); },
+    mon(k) { window.__forceMon = k; P.quest.battle.ch = 1; act('battle', ['m', 'B']); toast(MON_DEF[k].name); },
+    clearMon() { window.__forceMon = null; },
+    area(n) { window.__forceMon = null; P.quest.battle.ch = n; act('battle', ['m', 'm', 'B']); toast(AREAS[n - 1]); },
+    site(i) { P.quest.peace.ch = 1; act('peace', ['s' + i, 's' + i, 'B']); toast(SITES[i].name); },
     nearBoss() { const q = G.quest === 'peace' || J.q === 'peace' ? 'peace' : 'battle'; if (!P.quest[q].path) { toast('Start a quest first'); return; } P.quest[q].at = P.quest[q].path.length - 2; P.quest[q].enc = P.quest[q].len; openJourney(q); },
     ko() { if (!$('#game').classList.contains('on') || !(G.quest === 'battle' || G.quest === 'peace')) { toast('Open a fight first'); return; } G.hearts = 0; P.quest[G.quest].hearts = 0; endOrSecond(G.quest === 'battle' ? knockout : villageFail); },
     win() { if (!$('#game').classList.contains('on') || !G.mon && G.quest === 'battle') { toast('Open a fight first'); return; } if (G.quest === 'battle') { G.mon.hp = 0; victory(); } else { G.helped = G.need; villageDone(); } },
@@ -2996,6 +3383,7 @@ function startDemo() {
     '<h4>Level</h4>' + [5, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(t => B(t, `level(${t})`)).join('') + B('Show locked workshop', 'fresh()') +
     '<h4>Go to</h4>' + B('🗺️ Map', 'map()') + B('⚒️ Workshop', 'workshop()') + B('🏡 Home', 'home()') + B('🏪 Shop', 'shop()') +
     '<h4>Quests</h4>' + B('⚔️ Start monster quest', 'fight()') + B('🌿 Start village quest', 'village()') + B('⏭️ Jump near the boss', 'nearBoss()') +
+    '<h4>Fight areas (backgrounds)</h4>' + [1, 2, 3, 4, 5, 6].map(n => B(AREAS[n - 1], `area(${n})`)).join('') + '<h4>Monsters (storm and stone are new)</h4>' + Object.keys(MON_DEF).map(k => B(MON_DEF[k].name + (MON_DEF[k].boss ? ' 👑' : ''), `mon("${k}")`)).join('') + '<h4>Village sites (backgrounds)</h4>' + SITES.slice(0, 12).concat(SITES.filter(s => s.name === 'Blacksmith')).map(s => B(s.name, `site(${SITES.indexOf(s)})`)).join('') +
     '<h4>In a fight</h4>' + B('💥 Lose all hearts (test amulet)', 'ko()') + B('🏆 Win this fight', 'win()') +
     '<h4>Items and stuff</h4>' + B('💠 All items epic', 'items(1)') + B('🌟 All items legendary', 'items(2)') + B('❌ No items', 'items(0)') + B('♻️ Refill powers', 'refill()') + B('🎁 Coins + ingredients', 'stuff()');
   panel.onclick = e => { const b = e.target.closest('[data-d]'); if (!b) return; try { new Function('demo', 'with(demo){' + b.dataset.d + '}')(D); } catch (x) { toast('Demo error: ' + x.message); } };
