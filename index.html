@@ -140,6 +140,38 @@ body.peace .foeBody{font-size:6rem}
 .jBanner{min-height:1.5em;text-align:center;font-weight:600;margin:8px 0 6px}.jBanner.warn{color:#ffb4a2}
 .jHearts{font-size:1.3rem;letter-spacing:2px;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.jpulse,.jbob{animation:none!important}}
+/* ----- the shop room (2.5D, like Home). --u = 1% of the scene width ----- */
+.shScene{--u:1cqw;position:relative;width:100%;aspect-ratio:100/80;container-type:inline-size;isolation:isolate;border-radius:18px;overflow:hidden;border:2px solid #fff3;background:#1d1547;user-select:none;-webkit-user-select:none}
+.shLayer{position:absolute;inset:0;width:100%;height:100%;display:block}
+.shAt{position:absolute;left:calc(var(--x)*1%);top:calc(var(--y)*1.25%);line-height:1}
+.shMerchant{z-index:20;transform:translate(-50%,-100%);width:calc(var(--u)*19);filter:drop-shadow(0 calc(var(--u)*.6) calc(var(--u)*.6) #0005);animation:shIdle 2.6s ease-in-out infinite}
+.shMerchant svg{display:block;width:100%;height:auto;overflow:visible}
+@keyframes shIdle{50%{transform:translate(-50%,calc(-100% - var(--u)*.35))}}
+.shSay{z-index:210;transform:translate(-50%,-100%);background:#fff;color:#2a2340;border-radius:calc(var(--u)*1.6);padding:calc(var(--u)*.8) calc(var(--u)*1.4);font-size:max(9px,calc(var(--u)*1.8));font-weight:600;max-width:calc(var(--u)*34);text-align:center;line-height:1.25;box-shadow:0 calc(var(--u)*.4) 0 #0003}
+.shSay::after{content:'';position:absolute;left:50%;bottom:calc(var(--u)*-1);border:calc(var(--u)*1) solid transparent;border-top-color:#fff;border-bottom:0;transform:translateX(-50%)}
+.shSlot{z-index:30;transform:translate(-50%,-100%);font-size:calc(var(--u)*5.6);background:none;border:0;padding:0;text-align:center;border-radius:calc(var(--u)*1);color:inherit;cursor:pointer;font-family:inherit}
+.shSlot .em{display:block;line-height:1;filter:drop-shadow(0 calc(var(--u)*.4) calc(var(--u)*.3) #0006)}
+.shSlot .shPrice{position:absolute;left:50%;top:100%;transform:translate(-50%,calc(var(--u)*.2));background:#f3e6c4;color:#3a2a14;border-radius:calc(var(--u)*.6);padding:0 calc(var(--u)*.8);font-size:max(7px,calc(var(--u)*1.55));font-weight:600;white-space:nowrap;line-height:calc(var(--u)*2);box-shadow:0 calc(var(--u)*.2) calc(var(--u)*.3) #0005}
+.shSlot:hover .em,.shSlot:focus-visible .em{transform:translateY(calc(var(--u)*-.5))}
+.shSlot.sold .em{opacity:.35;filter:grayscale(.8)}.shSlot.sold .shPrice{background:#7a6f8f;color:#fff}
+.shRug{display:block;width:calc(var(--u)*7.5);height:calc(var(--u)*3);border-radius:50%;background:radial-gradient(ellipse,#e0b36c 0 12%,#b3474d 13% 34%,#e0b36c 35% 40%,#6e3a7a 41% 66%,#e0b36c 67% 70%,#b3474d 71%)}
+.shCau{z-index:60;transform:translate(-50%,-100%);background:none;border:0;padding:0;width:calc(var(--u)*11);aspect-ratio:1/1;color:inherit;border-radius:calc(var(--u)*1);cursor:pointer;font-family:inherit}
+.shCau svg{width:100%;height:100%;overflow:visible;display:block}
+.shCau .shPrice{position:absolute;left:50%;top:92%;transform:translateX(-50%);background:#f3e6c4;color:#3a2a14;border-radius:calc(var(--u)*.6);padding:0 calc(var(--u)*.8);font-size:max(7px,calc(var(--u)*1.55));font-weight:600;white-space:nowrap;line-height:calc(var(--u)*2)}
+.shCau .flame{transform-box:fill-box;transform-origin:50% 100%;animation:rFlick .55s ease-in-out infinite alternate}.shCau .flame.f2{animation-duration:.42s}.shCau .flame.f3{animation-duration:.7s}
+.shCoin{z-index:55;font-size:calc(var(--u)*4);transform:translate(-50%,-100%)}
+.shProp{z-index:15;transform:translate(-50%,-100%);font-size:calc(var(--u)*6);filter:drop-shadow(0 calc(var(--u)*.4) calc(var(--u)*.3) #0005)}
+.shFull{background:#fff;color:#2a2340;border-radius:calc(var(--u)*1);padding:calc(var(--u)*.5) calc(var(--u)*1);font-weight:600;font-size:max(8px,calc(var(--u)*2.2));transform:translate(-50%,-100%);z-index:55}
+.shCard{text-align:center}.shCard .pic{font-size:4.2rem;line-height:1;min-height:4.4rem;display:grid;place-items:center}.shCard .pic svg{width:5.4rem;height:5.4rem}
+.shCard h2.heb{font-size:2rem;margin:6px 0 2px}.shCard .en{opacity:.8;margin:0 0 8px}
+.chipPrice{display:inline-block;background:#0004;border-radius:99px;padding:3px 14px;font-weight:600;margin:4px 0 8px}
+.tagOpts{display:grid;gap:10px;margin-top:8px}
+.tagOpt{font:inherit;background:linear-gradient(#fff,#e8e4ff);color:#2a2050;border:0;border-radius:16px;padding:10px;box-shadow:0 4px 0 #6b5ca8;font-size:2rem;font-weight:700;min-height:62px;cursor:pointer}
+.tagOpt:active{transform:translateY(3px);box-shadow:0 1px 0 #6b5ca8}.tagOpt.good{background:linear-gradient(#b8ffd9,#6fe6a8);box-shadow:0 4px 0 #22875a}.tagOpt.bad{background:linear-gradient(#ffc0c8,#ff8b99);box-shadow:0 4px 0 #a8384a;opacity:.7}.tagOpt:disabled{cursor:default}
+.potIco{display:inline-block;vertical-align:middle;width:1.3em;height:1.7em}.potIco .potSvg{width:100%;height:100%;display:block}
+.shopRobe{display:block;height:4rem}.shopRobe svg{height:100%;width:auto;display:block;margin:0 auto}.shopRobe.big{height:6.4rem}
+.shMerchBody{display:block;width:6.4rem;margin:0 auto}.shMerchBody svg{display:block;width:100%;height:auto}
+@media (prefers-reduced-motion:reduce){.shMerchant,.shCau .flame{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
 .or{opacity:.7;margin:8px 0}.regLbl{display:block;text-align:left;margin:10px 0 2px;font-weight:600}
 .bigId{font-size:3rem;font-weight:800;letter-spacing:.25em;background:#0005;border:3px dashed var(--gold);border-radius:16px;padding:10px 6px 10px 18px;margin:8px 0;font-family:ui-monospace,Consolas,monospace;user-select:all}
@@ -480,13 +512,18 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div id="wdBody" style="text-align:left"></div></div>
 </section>
 
-<section id="shop" class="screen">
-  <div class="top"><button class="ib" id="shopBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏪 <span class="heb">חנות</span> · Shop</div><div class="small">Spend your coins. The merchant asks one question for each purchase.</div></div><div class="coinBox">🪙 <b id="shopCoins">0</b></div></div>
-  <h2 class="center" style="margin:10px 0 4px">🫕 Cauldrons</h2><div class="card shopGrid" id="shopCauls"></div>
-  <h2 class="center" style="margin:10px 0 4px">🧪 Potions</h2><div class="card shopGrid" id="shopPots"></div>
-  <h2 class="center" style="margin:10px 0 4px">🪴 Decorations for your home</h2><div class="card shopGrid" id="shopDecor"></div>
-  <h2 class="center" style="margin:10px 0 4px">👗 Robes</h2><div class="card shopGrid" id="shopRobes"></div>
-  <h2 class="center" style="margin:10px 0 4px">🎩 Accessories</h2><div class="card shopGrid" id="shopAcc"></div>
+<section id="shop" class="screen" style="max-width:760px">
+  <div class="top"><button class="ib" id="shopBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏪 <span class="heb">חנות</span> · Shop</div><div class="small">Tap something on the shelves to look at it. To buy, answer the merchant's question.</div></div><div class="coinBox">🪙 <b id="shopCoins">0</b></div></div>
+  <div class="shScene" id="shScene" aria-label="The shop">
+    <svg class="shLayer" id="shBack" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <div id="shProps"></div>
+    <svg class="shLayer" id="shCounter" viewBox="0 0 100 80" preserveAspectRatio="none" style="z-index:50;pointer-events:none" aria-hidden="true"></svg>
+    <div id="shFront"></div>
+    <div class="rVig"></div>
+  </div>
+  <div class="rBar" style="justify-content:center;flex-wrap:wrap"><button class="btn ghost" id="shBtnPots"><span class="potIco"></span> Potions</button><button class="btn ghost" id="shBtnWear">👗 Robes and accessories</button></div>
+  <section class="rPanel" id="shopPanel" hidden></section>
+  <div class="small center" style="opacity:.7;margin:10px 0">🪴 The shelves change every day. Things you buy wait for you at Home.</div>
 </section>
 
 <section id="game" class="screen">
@@ -934,7 +971,7 @@ function newProfile(id, nick, gender, color, real, cls, skin, hair) {
   return p;
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 7;
+const PROFILE_V = 8;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -957,6 +994,10 @@ function migrate(p) {
     const MAPD = { d_candles: 'd_candle', d_painting: 'd_picture', d_lantern: 'd_lamp', d_dragon: 'd_egg' };
     const old = (p.own && p.own.decor) || []; p.own.decor = [...new Set(old.filter(d => d !== 'd_teddy').map(d => MAPD[d] || d))];
     if (old.includes('d_teddy')) p.coins = (p.coins || 0) + 60;   // the teddy bear is gone from the shop: refund it
+  }
+  if (v < 8) {   // version 8: the new shop. The old toolbox is gone from the shop, so it is refunded.
+    p.own = p.own || { caul: 0, decor: [] };
+    if (p.own.decor.includes('d_chest')) { p.own.decor = p.own.decor.filter(d => d !== 'd_chest'); p.coins = (p.coins || 0) + 60; p.shopNote = '🧰 The shop has new things! Your old toolbox was returned: 🪙 +60'; }
   }
   p.satchel = p.satchel || {}; p.own = p.own || { caul: 0, decor: [] }; p.own.pos = p.own.pos || {};   // own.pos: where the student moved each decoration in the room
   if (v < 7) { p.style = p.style || null; p.acc = p.acc || {}; p.wd = p.wd || []; }   // version 7: the wardrobe (robe style, accessories, and what you own of them)
@@ -2040,7 +2081,9 @@ const rmClamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const ROOM_ITEMS = {
   d_picture: { t: 'wall', b: 7.5, x: 31, y: 13 }, d_clock: { t: 'wall', b: 5.5, x: 51, y: 11 }, d_banner: { t: 'wall', b: 6.5, x: 70, y: 12 },
   d_lamp: { t: 'wall', b: 5.5, x: 26, y: 38 }, d_candle: { t: 'wall', b: 4.5, x: 32, y: 38.4 }, d_books: { t: 'wall', b: 5.5, x: 37.5, y: 38 },
-  d_chest: { t: 'floor', b: 8, x: 84, y: 72 }, d_plant: { t: 'floor', b: 8, x: 30, y: 70 }, d_cat: { t: 'floor', b: 7, x: 71, y: 74 },
+  d_vase: { t: 'floor', b: 6.5, x: 86, y: 72 }, d_chair: { t: 'floor', b: 7, x: 36, y: 63 }, d_teddy: { t: 'floor', b: 6, x: 66, y: 61 }, d_turtle: { t: 'floor', b: 5, x: 36, y: 76 }, d_cactus: { t: 'floor', b: 6.5, x: 80, y: 66 }, d_scope: { t: 'floor', b: 8.5, x: 20, y: 75 },
+  d_map: { t: 'wall', b: 6, x: 50, y: 38 }, d_key: { t: 'wall', b: 4.5, x: 57.5, y: 40.5 }, d_shield: { t: 'wall', b: 6, x: 43, y: 40 }, d_violin: { t: 'wall', b: 5.5, x: 66, y: 41 }, d_mirror: { t: 'wall', b: 7, x: 24, y: 19 },
+  d_plant: { t: 'floor', b: 8, x: 30, y: 70 }, d_cat: { t: 'floor', b: 7, x: 71, y: 74 },
   d_egg: { t: 'floor', b: 5.5, x: 25, y: 57 }, d_owl: { t: 'floor', b: 7, x: 82, y: 58 }, d_rug: { t: 'rug', x: 50, y: 71 }
 };
 const rmPos = id => (P.own.pos && P.own.pos[id]) || { x: ROOM_ITEMS[id].x, y: ROOM_ITEMS[id].y };
@@ -2326,28 +2369,29 @@ function craftNext() {
     [['Back home 🏡', openHome], ['Back to map', openMenu, true]]);
 }
 /* ====================== SHOP ====================== */
-// Everything is bought with coins. To buy, the student answers one question about the item's name (adapted to their level; mistakes cost nothing).
+// A little shop room in the same 2.5D style as Home. Everything is bought with coins. To buy, the student answers one question about the item's name, adapted to their level (mistakes cost nothing):
+// levels 1-8: the usual listening/letters/reading question; levels 9-10: "Read my tags!" (a picture and three written words); levels 11-12: write the name.
 const SHOP = {};
 for (const [id, kind, extra, he, nk, em, en, price] of [
-  ['caul1', 'caul', { lv: 1 }, 'קדרת ברזל', 'קְדֵרַת בַּרְזֶל', '🫕', 'iron cauldron', 80],
-  ['caul2', 'caul', { lv: 2 }, 'קדרת כסף', 'קְדֵרַת כֶּסֶף', '🥘', 'silver cauldron', 220],
+  ['caul1', 'caul', { lv: 1, unlock: 'the Power and Second chance potions' }, 'קדרת ברזל', 'קְדֵרַת בַּרְזֶל', '🫕', 'iron cauldron', 80],
+  ['caul2', 'caul', { lv: 2, unlock: 'the Super potion' }, 'קדרת כסף', 'קְדֵרַת כֶּסֶף', '🥘', 'silver cauldron', 220],
   ['pot_heart', 'potion', { pid: 'heart' }, 'שיקוי לב', 'שִׁקּוּי לֵב', '❤️', 'heart / happy potion', 15],
   ['pot_sound', 'potion', { pid: 'sound' }, 'שיקוי קול', 'שִׁקּוּי קוֹל', '🔊', 'sound / whisper potion', 15],
   ['pot_power', 'potion', { pid: 'power' }, 'שיקוי כוח', 'שִׁקּוּי כֹּחַ', '💥', 'power / helping-hands potion', 40],
   ['pot_second', 'potion', { pid: 'second' }, 'שיקוי חזרה', 'שִׁקּוּי חֲזָרָה', '⏪', 'second chance / lucky potion', 40],
   ['pot_super', 'potion', { pid: 'super' }, 'שיקוי על', 'שִׁקּוּי עַל', '🌟', 'super / miracle potion', 120],
-  ['d_candle', 'decor', {}, 'נר', 'נֵר', '🕯️', 'candle', 10],
-  ['d_plant', 'decor', {}, 'צמח', 'צֶמַח', '🪴', 'plant', 10],
-  ['d_picture', 'decor', {}, 'תמונה', 'תְּמוּנָה', '🖼️', 'picture', 20],
-  ['d_clock', 'decor', {}, 'שעון', 'שָׁעוֹן', '⏰', 'clock', 25],
-  ['d_books', 'decor', {}, 'ספרים', 'סְפָרִים', '📚', 'books', 30],
-  ['d_banner', 'decor', {}, 'דגל', 'דֶּגֶל', '🚩', 'banner', 35],
-  ['d_rug', 'decor', {}, 'שטיח', 'שָׁטִיחַ', '🧶', 'rug', 45],
-  ['d_lamp', 'decor', {}, 'מנורה', 'מְנוֹרָה', '🏮', 'lamp', 50],
-  ['d_chest', 'decor', {}, 'ארגז', 'אַרְגָּז', '🧰', 'chest', 60],
-  ['d_cat', 'decor', {}, 'חתול', 'חָתוּל', '🐈', 'cat', 60],
-  ['d_owl', 'decor', {}, 'ינשוף', 'יַנְשׁוּף', '🦉', 'owl', 80],
-  ['d_egg', 'decor', {}, 'ביצת דרקון', 'בֵּיצַת דְּרָקוֹן', '🥚', 'dragon egg', 150]
+  // 22 decorations (medieval fantasy). Each has a fixed starting spot in the Home room (ROOM_ITEMS).
+  ['d_plant', 'decor', {}, 'צמח', 'צֶמַח', '🪴', 'plant', 15], ['d_candle', 'decor', {}, 'נר', 'נֵר', '🕯️', 'candle', 10],
+  ['d_books', 'decor', {}, 'ספרים', 'סְפָרִים', '📚', 'books', 35], ['d_lamp', 'decor', {}, 'מנורה', 'מְנוֹרָה', '🪔', 'oil lamp', 30],
+  ['d_cat', 'decor', {}, 'חתול', 'חָתוּל', '🐈', 'cat', 40], ['d_owl', 'decor', {}, 'ינשוף', 'יַנְשׁוּף', '🦉', 'owl', 45],
+  ['d_picture', 'decor', {}, 'תמונה', 'תְּמוּנָה', '🖼️', 'picture', 25], ['d_egg', 'decor', {}, 'ביצה', 'בֵּיצָה', '🥚', 'dragon egg', 70],
+  ['d_clock', 'decor', {}, 'שעון', 'שָׁעוֹן', '🕰️', 'clock', 30], ['d_banner', 'decor', {}, 'דגל', 'דֶּגֶל', '🚩', 'pennant', 20],
+  ['d_key', 'decor', {}, 'מפתח', 'מַפְתֵּחַ', '🗝️', 'old key', 25], ['d_rug', 'decor', {}, 'שטיח', 'שָׁטִיחַ', '🧶', 'rug', 30],
+  ['d_shield', 'decor', {}, 'מגן', 'מָגֵן', '🛡️', 'shield', 60], ['d_chair', 'decor', {}, 'כסא', 'כִּסֵּא', '🪑', 'chair', 20],
+  ['d_teddy', 'decor', {}, 'דובי', 'דֻּבִּי', '🧸', 'teddy bear', 25], ['d_turtle', 'decor', {}, 'צב', 'צָב', '🐢', 'turtle', 35],
+  ['d_cactus', 'decor', {}, 'קקטוס', 'קַקְטוּס', '🌵', 'cactus', 15], ['d_violin', 'decor', {}, 'כנור', 'כִּנּוֹר', '🎻', 'violin', 55],
+  ['d_scope', 'decor', {}, 'טלסקופ', 'טֶלֶסְקוֹפּ', '🔭', 'telescope', 80], ['d_map', 'decor', {}, 'מפה', 'מַפָּה', '🗺️', 'map', 25],
+  ['d_vase', 'decor', {}, 'אגרטל', 'אֲגַרְטָל', '🏺', 'vase', 20], ['d_mirror', 'decor', {}, 'מראה', 'מַרְאָה', '🪞', 'mirror', 45]
 ]) SHOP[id] = Object.assign({ id, kind, he, nk, em, en, price }, extra);
 const DECOR = Object.values(SHOP).filter(s => s.kind === 'decor');
 // wardrobe items in the shop
@@ -2358,34 +2402,129 @@ const owns = s => s.kind === 'caul' ? (P.own.caul || 0) >= s.lv : s.kind === 'de
 function whyNot(s) {   // why this item cannot be bought right now ('' = it can)
   if (owns(s)) return 'You have it ✓';
   if (s.kind === 'caul' && s.lv > (P.own.caul || 0) + 1) return '🔒 Buy the iron cauldron first';
-  if (Math.floor(P.coins || 0) < s.price) return `Need ${s.price - Math.floor(P.coins || 0)} more 🪙`;
+  if (Math.floor(P.coins || 0) < s.price) return `You need ${s.price - Math.floor(P.coins || 0)} more 🪙`;
   return '';
 }
-function shopCard(s) {
-  const why = whyNot(s), pic = s.kind === 'potion' ? `<span class="packBottle">${potionSVG(s.pid)}<i>${s.em}</i></span>` : `<span class="shopEm">${s.em}</span>`;
-  const name = s.kind === 'potion' ? `<b class="potTitle">${POTIONS[s.pid].name} / ${POTIONS[s.pid].vname} potion</b>` : `<b class="heb">${s.nk}</b>`;   // ONE name per card: potions show both names on one row, everything else its Hebrew name
+function shopCard(s) {   // a card in the potions / wardrobe lists under the shop room
+  const why = whyNot(s), pic = s.kind === 'wear' && s.wtype !== 'acc' ? `<span class="shopRobe">${robePic(s)}</span>` : s.kind === 'potion' ? `<span class="packBottle">${potionSVG(s.pid)}<i>${s.em}</i></span>` : `<span class="shopEm">${s.em}</span>`;
+  const name = s.kind === 'potion' ? `<b class="potTitle">${POTIONS[s.pid].name} / ${POTIONS[s.pid].vname} potion</b>` : `<b class="heb">${s.nk}</b>`;   // ONE name per card
   return `<button class="shopItem ${why ? 'off' : ''} ${owns(s) ? 'own' : ''}" data-buy="${s.id}">${pic}${name}<span class="price">${owns(s) ? '✓' : '🪙 ' + s.price}</span>${why && !owns(s) ? `<small class="why">${why}</small>` : ''}</button>`;
 }
+
+/* ----- the room ----- */
+const SH = { BACK_Y0: 8, BACK_Y1: 46, FRONT: 80 };
+const SH_SLOTS = [[31, 27], [44, 27], [57, 27], [70, 27], [31, 40], [44, 40], [57, 40], [70, 40]];
+const SH_SKINS = ['#f6cfa6', '#e8b98a', '#c68d5e', '#8d5a3b', '#5c3a24'];
+const strHash = s => { let h = 2166136261; for (const c of String(s)) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+function shopShelf() {   // today's 8 decorations (not owned yet when the day started); the choice is saved, so buying one leaves it on the shelf as SOLD until tomorrow
+  const d = today(); let sh = P.shelf;
+  if (!sh || sh.d !== d || !Array.isArray(sh.ids)) {
+    const r = rngSeed(strHash(d + P.id)), arr = DECOR.filter(s => !P.own.decor.includes(s.id));
+    for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; }
+    sh = P.shelf = { d, ids: arr.slice(0, 8).map(s => s.id), skin: Math.floor(r() * SH_SKINS.length) }; saveSoon();
+  }
+  return sh;
+}
+function merchantSVG(skin) {   // the trader: a storybook shopkeeper with a feathered red hat, a big curled mustache and a green coat. Only his head and collar show above the counter.
+  const dk = shade(skin, -16);
+  return `<svg viewBox="0 0 100 90" aria-hidden="true">
+    <path d="M4 90 C4 74 22 68 50 68 C78 68 96 74 96 90Z" fill="#86b552"/><path d="M4 90 C4 74 22 68 50 68 L50 90Z" fill="#000" opacity=".1"/>
+    <rect x="4" y="84" width="92" height="6" fill="#c43a28"/><circle cx="50" cy="80" r="1.5" fill="#5a3a14"/>
+    <path d="M24 38 C20 48 22 58 29 62 C27 54 29 46 35 40Z" fill="#5a3320"/><path d="M76 38 C80 48 78 58 71 62 C73 54 71 46 65 40Z" fill="#5a3320"/>
+    <circle cx="24" cy="48" r="4.6" fill="${skin}"/><circle cx="76" cy="48" r="4.6" fill="${skin}"/><ellipse cx="50" cy="46" rx="25.5" ry="22" fill="${skin}"/>
+    <path d="M30 66 L44 79 L50 68Z" fill="#e2492f"/><path d="M70 66 L56 79 L50 68Z" fill="#e2492f"/>
+    <polygon points="15,31 54,8 87,24 80,37 22,41" fill="#f0583a"/><polygon points="54,8 87,24 58,25" fill="#ff8a64"/><polygon points="22,41 80,37 81,31.5 22,34.5" fill="#b8812f"/>
+    <path d="M62 21 C50 4 30 -1 10 7 C26 7 44 13 58 25Z" fill="#7aa6d6"/><path d="M60 20 C48 8 34 5 22 7" stroke="#fff" stroke-opacity=".5" stroke-width=".8" fill="none"/>
+    <circle cx="12" cy="8" r="6" fill="#7a3fa0"/><circle cx="12" cy="8" r="3.6" fill="#ff8a3d"/><circle cx="12" cy="8" r="1.6" fill="#7bd35a"/>
+    <circle cx="63" cy="23" r="4.2" fill="#2a2340"/><circle cx="63" cy="23" r="2.4" fill="#ffd166"/>
+    <ellipse cx="40" cy="47" rx="4.4" ry="4.8" fill="#fff"/><ellipse cx="60" cy="47" rx="4.4" ry="4.8" fill="#fff"/><circle cx="40.8" cy="48" r="2.2" fill="#2a2340"/><circle cx="59.2" cy="48" r="2.2" fill="#2a2340"/>
+    <path d="M33 41 Q40 37 46 41 M54 41 Q60 37 67 41" stroke="#4a2a18" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="54" rx="6.4" ry="5.4" fill="${dk}"/>
+    <circle cx="33" cy="57" r="5" fill="#ff8f80" opacity=".4"/><circle cx="67" cy="57" r="5" fill="#ff8f80" opacity=".4"/>
+    <path d="M50 58 C44 53 35 53 29 58 C26 63 32 67 35 63 C33 61 35 59 38 60 C43 61 47 63 50 62Z" fill="#4a2a18"/><path d="M50 58 C56 53 65 53 71 58 C74 63 68 67 65 63 C67 61 65 59 62 60 C57 61 53 63 50 62Z" fill="#4a2a18"/>
+    <path d="M44 67 Q50 72 56 67" stroke="#8a3a2a" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`;
+}
+function shBackSVG() {
+  const planks = [], floorLeft = y => 20 * (SH.FRONT - y) / (SH.FRONT - SH.BACK_Y1);
+  for (let i = -8; i <= 8; i++) { const xf = 50 + i * 12.5, t = (SH.FRONT - SH.BACK_Y1) / (SH.FRONT - 30), xb = xf + (50 - xf) * t; planks.push(`<line x1="${xf}" y1="${SH.FRONT}" x2="${xb.toFixed(2)}" y2="${SH.BACK_Y1}" stroke="#5a3417" stroke-opacity=".5" stroke-width=".25"/>`); }
+  for (let i = 1; i < 9; i++) { const y = SH.BACK_Y1 + (SH.FRONT - SH.BACK_Y1) * Math.pow(i / 9, 1.7); planks.push(`<line x1="${floorLeft(y).toFixed(2)}" y1="${y.toFixed(2)}" x2="${(100 - floorLeft(y)).toFixed(2)}" y2="${y.toFixed(2)}" stroke="#5a3417" stroke-opacity=".3" stroke-width=".2"/>`); }
+  let awning = ''; for (let i = 0; i < 10; i++) awning += `<rect x="${20 + i * 6}" y="8" width="6" height="6" fill="${i % 2 ? '#fff0d6' : '#e5546b'}"/><circle cx="${23 + i * 6}" cy="14" r="3" fill="${i % 2 ? '#fff0d6' : '#e5546b'}"/>`;
+  const board = y => `<polygon points="24,${y} 76,${y} 76.8,${y + 1.1} 23.2,${y + 1.1}" fill="#c58f58"/><rect x="23.2" y="${y + 1.1}" width="53.6" height="1.1" fill="#7a4d27"/><polygon points="27,${y + 2.2} 29,${y + 2.2} 27,${y + 4.4}" fill="#5e3a1d"/><polygon points="73,${y + 2.2} 71,${y + 2.2} 73,${y + 4.4}" fill="#5e3a1d"/>`;
+  return `<defs>
+    <linearGradient id="shWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b5aa0"/><stop offset="1" stop-color="#5e4580"/></linearGradient>
+    <linearGradient id="shSideL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a2a66"/><stop offset="1" stop-color="#4b3a80"/></linearGradient>
+    <linearGradient id="shSideR" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#3a2a66"/><stop offset="1" stop-color="#4b3a80"/></linearGradient>
+    <linearGradient id="shFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a33"/><stop offset="1" stop-color="#b98450"/></linearGradient>
+    <linearGradient id="shCeil" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1547"/><stop offset="1" stop-color="#2a1f60"/></linearGradient></defs>
+    <polygon points="0,0 100,0 80,8 20,8" fill="url(#shCeil)"/><polygon points="20,8 80,8 80,46 20,46" fill="url(#shWall)"/>
+    <polygon points="0,0 20,8 20,46 0,80" fill="url(#shSideL)"/><polygon points="100,0 80,8 80,46 100,80" fill="url(#shSideR)"/>
+    <polygon points="20,46 80,46 100,80 0,80" fill="url(#shFloor)"/>${planks.join('')}<polygon points="20,44.4 80,44.4 80,46 20,46" fill="#2a1a3d"/>
+    ${board(27)}${board(40)}${awning}
+    <rect x="43" y="15.2" width="14" height="5.4" rx=".8" fill="#4a2f66" stroke="#ffd166" stroke-width=".35"/>
+    <text x="50" y="19.4" text-anchor="middle" font-size="4.2" font-weight="700" fill="#ffd166" font-family="Noto Sans Hebrew,Arial,sans-serif">חנות</text><path d="M47 14 V15.2 M53 14 V15.2" stroke="#8a5a2b" stroke-width=".4"/>
+    <g opacity=".6"><path d="M20 8 Q35 11 50 8 Q65 11 80 8" fill="none" stroke="#ffd166" stroke-width=".3" stroke-dasharray=".8 1.2"/></g>`;
+}
+const shCounterSVG = () => `<defs><linearGradient id="shCsh" gradientUnits="userSpaceOnUse" x1="0" y1="69.5" x2="0" y2="75.5"><stop offset="0" stop-color="#1a0a05" stop-opacity=".6"/><stop offset="1" stop-color="#1a0a05" stop-opacity="0"/></linearGradient>
+  <filter id="shCbl" x="-5%" y="-20%" width="110%" height="160%"><feGaussianBlur stdDeviation=".7"/></filter></defs>
+  <polygon points="9,69 91,69 96,75.5 4,75.5" fill="url(#shCsh)" filter="url(#shCbl)"/>
+  <polygon points="14,57 86,57 90,61 10,61" fill="#c58f58"/><polygon points="10,61 90,61 90,69.5 10,69.5" fill="#6e4222"/><polygon points="10,61 90,61 90,62.2 10,62.2" fill="#8a5a2b"/>
+  ${[18, 34, 50, 66, 82].map(x => `<rect x="${x - 6}" y="63.4" width="12" height="4.6" rx=".8" fill="none" stroke="#4a2a14" stroke-width=".4"/>`).join('')}`;
+const robePic = s => s.wtype === 'robe' ? heroSVG(P.gender, s.hex, P.skin, P.hair, {}) : s.wtype === 'style' ? heroSVG(P.gender, P.color, P.skin, P.hair, { style: s.style }) : '';   // robes are shown on the student's own wizard
+const shPic = s => s.kind === 'wear' && s.wtype !== 'acc' ? '<span class="shopRobe big">' + robePic(s) + '</span>' : s.kind === 'potion' ? `<span class="packBottle" style="transform:scale(1.8);margin:12px">${potionSVG(s.pid)}<i>${s.em}</i></span>` : s.kind === 'caul' ? cauldronArt(s.lv) : s.id === 'd_rug' ? '<span class="shRug" style="width:6rem;height:2.4rem"></span>' : s.em;
+function renderShop() {
+  const sh = shopShelf(), skin = SH_SKINS[sh.skin % SH_SKINS.length], c = P.own.caul || 0, next = SHOP['caul' + (c + 1)];
+  $('#shBack').innerHTML = shBackSVG(); $('#shCounter').innerHTML = shCounterSVG();
+  let p = '<div class="shAt shProp" style="--x:12;--y:74;z-index:16">🧺</div><div class="shAt shProp" style="--x:89;--y:72;z-index:16;font-size:calc(var(--u)*5.4)">🪣</div>';
+  p += `<div class="shAt shMerchant" style="--x:50;--y:58.4" aria-label="The merchant">${merchantSVG(skin)}</div><div class="shAt shSay" id="shSay" style="--x:72;--y:55">${sh.ids.length ? 'Welcome! Take a look around.' : 'You own everything I sell. Wow!'}</div>`;
+  sh.ids.forEach((id, i) => { const it = SHOP[id], [x, y] = SH_SLOTS[i], sold = owns(it);
+    p += `<button class="shAt shSlot${sold ? ' sold' : ''}" data-buy="${id}" style="--x:${x};--y:${y}" aria-label="${it.en}, ${it.price} coins">${id === 'd_rug' ? '<span class="em"><span class="shRug"></span></span>' : `<span class="em">${it.em}</span>`}<span class="shPrice">${sold ? 'SOLD' : '🪙 ' + it.price}</span></button>`; });
+  $('#shProps').innerHTML = p;
+  let f = '<div class="shAt shCoin" style="--x:74;--y:59">🪙</div><div class="shAt shCoin" style="--x:78;--y:59;font-size:calc(var(--u)*3)">🪙</div><div class="shAt shCoin" style="--x:86;--y:59;font-size:calc(var(--u)*4.4)">🔔</div>';
+  f += next ? `<button class="shAt shCau" data-buy="${next.id}" style="--x:24;--y:59" aria-label="${next.en}, ${next.price} coins">${cauldronArt(c + 1)}<span class="shPrice">🪙 ${next.price}</span></button>` : '<div class="shAt shFull" style="--x:24;--y:59">Fully upgraded</div>';
+  $('#shFront').innerHTML = f;
+  if (!window.CSS || !CSS.supports || !CSS.supports('width', '1cqw')) { const sc = $('#shScene'); sc.style.setProperty('--u', (sc.clientWidth / 100) + 'px'); }
+}
+let shopPanel = null;
+function renderShopPanel() {
+  const p = $('#shopPanel'); if (!shopPanel) { p.hidden = true; return; } p.hidden = false;
+  if (shopPanel === 'pots') p.innerHTML = `<h3><span><span class="potIco">${potionSVG('any')}</span> Potions</span> <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="shopGrid">${POTION_IDS.map(id => shopCard(SHOP['pot_' + id])).join('')}</div>`;
+  else p.innerHTML = `<h3>👗 Robes and accessories <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="shopGrid">${[...ROBE_EXTRA.map(r => r[0]), ...ROBE_STYLES.map(r => r[0]), ...ACCS.map(a => a[0])].map(id => shopCard(SHOP[id])).join('')}</div>`;
+}
 function openShop() {
-  G.quest = null; show('shop');
+  G.quest = null; show('shop'); shopPanel = null;
   $('#shopCoins').textContent = Math.floor(P.coins || 0);
-  $('#shopCauls').innerHTML = ['caul1', 'caul2'].map(id => shopCard(SHOP[id])).join('');
-  $('#shopPots').innerHTML = POTION_IDS.map(id => shopCard(SHOP['pot_' + id])).join('');
-  $('#shopDecor').innerHTML = DECOR.map(shopCard).join('');
-  $('#shopRobes').innerHTML = [...ROBE_EXTRA.map(r => r[0]), ...ROBE_STYLES.map(r => r[0])].map(id => shopCard(SHOP[id])).join('');
-  $('#shopAcc').innerHTML = ACCS.map(a => shopCard(SHOP[a[0]])).join('');
+  $('#shBtnPots .potIco').innerHTML = potionSVG('any'); renderShop(); renderShopPanel();
+  if (P.shopNote) { const n = P.shopNote; P.shopNote = null; saveSoon(true); setTimeout(() => toast(n), 400); }
 }
 $('#shopBack').onclick = () => { saveSoon(true); openMenu(); };
+$('#shBtnPots').onclick = () => { shopPanel = shopPanel === 'pots' ? null : 'pots'; renderShopPanel(); if (shopPanel) $('#shopPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
+$('#shBtnWear').onclick = () => { shopPanel = shopPanel === 'wear' ? null : 'wear'; renderShopPanel(); if (shopPanel) $('#shopPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
 $('#shop').onclick = e => {
-  const b = e.target.closest('[data-buy]'); if (!b) return; const s = SHOP[b.dataset.buy], why = whyNot(s);
-  if (why) { toast(why); return; }
-  modal(`🛒 Buy ${s.em} ${s.nk}?`, `<p>It costs <b>🪙 ${s.price}</b>. You have 🪙 ${Math.floor(P.coins || 0)}.</p><p style="opacity:.8">The merchant will ask you one question first. Wrong answers cost nothing!</p>`, [['Yes, buy it', () => startShopBuy(s.id)], ['Not now', null, true]]);
+  if (e.target.closest('[data-close]')) { shopPanel = null; renderShopPanel(); return; }
+  const b = e.target.closest('[data-buy]'); if (b) openShopItem(SHOP[b.dataset.buy]);
 };
+function openShopItem(s) {   // look at it first: picture, Hebrew name with vowel marks, English name and price
+  const why = whyNot(s), own = owns(s);
+  modal('', `<div class="shCard"><div class="pic">${shPic(s)}</div><h2 class="heb">${s.nk}</h2><p class="en">${s.en}${s.unlock ? ` · unlocks ${s.unlock}` : ''}</p><span class="chipPrice">🪙 ${s.price}</span>
+    <p style="min-height:1.4em;margin:4px 0 0">${own ? 'You already own this.' + (s.kind === 'decor' ? ' It is waiting at home.' : '') : why}</p></div>`,
+    why ? [['Close', null, true]] : [['Buy', () => buyStart(s), false], ['Not now', null, true]]);
+}
+function buyStart(s) { G.shop = { id: s.id }; if (P.tier === 9 || P.tier === 10) readTag(s); else startShopBuy(s.id); }
+function readTag(s) {   // "Read my tags!": a picture and three written words (with vowel marks on level 9); a wrong word costs nothing
+  const pool = Object.values(SHOP).filter(x => x.kind === s.kind && x.he !== s.he), others = shuffle(pool).slice(0, 2), txt = x => P.tier === 9 ? x.nk : x.he; let first = true;
+  modal('🧙 Read my tags!', `<div class="shCard"><div class="pic">${shPic(s)}</div><p style="margin:6px 0">Which word is this?</p><div class="tagOpts">${shuffle([s, ...others]).map(x => `<button class="tagOpt heb" data-id="${x.id}">${txt(x)}</button>`).join('')}</div><p id="tagNote" style="min-height:1.4em;margin:8px 0 0"></p></div>`, [['Not now', null, true]]);
+  $('#mBody').onclick = e => {
+    const b = e.target.closest('.tagOpt'); if (!b || b.disabled) return;
+    if (b.dataset.id === s.id) {
+      craftCount(first, true); document.querySelectorAll('.tagOpt').forEach(z => z.disabled = true); b.classList.add('good'); $('#tagNote').textContent = '✅ Yes! Thank you!'; sfx.ok();
+      setTimeout(() => { $('#modal').classList.remove('on'); shopBought(); }, 800);
+    } else { craftCount(first, false); first = false; b.classList.add('bad'); b.disabled = true; sfx.bad(); $('#tagNote').textContent = 'Not quite. Look at the picture and try another word.'; }
+  };
+}
 function startShopBuy(id) {
   const s = SHOP[id]; G.quest = 'shop'; G.shop = { id }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = true;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
-  $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').textContent = '🧙'; $('#foeName').textContent = 'Merchant';
+  $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').innerHTML = `<span class="shMerchBody">${merchantSVG(SH_SKINS[shopShelf().skin % SH_SKINS.length])}</span>`; $('#foeName').textContent = 'Merchant';
   $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
   $('#hearts').textContent = '🪙 ' + s.price; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = '0%';
   $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = ((P.xp % 400) / 4) + '%'; $('#potBar').style.display = 'none';
@@ -2396,8 +2535,8 @@ function shopBought() {
   if (Math.floor(P.coins || 0) < s.price || owns(s)) { openShop(); return; }
   P.coins = Math.round((P.coins - s.price) * 1000) / 1000;
   if (s.kind === 'caul') P.own.caul = s.lv; else if (s.kind === 'potion') P.pot[s.pid] = (P.pot[s.pid] || 0) + 1; else if (s.kind === 'wear') P.wd.push(s.id); else P.own.decor.push(s.id);
-  saveSoon(true); sfx.win(); confetti(['🪙', '✨', s.em]);
-  modal('🎉 Thank you!', `<p style="text-align:center;font-size:3rem;margin:6px">${s.em}</p><p style="text-align:center">You bought <b class="heb">${s.nk}</b>!${s.kind === 'potion' ? ' It is on your shelf at Home.' : s.kind === 'decor' ? ' It is now in your room at Home.' : s.kind === 'wear' ? ' Find it in the wardrobe at Home!' : ' You can brew stronger potions now.'}</p>`,
+  saveSoon(true); sfx.win(); confetti(['🪙', '✨', s.em]); $('#shopCoins').textContent =Math.floor(P.coins || 0); renderShop(); renderShopPanel();
+  modal('🎉 Thank you!', `<p style="text-align:center;font-size:3rem;margin:6px">${s.em}</p><p style="text-align:center">You bought <b class="heb">${s.nk}</b>!${s.kind === 'potion' ? ' It is on your shelf at Home.' : s.kind === 'decor' ? ' It will be waiting in your room at Home.' : s.kind === 'wear' ? ' Find it in the wardrobe at Home!' : ' You can brew stronger potions now.'}</p>`,
     [['Keep shopping 🛒', openShop], ['Go home 🏡', openHome], ['Back to map', openMenu, true]]);
 }
 /* ----- loot: coins (for the shop) and ingredients (for potions), both given at the END of a won fight ----- */
