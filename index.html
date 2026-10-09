@@ -586,14 +586,15 @@ const CFG = {
   MAX_HEARTS: 3,            // hearts (fights) or smileys (village) the student can have
   HINT_AFTER: 5,            // from this encounter on, tell the student the monsters are getting stronger
   VILLAGE_NEED: 3, BIG_NEED: 5,    // correct answers a villager needs; a big request needs more
-  COIN_BY_TIER: [0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4],   // coin "unit" by level (index = level): a won fight pays up to FIGHT_UNITS units, each mistake takes one unit away
+  COIN_BY_TIER: [0, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4],   // coin "unit" by level (index = level): a won fight pays up to FIGHT_UNITS units, each mistake takes one unit away
   FIGHT_UNITS: 3,           // a normal fight or villager takes 3 right answers: maximum coins = 3 x the level base amount; each mistake takes one base amount away
   BOSS_MIN: 3, BOSS_MAX: 5, // a boss / big request pays the normal amount times a random number between these
   EARLY_MULT: 2,            // coins are doubled during the first 10 minutes of play each day
   ODDS_NORMAL: [60, 30, 10], ODDS_BOSS: [60, 30, 10],   // chance (%) of common/uncommon/rare in normal fights; rare/epic/legendary in boss fights
   POUCH: 5, MAX_HEARTS_POT: 5,   // potions that can be carried on a quest run; most hearts with a Heart potion
   SAFETY_RESTARTS: 2,       // after this many restarts in a row, the next try starts with one free extra heart (0 = off)
-  UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10
+  UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10,   // levels 1-7: up at 85% over the last 8-10 answers
+  READ_UP_ACC: 0.9, READ_MIN_WINDOW: 12, READ_MAX_WINDOW: 15, READ_FIGHTS: [8, 14], MAX_LEVEL: 15   // from level 8 (reading): up at 90% over the last 12-15 answers; quests have 8-14 normal stops
 };
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
 if (APP) CFG.SCRIPT_URL = '';        // the app never saves any game data online
@@ -700,7 +701,7 @@ const DROP = {
 const FOLK = ['🧓','👩‍🌾','👨‍🌾','🧑‍🍳','👵','👴','🧒','👧','🧑‍🔧','👩‍🎤'];
 const FOLK_NAMES = { '🧓': 'Elder Ezra', '👩‍🌾': 'Farmer Dana', '👨‍🌾': 'Farmer Omer', '🧑‍🍳': 'Cook Ori', '👵': 'Grandma Rina', '👴': 'Grandpa Moshe', '🧒': 'Little Tom', '👧': 'Little Maya', '🧑‍🔧': 'Fixer Alex', '👩‍🎤': 'Singer Lia' };
 const TIERS = ['','Hear "a" syllables I','Hear "a" syllables II','Hear "a" syllables III','Hear new vowels I','Hear new vowels II',
-  'Sound chains (2 syllables)','Sound chains (3 syllables)','Words I','Words II','Phrases & tricky words','Writing words','Writing spells'];
+  'Sound chains (2 syllables)','Sound chains (3 syllables)','Words with vowel marks I','Words with vowel marks II','Words without vowel marks','Look-alike words','Two-word phrases','Phrases without vowel marks','Writing words','Writing spells'];
 const RANKS = ['Apprentice','Spark Mage','Rune Reader','Spell Scribe','Sage','Archmage','Letter Legend'];
 const COLORS = ['#e74c3c','#3498db','#2ecc71','#9b59b6','#f39c12','#1abc9c','#ff6fb5','#34495e'];
 const FINAL = {'ך':'כ','ם':'מ','ן':'נ','ף':'פ','ץ':'צ'};
@@ -995,7 +996,7 @@ function newProfile(id, nick, gender, color, real, cls, skin, hair) {
   return p;
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 9;
+const PROFILE_V = 10;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -1023,6 +1024,7 @@ function migrate(p) {
     p.own = p.own || { caul: 0, decor: [] };
     if (p.own.decor.includes('d_chest')) { p.own.decor = p.own.decor.filter(d => d !== 'd_chest'); p.coins = (p.coins || 0) + 60; p.shopNote = '🧰 The shop has new things! Your old toolbox was returned: 🪙 +60'; }
   }
+  if (v < 10) { const LV = { 9: 10, 10: 11, 11: 14, 12: 15 }; if (LV[p.tier]) { p.tier = LV[p.tier]; p.hist = []; } }   // version 10: the longer reading stage (levels 8-13). Old 9 to 10, 10 to 11, 11 to 14, 12 to 15.
   if (v < 9) { p.beard = p.gender === 'f' ? 'none' : 'short'; }   // version 9: the new hero look. Facial hair is a choice; existing wizards keep a short beard.
   p.satchel = p.satchel || {}; p.own = p.own || { caul: 0, decor: [] }; p.own.pos = p.own.pos || {};   // own.pos: where the student moved each decoration in the room
   if (v < 7) { p.style = p.style || null; p.acc = p.acc || {}; p.wd = p.wd || []; }   // version 7: the wardrobe (robe style, accessories, and what you own of them)
@@ -1393,21 +1395,22 @@ function distinctSpells(set) {
   return true;
 }
 function qSpell(t) {
-  const mon = G.mon, e = EL[mon.el], bank = t >= 10 ? PHRASE : SPELL;
+  const mon = G.mon, e = EL[mon.el], bank = t >= 12 ? PHRASE : SPELL;   // levels 8-11: single words, 12-13: two-word phrases
   const eff = bank.filter(w => e.weak.includes(w.el)), heal = bank.filter(w => e.heal.includes(w.el));
   const neu = bank.filter(w => !e.weak.includes(w.el) && !e.heal.includes(w.el));
-  // Always four spells: one that hurts it, one with the opposite effect (heals it), and two that do nothing.
+  // Level 8: three spells (one hurts it, one heals it, one does nothing). From level 9: four (one hurts, one heals, two do nothing).
   // No two spells may be alike in meaning (e.g. fire + sun are both hot and bright), so each one is easy to tell apart.
-  const target = wpick(eff, w => 'W:' + w.he, G.lastKey);
-  const pickSet = () => [target, rnd(heal), ...shuffle(neu).slice(0, 2)];
-  let opts = null;
-  for (let k = 0; k < 80 && !opts; k++) { const c = pickSet(); if (distinctSpells(c)) opts = c; }
+  // Level 11 (look-alike words): the wrong spells are chosen to LOOK like the right one.
+  const target = wpick(eff, w => 'W:' + w.he, G.lastKey), nNeu = t === 8 ? 1 : 2;
+  const pickSet = () => [target, rnd(heal), ...shuffle(neu).slice(0, nNeu)];
+  let opts = null, best = -1;
+  for (let k = 0; k < 80; k++) { const c = pickSet(); if (!distinctSpells(c)) continue; if (t !== 11) { opts = c; break; } const sc = c.reduce((a, w) => a + (w === target ? 0 : similarity(w.he, target.he)), 0); if (sc > best) { best = sc; opts = c; } }
   if (!opts) opts = pickSet();
-  const txt = w => w.nk;   // fight spells are always shown with their vowel marks
+  const txt = w => (t === 8 || t === 9 || t === 12) ? w.nk : w.he;   // vowel marks on levels 8, 9 and 12
   return { kind: 'choice', soft: true, key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: `A ${e.badge} ${e.label} monster blocks the way!`, big: `${mon.name}`, bigSm: true,
-    sub: 'Read the spells. One hurts it, one makes it stronger, two do nothing. A wrong spell lets the monster attack!',
-    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 10 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em,
+    sub: `Read the spells. One hurts it, one makes it stronger, ${nNeu === 1 ? 'one does' : 'two do'} nothing. A wrong spell lets the monster attack!`,
+    options: shuffle(opts).map(w => ({ html: txt(w), cls: t >= 12 ? 'p' : 'w', ok: w === target, fx: w === target ? '' : (e.heal.includes(w.el) ? 'heal' : 'none'), em: w.em,
       note: `<span class="he">${txt(w)}</span> = ${w.en} ${w.em} — ${reasonFor(w, mon)}`, say: txt(w) })),
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}. ${e.why}`, say: txt(target) };
 }
@@ -1419,16 +1422,33 @@ const VTAGS = { 'מים': ['drink'], 'לחם': ['food'], 'חתול': ['pet', 'an
   'ספר': ['read'], 'בית': ['home'], 'עץ': ['plant'], 'פרח': ['plant'], 'נר': ['light'], 'מפתח': ['home'], 'כובע': ['wear'],
   'גשר': ['cross'], 'ירח': ['sky', 'light'], 'כוכב': ['sky', 'light'], 'דלת': ['home'], 'חלב': ['drink', 'food'],
   'ביצה': ['food'], 'אריה': ['animal'], 'תפוח': ['food'], 'שעון': ['time'], 'עוגה': ['food'], 'ענבים': ['food'], 'סירה': ['boat'], 'מטרייה': ['rain'], 'שמיכה': ['sleep'] };
+// The two-word phrases for the village reading levels (12 and 13): a word from the village list plus an easy describing word.
+const VPH = [['מים', 'מים קרים', 'מַיִם קָרִים', 'cold water'], ['לחם', 'לחם חם', 'לֶחֶם חַם', 'warm bread'], ['חתול', 'חתול שחור', 'חָתוּל שָׁחֹר', 'black cat'], ['כלב', 'כלב גדול', 'כֶּלֶב גָּדוֹל', 'big dog'],
+  ['דג', 'דג קטן', 'דָּג קָטָן', 'small fish'], ['ספר', 'ספר גדול', 'סֵפֶר גָּדוֹל', 'big book'], ['בית', 'בית קטן', 'בַּיִת קָטָן', 'small house'], ['עץ', 'עץ גדול', 'עֵץ גָּדוֹל', 'big tree'],
+  ['פרח', 'פרח יפה', 'פֶּרַח יָפֶה', 'pretty flower'], ['נר', 'נר קטן', 'נֵר קָטָן', 'small candle'], ['מפתח', 'מפתח זהב', 'מַפְתֵּחַ זָהָב', 'golden key'], ['כובע', 'כובע אדום', 'כּוֹבַע אָדֹם', 'red hat'],
+  ['גשר', 'גשר ישן', 'גֶּשֶׁר יָשָׁן', 'old bridge'], ['דלת', 'דלת כחולה', 'דֶּלֶת כְּחֻלָּה', 'blue door'], ['חלב', 'חלב קר', 'חָלָב קַר', 'cold milk'], ['ביצה', 'ביצה לבנה', 'בֵּיצָה לְבָנָה', 'white egg'],
+  ['תפוח', 'תפוח אדום', 'תַּפּוּחַ אָדֹם', 'red apple'], ['עוגה', 'עוגה מתוקה', 'עוּגָה מְתוּקָה', 'sweet cake'], ['ענבים', 'ענבים סגולים', 'עֲנָבִים סְגֻלִּים', 'purple grapes'], ['סירה', 'סירה כחולה', 'סִירָה כְּחֻלָּה', 'blue boat'],
+  ['מטרייה', 'מטרייה צהובה', 'מִטְרִיָּה צְהֻבָּה', 'yellow umbrella'], ['שמיכה', 'שמיכה חמה', 'שְׂמִיכָה חַמָּה', 'warm blanket']].map(([w, he, nk, en]) => ({ w, he, nk, en }));
+function qHelpPhrase(t) {   // levels 12 (with vowel marks) and 13 (without): read two-word signs
+  const site = G.site && VPH.find(p => p.w === G.site.he), target = site || wpick(VPH, p => 'W:' + p.he, G.lastKey), tw = VILL.find(v => v.he === target.w);
+  const opts = [target];
+  for (const p of shuffle(VPH.filter(p => p !== target))) { if (opts.length >= 4) break; if (opts.every(x => !VTAGS[x.w].some(g => VTAGS[p.w].includes(g)))) opts.push(p); }
+  for (const p of shuffle(VPH)) { if (opts.length >= 4) break; if (!opts.includes(p)) opts.push(p); }   // safety net, normally unused
+  const txt = p => t === 12 ? p.nk : p.he, em = p => VILL.find(v => v.he === p.w).em;
+  return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he, title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?', speech: tw.need,
+    options: shuffle(opts).map(p => ({ html: txt(p), cls: 'p', ok: p === target, em: em(p), note: `<span class="he">${txt(p)}</span> = ${p.en} ${em(p)}`, say: txt(p) })),
+    explain: `<span class="he">${txt(target)}</span> = ${target.en} ${em(target)}`, say: txt(target), reveal: tw.em };
+}
 function qHelp(t) {
-  const target = (G.site && VILL.find(w => w.he === G.site.he)) || wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 8 ? 3 : 4;
+  const target = (G.site && VILL.find(w => w.he === G.site.he)) || wpick(VILL, w => 'W:' + w.he, G.lastKey), n = t === 8 ? 3 : 4;   // levels 8-11 (levels 12-13 use qHelpPhrase)
   let others = VILL.filter(w => w !== target);
   // tricky levels: prefer signs that LOOK similar; otherwise random. Either way, no two signs may mean similar things
   // (e.g. cat + dog are both pets, water + milk are both drinks), so exactly one sign fits what the villager needs.
-  others = t >= 10 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he) || Math.random() - .5).slice(0, 10) : shuffle(others);
+  others = t === 11 ? others.sort((a, b) => similarity(b.he, target.he) - similarity(a.he, target.he) || Math.random() - .5).slice(0, 10) : shuffle(others);
   const opts = [target];
   for (const w of others) { if (opts.length >= n) break; if (opts.every(x => !VTAGS[x.he].some(g => VTAGS[w.he].includes(g)))) opts.push(w); }
   for (const w of shuffle(VILL)) { if (opts.length >= n) break; if (!opts.includes(w)) opts.push(w); }   // safety net, normally unused
-  const txt = w => t === 8 ? w.nk : w.he;
+  const txt = w => (t === 8 || t === 9) ? w.nk : w.he;
   return { kind: 'choice', key: 'W:' + target.he, lastKey: 'W:' + target.he,
     title: 'Read the signs and help!', big: '', sub: 'Which sign has what they need?',
     speech: target.need,
@@ -1437,7 +1457,7 @@ function qHelp(t) {
     explain: `<span class="he">${txt(target)}</span> = ${target.en} ${target.em}`, say: txt(target), reveal: target.em };
 }
 function qWriteSpell(t) {
-  const mon = G.mon, e = EL[mon.el], bank = t === 11 ? SPELL : PHRASE;
+  const mon = G.mon, e = EL[mon.el], bank = t === 14 ? SPELL : PHRASE;
   const eff = bank.filter(w => e.weak.includes(w.el)), first = wpick(eff, w => 'W:' + w.he, G.lastKey);
   return { kind: 'write', key: 'W:' + first.he, lastKey: 'W:' + first.he, accept: eff.map(w => w.he), keyOf: s => 'W:' + s,
     title: `A ${e.badge} ${e.label} monster! Write a spell in Hebrew that beats it.`, big: mon.name, bigSm: true,
@@ -1445,7 +1465,7 @@ function qWriteSpell(t) {
     ref: eff.map(w => `${w.em} ${w.en}`), explain: eff.map(w => `<span class="he">${w.he}</span> (${w.en})`).join(' · '), say: first.he };
 }
 function qWriteHelp(t) {
-  const pool = VILL.filter(w => t === 11 ? w.he.length <= 3 : w.he.length >= 4);
+  const pool = VILL.filter(w => t === 14 ? w.he.length <= 3 : w.he.length >= 4);
   const w = (G.site && VILL.find(x => x.he === G.site.he)) || wpick(pool, x => 'W:' + x.he, G.lastKey);
   return { kind: 'write', key: 'W:' + w.he, lastKey: 'W:' + w.he, accept: [w.he], keyOf: s => 'W:' + s,
     title: 'Write this word on the sign:', big: w.em, sub: `${w.en} — ${w.need}`, ref: [],
@@ -1462,7 +1482,7 @@ function makeQ() {
   if (t <= 3) return qLetter(t, b);
   if (t <= 5) return qSyl(t, b);
   if (t <= 7) return qChain(t, b);
-  if (t <= 10) return b ? qSpell(t) : qHelp(t);
+  if (t <= 13) return b ? qSpell(t) : (t >= 12 ? qHelpPhrase(t) : qHelp(t));
   return b ? qWriteSpell(t) : qWriteHelp(t);
 }
 
@@ -1507,7 +1527,7 @@ const jVillage = () => J.q === 'peace';
 function ensurePath(q) {   // returns true when a brand-new run was rolled
   const qs = P.quest[q]; let fresh = false;
   if (!qs.len) {   // a new run: roll how many normal encounters come before the boss, and keep it in the profile so a refresh can't re-roll it
-    qs.len = CFG.MIN_FIGHTS + Math.floor(Math.random() * (CFG.MAX_FIGHTS - CFG.MIN_FIGHTS + 1)); fresh = true; qs.path = null;
+    const [lo, hi] = P.tier >= 8 ? CFG.READ_FIGHTS : [CFG.MIN_FIGHTS, CFG.MAX_FIGHTS]; qs.len = lo + Math.floor(Math.random() * (hi - lo + 1)); fresh = true; qs.path = null;
     if (CFG.SAFETY_RESTARTS && qs.restarts >= CFG.SAFETY_RESTARTS) { qs.hearts = CFG.MAX_HEARTS + 1; qs.restarts = 0; setTimeout(() => toast('🍀 A lucky charm gives you one extra heart!'), 500); }   // safety net: one free extra heart
   }
   if (qs.enc > qs.len) qs.len = qs.enc;
@@ -1517,7 +1537,7 @@ function ensurePath(q) {   // returns true when a brand-new run was rolled
 }
 function buildPath(q) {
   const qs = P.quest[q], n = qs.len, done = Math.min(qs.enc || 0, n), village = q === 'peace';   // done > 0 only when an older save without a path is handed over
-  const fits = s => P.tier === 11 ? s.he.length <= 3 : P.tier === 12 ? s.he.length >= 4 : true;   // the writing levels keep their word lengths
+  const fits = s => P.tier === 14 ? s.he.length <= 3 : P.tier === 15 ? s.he.length >= 4 : true;   // the writing levels keep their word lengths
   let pool = shuffle(SITES.filter(fits)); if (!pool.length) pool = shuffle(SITES);
   const ord = []; for (let i = 0; i < n; i++) ord.push(village ? 's' + SITES.indexOf(pool[i % pool.length]) : 'm');
   const signs = shuffle([0, 1, 2, 3]), out = []; let specials = 0, si = 0;
@@ -1812,10 +1832,11 @@ function record(key, ok) {
   if (G.noCount) return '';   // a question touched by a potion never reaches the statistics
   const s = P.stats[key] || (P.stats[key] = [0, 0]); s[ok ? 0 : 1]++;
   P.n++; if (ok) P.ok++;
-  P.hist.push(ok ? 1 : 0); if (P.hist.length > CFG.MAX_WINDOW) P.hist.shift();
+  const rd = P.tier >= 8, maxW = rd ? CFG.READ_MAX_WINDOW : CFG.MAX_WINDOW, minW = rd ? CFG.READ_MIN_WINDOW : CFG.MIN_WINDOW, upAcc = rd ? CFG.READ_UP_ACC : CFG.UP_ACC;
+  P.hist.push(ok ? 1 : 0); while (P.hist.length > maxW) P.hist.shift();
   const len = P.hist.length, acc = P.hist.reduce((a, b) => a + b, 0) / len;
-  if (len >= CFG.MIN_WINDOW && acc >= CFG.UP_ACC && P.tier < 12) { P.tier++; P.hist = []; return 'up'; }
-  if (len >= CFG.MIN_WINDOW && acc <= CFG.DOWN_ACC && P.tier > 1) { P.tier--; P.hist = []; return 'down'; }
+  if (len >= minW && acc >= upAcc && P.tier < CFG.MAX_LEVEL) { P.tier++; P.hist = []; return 'up'; }
+  if (len >= minW && acc <= CFG.DOWN_ACC && P.tier > 1) { P.tier--; P.hist = []; return 'down'; }
   return '';
 }
 function gainXp(ok) {
@@ -2343,8 +2364,8 @@ function nameQuestion(ing, universe, ctx) {
       options: shuffle([ing, ...others]).map((x, k) => ({ html: `<span style="font-size:2rem">${'①②③④'[k]}</span>`, snd: { say: x.nk }, cls: '', ok: x.id === ing.id, em: x.em, note: `That one says ${x.nk} ${x.em}` })), explain: `<span class="he">${ing.nk}</span> = ${ing.em}` };
     G.optSound = true;   // every choice has its speaker from the start
   }
-  else if (t <= 10) {   // (also levels 4-8 on a device without a Hebrew voice)
-    const others = shuffle(universe.filter(x => x.id !== ing.id && x.em !== ing.em)).slice(0, t <= 8 ? 2 : 3), txt = t <= 8 ? ing.nk : ing.he;
+  else if (t <= 13) {   // (also levels 4-8 on a device without a Hebrew voice)
+    const others = shuffle(universe.filter(x => x.id !== ing.id && x.em !== ing.em)).slice(0, t <= 8 ? 2 : 3), txt = t <= 9 ? ing.nk : ing.he;
     q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: ctx.read, big: txt, sub: ctx.sub, say: txt,
       options: shuffle([ing, ...others]).map(x => ({ html: `<span style="font-size:2.4rem" class="${x.r === 4 ? 'shine' : ''}">${itemEm(x)}</span>`, cls: '', ok: x.id === ing.id, em: x.em, note: `That is ${x.em}` })), explain: `<span class="he">${txt}</span> = ${ing.em}` };
   } else {
@@ -2398,7 +2419,7 @@ function craftNext() {
 }
 /* ====================== SHOP ====================== */
 // A little shop room in the same 2.5D style as Home. Everything is bought with coins. To buy, the student answers one question about the item's name, adapted to their level (mistakes cost nothing):
-// levels 1-8: the usual listening/letters/reading question; levels 9-10: "Read my tags!" (a picture and three written words); levels 11-12: write the name.
+// levels 1-8: the usual listening/letters/reading question; levels 9-13: "Read my tags!" (a picture and three written words); levels 14-15: write the name.
 const SHOP = {};
 for (const [id, kind, extra, he, nk, em, en, price] of [
   ['caul1', 'caul', { lv: 1, unlock: 'the Power and Second chance potions' }, 'קדרת ברזל', 'קְדֵרַת בַּרְזֶל', '🫕', 'iron cauldron', 80],
@@ -2536,9 +2557,9 @@ function openShopItem(s) {   // look at it first: picture, Hebrew name with vowe
     <p style="min-height:1.4em;margin:4px 0 0">${own ? 'You already own this.' + (s.kind === 'decor' ? ' It is waiting at home.' : '') : why}</p></div>`,
     why ? [['Close', null, true]] : [['Buy', () => buyStart(s), false], ['Not now', null, true]]);
 }
-function buyStart(s) { G.shop = { id: s.id }; if (P.tier === 9 || P.tier === 10) readTag(s); else startShopBuy(s.id); }
+function buyStart(s) { G.shop = { id: s.id }; if (P.tier >= 9 && P.tier <= 13) readTag(s); else startShopBuy(s.id); }
 function readTag(s) {   // "Read my tags!": a picture and three written words (with vowel marks on level 9); a wrong word costs nothing
-  const pool = Object.values(SHOP).filter(x => x.kind === s.kind && x.he !== s.he), others = shuffle(pool).slice(0, 2), txt = x => P.tier === 9 ? x.nk : x.he; let first = true;
+  const pool = Object.values(SHOP).filter(x => x.kind === s.kind && x.he !== s.he), others = shuffle(pool).slice(0, 2), txt = x => P.tier <= 9 ? x.nk : x.he; let first = true;
   modal('🧙 Read my tags!', `<div class="shCard"><div class="pic">${shPic(s)}</div><p style="margin:6px 0">Which word is this?</p><div class="tagOpts">${shuffle([s, ...others]).map(x => `<button class="tagOpt heb" data-id="${x.id}">${txt(x)}</button>`).join('')}</div><p id="tagNote" style="min-height:1.4em;margin:8px 0 0"></p></div>`, [['Not now', null, true]]);
   $('#mBody').onclick = e => {
     const b = e.target.closest('.tagOpt'); if (!b || b.disabled) return;
