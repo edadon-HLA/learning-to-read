@@ -239,6 +239,31 @@ body.peace .foeWrap .foeBody{animation:none}
 .mn-spark{animation:mnspk 1.1s steps(2) infinite}@keyframes mnspk{50%{opacity:.2}}
 .mn-rise{animation:mnrise 3.4s ease-in infinite}@keyframes mnrise{0%{transform:translateY(0);opacity:0}25%{opacity:.8}100%{transform:translateY(-26px);opacity:0}}
 @media (prefers-reduced-motion:reduce){.foeBody .mnWrap *{animation:none!important}}
+/* ----- new-player tutorial (Pip the owl) ----- */
+.coach{position:fixed;left:8px;right:8px;bottom:8px;z-index:45;max-width:760px;margin:0 auto;background:linear-gradient(160deg,#2a1d5e,#3a2a7a);border:2px solid var(--gold);border-radius:18px;padding:8px 12px 10px;box-shadow:0 6px 20px #0008}
+.coach[hidden]{display:none}
+.tutDots{display:flex;gap:6px;justify-content:center;margin-bottom:6px}.tutDots i{width:9px;height:9px;border-radius:50%;background:#ffffff33}.tutDots i.on{background:var(--gold)}.tutDots i.done{background:#3ddc97}
+.coachRow{display:flex;gap:12px;align-items:flex-start}
+.tutOwl{width:64px;flex:none}.tutOwl svg{width:100%;height:auto;display:block;overflow:visible}.tutOwl.talk{animation:owlTalk .5s ease-in-out 3}@keyframes owlTalk{50%{transform:translateY(-5px) rotate(-3deg)}}
+.coachTxt{flex:1;min-width:0}
+.tutSay{background:#fff;color:#2a2340;border-radius:14px;padding:8px 12px;font-size:1rem;line-height:1.3;position:relative;min-height:2.4em}
+.tutSay::before{content:"";position:absolute;left:-8px;top:16px;border:8px solid transparent;border-right-color:#fff;border-left:0}
+.coachBtns{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;align-items:center}
+.btn.small{padding:6px 10px;font-size:.8rem;min-height:34px}
+.owlWing{animation:owlWingK 1s ease-in-out infinite;transform-box:fill-box;transform-origin:100% 60%}.owlWing.r{transform-origin:0% 60%;animation-direction:reverse}@keyframes owlWingK{50%{transform:scaleY(.8) rotate(6deg)}}
+.owlEye{animation:owlBlink 4.2s infinite;transform-box:fill-box;transform-origin:center}@keyframes owlBlink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.tut-hl{position:relative;z-index:6!important;animation:tutPulse 1s ease-in-out infinite!important;outline:3px solid var(--gold);outline-offset:3px;border-radius:14px}
+@keyframes tutPulse{0%,100%{box-shadow:0 0 0 0 #ffd16699}50%{box-shadow:0 0 0 14px #ffd16600}}
+.tutHand{position:absolute;left:50%;bottom:-34px;transform:translateX(-50%);font-size:2rem;z-index:9;pointer-events:none;animation:tutHandB .8s ease-in-out infinite;filter:drop-shadow(0 2px 2px #0008)}
+@keyframes tutHandB{50%{transform:translate(-50%,-8px)}}
+.place.tutShake{animation:shake .4s}
+.pipShoulder{position:absolute;right:-8%;top:-4%;width:42%;pointer-events:none;z-index:3}.pipShoulder svg{width:100%;height:auto;display:block;overflow:visible}
+#heroBox{position:relative}
+.owlBtn{position:absolute;left:8px;top:8px;z-index:6;width:46px;height:46px;border-radius:50%;background:#1b1340cc;border:2px solid var(--gold);padding:5px;cursor:pointer}.owlBtn svg{width:100%;height:100%;display:block}
+.tutFin{position:fixed;inset:0;background:#0d0626dd;display:none;align-items:center;justify-content:center;z-index:90;padding:16px}.tutFin.on{display:flex}
+.tutFinBox{background:linear-gradient(160deg,#2a1d5e,#4b2a8c);border:2px solid var(--gold);border-radius:20px;padding:20px;text-align:center;max-width:340px}
+body.tutOn .screen{padding-bottom:230px}body.tutOn #homeBtn{visibility:hidden}
+@media (prefers-reduced-motion:reduce){.coach *,.tut-hl,.tutHand,.tutOwl.talk{animation:none!important}}
 .shMerchBody{display:block;width:6.4rem;margin:0 auto}.shMerchBody svg{display:block;width:100%;height:auto}
 @media (prefers-reduced-motion:reduce){.shMerchant,.shCau .flame{animation:none!important}}
 .vn{opacity:.75;font-size:.72rem;font-weight:400;display:block}.recipe .vn{display:inline}.bagItem .vn{display:inline;opacity:.7}
@@ -599,6 +624,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="place" data-p="work" id="placeWork" style="left:50%;top:21%"><span class="pIcon">⚒️</span><span class="sign"><b class="heb">סדנה</b><small>Workshop · Magic items</small></span></button>
     <button class="place" data-p="shop" style="left:80%;top:74%"><span class="pIcon">🏪</span><span class="sign"><b class="heb">חנות</b><small>Shop</small></span></button>
     <div id="mapHero" aria-label="Your hero"></div>
+    <button class="owlBtn" id="owlBtn" title="Show me how to play" aria-label="Show me how to play"></button>
   </div>
   <div class="row" style="margin-top:10px"><button class="btn ghost danger" id="abandonMapBtn" style="display:none">🏳️ Abandon quest</button></div>
   <button class="ghostSmall" id="logoutBtn" title="Switch student">🚪 Switch student</button>
@@ -691,6 +717,13 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="small center" style="opacity:.7;margin:10px 0">🔮 You wear every item you make. Epic items can be upgraded to legendary.</div>
 </section>
 
+<div class="coach" id="coach" hidden>
+  <div class="tutDots" id="tutDots" aria-label="Progress"></div>
+  <div class="coachRow"><div class="tutOwl" id="tutOwl"></div>
+    <div class="coachTxt"><div class="tutSay" id="tutSay" aria-live="polite"></div>
+      <div class="coachBtns"><button class="btn" id="tutNext" hidden>Next</button><button class="btn ghost small" id="tutHear" title="Hear it again">🔊 Hear again</button><button class="btn ghost small" id="tutSound" aria-pressed="true">🔊 Voice on</button><button class="btn ghost small" id="tutSkip">Skip tutorial</button></div></div></div>
+</div>
+<div class="tutFin" id="tutFin"><div class="tutFinBox"><div id="tutFinOwl" style="width:90px;margin:0 auto"></div><h2>You're ready!</h2><p>Remember: Pip is on your shoulder. Tap the owl button on the map any time to see this again.</p><button class="btn" id="tutBegin">Start playing ▶</button></div></div>
 <div id="modal"><div class="box"><h2 id="mTitle"></h2><div id="mBody"></div><div class="row" id="mBtns" style="margin-top:14px"></div></div></div>
 
 <script>
@@ -1125,11 +1158,12 @@ let saveTimer = null, cloudState = '';
 function newProfile(id, nick, gender, color, real, cls, skin, hair) {
   const p = migrate({ id, nick, gender, color, real: real || '', cls: cls || '', tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
     quest: { battle: { ch: 1, enc: 0 }, peace: { ch: 1, enc: 0 } }, sec: {}, created: Date.now(), updated: Date.now() });
+  p.tutorialDone = false;   // a new hero plays the tutorial once
   p.skin = skin || DEFAULT_SKIN; p.hair = hair || null; p.lookPrompt = false;   // a new hero chose their look already
   return p;
 }
 /* ---- profile versions: 1 = original save; 2 = adds ingredients, potions, coins, equipment, crafting and quest runs. Old saves are filled in with defaults. ---- */
-const PROFILE_V = 11;
+const PROFILE_V = 12;
 function migrate(p) {
   if (!p || typeof p !== 'object') return p;
   const v = p.v || 1;
@@ -1157,6 +1191,7 @@ function migrate(p) {
     p.own = p.own || { caul: 0, decor: [] };
     if (p.own.decor.includes('d_chest')) { p.own.decor = p.own.decor.filter(d => d !== 'd_chest'); p.coins = (p.coins || 0) + 60; p.shopNote = '🧰 The shop has new things! Your old toolbox was returned: 🪙 +60'; }
   }
+  if (v < 12) p.tutorialDone = true;   // version 12: the new-player tutorial. Existing students are not interrupted (they can replay it from the owl button).
   if (v < 11) { p.items = p.items || { amulet: 0, staff: 0, belt: 0 }; p.itemUses = p.itemUses || { battle: { amulet: 0, staff: 0, belt: 0 }, peace: { amulet: 0, staff: 0, belt: 0 } }; p.ws = p.ws || { on: false, hi: false }; }   // version 11: the Artificer (magic items, uses this quest, workshop seen)
   if (v < 10) { const LV = { 9: 10, 10: 11, 11: 14, 12: 15 }; if (LV[p.tier]) { p.tier = LV[p.tier]; p.hist = []; } }   // version 10: the longer reading stage (levels 8-13). Old 9 to 10, 10 to 11, 11 to 14, 12 to 15.
   if (v < 9) { p.beard = p.gender === 'f' ? 'none' : 'short'; }   // version 9: the new hero look. Facial hair is a choice; existing wizards keep a short beard.
@@ -1372,7 +1407,7 @@ document.querySelectorAll('.gbtn').forEach(b => b.onclick = () => { cr.g = b.dat
 $('#createBtn').onclick = () => {
   const nick = $('#nick').value.trim();
   if (nick.length < 2) { $('#creatorMsg').textContent = 'Please choose a nickname (at least 2 letters).'; return; }
-  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls, cr.skin, cr.hair); P.beard = cr.g === 'm' ? cr.beard : 'none'; if (APP) { P.app = true; if (pendingId.startsWith('local-')) P.local = true; } pendingReal = pendingCls = ''; saveSoon(true); openMenu();
+  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls, cr.skin, cr.hair); P.beard = cr.g === 'm' ? cr.beard : 'none'; if (APP) { P.app = true; if (pendingId.startsWith('local-')) P.local = true; } pendingReal = pendingCls = ''; saveSoon(true); openMenu(); if (!P.tutorialDone) startTutorial();
 };
 
 /* ====================== MENU ====================== */
@@ -1409,6 +1444,7 @@ function workshopState() {   // the fifth place: shuttered until level 8, then i
 }
 function placeHero(x, y) { const h = $('#mapHero'); h.style.left = x + '%'; h.style.top = y + '%'; }
 function enterPlace(id) {
+  if (TUT.on) { tutResolve(id); return; }   // the tutorial just notes where the hero arrived
   if (id === 'gate') startQuest('battle');
   else if (id === 'board') startQuest('peace');
   else if (id === 'work') openWorkshop();
@@ -1416,6 +1452,7 @@ function enterPlace(id) {
   else openShop();
 }
 function walkTo(id) {
+  if (TUT.on) { if (walking) return; if (!TUT.allowed || !TUT.allowed.includes(id)) { const el = document.querySelector(`.place[data-p="${id}"]`); if (el) { el.classList.remove('tutShake'); void el.offsetWidth; el.classList.add('tutShake'); } placeHero(START.x, START.y); tutSay("Not yet! Let's try the glowing place first."); return; } }
   if (id === 'work' && P.tier < 8) { placeHero(START.x, START.y); toast('🔒 Come back when you can read words!'); tinker(); return; }
   if (walking) return;
   if (isLocked(id)) { placeHero(START.x, START.y); toast('🔒 You are in the middle of a quest! Finish it, or tap 🏳️ Abandon quest to leave it.'); return; }
@@ -1705,6 +1742,118 @@ const BOSS = {
 };
 return { MON, BOSS };
 })();
+/* ====================== NEW-PLAYER TUTORIAL (Pip the owl) ====================== */
+// A guided first fight and first villager on the REAL map, fight and village screens. Pip points at things one at a time. The questions are fixed and are never logged:
+// nothing here touches the answer history, XP, coins, level or hearts. Only P.tutorialDone is saved. It plays once after the hero is created, and the owl button on the map replays it.
+const TUT = { on: false, tok: 0, sound: true, resolver: null, last: ['', ''], allowed: null, hlEl: null, step: 0 };
+const owlSVG = () => `<svg viewBox="0 0 100 110" aria-hidden="true">
+  <ellipse cx="50" cy="104" rx="22" ry="3.5" fill="#000" opacity=".25"/>
+  <g class="owlWing"><path d="M26 56 Q8 70 18 96 Q30 90 34 70Z" fill="#8a6038"/></g><g class="owlWing r"><path d="M74 56 Q92 70 82 96 Q70 90 66 70Z" fill="#8a6038"/></g>
+  <ellipse cx="50" cy="68" rx="26" ry="32" fill="#a8764a"/><ellipse cx="50" cy="76" rx="16" ry="22" fill="#f2dfc0"/>
+  ${[0, 1, 2, 3].map(i => `<path d="M${40 + (i % 2) * 6} ${62 + i * 9} q4 4 8 0 q4 4 8 0" stroke="#c9a56a" stroke-width="1.6" fill="none" stroke-linecap="round"/>`).join('')}
+  <path d="M36 98 l-4 8 M44 100 l-2 8 M56 100 l2 8 M64 98 l4 8" stroke="#e0a030" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="50" cy="38" r="26" fill="#a8764a"/><path d="M26 22 L22 4 L40 16Z M74 22 L78 4 L60 16Z" fill="#8a6038"/><ellipse cx="50" cy="42" rx="19" ry="17" fill="#f2dfc0"/>
+  <g class="owlEye"><circle cx="40" cy="38" r="9" fill="#fff"/><circle cx="41" cy="39" r="4.6" fill="#2a2340"/><circle cx="39.4" cy="37" r="1.6" fill="#fff"/></g>
+  <g class="owlEye"><circle cx="60" cy="38" r="9" fill="#fff"/><circle cx="61" cy="39" r="4.6" fill="#2a2340"/><circle cx="59.4" cy="37" r="1.6" fill="#fff"/></g>
+  <path d="M44 30 Q50 26 56 30" stroke="#6a4020" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+  <path d="M45 47 L55 47 L50 58Z" fill="#ffb13a"/><path d="M45 47 L55 47 L50 51Z" fill="#ffd27a"/></svg>`;
+const TUT_WORD = { water: ['מַיִם', '💧', 'מים'], ice: ['קֶרַח', '🧊', 'קרח'], fire: ['אֵשׁ', '🔥', 'אש'], wind: ['רוּחַ', '💨', 'רוח'], stone: ['אֶבֶן', '🪨', 'אבן'] };
+const TUT_SIGN = { bread: ['לחם', '🍞'], candle: ['נר', '🕯️'], egg: ['ביצה', '🥚'] };
+const tutWait = () => new Promise(r => { TUT.resolver = r; });
+const tutResolve = v => { if (TUT.resolver) { const r = TUT.resolver; TUT.resolver = null; r(v); } };
+function tutSpeak(text, he) {   // the English line with the device voice, the Hebrew word with the Hebrew voice (silent when there is no voice or the game is muted)
+  try {
+    if (muted || !TUT.sound || !window.speechSynthesis) return; speechSynthesis.cancel();
+    const vs = speechSynthesis.getVoices(), en = vs.find(v => /^en/i.test(v.lang)), hv = heVoice || findHeVoice();
+    const u = new SpeechSynthesisUtterance(text); if (en) { u.voice = en; u.lang = en.lang; } else u.lang = 'en-US'; u.rate = .95; u.volume = vol; speechSynthesis.speak(u);
+    if (he && hv) { const h = new SpeechSynthesisUtterance(he); h.voice = hv; h.lang = hv.lang; h.rate = .8; h.volume = vol; speechSynthesis.speak(h); }
+  } catch (e) {}
+}
+function tutSay(text, he) { TUT.last = [text, he]; $('#tutSay').textContent = text; const o = $('#tutOwl'); o.classList.remove('talk'); void o.offsetWidth; o.classList.add('talk'); tutSpeak(text, he); }
+function tutNext(label = 'Next') { const b = $('#tutNext'); b.textContent = label; b.hidden = false; b.focus && b.focus({ preventScroll: true }); return new Promise(r => { b.onclick = () => { b.hidden = true; r(); }; }); }
+function tutHl(el) {   // a pulsing gold glow and a bouncing hand on one real button
+  if (TUT.hlEl) { TUT.hlEl.classList.remove('tut-hl'); const h = TUT.hlEl.querySelector(':scope > .tutHand'); if (h) h.remove(); }
+  TUT.hlEl = el || null; if (TUT.hlEl) { TUT.hlEl.classList.add('tut-hl'); const h = document.createElement('span'); h.className = 'tutHand'; h.textContent = '👆'; h.setAttribute('aria-hidden', 'true'); TUT.hlEl.appendChild(h); }
+}
+function tutDots(i) { $('#tutDots').innerHTML = Array.from({ length: 9 }, (_, k) => `<i class="${k < i ? 'done' : k === i ? 'on' : ''}"></i>`).join(''); }
+const tutHearts = (n, v) => (v ? '😊'.repeat(n) + '😐'.repeat(3 - n) : '❤️'.repeat(n) + '🖤'.repeat(3 - n));
+function tutScreen(view) {   // dress the real fight screen for the tutorial: a fixed Ember Imp on Dragon Peak, or the baker at the bakery
+  const v = view === 'village'; G.quest = v ? 'peace' : 'battle'; G.potUsed = true; G.noCount = true; G.snap = null; G.q = null; G.hearts = 3; G.locked = false;
+  show('game'); $('#who').textContent = P.nick; $('#tierLbl').textContent = 'Tutorial'; $('#xpFill').style.width = '0%';
+  ['#potBar', '#itemBar'].forEach(s => { $(s).style.display = 'none'; }); $('#abandonBtn').style.display = 'none'; $('#craftPic').style.display = 'none';
+  $('#write').classList.add('hidden'); $('#nextBtn').classList.add('hidden'); $('#opts').classList.remove('hidden'); $('#qBig').innerHTML = ''; $('#qSub').textContent = ''; $('#fb').innerHTML = '';
+  $('#heroSvg').innerHTML = heroOf(P); $('#heroBox').classList.remove('hurt'); $('#heroBox').insertAdjacentHTML('beforeend', `<div class="pipShoulder" id="pipShoulder">${owlSVG()}</div>`);
+  $('#hearts').textContent = tutHearts(3, v);
+  if (!v) {
+    G.mon = { ...MON_DEF.imp, key: 'imp', boss: false, max: 2, hp: 2 }; G.site = null;
+    $('#stage').className = 'stage el-fire'; setStageBg('f:peak'); setAura('fire'); $('#aura').style.display = '';
+    $('#foeBody').className = 'foeBody art'; $('#foeBody').style.filter = 'drop-shadow(0 0 14px var(--aura)) drop-shadow(0 0 28px var(--aura)) drop-shadow(0 6px 8px #0008)';
+    $('#foeBody').innerHTML = `<div class="mnWrap"><svg viewBox="0 0 140 140" aria-hidden="true">${MON_ART.MON.imp()}</svg></div>`;
+    $('#foeName').textContent = 'Ember Imp'; $('#hpFill').style.width = '100%'; $('#mid').innerHTML = '<b>Dragon Peak</b>';
+  } else {
+    G.mon = null; G.site = SITES.find(s => s.name === 'Bakery'); G.vkey = 'bakery'; G.vskin = rnd(STAGE_BG.SKINS); G.vmood = ''; G.vkeyState = ''; G.q = { reveal: '🍞' };
+    $('#stage').className = 'stage'; setStageBg('v:bakery'); $('#aura').innerHTML = ''; $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').textContent = '';
+    $('#foeName').textContent = 'Baker Ori'; $('#hpFill').style.width = '0%';
+    $('#mid').innerHTML = `<b>🥖 Bakery</b><div class="bubble" id="bubble">The festival is tomorrow and the oven is full of dough. I need bread for the table!</div>`; setMood('😟');
+  }
+}
+function tutOptions(list, title) {
+  $('#qTitle').textContent = title; const o = $('#opts'); o.innerHTML = '';
+  list.forEach(x => { const b = document.createElement('button'); b.className = 'opt heb w'; b.textContent = x.t; b.onclick = () => tutResolve({ x, b }); o.appendChild(b); });
+}
+const tutBtns = () => [...document.querySelectorAll('#opts .opt')];
+async function playTutorial() {
+  const tok = ++TUT.tok, ok = () => tok === TUT.tok && TUT.on, sl = ms => new Promise(r => setTimeout(r, ms));
+  tutResolve(); tutHl(null); $('#tutFin').classList.remove('on'); $('#modal').classList.remove('on'); TUT.allowed = null;
+  G.quest = null; openMenu(); tutDots(0);
+  tutSay("Hi! I'm Pip the owl. I'll show you how to play. It takes about a minute."); await tutNext('Next'); if (!ok()) return;
+  tutDots(1); TUT.allowed = ['gate']; tutSay("This is the map. Tap a place, or drag your hero to it. Let's go to the city gate!"); tutHl(document.querySelector('.place[data-p="gate"]'));
+  await tutWait(); if (!ok()) return; tutHl(null); TUT.allowed = null;
+  tutDots(2); tutScreen('fight');
+  tutSay('A monster! Monsters are afraid of certain words. Fire monsters hate water. Tap the word that means water.', TUT_WORD.water[2]);
+  tutOptions([{ t: TUT_WORD.fire[0] }, { t: TUT_WORD.water[0], ok: true }, { t: TUT_WORD.wind[0] }], 'Pick the spell that beats the Ember Imp'); tutHl(tutBtns()[1]);
+  for (;;) { const r = await tutWait(); if (!ok()) return; if (r.x.ok) { r.b.classList.add('good'); break; } tutSay('Not that one. Look for the glowing word!', TUT_WORD.water[2]); }
+  tutHl(null); tutBtns().forEach(b => { b.disabled = true; }); sfx.ok();
+  tutDots(3); await flySpell('💧'); if (!ok()) return; sfx.hit(); burst('💧', 8); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); $('#hpFill').style.width = '50%'; floatText('-1', '#ffd166');
+  tutSay('Great! You read the word and your spell hit the monster.'); await sl(2200); if (!ok()) return;
+  tutDots(4); tutSay('Careful! If you pick a wrong word, the monster attacks and you lose a heart. Watch.'); await sl(1800); if (!ok()) return;
+  $('#foeBody').classList.add('atk'); await sl(250); sfx.hit(); flashStage(); $('#heroBox').classList.add('hurt'); setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500); $('#hearts').textContent = tutHearts(2); floatText('−1 ❤️', '#ff9aa8');
+  await sl(1200); if (!ok()) return; tutSay("Don't worry: in the tutorial your heart comes back. In the real game you win hearts back as you play."); await sl(1500); $('#hearts').textContent = tutHearts(3); await tutNext('Got it'); if (!ok()) return;
+  tutDots(5); tutSay('Now you try! Which word beats fire?', TUT_WORD.ice[2]);
+  tutOptions([{ t: TUT_WORD.stone[0] }, { t: TUT_WORD.fire[0] }, { t: TUT_WORD.ice[0], ok: true }], 'Pick the spell that beats the Ember Imp');
+  for (;;) {
+    const r = await tutWait(); if (!ok()) return; if (r.x.ok) { r.b.classList.add('good'); break; }
+    r.b.classList.add('bad'); r.b.disabled = true; sfx.bad(); $('#foeBody').classList.add('atk'); await sl(300); $('#hearts').textContent = tutHearts(2); $('#heroBox').classList.add('hurt'); setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
+    tutSay('Oops! The monster attacked. That is OK, your heart comes back. Try another word.'); await sl(1500); $('#hearts').textContent = tutHearts(3);
+  }
+  tutBtns().forEach(b => { b.disabled = true; }); sfx.ok(); await flySpell('🧊'); if (!ok()) return; sfx.hit(); burst('🧊', 8); $('#foeBody').classList.add('hit'); $('#hpFill').style.width = '0%'; await sl(800); $('#foeBody').classList.remove('hit'); $('#foeBody').classList.add('die'); $('#aura').style.display = 'none'; sfx.win(); await sl(800);
+  tutDots(6); tutSay('You beat the monster! Fighting is reading spells. Now let me show you the other way to play.'); await tutNext('Next'); if (!ok()) return;
+  G.quest = null; G.mon = null; openMenu(); tutDots(7); TUT.allowed = ['board']; tutSay('Some days you can help the villagers instead. Tap the notice board!'); tutHl(document.querySelector('.place[data-p="board"]'));
+  await tutWait(); if (!ok()) return; tutHl(null); TUT.allowed = null;
+  tutScreen('village'); tutDots(7); tutSay('The baker needs help. Read what he says, then tap the sign that has what he needs.', TUT_SIGN.bread[0]);
+  tutOptions([{ t: TUT_SIGN.candle[0] }, { t: TUT_SIGN.bread[0], ok: true }, { t: TUT_SIGN.egg[0] }], 'Read the signs and help!'); tutHl(tutBtns()[1]);
+  for (;;) { const r = await tutWait(); if (!ok()) return; if (r.x.ok) { r.b.classList.add('good'); break; } tutSay('Not that sign. Look for the glowing word!', TUT_SIGN.bread[0]); }
+  tutHl(null); tutBtns().forEach(b => { b.disabled = true; }); sfx.ok(); setMood('😊'); floatText('💛', '#ffd166');
+  tutDots(8); tutSay('Thank you! You helped the baker. Helping people builds the village.'); await sl(2600); if (!ok()) return;
+  tutFinish();
+}
+function tutFinish() {   // the end screen (also what "Skip tutorial" does). Only the tutorialDone flag is saved.
+  TUT.tok++; tutResolve(); tutHl(null); TUT.allowed = null; tutDots(9); try { speechSynthesis.cancel(); } catch (e) {}
+  P.tutorialDone = true; saveSoon(true); $('#tutFinOwl').innerHTML = owlSVG(); $('#tutFin').classList.add('on'); $('#tutBegin').focus && $('#tutBegin').focus({ preventScroll: true });
+}
+function tutClose() {
+  TUT.on = false; TUT.tok++; $('#tutFin').classList.remove('on'); $('#coach').hidden = true; document.body.classList.remove('tutOn'); const ps = $('#pipShoulder'); if (ps) ps.remove();
+  G.quest = null; G.mon = null; G.site = null; G.q = null; G.vkeyState = ''; $('#aura').style.display = ''; $('#foeBody').classList.remove('die', 'hit', 'atk'); openMenu();
+}
+function startTutorial() {
+  if (TUT.on) return; TUT.on = true; TUT.sound = true; $('#tutSound').textContent = '🔊 Voice on'; $('#tutSound').setAttribute('aria-pressed', 'true');
+  document.body.classList.add('tutOn'); $('#coach').hidden = false; $('#tutOwl').innerHTML = owlSVG(); playTutorial();
+}
+$('#tutSkip').onclick = tutFinish; $('#tutBegin').onclick = tutClose;
+$('#tutHear').onclick = () => tutSpeak(TUT.last[0], TUT.last[1]);
+$('#tutSound').onclick = e => { TUT.sound = !TUT.sound; e.currentTarget.setAttribute('aria-pressed', String(TUT.sound)); e.currentTarget.textContent = TUT.sound ? '🔊 Voice on' : '🔇 Voice off'; if (!TUT.sound) try { speechSynthesis.cancel(); } catch (x) {} };
+$('#owlBtn').onclick = () => startTutorial();
+$('#owlBtn').innerHTML = owlSVG();
 /* ====================== STAGE BACKGROUNDS ====================== */
 // One scene for each fight area and each village site (400x200 SVG, drawn with depth like the home and shop). Reused from the approved preview.
 const STAGE_BG = (() => {
@@ -2212,9 +2361,10 @@ function setMood(m) {   // called with the old face emojis from the village answ
   const k = mood + '|' + (G.q && G.q.reveal || ''); if (k === G.vkeyState && $('#foeBody .vill')) return; G.vkeyState = k; G.vmood = mood; renderVillager();
 }
 const FIGHT_BG = ['woods', 'caves', 'ruins', 'citadel', 'peak', 'marsh'];   // same order as AREAS
-function setStageBg() {   // the picture behind the wizard and the monster or villager: the area (fights) or the site the wizard just walked to (villages)
+function setStageBg(force) {   // the picture behind the wizard and the monster or villager: the area (fights) or the site the wizard just walked to (villages)
   const e = $('#stageBg'); if (!e) return; const q = G.quest; let key = '', fn = null;
-  if (q === 'battle') { key = 'f:' + FIGHT_BG[(P.quest.battle.ch - 1) % 6]; fn = STAGE_BG.FIGHT[key.slice(2)]; }
+  if (force) { key = force; fn = (force[0] === 'f' ? STAGE_BG.FIGHT : STAGE_BG.VILLAGE)[force.slice(2)]; }
+  else if (q === 'battle') { key = 'f:' + FIGHT_BG[(P.quest.battle.ch - 1) % 6]; fn = STAGE_BG.FIGHT[key.slice(2)]; }
   else if (q === 'peace') { const b = G.site ? G.site.bg : 'garden'; key = 'v:' + b; fn = STAGE_BG.VILLAGE[b]; }
   if (e.dataset.key === key) return; e.dataset.key = key; e.innerHTML = fn ? fn() : ''; $('#stageVig').style.display = fn ? '' : 'none';
 }
@@ -3325,7 +3475,7 @@ function villageDone() {
 /* ----- 10-minute daily goal ----- */
 let tick = 0;
 setInterval(() => {
-  if (!P || document.hidden || !$('#game').classList.contains('on') || $('#modal').classList.contains('on')) return;
+  if (!P || TUT.on || document.hidden || !$('#game').classList.contains('on') || $('#modal').classList.contains('on')) return;
   const d = today(); P.sec[d] = (P.sec[d] || 0) + 1; G.sess++;
   if (!G.goalShown && P.sec[d] >= CFG.DAILY_SEC) {
     G.goalShown = true; sfx.win(); confetti(['⭐', '🌟', '🏅']); saveSoon(true);
@@ -3370,6 +3520,7 @@ function startDemo() {
     nearBoss() { const q = G.quest === 'peace' || J.q === 'peace' ? 'peace' : 'battle'; if (!P.quest[q].path) { toast('Start a quest first'); return; } P.quest[q].at = P.quest[q].path.length - 2; P.quest[q].enc = P.quest[q].len; openJourney(q); },
     ko() { if (!$('#game').classList.contains('on') || !(G.quest === 'battle' || G.quest === 'peace')) { toast('Open a fight first'); return; } G.hearts = 0; P.quest[G.quest].hearts = 0; endOrSecond(G.quest === 'battle' ? knockout : villageFail); },
     win() { if (!$('#game').classList.contains('on') || !G.mon && G.quest === 'battle') { toast('Open a fight first'); return; } if (G.quest === 'battle') { G.mon.hp = 0; victory(); } else { G.helped = G.need; villageDone(); } },
+    tutorial() { document.querySelector('#modal').classList.remove('on'); document.querySelector('#demoPanel').classList.remove('on'); startTutorial(); },
     exit() { location.reload(); },
     fresh() { P.ws = { on: false, hi: false }; P.tier = 7; P.hist = []; saveSoon(); goMenu(); toast('Level 7: the workshop is shuttered. Pick level 8 to see it light up.'); }
   };
@@ -3379,7 +3530,7 @@ function startDemo() {
   document.head.appendChild(css);
   const panel = document.createElement('div'); panel.id = 'demoPanel';
   const B = (label, call) => `<button data-d="${call}">${label}</button>`;
-  panel.innerHTML = '<b>🧪 Demo run: a pretend student</b> ' + B('✖ Exit demo', 'exit()') +
+  panel.innerHTML = '<b>🧪 Demo run: a pretend student</b> ' + B('✖ Exit demo', 'exit()') + B('🦉 Play the tutorial', 'tutorial()') +
     '<h4>Level</h4>' + [5, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(t => B(t, `level(${t})`)).join('') + B('Show locked workshop', 'fresh()') +
     '<h4>Go to</h4>' + B('🗺️ Map', 'map()') + B('⚒️ Workshop', 'workshop()') + B('🏡 Home', 'home()') + B('🏪 Shop', 'shop()') +
     '<h4>Quests</h4>' + B('⚔️ Start monster quest', 'fight()') + B('🌿 Start village quest', 'village()') + B('⏭️ Jump near the boss', 'nearBoss()') +
