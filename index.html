@@ -3159,7 +3159,7 @@ $('#admSets').onclick = async e => {
 /* ====================== PRIVATE-TESTING PASSCODE ====================== */
 // A light gate for the test phase: it keeps casual visitors out, but it is not real security
 // (the page source is public). Set GATE_HASH to '' to turn the gate off.
-const GATE_HASH = '455d30cd97bb7dff1670114fdfafb5c24b7db60d1c95f9f17729a61fa1c964ed';
+const GATE_HASH = '';   // the passcode gate is switched off: the game is open to everyone with the link
 async function sha256(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
