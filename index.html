@@ -414,6 +414,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .traySlot small{font-size:.7rem;line-height:1}
 .tileSlots{grid-column:1/-1;display:flex;gap:10px;justify-content:center;margin:2px 0 8px;direction:rtl}.tileSlot{min-width:42%;min-height:60px;display:flex;align-items:center;justify-content:center;border:3px dashed #fff5;border-radius:16px;background:#0003;font-size:1.9rem;font-weight:700;color:#fff;padding:4px 8px}.tileSlot.full{border-style:solid;border-color:var(--gold,#ffd166);background:#ffd16622}
 .tileRow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.tileRow .tile{flex:1 1 40%;max-width:48%;font-size:1.9rem}.tile.used{opacity:.35;transform:scale(.96)}
+.rGear.away{opacity:1}.rGear.away::before{content:"";position:absolute;inset:18%;border:2px dashed #ffffff55;border-radius:50%}.stOpt .gIco.away{border:2px dashed #ffffff55;border-radius:50%}
 .hBonus{filter:drop-shadow(0 0 5px #ffd166) drop-shadow(0 0 9px #ffb703) hue-rotate(-35deg) saturate(1.3);margin-left:4px;animation:hbPulse 2.2s ease-in-out infinite}@keyframes hbPulse{50%{filter:drop-shadow(0 0 8px #ffd166) drop-shadow(0 0 14px #ffb703) hue-rotate(-35deg) saturate(1.3)}}
 @media (prefers-reduced-motion:reduce){.hBonus{animation:none}}
 .float{position:absolute;font-weight:700;font-size:1.6rem;pointer-events:none;animation:up 1s forwards;text-shadow:0 2px 0 #000a}
@@ -3397,7 +3398,7 @@ function renderRoom(disp) {   // disp = the ingredient counts to show (they fill
   { const [x0] = stPt(STAND.t0, 0), [x1, y1] = stPt(STAND.t1, 0), yt = stPt(STAND.t0, STAND.top)[1];   // the artifact stand: a tap target over the cabinet, and one item on each pedestal
     H.push(`<button class="rHit ${rmPanel === 'stand' ? 'on' : ''}" data-kind="stand" aria-label="Artifact stand: tap to wear your magic items" style="left:${x0 - 1}%;top:${yt * 1.25}%;width:${x1 - x0 + 2}%;height:${(y1 - yt) * 1.25}%"></button>`);
     GEAR_SLOTS.forEach(([slot, , ms], i) => { const [cx, cy] = stPt((STAND.nich[i][0] + STAND.nich[i][1]) / 2, .15), v = (P.items || {})[ms] || 0;
-      H.push(`<div class="rGear ${v ? (itemWorn(P, ms) ? '' : 'off') : 'none'}" style="left:${cx}%;top:${cy * 1.25}%">${gearIcon(slot, v ? { k: 'magic', v } : DEF_GEAR[slot])}</div>`); }); }
+      H.push(`<div class="rGear ${!v ? 'none' : itemWorn(P, ms) ? 'away' : ''}" style="left:${cx}%;top:${cy * 1.25}%">${v && itemWorn(P, ms) ? '' : gearIcon(slot, v ? { k: 'magic', v } : DEF_GEAR[slot])}</div>`); }); }
   rmShown(disp).slice(0, 6).forEach((id, i) => H.push(`<div class="rJar jarbox" data-jar="${id}" style="left:${JAR_SLOTS[i][0]}%;top:${JAR_SLOTS[i][1] * 1.25}%">${jarInner(id, disp[id])}</div>`));
   for (const id of Object.keys(ROOM_ITEMS)) {
     if (!P.own.decor.includes(id)) continue; const it = ROOM_ITEMS[id], d = SHOP[id], p = rmPos(id);
@@ -3417,11 +3418,11 @@ function renderRoomPanel() {   // the close-up under the room: big flasks and ja
       return `<button class="rCard ${n || cn ? '' : 'none'}" data-pot="${id}"><span class="packBottle">${potionSVG(id)}</span><b>${POTIONS[id].name} / ${POTIONS[id].vname}</b><small>× ${n}${cn ? ` · 🎒 ${cn}` : ''}</small></button>`; }).join('') + '</div>';
   } else if (rmPanel === 'stand') {   // the artifact stand: which magic item is worn in each slot (only worn items give their power in a quest)
     const [sl, label, ms] = GEAR_SLOTS.find(x => x[0] === rmStandSlot) || GEAR_SLOTS[0], m = MAGIC[ms], v = itemVer(ms), worn = itemWorn(P, ms);
-    p.innerHTML = `<h3>🏺 Artifact stand <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="stSlots">${GEAR_SLOTS.map(([k, lb, mi]) => `<button class="stSlot ${k === sl ? 'on' : ''}" data-sslot="${k}"><span class="gIco">${gearIcon(k, itemVer(mi) ? { k: 'magic', v: itemVer(mi) } : DEF_GEAR[k])}</span>${lb}${itemVer(mi) ? (itemWorn(P, mi) ? ' ✅' : '') : ''}</button>`).join('')}</div>
-      <div class="stRow">${v ? `<div class="stOpt ${worn ? 'on' : ''}"><span class="gIco">${gearIcon(sl, { k: 'magic', v })}</span><div class="grow"><b>${m.en}</b><small>${VER_NAME[v]} · ${v === 2 ? 'twice' : 'once'} per quest</small><small>${m.does}</small></div><button class="btn" data-swear="${ms}">${worn ? 'Take off' : 'Wear'}</button></div>`
+    p.innerHTML = `<h3>🏺 Artifact stand <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="stSlots">${GEAR_SLOTS.map(([k, lb, mi]) => `<button class="stSlot ${k === sl ? 'on' : ''}" data-sslot="${k}"><span class="gIco">${gearIcon(k, itemVer(mi) ? { k: 'magic', v: itemVer(mi) } : DEF_GEAR[k])}</span>${lb}${itemVer(mi) ? (itemWorn(P, mi) ? ' 🧙' : '') : ''}</button>`).join('')}</div>
+      <div class="stRow">${v ? `<div class="stOpt ${worn ? 'on' : ''}"><span class="gIco ${worn ? 'away' : ''}">${worn ? '' : gearIcon(sl, { k: 'magic', v })}</span><div class="grow"><b>${m.en}</b><small>${VER_NAME[v]} · ${v === 2 ? 'twice' : 'once'} per quest</small><small>${worn ? 'With you: its power works on your quests.' : 'At home on the stand: its power is asleep.'}</small><small>${m.does}</small></div><button class="btn" data-swear="${ms}">${worn ? 'Put it back' : 'Take it'}</button></div>`
       : `<div class="stOpt lock"><span class="gIco">${gearIcon(sl, DEF_GEAR[sl])}</span><div class="grow"><b>${m.en}</b><small>You have not made this yet. The artificer builds it in the workshop.</small></div></div>`}
         <div class="stOpt lock"><span class="gIco" style="display:grid;place-items:center;font-size:1.6rem">🔒</span><div class="grow"><b>More ${label.toLowerCase()} items</b><small>Coming later. Each slot holds one item, and you choose which one.</small></div></div></div>
-      <p class="small" style="opacity:.8;margin:6px 0 0">Only items you wear give their power in a quest. How your hero looks is chosen in the wardrobe.</p>`;
+      <p class="small" style="opacity:.8;margin:6px 0 0">Only items you take with you give their power in a quest. How your hero looks is chosen in the wardrobe.</p>`;
   } else {
     const all = rmShown(rmDisp);
     p.innerHTML = `<h3>🌿 Ingredient shelves <button class="ib" data-close="1" aria-label="Close">✕</button></h3>` + (all.length ? `<div class="small" style="opacity:.8;margin-bottom:6px">Tap a jar to hear the word.</div><div class="rCards">` +
@@ -3467,7 +3468,7 @@ $('#home').onclick = e => {
   if (e.target.closest('#wardBtn')) { openWardrobe(); return; }
   if (e.target.closest('#standBtn')) { rmPanel = rmPanel === 'stand' ? null : 'stand'; renderRoom(rmDisp); if (rmPanel) $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const ss = e.target.closest('[data-sslot]'); if (ss) { rmStandSlot = ss.dataset.sslot; renderRoom(rmDisp); return; }
-  const sw = e.target.closest('[data-swear]'); if (sw) { const ms = sw.dataset.swear; P.worn = P.worn || {}; P.worn[ms] = !itemWorn(P, ms); saveSoon(true); sfx.ok(); toast(P.worn[ms] ? `${MAGIC[ms].en}: now worn. Its power works on your quests!` : `${MAGIC[ms].en}: taken off. Its power is asleep.`); renderRoom(rmDisp); return; }
+  const sw = e.target.closest('[data-swear]'); if (sw) { const ms = sw.dataset.swear; P.worn = P.worn || {}; P.worn[ms] = !itemWorn(P, ms); saveSoon(true); sfx.ok(); toast(P.worn[ms] ? `${MAGIC[ms].en}: you took it with you! Its power works on your quests.` : `${MAGIC[ms].en}: back on the stand at home. Its power is asleep.`); renderRoom(rmDisp); return; }
   if (e.target.closest('[data-close]')) { rmPanel = null; renderRoom(rmDisp); return; }
   const hit = e.target.closest('.rHit'); if (hit) { rmPanel = rmPanel === hit.dataset.kind ? null : hit.dataset.kind; renderRoom(rmDisp); if (rmPanel) $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
   const bt = e.target.closest('[data-pot]');
