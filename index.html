@@ -1347,7 +1347,7 @@ async function cloudSave() {
   if (!P || !CFG.SCRIPT_URL) return;
   const total = Object.values(P.sec).reduce((a, b) => a + b, 0);
   const body = JSON.stringify({ id: P.id, nick: P.nick, tier: P.tier, xp: P.xp, n: P.n, acc: P.n ? Math.round(100 * P.ok / P.n) : 0,
-    min: Math.round(total / 60), coins: Math.floor(P.coins || 0), craftAcc: P.craft && P.craft.n ? Math.round(100 * P.craft.ok / P.craft.n) : 0, restarts: P.restartsTotal || 0, real: P.real || '', cls: P.cls || '', data: JSON.stringify(P) });
+    min: Math.round(total / 60), coins: Math.floor(P.coins || 0), craftAcc: P.craft && P.craft.n ? Math.round(100 * P.craft.ok / P.craft.n) : 0, restarts: P.restartsTotal || 0, real: P.real || '', cls: P.cls || '', data: JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined })) });   // the real name and class go in their own fields, not inside the game data
   try {
     const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
     const j = await r.json();
@@ -1359,12 +1359,13 @@ async function cloudSave() {
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
-  let local = null, cloud = null, offline = false, deleted = false;
+  let local = null, cloud = null, offline = false, deleted = false, limited = false;
   try { const t = lsGet('tq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
       const r = await fetch(CFG.SCRIPT_URL + '?action=load&id=' + encodeURIComponent(id));
       const j = await r.json();
+      if (!j.ok && j.error === 'rate') limited = true;   // too many tries for a minute: the answer says nothing about the number
       if (j.ok && j.deleted) deleted = true;
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
@@ -1374,7 +1375,7 @@ async function loadProfile(id) {
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
   if (deleted) { try { localStorage.removeItem('tq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
-  return { profile: best, offline };
+  return { profile: best, offline, limited };
 }
 
 /* ====================== SCREENS / MODAL ====================== */
@@ -1417,6 +1418,7 @@ $('#loginBtn').onclick = async () => {
   if (r.profile) { P = r.profile; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
   if (APP) { modal('🌟 New hero?', `<p>There is no hero for <b>${esc(id)}</b> on this device yet.</p><p>Create a new hero? It will stay on this device only.</p>`, [['Yes, create my hero', () => { pendingId = id; pendingReal = pendingCls = ''; openCreator(); }], ['No, I mistyped', null, true]]); return; }
   if (r.deleted) { modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['I am new 🌟', () => $('#newBtn').click()], ['OK', null, true]]); return; }
+  if (r.limited) { modal('Please wait a moment', '<p>Too many tries in a short time. Please wait a minute and try again.</p>', [['OK', null]]); return; }
   const warn = r.offline ? '<p>⚠️ I can\'t reach the cloud right now, so I can\'t check your number. Try again in a moment.</p>' : '';
   modal('I don\'t know this number', `<p>I can\'t find the number <b>${esc(id)}</b>.</p>${warn}<p>Check it and try again. If you are new, tap <b>I am new</b>.</p>`,
     [['Try again', null], ['I am new 🌟', () => $('#newBtn').click(), true]]);
@@ -4084,7 +4086,7 @@ async function auditionSet(id) {
   else {
     if (!audCache[id]) {
       toast('Loading…');
-      const j = await (await fetch(CFG.SCRIPT_URL + '?action=getSound&id=' + encodeURIComponent(id) + '&key=' + encodeURIComponent(ADMKEY))).json();
+      const j = await adminCall('getSoundSet', { id });   // the teacher key travels in the POST body, never in a link
       if (!j.ok) throw new Error(j.error || 'failed');
       const bin = atob(j.wav), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
       audCache[id] = { buf: await AC.decodeAudioData(bytes.buffer), idx: j.idx };
