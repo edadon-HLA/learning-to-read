@@ -33,6 +33,14 @@ h2{margin:.2em 0}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #9b6411}
 .btn.ghost{background:#fff1;color:#fff;box-shadow:none;border:1px solid #fff3}
 .btn:disabled{opacity:.5}
+#printSheet{position:fixed;inset:0;z-index:100000;background:#fff;color:#000;overflow:auto;padding:56px 12px 12px}
+#printSheet .pbar{position:fixed;top:0;left:0;right:0;background:#222;color:#fff;padding:8px 12px;display:flex;gap:10px;align-items:center;z-index:2}
+#printSheet .pgrid{display:grid;grid-template-columns:repeat(2,97mm);justify-content:center}
+#printSheet .pcard{box-sizing:border-box;width:97mm;height:68mm;border:1px dashed #888;padding:4mm 5mm;page-break-inside:avoid;break-inside:avoid;font-family:system-ui,Arial,sans-serif;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+#printSheet .pcard .sc{font-size:9pt;opacity:.7}#printSheet .pcard .nm{font-size:15pt;font-weight:700;line-height:1.1}#printSheet .pcard .no{font-size:24pt;font-weight:800;letter-spacing:.12em;font-family:Consolas,monospace}
+#printSheet .pcard .row2{display:flex;gap:4mm;align-items:center;justify-content:space-between}#printSheet .pcard .how{font-size:7.5pt;line-height:1.25}#printSheet .pcard svg{width:20mm;height:20mm;flex:none}
+@media print{@page{size:A4;margin:8mm}body>*:not(#printSheet){display:none!important}#printSheet{position:static;padding:0;overflow:visible}#printSheet .pbar{display:none}}
+select.ctl{width:100%;padding:12px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.15rem;text-align:center}select.ctl option{color:#000}select.ctl.sm{width:auto;padding:8px;font-size:1rem}
 input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.3rem;text-align:center}
 .center{text-align:center}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
@@ -439,7 +447,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .admcards>div{background:var(--panel);border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center;font-size:.9rem}
 .admcards b{display:block;font-size:1.7rem;color:var(--gold)}
 .tblwrap{overflow-x:auto;margin-top:8px}
-#admTable{width:100%;border-collapse:collapse;font-size:.95rem}
+#admTable,#sysTable{width:100%;border-collapse:collapse;font-size:.95rem}#sysTable th{text-align:left;padding:8px;border-bottom:1px solid #fff4;white-space:nowrap}#sysTable td{padding:8px;border-bottom:1px solid #fff1;vertical-align:top}.chip{border-radius:8px;padding:2px 8px;font-size:.78rem;font-weight:700;background:#ffffff33}.chip.act{background:#2ecc71;color:#06330f}.chip.sus{background:#e74c3c;color:#fff}.chip.wai{background:#ffd166;color:#3a2300}
 #admTable th{text-align:left;padding:8px;cursor:pointer;border-bottom:1px solid #fff4;white-space:nowrap;user-select:none}
 #admTable td{padding:8px;border-bottom:1px solid #fff1;white-space:nowrap}
 #admTable tbody tr:hover{background:#ffffff14;cursor:pointer}
@@ -543,23 +551,44 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
       <div style="margin-top:8px"><a href="#" class="adminLink" id="changeCode" data-t="changeCode"></a> · <a href="#" class="adminLink loginBack" data-t="back"></a></div>
     </div>
   </div>
-  <div class="center loginLinks"><a href="#" id="adminLink" class="adminLink">🔧 <span data-t="teacher"></span></a> · <a href="#" id="privLink" class="adminLink">🔒 <span data-t="privacy"></span></a> · <a href="#" id="langLink" class="adminLink">🌐 <span id="langName"></span></a></div>
+  <div class="center loginLinks"><a href="#" id="lnkAdmin" class="adminLink">🛡 <span data-t="lAdmin"></span></a> · <a href="#" id="lnkSchool" class="adminLink">🏫 <span data-t="lSchool"></span></a> · <a href="#" id="lnkTeacher" class="adminLink">👩‍🏫 <span data-t="lTeacher"></span></a> · <a href="#" id="privLink" class="adminLink">🔒 <span data-t="privacy"></span></a> · <a href="#" id="langLink" class="adminLink">🌐 <span id="langName"></span></a></div>
   <div class="center"><button class="btn ghost" id="installBtn" style="display:none;margin-top:10px">📲 Install the game on this device</button></div>
   <div class="credit">Created by Dr. Dadon Eldar<br>in collaboration with HLA Hebrew Public</div>
 </section>
 
+<section id="sysadmin" class="screen" style="max-width:1000px">
+  <div class="top">
+    <button class="ib" id="sysBack">← Back</button>
+    <h2 style="margin:0" class="grow">🛡 Admin area</h2>
+    <button class="btn ghost" id="sysRefresh" style="padding:8px 14px">⟳ Refresh counts</button>
+  </div>
+  <div class="small center" style="opacity:.85;margin:4px 0 8px">You see only how many players each school has. Names, classes and progress stay in the school's own Google account.</div>
+  <div class="admcards" id="sysCards"></div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><b>Schools</b><button class="btn" id="sysAdd" style="padding:8px 14px">+ Add a school</button></div>
+    <div class="tblwrap"><table id="sysTable"></table></div>
+    <div class="msg" id="sysMsg" style="min-height:1.2em"></div>
+  </div>
+</section>
 <section id="admin" class="screen" style="max-width:1000px">
   <div class="top">
     <button class="ib" id="admBack">← Back</button>
-    <h2 style="margin:0" class="grow">🔧 Teacher area</h2>
+    <h2 style="margin:0" class="grow" id="admTitle">🏫 School area</h2>
     <button class="btn ghost" id="admRefresh" style="padding:8px 14px">⟳ Refresh</button>
   </div>
   <div class="admcards" id="admCards"></div>
   <div class="small center" id="admApp" style="opacity:.85;margin:4px 0 10px"></div>
+  <div class="small center" id="admWho" style="opacity:.85;margin:2px 0 6px"></div>
   <div class="card center" id="admCode" style="margin:6px 0"></div>
+  <div class="card" id="admStaff" style="display:none"></div>
+  <div class="card" id="admClasses" style="display:none"></div>
+  <div class="card" id="admWait" style="display:none"></div>
+  <div class="card" id="admMoved" style="display:none"></div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
+      <select id="admClassSel" class="ctl sm"><option value="">All classes</option></select>
+      <button class="btn ghost" id="admPrint" style="padding:8px 14px">🖨 Login cards</button>
       <button class="btn ghost" id="admCsv" style="padding:8px 14px">⬇ Download (CSV)</button></div>
     <div class="tblwrap"><table id="admTable"></table></div>
     <div class="small" style="opacity:.7;margin-top:6px">Tap a student to see details. Tap a column title to sort.</div>
@@ -586,6 +615,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
       <input id="regName" type="text" maxlength="40" placeholder="First name and last name" autocomplete="off">
       <label class="regLbl">Your class</label>
       <input id="regClass" type="text" maxlength="15" placeholder="For example 3B" autocomplete="off">
+      <select id="regClassSel" class="ctl" style="display:none"></select>
       <div class="msg" id="regMsg"></div>
       <div class="row"><button class="btn ghost" id="regBack">← Back</button><button class="btn" id="regGo">Get my number ▶</button></div>
     </div>
@@ -693,7 +723,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="owlBtn" id="owlBtn" title="Show me how to play" aria-label="Show me how to play"></button>
   </div>
   <div class="row" style="margin-top:10px"><button class="btn ghost danger" id="abandonMapBtn" style="display:none">🏳️ Abandon quest</button></div>
-  <div class="row" id="heroTools" style="margin-top:8px;gap:8px;flex-wrap:wrap;justify-content:center"><span class="modeBadge" id="modeBadge"></span><button class="btn ghost small" id="saveHeroBtn">💾 Save my hero</button><button class="btn ghost small" id="upHomeBtn" style="display:none">🏠 Make this a home hero</button><button class="btn ghost small" id="privBtn">🔒 Privacy</button></div>
+  <div class="row" id="heroTools" style="margin-top:8px;gap:8px;flex-wrap:wrap;justify-content:center"><span class="modeBadge" id="modeBadge"></span><button class="btn ghost small" id="saveHeroBtn">💾 Save my hero</button><button class="btn ghost small" id="upHomeBtn" style="display:none">🏠 Make this a home hero</button><button class="btn ghost small" id="toPrivBtn" style="display:none">🏠 Move to private</button><button class="btn ghost small" id="privBtn">🔒 Privacy</button></div>
   <button class="ghostSmall" id="logoutBtn" title="Switch hero">🚪 Switch hero</button>
   <div class="credit small">Created by Dr. Dadon Eldar in collaboration with HLA Hebrew Public</div>
 </section>
@@ -801,6 +831,7 @@ const APP = (() => { try { return matchMedia('(display-mode: standalone)').match
 const CFG = {
   // Paste the Apps Script web app URL here to save progress to the school Google Sheet.
   SCRIPT_URL: 'https://script.google.com/macros/s/AKfycby_WgFcze8lH_KTjGD1oI_m5BTocs8REMrOJwYrs6fkX5Pir_C1BzRGQJIkX-kG3ESN/exec',
+  REGISTRY_URL: 'https://script.google.com/macros/s/AKfycbzwSI8sFuc5iTm_hjd8gMgZbieTMQbnLbl5D8iEbvMpbISW3BD0kGvhtMsmtSezmgNI6w/exec',   // the Admin's registry: which school service belongs to a school code (it holds no student data)
   DAILY_SEC: 600,           // 10 minutes a day
   MIN_FIGHTS: 5, MAX_FIGHTS: 10,   // normal encounters before the boss / big request (rolled at random when a quest starts, never shown)
   MAX_HEARTS: 3,            // hearts (fights) or smileys (village) a quest starts with; healing (win, potion) stops here
@@ -817,6 +848,8 @@ const CFG = {
   UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10,   // levels 1-7: up at 85% over the last 8-10 answers
   READ_UP_ACC: 0.9, READ_MIN_WINDOW: 12, READ_MAX_WINDOW: 15, READ_FIGHTS: [8, 14], MAX_LEVEL: 16   // from level 8 (reading): up at 90% over the last 12-15 answers; quests have 8-14 normal stops
 };
+(function () { const u = (function () { try { return localStorage.getItem('aq_school_url') || ''; } catch (e) { return ''; } })(); if (u && CFG.SCRIPT_URL) CFG.SCRIPT_URL = u; })();   // a device that joined another school uses that school's service
+const TEST_BUILD = false;   // the test copy (tools/mktest.sh) sets this to true: it talks only to the TEST school service and never switches to a real school's service
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
 // (school heroes save to the cloud; home and offline heroes never do: that is decided per hero, not per device)
 if (APP) { document.title = 'SpellQuest: AlphaBet Adventure'; const lt = document.getElementById('loginTitle'); if (lt) lt.innerHTML = '✨ SpellQuest ✨<div class="small" style="font-size:1rem;opacity:.9;margin-top:4px">AlphaBet Adventure</div><div class="heb" style="font-size:1.1rem;margin-top:2px">לחשים: הרפתקת קריאה</div>'; }   // the installed app's name
@@ -1371,7 +1404,7 @@ function streak() {
 }
 function setCloud(s) {
   cloudState = s;
-  const m = { ok: ['☁️✓', 'Progress saved to the cloud'], pend: ['☁️…', 'Saving…'], off: ['⚠️', 'Cloud not reachable. Progress is saved on this device.'], none: ['', 'Saved on this device'] }[s] || ['', ''];
+  const m = { wait: ['⏳', 'Waiting for your teacher to approve your number. You can keep playing.'], ok: ['☁️✓', 'Progress saved to the cloud'], pend: ['☁️…', 'Saving…'], off: ['⚠️', 'Cloud not reachable. Progress is saved on this device.'], none: ['', 'Saved on this device'] }[s] || ['', ''];
   for (const id of ['#cloud', '#menuCloud']) { const e = $(id); if (e) { e.textContent = m[0]; e.title = m[1]; e.style.display = m[0] ? '' : 'none'; } }
 }
 function saveSoon(now) {
@@ -1384,24 +1417,29 @@ function saveSoon(now) {
   saveTimer = setTimeout(cloudSave, now ? 0 : 4000);
 }
 async function cloudSave() {
-  if (!P || !CFG.SCRIPT_URL || P.mode !== 'school') return;
+  if (!P || !CFG.SCRIPT_URL || P.mode !== 'school' || SCHOOL_ST.suspended) return;
   const total = Object.values(P.sec).reduce((a, b) => a + b, 0);
   const body = JSON.stringify({ id: P.id, nick: P.nick, tier: P.tier, xp: P.xp, n: P.n, acc: P.n ? Math.round(100 * P.ok / P.n) : 0,
     min: Math.round(total / 60), coins: Math.floor(P.coins || 0), craftAcc: P.craft && P.craft.n ? Math.round(100 * P.craft.ok / P.craft.n) : 0, restarts: P.restartsTotal || 0, real: (P.realPending && P.realPending.real) || '', cls: (P.realPending && P.realPending.cls) || '', code: lsGet('aq_school_code') || '', data: JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined, realPending: undefined })) });   // the real name and class go in their own fields, not inside the game data
   try {
     const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
     const j = await r.json();
+    if (SCHOOL_ST.suspended) return;
     if (j.deleted) { removedByTeacher(); return; }   // the teacher deleted this student
+    if (j.moved) { movedHero(); return; }
     if (j.error === 'code') { try { localStorage.removeItem('aq_school_code'); } catch (x) {} setCloud('off'); modal(tr('codeH'), `<p>${tr('codeWrong')}</p>`, [[tr('ok'), null]]); return; }   // the school code is no longer accepted
     if (j.conflict && j.data) {         // cloud copy is newer: adopt it
       const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('aq_p_' + P.id, JSON.stringify(P));
     }
+    if (j.rejected) { P.mode = 'offline'; delete P.realPending; saveSoon(); setCloud('none'); modal('Not approved', '<p>Your teacher did not approve this number for the school. You can keep playing here on this device. Please ask your teacher for help.</p>', [[tr('ok'), null]]); return; }
+    if (j.ok && j.pending) { P.waiting = true; setCloud('wait'); return; }   // the teacher has not approved yet: the device keeps the name and class and asks again at the next save
+    if (j.ok && P.waiting) { delete P.waiting; toast('✅ Your teacher approved you!'); }
     if (j.ok && P.realPending) { delete P.realPending; lsSet('aq_p_' + P.id, JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined }))); }   // the school sheet has the name and class now
     setCloud('ok');
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
-  let local = null, cloud = null, offline = false, deleted = false, limited = false;
+  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false, movedNum = false;
   try { const t = lsGet('aq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
@@ -1409,6 +1447,9 @@ async function loadProfile(id) {
       const j = await r.json();
       if (!j.ok && j.error === 'rate') limited = true;   // too many tries for a minute: the answer says nothing about the number
       if (j.ok && j.deleted) deleted = true;
+      if (j.ok && j.pending) pendingHero = true;
+      if (j.ok && j.moved) movedNum = true;
+      if (j.ok && j.rejected) rejectedHero = true;
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
     } catch (e) { offline = true; }
@@ -1417,7 +1458,7 @@ async function loadProfile(id) {
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
   if (deleted) { try { localStorage.removeItem('aq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
-  return { profile: best, offline, limited };
+  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum };
 }
 
 /* ====================== SCREENS / MODAL ====================== */
@@ -1459,6 +1500,9 @@ $('#loginBtn').onclick = async () => {   // 🏫 a school student types their nu
   if (r.profile && (r.profile.mode || 'school') === 'school') { P = r.profile; P.mode = 'school'; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
   if (r.deleted) { modal(tr('deletedH'), `<p>${tr('deletedP')}</p>`, [[tr('newBtn'), () => $('#newBtn').click()], [tr('ok'), null, true]]); return; }
   if (r.limited) { modal(tr('waitH'), `<p>${tr('waitP')}</p>`, [[tr('ok'), null]]); return; }
+  if (r.pending) { modal('⏳ Waiting', '<p>Your teacher has not approved this number yet. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
+  if (r.rejected) { modal('Not approved', '<p>This number was not approved. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
+  if (r.moved) { modal('🏠 Moved to home', '<p>This number was moved to home. If your family got a hero file, tap <b>Load a hero from a file</b> on the start screen.</p>', [[tr('ok'), null]]); return; }
   const warn = r.offline ? `<p>${tr('offlineWarn')}</p>` : '';
   modal(tr('unknownH'), `<p>${tr('unknownP').replace('{id}', esc(id))}</p>${warn}<p>${tr('unknownP2')}</p>`, [[tr('tryAgain'), null], [tr('newBtn'), () => $('#newBtn').click(), true]]);
 };
@@ -1470,10 +1514,19 @@ function removedByTeacher() {   // the teacher deleted this student: forget the 
   const id = P && P.id; P = null; try { if (id) localStorage.removeItem('aq_p_' + id); } catch (e) {}
   show('login'); renderStart(); modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['OK', null]]);
 }
-$('#newBtn').onclick = () => { $('#regName').value = ''; $('#regClass').value = ''; $('#regMsg').textContent = ''; $('#regMsg2').textContent = ''; $('#regTick').checked = false; $('#regForm').style.display = ''; $('#regDone').style.display = 'none'; show('register'); };
+let schoolClasses = [];
+async function loadSchoolClasses() {   // the school's class list (names only) for the dropdown; no list: the student types the class as before
+  schoolClasses = []; const sel = $('#regClassSel'); sel.style.display = 'none'; $('#regClass').style.display = '';
+  if (!CFG.SCRIPT_URL) return;
+  try {
+    const j = await (await fetch(CFG.SCRIPT_URL + '?action=classes')).json();
+    if (j.ok && j.classes && j.classes.length) { schoolClasses = j.classes; sel.innerHTML = '<option value="">— choose your class —</option>' + j.classes.map(c => `<option>${esc(c)}</option>`).join(''); sel.style.display = ''; $('#regClass').style.display = 'none'; }
+  } catch (e) {}
+}
+$('#newBtn').onclick = () => { loadSchoolClasses(); $('#regName').value = ''; $('#regClass').value = ''; $('#regMsg').textContent = ''; $('#regMsg2').textContent = ''; $('#regTick').checked = false; $('#regForm').style.display = ''; $('#regDone').style.display = 'none'; show('register'); };
 $('#regBack').onclick = () => { show('login'); loginView('number'); };
 $('#regGo').onclick = async () => {
-  const name = $('#regName').value.trim().replace(/\s+/g, ' '), cls = $('#regClass').value.trim().replace(/\s+/g, ' '), msg = $('#regMsg');
+  const name = $('#regName').value.trim().replace(/\s+/g, ' '), cls = ($('#regClassSel').style.display !== 'none' ? $('#regClassSel').value : $('#regClass').value).trim().replace(/\s+/g, ' '), msg = $('#regMsg');
   if (name.length < 4 || !name.includes(' ')) { msg.textContent = 'Please write your full name: first name and last name.'; return; }
   if (!cls) { msg.textContent = 'Please write your class.'; return; }
   msg.textContent = 'Making your number…'; $('#regGo').disabled = true;
@@ -4035,6 +4088,68 @@ setInterval(() => {
 document.addEventListener('visibilitychange', () => { if (document.hidden && P) saveSoon(true); });
 window.addEventListener('pagehide', () => { if (P) saveSoon(true); });
 
+/* ====================== ADMIN AREA (the registry: schools and player counts only) ====================== */
+let SYSKEY = null, SYS = [];
+async function sysCall(action, extra) {
+  const r = await fetch(CFG.REGISTRY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, key: SYSKEY }, extra || {})) });
+  return r.json();
+}
+function sysAsk() {
+  if (!CFG.REGISTRY_URL) { modal('Admin', '<p>The registry is not set up here.</p>', [['OK', null]]); return; }
+  modal('🛡 Admin sign-in', `<p class="small">Only the Admin e-mail can sign in. We send it a 6-digit code.</p><input id="syMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="admin e-mail"><button class="btn" id="sySend" style="margin-top:8px">Send me a code</button>
+    <div id="syBox" style="display:none;margin-top:10px"><input id="syCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="syGo" style="margin-top:8px">Sign in</button></div><div class="msg" id="syMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
+  const msg = t => { $('#syMsg').textContent = t; }, post = async body => (await fetch(CFG.REGISTRY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })).json();
+  $('#sySend').onclick = async () => {
+    const em = $('#syMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
+    msg('Sending…'); $('#sySend').disabled = true;
+    try { const j = await post({ action: 'adminRequest', email: em }); if (j.ok) { msg('If this is the Admin e-mail, a code is on its way. It works for 10 minutes.'); $('#syBox').style.display = ''; $('#syCode').focus(); } else msg(j.error === 'rate' ? 'Too many tries. Please wait a while.' : 'The e-mail could not be sent.'); } catch (e) { msg('I could not reach the registry. Please check the internet.'); }
+    $('#sySend').disabled = false;
+  };
+  $('#syGo').onclick = async () => {
+    const em = $('#syMail').value.trim().toLowerCase(), code = $('#syCode').value.trim(); if (!/^\d{6}$/.test(code)) { msg('The code has 6 digits.'); return; }
+    msg('Checking…'); $('#syGo').disabled = true;
+    try { const j = await post({ action: 'adminVerify', email: em, code }); if (j.ok) { $('#modal').classList.remove('on'); SYSKEY = j.token; sysEnter(); return; } msg('That code is not right, or it has expired.'); } catch (e) { msg('I could not reach the registry.'); }
+    $('#syGo').disabled = false;
+  };
+  $('#syMail').onkeydown = e => { if (e.key === 'Enter') $('#sySend').click(); }; $('#syCode').onkeydown = e => { if (e.key === 'Enter') $('#syGo').click(); };
+  setTimeout(() => { const i = $('#syMail'); if (i) i.focus(); }, 60);
+}
+async function sysEnter() {
+  toast('Loading…');
+  try { const j = await sysCall('listSchools'); if (!j.ok) { SYSKEY = null; modal('Admin', '<p>Could not sign in.</p>', [['OK', null]]); return; } SYS = j.schools; show('sysadmin'); sysRender(); }
+  catch (e) { SYSKEY = null; modal('Admin', '<p>I could not reach the registry. Please check the internet.</p>', [['OK', null]]); }
+}
+function sysRender() {
+  const players = SYS.reduce((a, s) => a + (Number(s.players) || 0), 0), act = SYS.reduce((a, s) => a + (Number(s.activeToday) || 0), 0);
+  $('#sysCards').innerHTML = [[SYS.length, 'schools'], [SYS.filter(s => s.status === 'active').length, 'active'], [players, 'players in total'], [act, 'played today']].map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
+  const chip = s => `<span class="chip ${s === 'active' ? 'act' : s === 'suspended' ? 'sus' : 'wai'}">${s === 'waiting' ? 'setting up' : esc(s)}</span>`;
+  const ago = iso => { if (!iso) return 'never'; const d = Math.round((Date.now() - new Date(iso)) / 864e5); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
+  $('#sysTable').innerHTML = '<thead><tr><th>School</th><th>Code</th><th>Status</th><th>Games</th><th>Players</th><th>Today</th><th>Counted</th><th>Script</th><th></th></tr></thead><tbody>' +
+    (SYS.length ? SYS.map(s => `<tr data-sid="${esc(s.schoolId)}"><td><b>${esc(s.name)}</b><br><small style="opacity:.7">${esc(s.ownerGmail || '')}</small></td><td><b>${esc(s.code)}</b></td><td>${chip(s.status)}</td><td>${esc(s.games || 'read')}</td><td>${Number(s.players) || 0}</td><td>${Number(s.activeToday) || 0}</td><td>${ago(s.lastActive)}</td><td>${esc(String(s.scriptVersion || ''))}</td>
+      <td style="white-space:nowrap"><button class="btn ghost" data-sys="${s.status === 'suspended' ? 'resume' : 'suspend'}" style="padding:6px 10px">${s.status === 'suspended' ? 'Resume' : 'Suspend'}</button> <button class="btn ghost" data-sys="code" style="padding:6px 10px">Code</button> <button class="btn ghost" data-sys="token" style="padding:6px 10px">Setup token</button> <button class="btn ghost" data-sys="delete" style="padding:6px 10px">🗑</button></td></tr>`).join('') : '<tr><td colspan="9" style="opacity:.7">No schools yet.</td></tr>') + '</tbody>';
+}
+async function sysReload() { const j = await sysCall('listSchools'); if (j.ok) { SYS = j.schools; sysRender(); } }
+$('#sysBack').onclick = () => { if (SYSKEY && SYSKEY.startsWith('ad_')) sysCall('adminLogout').catch(() => {}); SYSKEY = null; show('login'); };
+$('#sysRefresh').onclick = async () => { toast('Counting…'); try { await sysCall('refreshCounts'); await sysReload(); toast('Counts updated'); } catch (e) { toast('Could not reach the registry.'); } };
+$('#sysAdd').onclick = () => {
+  modal('+ Add a school', `<input id="saName" type="text" maxlength="80" placeholder="School name" style="margin-bottom:6px"><input id="saMail" type="email" autocapitalize="none" placeholder="Owner Gmail (keeps the data)" style="margin-bottom:6px"><input id="saCode" type="text" autocapitalize="characters" maxlength="20" placeholder="School code (empty: made for you)">
+    <label class="small" style="display:block;margin-top:8px"><input type="checkbox" id="saRead" checked style="width:auto"> Reading game</label><label class="small" style="display:block"><input type="checkbox" id="saMath" style="width:auto"> Math game</label>`,
+    [['Add', async () => {
+      const games = [$('#saRead').checked ? 'read' : '', $('#saMath').checked ? 'math' : ''].filter(Boolean).join(',') || 'read';
+      const j = await sysCall('addSchool', { name: $('#saName').value.trim(), ownerGmail: $('#saMail').value.trim(), code: $('#saCode').value.trim(), games });
+      if (!j.ok) { toast(j.error === 'taken' ? 'That code is already used.' : j.error === 'short' ? 'The code needs at least 4 letters or digits.' : 'Could not add: check the name and the Gmail.'); return; }
+      modal('School added', `<p>School code: <b>${esc(j.code)}</b></p><p>Setup token (shown now; you can make a new one later):</p><p style="font-family:Consolas,monospace;font-size:1.2rem;user-select:all"><b>${esc(j.setupToken)}</b></p><p class="small">The school owner pastes this token into the school's setup sheet.</p>`, [['OK', null]]); sysReload();
+    }], ['Cancel', null, true]]);
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-sys]'); if (!b) return;
+  const sid = b.closest('tr').dataset.sid, s = SYS.find(x => x.schoolId === sid), what = b.dataset.sys; if (!s) return;
+  if (what === 'suspend') modal('Suspend ' + esc(s.name) + '?', '<p>Students of this school can no longer play in school mode. They can move their wizard to home. The school keeps all its data.</p>', [['Suspend', async () => { await sysCall('setStatus', { schoolId: sid, status: 'suspended' }); sysReload(); }], ['Cancel', null, true]]);
+  else if (what === 'resume') sysCall('setStatus', { schoolId: sid, status: 'active' }).then(j => { if (!j.ok) toast('Could not resume: ' + (j.error || 'error')); sysReload(); });
+  else if (what === 'code') modal('Change the code of ' + esc(s.name), '<p class="small">New devices need the new code. Printed cards still show the old one.</p><input id="scCode" type="text" autocapitalize="characters" maxlength="20" value="' + esc(s.code) + '">', [['Save', async () => { const j = await sysCall('setCode', { schoolId: sid, code: $('#scCode').value.trim() }); if (!j.ok) toast(j.error === 'taken' ? 'That code is already used.' : 'Could not change the code.'); sysReload(); }], ['Cancel', null, true]]);
+  else if (what === 'token') modal('New setup token', '<p>Make a new setup token for ' + esc(s.name) + '? The old token stops working.</p>', [['Make it', async () => { const j = await sysCall('newSetupToken', { schoolId: sid }); if (!j.ok) { toast('Could not make a token.'); return; } modal('Setup token', `<p style="font-family:Consolas,monospace;font-size:1.2rem;user-select:all"><b>${esc(j.setupToken)}</b></p>`, [['OK', null]]); }], ['Cancel', null, true]]);
+  else if (what === 'delete') modal('Delete ' + esc(s.name) + '?', '<p>This removes the school from the registry. Its students can no longer find it by its code. The school’s own Google Sheet is not touched.</p>', [['Delete', async () => { await sysCall('deleteSchool', { schoolId: sid }); sysReload(); }], ['Cancel', null, true]]);
+});
 /* ====================== TEACHER (ADMIN) AREA ====================== */
 // The password is checked by the Google script, never by this page, and it is kept in memory only (gone when the tab closes).
 let ADMKEY = null; const ADM = { students: [], sortKey: 'last', sortDir: -1, filter: '', soundVer: 0 };
@@ -4092,20 +4207,217 @@ function startDemo() {
   openMenu();
 }
 $('#admDemo').onclick = () => startDemo();
-function adminAsk() {
-  if (!CFG.SCRIPT_URL) { modal('Teacher area', '<p>The cloud is not set up, so there is no student data to show.</p>', [['OK', null]]); return; }
-  modal('🔧 Teacher area', '<p>Enter the teacher password.</p><input id="admPass" type="password" autocomplete="off" style="margin:6px 0">', [['Open', adminOpen], ['Cancel', null, true]]);
+let ADM_ROLE = '', ADM_EMAIL = '', ADM_KIND = 'school';
+async function useSchool(code) {   // find the school's own service from its code: true / a message
+  code = String(code || '').trim().toUpperCase(); if (code.length < 3) return 'Please type the school code.';
+  const r = await checkSchoolCode(code);
+  if (r === true) { lsSet('aq_staff_code', code); return true; }
+  return r === 'suspended' ? "This school's access to the game has ended. The school's data is still in its own Google Sheet." : r === 'rate' ? 'Too many tries. Please wait a minute.' : r === 'offline' ? 'I could not reach the service. Please check the internet.' : 'That school code is not right.';
+}
+function adminAsk(kind) {
+  ADM_KIND = kind || ADM_KIND || 'school'; const teacher = ADM_KIND === 'teacher';
+  modal(teacher ? '👩‍🏫 Teacher sign-in' : '🏫 School sign-in', `<p class="small">${teacher ? 'Sign in with the e-mail your school added for you.' : 'For the school owner. Your school code and your e-mail.'} We send you a 6-digit code.</p>
+    <input id="stSchool" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" placeholder="School code" value="${esc(lsGet('aq_staff_code') || lsGet('aq_school_code') || '')}" style="margin-bottom:8px">
+    <input id="stMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="name@school.org"><button class="btn" id="stSend" style="margin-top:8px">Send me a code</button>
+    <div id="stBox" style="display:none;margin-top:10px"><input id="stCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="stGo" style="margin-top:8px">Sign in</button></div>
+    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>${teacher ? '' : '<div style="margin-top:8px"><a href="#" id="stPw" style="color:inherit;opacity:.7;font-size:.85rem">Use the school password instead</a></div>'}`, [['Cancel', null, true]]);
+  const msg = t => { $('#stMsg').textContent = t; };
+  $('#stSend').onclick = async () => {
+    const em = $('#stMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
+    msg('Checking the school…'); $('#stSend').disabled = true;
+    const u = await useSchool($('#stSchool').value); if (u !== true) { msg(u); $('#stSend').disabled = false; return; }
+    if (!CFG.SCRIPT_URL) { msg('The cloud is not set up here.'); $('#stSend').disabled = false; return; }
+    msg('Sending…');
+    try {
+      const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffRequest', email: em }) }), j = await r.json();
+      if (j.ok) { msg('If this e-mail is on the staff list, a code is on its way. It works for 10 minutes.'); $('#stBox').style.display = ''; $('#stCode').focus(); }
+      else msg(j.error === 'rate' ? 'Too many tries. Please wait a while.' : 'The e-mail could not be sent. Please try again later.');
+    } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
+    $('#stSend').disabled = false;
+  };
+  $('#stGo').onclick = async () => {
+    const em = $('#stMail').value.trim().toLowerCase(), code = $('#stCode').value.trim(); if (!/^\d{6}$/.test(code)) { msg('The code has 6 digits.'); return; }
+    msg('Checking…'); $('#stGo').disabled = true;
+    try {
+      const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffVerify', email: em, code }) }), j = await r.json();
+      if (j.ok) {
+        if (!teacher && j.role !== 'owner') { fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffLogout', key: j.token }) }).catch(() => {}); msg('This e-mail is a teacher, not a school owner. Please use "Teacher" on the start screen.'); $('#stGo').disabled = false; return; }
+        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = teacher ? 'teacher' : j.role; ADM_EMAIL = j.email; adminEnter(); return;   // the Teacher entrance always shows the teacher's view; the school's own service decides what the person may really do
+      }
+      msg('That code is not right, or it has expired. Ask for a new one.');
+    } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
+    $('#stGo').disabled = false;
+  };
+  $('#stSchool').onkeydown = $('#stMail').onkeydown = e => { if (e.key === 'Enter') $('#stSend').click(); }; $('#stCode').onkeydown = e => { if (e.key === 'Enter') $('#stGo').click(); };
+  if ($('#stPw')) $('#stPw').onclick = async e => { e.preventDefault(); const u = await useSchool($('#stSchool').value); if (u !== true) { msg(u); return; } adminPassAsk(); };
+  setTimeout(() => { const i = $('#stSchool').value ? $('#stMail') : $('#stSchool'); if (i) i.focus(); }, 60);
+}
+function adminPassAsk() {
+  modal('🏫 School area', '<p>Enter the school password.</p><input id="admPass" type="password" autocomplete="off" style="margin:6px 0">', [['Open', adminOpen], ['Cancel', null, true]]);
   setTimeout(() => { const i = $('#admPass'); if (i) { i.focus(); i.onkeydown = e => { if (e.key === 'Enter') $('#mBtns button').click(); }; } }, 60);
 }
 async function adminOpen() {
-  ADMKEY = $('#admPass').value; if (!ADMKEY) return;
+  ADMKEY = $('#admPass').value; if (!ADMKEY) return; ADM_ROLE = 'owner'; ADM_EMAIL = '(teacher password)';
+  await adminEnter(true);
+}
+async function adminEnter(viaPassword) {
   toast('Checking…');
   try {
     const j = await adminCall('list');
-    if (!j.ok) { ADMKEY = null; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : 'That password is not right.'}</p>`, [['Try again', adminAsk], ['Close', null, true]]); return; }
-    show('admin'); adminRender(j); adminCodeLoad();
-  } catch (e) { ADMKEY = null; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
+    if (!j.ok) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : viaPassword ? 'That password is not right.' : 'Could not sign in.'}</p>`, [['Try again', () => adminAsk()], ['Close', null, true]]); return; }
+    show('admin'); const teacher = ADM_ROLE === 'teacher';
+    $('#admTitle').textContent = teacher ? '👩‍🏫 Teacher area' : '🏫 School area';
+    $('#admWho').textContent = 'Signed in: ' + ADM_EMAIL + ' · ' + (teacher ? 'Teacher' : 'School owner');
+    ['admCode', 'admDemoCard', 'admSound'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; });
+    adminRender(j); if (!teacher) { adminCodeLoad(); adminStaffLoad(); } else $('#admStaff').style.display = 'none';
+    adminClassesLoad(); adminWaitLoad(); if (!teacher) adminMovedLoad(); else $('#admMoved').style.display = 'none';
+  } catch (e) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
 }
+/* ----- classes, approval settings (owner) and the waiting list (owner and teachers) ----- */
+let ADM_CLASSES = [], ADM_APPROVAL = false;
+const clsKey = s => String(s || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '');
+async function adminClassesLoad() {
+  let j; try { j = await adminCall('listClasses'); } catch (e) { return; }
+  if (!j || !j.ok) return;
+  ADM_CLASSES = j.classes; ADM_APPROVAL = !!j.approval;
+  const sel = $('#admClassSel'), cur = ADM.cls || '', names = ADM_CLASSES.filter(c => !c.archived).map(c => c.name);
+  const fromStudents = [...new Set(ADM.students.map(s => s.cls).filter(Boolean))];   // classes typed by hand before the class list existed
+  const all = [...new Set([...names, ...fromStudents])].sort();
+  sel.innerHTML = '<option value="">All classes</option>' + all.map(c => `<option ${c === cur ? 'selected' : ''}>${esc(c)}</option>`).join('');
+  const box = $('#admClasses');
+  if (ADM_ROLE !== 'owner') { box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML = '<b>🏫 Classes and approval</b><p class="small" style="margin:6px 0;opacity:.85">The classes new students can choose from. If the list is empty, students type their class themselves.</p>' +
+    (ADM_CLASSES.length ? ADM_CLASSES.map(c => `<div class="setRow"><div class="setName"><b>${esc(c.name)}</b>${c.archived ? ' <span class="setBadge">archived</span>' : ''}</div><div class="setBtns"><button class="btn ghost" data-clsarch="${esc(c.name)}" data-to="${c.archived ? 0 : 1}">${c.archived ? 'Restore' : 'Archive'}</button></div></div>`).join('') : '<p class="small" style="opacity:.7">No classes yet.</p>') +
+    `<div class="row" style="justify-content:flex-start;margin-top:8px;gap:8px;flex-wrap:wrap"><input id="clsNew" type="text" placeholder="New class, e.g. 3B" maxlength="20" style="max-width:200px;padding:8px;font-size:1rem"><button class="btn" id="clsAdd" style="padding:8px 14px">+ Add class</button></div><div class="msg" id="clsMsg" style="min-height:1.2em"></div>
+    <hr style="opacity:.2"><label class="row" style="justify-content:flex-start;gap:8px"><input type="checkbox" id="apprOn" ${ADM_APPROVAL ? 'checked' : ''} style="width:auto"> <span>New students must be approved by a teacher</span></label><div class="small" style="opacity:.75;margin-top:4px">${ADM_APPROVAL ? 'A new student plays at once, but is saved to the school only after a teacher approves.' : 'Off: new students are saved to the school straight away.'}</div>`;
+}
+async function adminWaitLoad() {
+  const box = $('#admWait'); let j; try { j = await adminCall('pendingList'); } catch (e) { return; }
+  if (!j || !j.ok) { box.style.display = 'none'; return; }
+  ADM.wait = j.pending;
+  if (!j.pending.length && !ADM_APPROVAL) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  const classes = [...new Set([...ADM_CLASSES.filter(c => !c.archived).map(c => c.name), ...j.pending.map(p => p.cls)])];
+  if (ADM.waitCls && !j.pending.some(p => clsKey(p.cls) === clsKey(ADM.waitCls))) ADM.waitCls = '';   // that class has nobody waiting any more: show everyone
+  const fc = ADM.waitCls || '', shown = j.pending.filter(p => !fc || clsKey(p.cls) === clsKey(fc));
+  box.innerHTML = `<div class="row" style="justify-content:space-between"><b>⏳ Waiting for approval (${j.pending.length})</b><select id="waitCls" class="ctl sm"><option value="">All classes</option>${[...new Set(j.pending.map(p => p.cls))].sort().map(c => `<option ${c === fc ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>` +
+    (shown.length ? `<div class="row" style="justify-content:flex-start;margin:8px 0;gap:8px;flex-wrap:wrap"><label class="small"><input type="checkbox" id="waitAll" style="width:auto"> Select all</label><button class="btn" id="waitOk" style="padding:8px 14px">✔ Approve selected</button><button class="btn" id="waitOkAll" style="padding:8px 14px">✔✔ Approve all${fc ? ' in ' + esc(fc) : ''} (${shown.length})</button><button class="btn ghost" id="waitNo" style="padding:8px 14px">✖ Reject selected</button></div>` +
+      shown.map(p => `<div class="setRow" data-wid="${esc(p.id)}"><label style="display:flex;gap:8px;align-items:center;flex:1;min-width:220px"><input type="checkbox" class="waitTick" style="width:auto"><span class="setName"><b>${esc(p.nick)}</b> <small>#${esc(p.id)} · asked ${p.requested ? new Date(p.requested).toLocaleDateString() : ''}</small></span></label>
+        <input type="text" class="waitName" value="${esc(p.real)}" maxlength="60" style="max-width:200px;padding:6px;font-size:.95rem"><select class="ctl sm waitClsSel">${classes.map(c => `<option ${clsKey(c) === clsKey(p.cls) ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>`).join('') +
+      '<div class="msg" id="waitMsg" style="min-height:1.2em"></div>' : '<p class="small" style="opacity:.7;margin-top:8px">Nobody is waiting.</p>');
+}
+document.addEventListener('change', e => {
+  if (e.target.id === 'waitCls') { ADM.waitCls = e.target.value; adminWaitLoad(); }
+  if (e.target.id === 'waitAll') document.querySelectorAll('#admWait .waitTick').forEach(c => { c.checked = e.target.checked; });
+  if (e.target.id === 'apprOn') adminCall('setApproval', { on: e.target.checked }).then(() => adminClassesLoad().then(adminWaitLoad)).catch(() => toast('Could not save.'));
+});
+document.addEventListener('click', async e => {
+  const t = e.target, arch = t.closest('[data-clsarch]');
+  try {
+    if (t.id === 'clsAdd') { const n = $('#clsNew').value.trim(); if (!n) return; const j = await adminCall('addClass', { name: n }); if (!j.ok) { $('#clsMsg').textContent = 'Could not add.'; return; } await adminClassesLoad(); return; }
+    if (arch) { await adminCall('archiveClass', { name: arch.dataset.clsarch, archived: arch.dataset.to === '1' }); await adminClassesLoad(); return; }
+    const picked = () => [...document.querySelectorAll('#admWait .setRow')].filter(r => r.querySelector('.waitTick').checked);
+    const msg = s => { const m = $('#waitMsg'); if (m) m.textContent = s; };
+    if (t.id === 'waitOk') {
+      const rows = picked(); if (!rows.length) { msg('Tick the students first.'); return; }
+      const j = await adminCall('approve', { items: rows.map(r => ({ id: r.dataset.wid, real: r.querySelector('.waitName').value.trim(), cls: r.querySelector('.waitClsSel').value })) });
+      toast(j.ok ? '✅ Approved ' + j.done + '. They appear in the student list when they next play.' : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); return;
+    }
+    if (t.id === 'waitOkAll') {
+      const n = ADM.wait.filter(p => !ADM.waitCls || clsKey(p.cls) === clsKey(ADM.waitCls)).length, cls = ADM.waitCls || '';
+      modal('Approve all', `<p>Approve ${n} student${n === 1 ? '' : 's'}${cls ? ' in class <b>' + esc(cls) + '</b>' : ''}?</p>`, [['Approve', async () => { const j = await adminCall('approveAll', { cls }); toast(j.ok ? '✅ Approved ' + j.done + '. They appear in the student list when they next play.' : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); }], ['Cancel', null, true]]);
+      return;
+    }
+    if (t.id === 'waitNo') {
+      const rows = picked(); if (!rows.length) { msg('Tick the students first.'); return; }
+      modal('Reject', `<p>Reject ${rows.length} student${rows.length === 1 ? '' : 's'}? They can keep playing on their device but will not be part of the school.</p>`, [['Reject', async () => { const j = await adminCall('reject', { ids: rows.map(r => r.dataset.wid) }); toast(j.ok ? 'Rejected ' + j.done : 'Could not reject.'); await adminWaitLoad(); }], ['Cancel', null, true]]);
+    }
+  } catch (x) { toast('Could not reach the cloud.'); }
+});
+async function adminRefreshStudents() { try { const j = await adminCall('list'); if (j.ok) { adminRender(j); } } catch (e) {} }
+/* ----- printable login cards: 8 per A4 page ----- */
+function loadQr() {   // a small public library, loaded only when cards are printed (needs the internet)
+  return new Promise(res => { if (window.qrcode) return res(true); const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; s.onload = () => res(!!window.qrcode); s.onerror = () => res(false); document.head.appendChild(s); });
+}
+async function printCards(list) {
+  toast('Preparing the cards…');
+  let code = '', schoolName = '';
+  try { const j = await adminCall('getSchoolCode'); if (j.ok) code = j.code; } catch (e) {}
+  if (CFG.REGISTRY_URL && code) { try { const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json(); if (j.ok && j.valid) schoolName = j.schoolName || ''; } catch (e) {} }
+  const url = location.origin + location.pathname.replace(/index\.html$/, ''), host = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  let qr = ''; if (await loadQr()) { try { const q = qrcode(0, 'M'); q.addData(url); q.make(); qr = q.createSvgTag({ cellSize: 3, margin: 0, scalable: true }); } catch (e) {} }
+  const card = s => `<div class="pcard"><div><div class="sc">${esc(schoolName || 'School')} ${s.cls ? '· ' + esc(s.cls) : ''}</div><div class="nm">${esc(s.real || s.nick)}</div></div>
+    <div><div class="sc">Your hero number · המספר שלך</div><div class="no">${esc(s.id)}</div></div>
+    <div class="row2"><div class="how"><b>1.</b> Open ${esc(host)} · <b>2.</b> Tap “School” · <b>3.</b> School code: <b>${esc(code)}</b> · <b>4.</b> Type your number.<div dir="rtl" style="margin-top:1mm">פותחים את המשחק, לוחצים “בית ספר”, מקלידים את קוד בית הספר <b>${esc(code)}</b> ואת המספר שלכם.</div></div>${qr}</div></div>`;
+  const sheet = document.createElement('div'); sheet.id = 'printSheet';
+  sheet.innerHTML = `<div class="pbar"><b>🖨 ${list.length} login card${list.length === 1 ? '' : 's'}</b><button class="btn" id="pcPrint" style="padding:6px 14px">Print</button><button class="btn ghost" id="pcClose" style="padding:6px 14px">Close</button><span class="small" style="opacity:.8">Keep the cards private: each shows a student's number.</span></div><div class="pgrid">${list.map(card).join('')}</div>`;
+  document.body.appendChild(sheet);
+  $('#pcPrint').onclick = () => window.print(); $('#pcClose').onclick = () => sheet.remove();
+}
+/* ----- Move to home: the student leaves the school (hand-over file or e-mail to the parent) ----- */
+function moveHomeAsk(id) {
+  const s = ADM.students.find(x => x.id === id), nm = s ? (s.real || s.nick) : id;
+  modal('🏠 Move to home', `<p>Move <b>${esc(nm)}</b> to home?</p><p class="small">The school will no longer see this wizard. The family keeps playing at home with an e-mail sign-up. The school owner can undo this for 30 days.</p>
+    <button class="btn" id="mvFile" style="margin:4px 0">💾 Move and download the hand-over file</button>
+    <div class="small" style="margin-top:8px">Or send the file to the parent:</div><input id="mvMail" type="email" autocapitalize="none" placeholder="parent e-mail" maxlength="80" style="margin:4px 0"><button class="btn" id="mvSend">✉️ Move and e-mail the parent</button><div class="msg" id="mvMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
+  const msg = t => { $('#mvMsg').textContent = t; };
+  const run = async parentEmail => {
+    msg('Working…'); $('#mvFile').disabled = $('#mvSend').disabled = true;
+    try {
+      const j = await adminCall('student', { id }); if (!j.ok) throw new Error('read');
+      const file = handoverText(JSON.parse(j.data));
+      if (!parentEmail) saveTextFile('SpellQuest-' + String((s && s.nick) || 'hero').replace(/[^\w֐-׿-]+/g, '_') + '.hero.json', file);
+      const r = await adminCall('moveStudent', { id, parentEmail, file: parentEmail ? file : undefined, gameUrl: location.origin + location.pathname.replace(/index\.html$/, '') });
+      if (!r.ok) { msg(r.error === 'mail' ? 'The e-mail could not be sent, so nothing was moved. Try again or download the file instead.' : 'Could not move: ' + (r.error || 'error')); $('#mvFile').disabled = $('#mvSend').disabled = false; return; }
+      $('#modal').classList.remove('on'); toast('🏠 Moved to home' + (r.mailed ? '. The file was e-mailed.' : '. Keep the downloaded file safe.'));
+      ADM.students = ADM.students.filter(x => x.id !== id); adminTable(); if (ADM_ROLE === 'owner') adminMovedLoad();
+    } catch (e) { msg('Something went wrong. Please try again.'); $('#mvFile').disabled = $('#mvSend').disabled = false; }
+  };
+  $('#mvFile').onclick = () => run('');
+  $('#mvSend').onclick = () => { const em = $('#mvMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type the parent e-mail.'); return; } run(em); };
+}
+async function adminMovedLoad() {   // the school owner: recently moved students (undo for 30 days) and the self-move switch
+  const box = $('#admMoved'); let j; try { j = await adminCall('listMoved'); } catch (e) { return; }
+  if (!j || !j.ok) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML = '<b>🏠 Moving to home</b>' + `<label class="row" style="justify-content:flex-start;gap:8px;margin:8px 0"><input type="checkbox" id="selfMoveOn" ${j.selfMove ? 'checked' : ''} style="width:auto"> <span>Students may move their own wizard to private</span></label>` +
+    (j.moved.length ? '<div class="small" style="opacity:.8;margin:6px 0">Recently moved (you can undo for 30 days):</div>' + j.moved.map(m => `<div class="setRow"><div class="setName"><b>${esc(m.nick)}</b> <small>#${esc(m.id)} · ${m.movedAt ? new Date(m.movedAt).toLocaleDateString() : ''} · by ${esc(m.by)}</small></div><div class="setBtns">${m.restorable ? `<button class="btn ghost" data-undo="${esc(m.id)}">↩ Undo</button>` : '<small style="opacity:.6">cannot undo</small>'}</div></div>`).join('') : '<p class="small" style="opacity:.7">Nobody was moved yet.</p>');
+}
+document.addEventListener('change', e => { if (e.target.id === 'selfMoveOn') adminCall('setSelfMove', { on: e.target.checked }).catch(() => toast('Could not save.')); });
+document.addEventListener('click', async e => {
+  const u = e.target.closest('[data-undo]'); if (!u) return;
+  try { const j = await adminCall('undoMove', { id: u.dataset.undo }); toast(j.ok ? '↩ Restored to the school' : 'Could not restore.'); await adminMovedLoad(); adminRefreshStudents(); } catch (x) { toast('Could not reach the cloud.'); }
+});
+async function adminStaffLoad() {   // the school owner adds and removes staff by e-mail
+  const box = $('#admStaff'); let j;
+  try { j = await adminCall('listStaff'); } catch (e) { box.style.display = ''; box.innerHTML = '<p class="small">Could not load the staff list.</p>'; return; }
+  if (!j.ok) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML = '<b>👩‍🏫 Staff</b><p class="small" style="margin:6px 0;opacity:.85">People who sign in with their school e-mail. Owners can do everything. Teachers can look at the students.</p>' +
+    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button>` : ''}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
+    `<div class="row" style="justify-content:flex-start;margin-top:10px;gap:8px;flex-wrap:wrap"><input id="stfMail" type="email" placeholder="e-mail to add" autocapitalize="none" style="max-width:260px;padding:8px;font-size:1rem"><select id="stfRole" style="padding:8px;font-size:1rem"><option value="teacher">Teacher</option><option value="owner">Owner</option></select><button class="btn" id="stfAdd" style="padding:8px 14px">+ Add</button></div><div class="msg" id="stfMsg" style="min-height:1.2em"></div>`;
+}
+document.addEventListener('click', async e => {
+  const rm = e.target.closest('[data-stf]'), add = e.target.closest('#stfAdd'), sc = e.target.closest('[data-stfcls]');
+  if (sc) {
+    const em = sc.dataset.stfcls, names = ADM_CLASSES.filter(c => !c.archived).map(c => c.name);
+    modal('Classes of ' + esc(em), `<p class="small">Which classes can this teacher see? Type ALL, or class names separated by commas${names.length ? ' (' + esc(names.join(', ')) + ')' : ''}.</p><input id="stfClsIn" type="text" value="${esc(sc.dataset.cur)}" maxlength="200">`, [['Save', async () => { const j = await adminCall('setStaffClasses', { email: em, classes: ($('#stfClsIn') ? $('#stfClsIn').value : 'ALL').trim() || 'ALL' }); if (!j.ok) toast('Could not save.'); adminStaffLoad(); }], ['Cancel', null, true]]);
+    return;
+  }
+  if (!rm && !add) return;
+  const msg = t => { const m = $('#stfMsg'); if (m) m.textContent = t; };
+  try {
+    if (add) {
+      const em = $('#stfMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
+      const j = await adminCall('addStaff', { email: em, role: $('#stfRole').value, classes: 'ALL' }); if (!j.ok) { msg('Could not add: ' + (j.error || 'error')); return; }
+      await adminStaffLoad(); const m = $('#stfMsg'); if (m) m.textContent = '✅ ' + em + ' can now sign in.';
+    } else {
+      const em = rm.dataset.stf;
+      modal('Remove staff', `<p>Remove <b>${esc(em)}</b>? They will be signed out and can no longer sign in.</p>`, [['Remove', async () => { const j = await adminCall('removeStaff', { email: em }); if (!j.ok) toast(j.error === 'last owner' ? 'The school must keep at least one owner.' : 'Could not remove.'); adminStaffLoad(); }], ['Cancel', null, true]]);
+    }
+  } catch (x) { msg('Could not reach the cloud.'); }
+});
 async function adminCodeLoad() {   // the school code students type once on a new device
   try { const j = await adminCall('getSchoolCode'); $('#admCode').innerHTML = j.ok ? `🏫 School code: <b style="font-size:1.3rem;letter-spacing:.08em">${esc(j.code)}</b> <button class="btn ghost" id="admCodeChange" style="padding:6px 12px;margin-left:8px">Change</button><div class="small" style="opacity:.75;margin-top:4px">Students type this code once on a new device. Devices that are already set up keep working when you change it.</div>` : ''; } catch (e) { $('#admCode').textContent = ''; }
 }
@@ -4122,27 +4434,35 @@ async function adminAppUsers() {   // only a count: the app keeps no names and n
     if (j.ok) $('#admApp').innerHTML = `📱 App users (verified by email): <b>${j.total}</b> in total · ${j.week} new this week · ${j.day} new today`; else $('#admApp').textContent = '';
   } catch (e) { $('#admApp').textContent = ''; }
 }
+const clsNorm = s => String(s || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '');
+function adminFiltered() {   // the students shown: the class filter and the search box
+  const f = ADM.filter.trim().toLowerCase(), fc = clsNorm(ADM.cls);
+  return ADM.students.filter(s => (!fc || clsNorm(s.cls) === fc) && (!f || (s.nick + ' ' + s.id + ' ' + (s.real || '') + ' ' + (s.cls || '')).toLowerCase().includes(f)));
+}
+function adminCardsRender() {   // the numbers at the top are for the students you see (the whole school, or the chosen class)
+  const rows = adminFiltered(), played = rows.filter(s => s.answers > 0), today = rows.filter(s => s.days === 0).length, inactive = rows.filter(s => s.days >= 7).length;
+  const avg = played.length ? Math.round(played.reduce((a, s) => a + s.accuracy, 0) / played.length) : 0, minToday = rows.reduce((a, s) => a + (s.days === 0 ? (s.minToday || 0) : 0), 0);
+  $('#admCards').innerHTML = [[rows.length, ADM.cls ? 'students in ' + esc(ADM.cls) : 'students'], [today + ' of ' + rows.length, 'played today'], [minToday, 'minutes played today'], [inactive, 'not played for 7+ days'], [avg + '%', 'average accuracy'], [Math.round(rows.reduce((a, s) => a + s.minutes, 0)), 'total minutes']]
+    .map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
+}
 function adminRender(j) {
   const byId = {}; for (const s of j.students) if (!byId[s.id] || s.answers >= byId[s.id].answers) byId[s.id] = s;   // one row per student
   ADM.students = Object.values(byId); ADM.soundVer = j.soundVer || 0;
   const dayDiff = iso => { if (!iso) return 9999; const a = new Date(iso), n = new Date(); return Math.round((new Date(n.getFullYear(), n.getMonth(), n.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5); };
   ADM.students.forEach(s => { s.days = dayDiff(s.last); });
-  const played = ADM.students.filter(s => s.answers > 0), today = ADM.students.filter(s => s.days === 0).length, inactive = ADM.students.filter(s => s.days >= 7).length;
-  const avg = played.length ? Math.round(played.reduce((a, s) => a + s.accuracy, 0) / played.length) : 0;
-  $('#admCards').innerHTML = [[ADM.students.length, 'students'], [today, 'played today'], [inactive, 'not played for 7+ days'], [avg + '%', 'average accuracy'], [Math.round(ADM.students.reduce((a, s) => a + s.minutes, 0)), 'total minutes']]
-    .map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
-  adminSets(); adminTable(); adminAppUsers(); $('#admDetail').style.display = 'none';
+  adminCardsRender();
+  if (ADM_ROLE !== 'teacher') adminSets(); adminTable(); if (!String(ADMKEY).startsWith('tk_')) adminAppUsers(); else $('#admApp').textContent = ''; $('#admDetail').style.display = 'none';
 }
 const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
 function adminTable() {
   const cols = [['nick', 'Student'], ['tier', 'Level'], ['accuracy', 'Accuracy'], ['answers', 'Answers'], ['minutes', 'Minutes'], ['coins', 'Coins'], ['craftAcc', 'Crafting'], ['restarts', 'Restarts'], ['last', 'Last played']];
-  const f = ADM.filter.trim().toLowerCase();
-  const rows = ADM.students.filter(s => !f || (s.nick + ' ' + s.id + ' ' + (s.real || '') + ' ' + (s.cls || '')).toLowerCase().includes(f))
+  const rows = adminFiltered()
     .sort((a, b) => { const k = ADM.sortKey; const va = k === 'last' ? (a.last || '') : k === 'nick' ? a.nick.toLowerCase() : a[k], vb = k === 'last' ? (b.last || '') : k === 'nick' ? b.nick.toLowerCase() : b[k]; return (va > vb ? 1 : va < vb ? -1 : 0) * ADM.sortDir; });
-  $('#admTable').innerHTML = '<thead><tr>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
-    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
-      <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${s.coins || 0}</td><td>${s.craftAcc ? s.craftAcc + "%" : "–"}</td><td>${s.restarts || 0}</td><td>${agoText(s.days)}</td></tr>`).join('')
-      : '<tr><td colspan="9" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
+  ADM.ticked = ADM.ticked || new Set(); adminCardsRender();
+  $('#admTable').innerHTML = '<thead><tr><th class="tickCell" style="cursor:default"><input type="checkbox" id="admAllTick" title="Select all" style="width:auto"></th>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
+    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td class="tickCell"><input type="checkbox" class="admTick" data-id="${esc(s.id)}" ${ADM.ticked.has(s.id) ? 'checked' : ''} style="width:auto"></td><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small> <button class="btn ghost mvHome" data-id="${esc(s.id)}" style="padding:2px 8px;font-size:.78rem;margin-left:4px">🏠 Move to home</button>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
+      <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${s.coins || 0}</td><td>${s.craftAcc ? s.craftAcc + "%" : "–"}</td><td>${s.restarts || 0}</td><td>${agoText(s.days)}${s.days === 0 && s.minToday ? ' · ' + s.minToday + ' min' : ''}</td></tr>`).join('')
+      : '<tr><td colspan="10" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
 }
 function keyLabel(k) {
   const t = k[0], body = k.slice(2);
@@ -4193,11 +4513,21 @@ async function adminStudent(id) {
       [['Yes, delete', async () => { try { const r = await adminCall('deleteStudent', { id: p.id }); if (r.ok) { ADM.students = ADM.students.filter(s => s.id !== p.id); box.style.display = 'none'; adminRender({ students: ADM.students, soundVer: ADM.soundVer }); toast('Student deleted'); } else toast('Could not delete: ' + (r.error || '')); } catch (e) { toast('Could not reach the cloud'); } }], ['Cancel', null, true]]);
   } catch (e) { box.innerHTML = '<p>Could not load this student. ' + esc(e.message || '') + '</p>'; }
 }
-$('#adminLink').onclick = e => { e.preventDefault(); adminAsk(); };
-$('#admBack').onclick = () => { ADMKEY = null; show('login'); };
+$('#lnkAdmin').onclick = e => { e.preventDefault(); sysAsk(); };
+$('#lnkSchool').onclick = e => { e.preventDefault(); adminAsk('school'); };
+$('#lnkTeacher').onclick = e => { e.preventDefault(); adminAsk('teacher'); };
+$('#admBack').onclick = () => { if (String(ADMKEY).startsWith('tk_')) adminCall('staffLogout').catch(() => {}); ADMKEY = null; ADM_ROLE = ''; show('login'); };
 $('#admRefresh').onclick = async () => { try { const j = await adminCall('list'); if (j.ok) adminRender(j); } catch (e) { toast('Could not refresh'); } };
 $('#admSearch').oninput = () => { ADM.filter = $('#admSearch').value; adminTable(); };
+$('#admClassSel').onchange = () => { ADM.cls = $('#admClassSel').value; adminTable(); };
+$('#admPrint').onclick = () => {   // the ticked students, or everybody you see
+  const shown = adminFiltered(), ticked = shown.filter(s => ADM.ticked && ADM.ticked.has(s.id)), list = (ticked.length ? ticked : shown).slice().sort((a, b) => (a.cls || '').localeCompare(b.cls || '') || (a.real || a.nick).localeCompare(b.real || b.nick));
+  if (!list.length) { toast('No students to print.'); return; }
+  printCards(list);
+};
 $('#admTable').onclick = e => {
+  const mv = e.target.closest('.mvHome'); if (mv) { moveHomeAsk(mv.dataset.id); return; }
+  if (e.target.closest('.tickCell')) { if (e.target.id === 'admAllTick') { adminFiltered().forEach(s => e.target.checked ? ADM.ticked.add(s.id) : ADM.ticked.delete(s.id)); adminTable(); } else if (e.target.classList.contains('admTick')) { e.target.checked ? ADM.ticked.add(e.target.dataset.id) : ADM.ticked.delete(e.target.dataset.id); } return; }
   const th = e.target.closest('th'); if (th) { const k = th.dataset.k; ADM.sortDir = ADM.sortKey === k ? -ADM.sortDir : (k === 'nick' ? 1 : -1); ADM.sortKey = k; adminTable(); return; }
   const tr = e.target.closest('tbody tr[data-id]'); if (tr) adminStudent(tr.dataset.id);
 };
@@ -4270,10 +4600,10 @@ const TT = {
   en: {
     sub: 'An adventure game: learn to read and write Hebrew, one spell at a time!', continue: 'Continue as:',
     mSchool: "🏫 I'm a school student", mHome: '🏠 Play at home', mOffline: '📴 Play offline', mLoad: '📂 Load a hero from a file',
-    teacher: 'Teacher area', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
+    teacher: 'Teacher area', lAdmin: 'Admin', lSchool: 'School', lTeacher: 'Teacher', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
     codeH: 'School code', codeP: 'Your teacher gives you this code. You type it only once on this device.', codePh: 'School code',
     numH: 'Your student number', numP: 'Type your student number to begin.', numPh: 'Your number', go: "Let's go! ▶", newBtn: '🌟 I am new', changeCode: 'Change the school code',
-    codeShort: 'Please type the school code.', checking: 'Checking…', codeWrong: 'That code is not right. Ask your teacher.', codeRate: 'Too many tries. Please wait a minute.', codeOffline: "I can't reach the school right now. Check the internet and try again.",
+    codeShort: 'Please type the school code.', codeSusp: "This school's access to the game has ended. Ask your teacher.", checking: 'Checking…', codeWrong: 'That code is not right. Ask your teacher.', codeRate: 'Too many tries. Please wait a minute.', codeOffline: "I can't reach the school right now. Check the internet and try again.",
     numShort: 'Your number looks too short. Check it and try again!', looking: 'Looking for your hero…',
     unknownH: "I don't know this number", unknownP: "I can't find the number <b>{id}</b>.", unknownP2: 'Check it and try again. If you are new, tap <b>I am new</b>.', offlineWarn: "⚠️ I can't reach the school right now, so I can't check your number. Try again in a moment.", tryAgain: 'Try again', waitH: 'Please wait a moment', waitP: 'Too many tries in a short time. Please wait a minute and try again.', ok: 'OK',
     deletedH: 'This number is not active anymore', deletedP: 'Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.',
@@ -4291,10 +4621,10 @@ const TT = {
   he: {
     sub: 'משחק הרפתקאות: לומדים לקרוא ולכתוב עברית, לחש אחרי לחש!', continue: 'להמשיך בתור:',
     mSchool: '🏫 אני תלמיד/ה בבית ספר', mHome: '🏠 משחקים בבית', mOffline: '📴 משחקים בלי אינטרנט', mLoad: '📂 טעינת גיבור מקובץ',
-    teacher: 'אזור מורים', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
+    teacher: 'אזור מורים', lAdmin: 'מנהל המערכת', lSchool: 'בית ספר', lTeacher: 'מורה', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
     codeH: 'קוד בית הספר', codeP: 'המורה נותן לכם את הקוד הזה. מקלידים אותו רק פעם אחת במכשיר הזה.', codePh: 'קוד בית הספר',
     numH: 'מספר התלמיד/ה שלך', numP: 'הקלידו את מספר התלמיד/ה שלכם כדי להתחיל.', numPh: 'המספר שלך', go: 'יאללה! ▶', newBtn: '🌟 אני חדש/ה', changeCode: 'החלפת קוד בית הספר',
-    codeShort: 'נא להקליד את קוד בית הספר.', checking: 'בודקים…', codeWrong: 'הקוד לא נכון. שאלו את המורה.', codeRate: 'יותר מדי ניסיונות. המתינו דקה.', codeOffline: 'אין חיבור לבית הספר כרגע. בדקו את האינטרנט ונסו שוב.',
+    codeShort: 'נא להקליד את קוד בית הספר.', codeSusp: 'הגישה של בית הספר למשחק הסתיימה. שאלו את המורה.', checking: 'בודקים…', codeWrong: 'הקוד לא נכון. שאלו את המורה.', codeRate: 'יותר מדי ניסיונות. המתינו דקה.', codeOffline: 'אין חיבור לבית הספר כרגע. בדקו את האינטרנט ונסו שוב.',
     numShort: 'המספר נראה קצר מדי. בדקו ונסו שוב!', looking: 'מחפשים את הגיבור שלך…',
     unknownH: 'המספר הזה לא מוכר', unknownP: 'לא מצאתי את המספר <b>{id}</b>.', unknownP2: 'בדקו ונסו שוב. אם אתם חדשים, לחצו על <b>אני חדש/ה</b>.', offlineWarn: '⚠️ אין חיבור לבית הספר כרגע, אז אי אפשר לבדוק את המספר. נסו שוב עוד רגע.', tryAgain: 'לנסות שוב', waitH: 'רגע, בבקשה', waitP: 'יותר מדי ניסיונות בזמן קצר. המתינו דקה ונסו שוב.', ok: 'אישור',
     deletedH: 'המספר הזה כבר לא פעיל', deletedP: 'המורה הסיר את המספר הזה. בקשו עזרה מהמורה, או לחצו על <b>אני חדש/ה</b> כדי להתחיל מחדש.',
@@ -4342,7 +4672,18 @@ function openPrivacy() {   // in simple words, in the language chosen on the sta
 /* ----- 🏫 school student ----- */
 $('#mSchool').onclick = () => loginView(lsGet('aq_school_code') || lsGet('aq_last') ? 'number' : 'code');
 $('#changeCode').onclick = e => { e.preventDefault(); try { localStorage.removeItem('aq_school_code'); } catch (x) {} loginView('code'); };
-async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline'
+async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline' / 'suspended'. The registry says which school service the code belongs to.
+  if (CFG.REGISTRY_URL) {
+    try {
+      const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json();
+      if (!j.ok) return j.error === 'rate' ? 'rate' : 'offline';
+      if (!j.valid) return false;
+      if (j.suspended) return 'suspended';
+      lsSet('aq_school_name', j.schoolName || '');
+      if (CFG.SCRIPT_URL && !TEST_BUILD) { CFG.SCRIPT_URL = j.scriptUrl; lsSet('aq_school_url', j.scriptUrl); }   // (a test copy has no cloud: it never gets a school link)
+      return true;
+    } catch (e) { return 'offline'; }
+  }
   if (!CFG.SCRIPT_URL) return true;   // a test copy without the cloud: any code is fine
   try { const j = await (await fetch(CFG.SCRIPT_URL + '?action=checkCode&code=' + encodeURIComponent(code))).json(); if (!j.ok) return j.error === 'rate' ? 'rate' : 'offline'; return !!j.valid; } catch (e) { return 'offline'; }
 }
@@ -4351,7 +4692,7 @@ $('#codeGo').onclick = async () => {
   if (code.length < 3) { msg.textContent = tr('codeShort'); return; }
   msg.textContent = tr('checking'); $('#codeGo').disabled = true; const r = await checkSchoolCode(code); $('#codeGo').disabled = false;
   if (r === true) { lsSet('aq_school_code', code); loginView('number'); }
-  else msg.textContent = r === 'rate' ? tr('codeRate') : r === 'offline' ? tr('codeOffline') : tr('codeWrong');
+  else msg.textContent = r === 'suspended' ? tr('codeSusp') : r === 'rate' ? tr('codeRate') : r === 'offline' ? tr('codeOffline') : tr('codeWrong');
 };
 $('#schoolCode').addEventListener('keydown', e => { if (e.key === 'Enter') $('#codeGo').click(); });
 /* ----- 🏠 play at home (an e-mail code, once per device) and 📴 offline ----- */
@@ -4396,6 +4737,13 @@ const hash53 = (str, seed = 0) => {   // a small checksum against accidental dam
   h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 };
+function saveTextFile(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type || 'application/json' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+}
+function handoverText(p) {   // the hand-over file of a student leaving the school: a home hero without the real name and class
+  const h = JSON.parse(JSON.stringify(p)); delete h.real; delete h.cls; delete h.realPending; delete h.waiting; h.mode = 'home';
+  const core = { game: 'read', v: PROFILE_V, mode: 'home', hero: h }; return JSON.stringify(Object.assign({}, core, { sum: hash53(JSON.stringify(core)) }));
+}
 function downloadHero() {
   if (!P || P.mode === 'school') return;
   const core = { game: 'read', v: PROFILE_V, mode: P.mode, hero: JSON.parse(JSON.stringify(P)) }, text = JSON.stringify(Object.assign({}, core, { sum: hash53(JSON.stringify(core)) }));
@@ -4421,7 +4769,35 @@ function renderHeroTools() {
   const m = P.mode || 'school';
   $('#modeBadge').textContent = MODE_BADGE[m] + ' ' + { school: 'School', home: 'Home', offline: 'Offline' }[m];
   $('#saveHeroBtn').style.display = m === 'school' ? 'none' : ''; $('#upHomeBtn').style.display = m === 'offline' ? '' : 'none';
+  $('#toPrivBtn').style.display = m === 'school' && (SCHOOL_ST.suspended || SCHOOL_ST.selfMove) ? '' : 'none';
+  if (m === 'school') schoolStatusCheck();
 }
+/* ----- a school hero: is the school still allowed? may the student move their own wizard? ----- */
+const SCHOOL_ST = { suspended: false, selfMove: false, at: 0, shown: false };
+async function schoolStatusCheck() {
+  if (!P || P.mode !== 'school' || Date.now() - SCHOOL_ST.at < 300000) return;   // at most every 5 minutes
+  SCHOOL_ST.at = Date.now(); const code = lsGet('aq_school_code') || lsGet('aq_staff_code');
+  if (CFG.REGISTRY_URL && code) { try { const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json(); if (j.ok && j.valid) SCHOOL_ST.suspended = !!j.suspended; } catch (e) {} }   // no answer: the school keeps working
+  if (!SCHOOL_ST.suspended && CFG.SCRIPT_URL) { try { const j = await (await fetch(CFG.SCRIPT_URL + '?action=classes')).json(); if (j.ok) SCHOOL_ST.selfMove = !!j.selfMove; } catch (e) {} }
+  if (!P || P.mode !== 'school') return;
+  $('#toPrivBtn').style.display = SCHOOL_ST.suspended || SCHOOL_ST.selfMove ? '' : 'none';
+  if (SCHOOL_ST.suspended && !SCHOOL_ST.shown) {
+    SCHOOL_ST.shown = true;
+    modal('⏸ School access ended', "<p>Your school's access to the game has ended.</p><p>You can keep your wizard: move it to private and keep playing at home with an e-mail sign-up.</p>", [['Move my wizard to private', () => moveToPrivate()], ['Close', () => { P = null; SCHOOL_ST.shown = false; show('login'); renderStart(); }, true]]);
+  }
+}
+function moveToPrivate() {   // a school hero becomes a home hero on this device (no teacher needed)
+  const go = () => {
+    if (!SCHOOL_ST.suspended && SCHOOL_ST.selfMove && CFG.SCRIPT_URL) fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'selfMove', id: P.id }), keepalive: true }).catch(() => {});   // the school is told, when it allows this
+    P.mode = 'home'; delete P.realPending; delete P.waiting; delete P.real; delete P.cls; lsSet('aq_homeok', '1'); saveSoon(true); setCloud('none'); renderHeroTools(); openMenu(); toast('🏠 Your wizard is now a private home hero.');
+  };
+  if (lsGet('aq_homeok') === '1') go(); else emailSignup(go);
+}
+function movedHero() {   // the teacher moved this hero to home: it carries on here
+  P.mode = 'offline'; delete P.realPending; delete P.waiting; delete P.real; delete P.cls; saveSoon(); setCloud('none'); renderHeroTools();
+  modal('🏠 Moved to home', '<p>Your teacher moved your wizard to home. You can keep playing on this device. To play at home on other devices too, sign up with an e-mail.</p>', [['Sign up with e-mail', () => emailSignup(() => { P.mode = 'home'; lsSet('aq_homeok', '1'); saveSoon(true); renderHeroTools(); openMenu(); toast('🏠 This hero is now a home hero.'); })], ['Later', null, true]]);
+}
+$('#toPrivBtn').onclick = () => modal('🏠 Move to private?', '<p>Your wizard will leave the school and become a private home hero. The school will no longer see your progress.</p>', [['Yes, move it', () => moveToPrivate()], ['Cancel', null, true]]);
 $('#saveHeroBtn').onclick = () => downloadHero();
 $('#upHomeBtn').onclick = () => emailSignup(() => { P.mode = 'home'; lsSet('aq_homeok', '1'); saveSoon(true); openMenu(); toast('🏠 This hero is now a home hero.'); });
 $('#privBtn').onclick = () => openPrivacy();
