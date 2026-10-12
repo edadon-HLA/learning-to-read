@@ -4128,10 +4128,9 @@ function sysRender() {
     (SYS.length ? SYS.map(s => `<tr data-sid="${esc(s.schoolId)}"><td><b>${esc(s.name)}</b><br><small style="opacity:.7">${esc(s.ownerGmail || '')}</small></td><td><b>${esc(s.code)}</b></td><td>${chip(s.status)}</td><td>${esc(s.games || 'read')}</td><td>${Number(s.players) || 0}</td><td>${Number(s.activeToday) || 0}</td><td>${ago(s.lastActive)}</td><td>${esc(String(s.scriptVersion || ''))}</td>
       <td style="white-space:nowrap"><button class="btn ghost" data-sys="${s.status === 'suspended' ? 'resume' : 'suspend'}" style="padding:6px 10px">${s.status === 'suspended' ? 'Resume' : 'Suspend'}</button> <button class="btn ghost" data-sys="code" style="padding:6px 10px">Code</button> <button class="btn ghost" data-sys="token" style="padding:6px 10px">New kit link</button> <button class="btn ghost" data-sys="delete" style="padding:6px 10px">🗑</button></td></tr>`).join('') : '<tr><td colspan="9" style="opacity:.7">No schools yet.</td></tr>') + '</tbody>';
 }
-async function copyText(t) {   // copy to the clipboard; the old way (a hidden text box) is the fallback when the browser refuses
-  try { await navigator.clipboard.writeText(t); return true; } catch (e) {
-    try { const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.focus(); a.select(); const ok = document.execCommand('copy'); a.remove(); return !!ok; } catch (x) { return false; }
-  }
+async function copyText(t) {   // copy to the clipboard: first the classic way (a hidden text box, works at once in a click), then the clipboard API with a time limit
+  try { const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.focus(); a.select(); const ok = document.execCommand('copy'); a.remove(); if (ok) return true; } catch (x) {}
+  try { await Promise.race([navigator.clipboard.writeText(t), new Promise((_, no) => setTimeout(no, 1500))]); return true; } catch (e) { return false; }
 }
 function kitModal(title, j, extra) {   // the Admin sends ONE link to the school owner
   const link = j.kitLink || '';
