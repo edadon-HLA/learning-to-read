@@ -502,7 +502,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 @media (max-height:700px){.side svg{height:112px}.hearts{font-size:1.1rem}.mid{font-size:.8rem}.panel{padding:8px}.opt{min-height:52px;font-size:1.75rem}.opt.w{font-size:1.35rem}}
 </style>
 </head>
-<body><div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e63946;color:#fff;font:700 11px sans-serif;text-align:center;padding:2px;pointer-events:none">🧪 TEST VERSION - saved on this device only, not the real game</div>
+<body><div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e63946;color:#fff;font:700 11px sans-serif;text-align:center;padding:2px;pointer-events:none">🧪 TEST VERSION - test school code TST-1, not the real game</div>
 
 <section id="gate" class="screen on">
   <h1>🔒 Learning to Read</h1>
@@ -556,7 +556,9 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   </div>
   <div class="admcards" id="admCards"></div>
   <div class="small center" id="admApp" style="opacity:.85;margin:4px 0 10px"></div>
+  <div class="small center" id="admWho" style="opacity:.85;margin:2px 0 6px"></div>
   <div class="card center" id="admCode" style="margin:6px 0"></div>
+  <div class="card" id="admStaff" style="display:none"></div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
@@ -800,7 +802,7 @@ const APP = (() => { try { return matchMedia('(display-mode: standalone)').match
 /* ====================== CONFIG ====================== */
 const CFG = {
   // Paste the Apps Script web app URL here to save progress to the school Google Sheet.
-  SCRIPT_URL: '',
+  SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbxCfn9duMw_OFqYUNl18jiCbbPWABEHXTFR4f73lWAcbwpQI5jssrLMBMM2wQ2fdqp22Q/exec',
   REGISTRY_URL: 'https://script.google.com/macros/s/AKfycbzwSI8sFuc5iTm_hjd8gMgZbieTMQbnLbl5D8iEbvMpbISW3BD0kGvhtMsmtSezmgNI6w/exec',   // the Admin's registry: which school service belongs to a school code (it holds no student data)
   DAILY_SEC: 600,           // 10 minutes a day
   MIN_FIGHTS: 5, MAX_FIGHTS: 10,   // normal encounters before the boss / big request (rolled at random when a quest starts, never shown)
@@ -819,6 +821,7 @@ const CFG = {
   READ_UP_ACC: 0.9, READ_MIN_WINDOW: 12, READ_MAX_WINDOW: 15, READ_FIGHTS: [8, 14], MAX_LEVEL: 16   // from level 8 (reading): up at 90% over the last 12-15 answers; quests have 8-14 normal stops
 };
 (function () { const u = (function () { try { return localStorage.getItem('tq_school_url') || ''; } catch (e) { return ''; } })(); if (u && CFG.SCRIPT_URL) CFG.SCRIPT_URL = u; })();   // a device that joined another school uses that school's service
+const TEST_BUILD = true;   // the test copy (tools/mktest.sh) sets this to true: it talks only to the TEST school service and never switches to a real school's service
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
 // (school heroes save to the cloud; home and offline heroes never do: that is decided per hero, not per device)
 if (APP) { document.title = 'SpellQuest: AlphaBet Adventure'; const lt = document.getElementById('loginTitle'); if (lt) lt.innerHTML = '✨ SpellQuest ✨<div class="small" style="font-size:1rem;opacity:.9;margin-top:4px">AlphaBet Adventure</div><div class="heb" style="font-size:1.1rem;margin-top:2px">לחשים: הרפתקת קריאה</div>'; }   // the installed app's name
@@ -4094,20 +4097,80 @@ function startDemo() {
   openMenu();
 }
 $('#admDemo').onclick = () => startDemo();
+let ADM_ROLE = '', ADM_EMAIL = '';
 function adminAsk() {
   if (!CFG.SCRIPT_URL) { modal('Teacher area', '<p>The cloud is not set up, so there is no student data to show.</p>', [['OK', null]]); return; }
+  modal('🔧 Staff sign-in', `<p class="small">Enter your school e-mail. We send you a 6-digit code.</p><input id="stMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="name@school.org"><button class="btn" id="stSend" style="margin-top:8px">Send me a code</button>
+    <div id="stBox" style="display:none;margin-top:10px"><input id="stCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="stGo" style="margin-top:8px">Sign in</button></div>
+    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div><div style="margin-top:8px"><a href="#" id="stPw" style="color:inherit;opacity:.7;font-size:.85rem">Use the teacher password instead</a></div>`, [['Cancel', null, true]]);
+  const msg = t => { $('#stMsg').textContent = t; };
+  $('#stSend').onclick = async () => {
+    const em = $('#stMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
+    msg('Sending…'); $('#stSend').disabled = true;
+    try {
+      const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffRequest', email: em }) }), j = await r.json();
+      if (j.ok) { msg('If this e-mail is on the staff list, a code is on its way. It works for 10 minutes.'); $('#stBox').style.display = ''; $('#stCode').focus(); }
+      else msg(j.error === 'rate' ? 'Too many tries. Please wait a while.' : 'The e-mail could not be sent. Please try again later.');
+    } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
+    $('#stSend').disabled = false;
+  };
+  $('#stGo').onclick = async () => {
+    const em = $('#stMail').value.trim().toLowerCase(), code = $('#stCode').value.trim(); if (!/^\d{6}$/.test(code)) { msg('The code has 6 digits.'); return; }
+    msg('Checking…'); $('#stGo').disabled = true;
+    try {
+      const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffVerify', email: em, code }) }), j = await r.json();
+      if (j.ok) { $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; adminEnter(); return; }
+      msg('That code is not right, or it has expired. Ask for a new one.');
+    } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
+    $('#stGo').disabled = false;
+  };
+  $('#stMail').onkeydown = e => { if (e.key === 'Enter') $('#stSend').click(); }; $('#stCode').onkeydown = e => { if (e.key === 'Enter') $('#stGo').click(); };
+  $('#stPw').onclick = e => { e.preventDefault(); adminPassAsk(); };
+  setTimeout(() => { const i = $('#stMail'); if (i) i.focus(); }, 60);
+}
+function adminPassAsk() {
   modal('🔧 Teacher area', '<p>Enter the teacher password.</p><input id="admPass" type="password" autocomplete="off" style="margin:6px 0">', [['Open', adminOpen], ['Cancel', null, true]]);
   setTimeout(() => { const i = $('#admPass'); if (i) { i.focus(); i.onkeydown = e => { if (e.key === 'Enter') $('#mBtns button').click(); }; } }, 60);
 }
 async function adminOpen() {
-  ADMKEY = $('#admPass').value; if (!ADMKEY) return;
+  ADMKEY = $('#admPass').value; if (!ADMKEY) return; ADM_ROLE = 'owner'; ADM_EMAIL = '(teacher password)';
+  await adminEnter(true);
+}
+async function adminEnter(viaPassword) {
   toast('Checking…');
   try {
     const j = await adminCall('list');
-    if (!j.ok) { ADMKEY = null; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : 'That password is not right.'}</p>`, [['Try again', adminAsk], ['Close', null, true]]); return; }
-    show('admin'); adminRender(j); adminCodeLoad();
-  } catch (e) { ADMKEY = null; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
+    if (!j.ok) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : viaPassword ? 'That password is not right.' : 'Could not sign in.'}</p>`, [['Try again', adminAsk], ['Close', null, true]]); return; }
+    show('admin'); const teacher = ADM_ROLE === 'teacher';
+    $('#admWho').textContent = 'Signed in: ' + ADM_EMAIL + ' · ' + (teacher ? 'Teacher' : 'School owner');
+    ['admCode', 'admDemoCard', 'admSound'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; });
+    adminRender(j); if (!teacher) { adminCodeLoad(); adminStaffLoad(); } else $('#admStaff').style.display = 'none';
+  } catch (e) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
 }
+async function adminStaffLoad() {   // the school owner adds and removes staff by e-mail
+  const box = $('#admStaff'); let j;
+  try { j = await adminCall('listStaff'); } catch (e) { box.style.display = ''; box.innerHTML = '<p class="small">Could not load the staff list.</p>'; return; }
+  if (!j.ok) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML = '<b>👩‍🏫 Staff</b><p class="small" style="margin:6px 0;opacity:.85">People who sign in with their school e-mail. Owners can do everything. Teachers can look at the students.</p>' +
+    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>${esc(s.classes || 'ALL')}</small></div><div class="setBtns"><button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
+    `<div class="row" style="justify-content:flex-start;margin-top:10px;gap:8px;flex-wrap:wrap"><input id="stfMail" type="email" placeholder="e-mail to add" autocapitalize="none" style="max-width:260px;padding:8px;font-size:1rem"><select id="stfRole" style="padding:8px;font-size:1rem"><option value="teacher">Teacher</option><option value="owner">Owner</option></select><button class="btn" id="stfAdd" style="padding:8px 14px">+ Add</button></div><div class="msg" id="stfMsg" style="min-height:1.2em"></div>`;
+}
+document.addEventListener('click', async e => {
+  const rm = e.target.closest('[data-stf]'), add = e.target.closest('#stfAdd');
+  if (!rm && !add) return;
+  const msg = t => { const m = $('#stfMsg'); if (m) m.textContent = t; };
+  try {
+    if (add) {
+      const em = $('#stfMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
+      const j = await adminCall('addStaff', { email: em, role: $('#stfRole').value, classes: 'ALL' }); if (!j.ok) { msg('Could not add: ' + (j.error || 'error')); return; }
+      await adminStaffLoad(); const m = $('#stfMsg'); if (m) m.textContent = '✅ ' + em + ' can now sign in.';
+    } else {
+      const em = rm.dataset.stf;
+      modal('Remove staff', `<p>Remove <b>${esc(em)}</b>? They will be signed out and can no longer sign in.</p>`, [['Remove', async () => { const j = await adminCall('removeStaff', { email: em }); if (!j.ok) toast(j.error === 'last owner' ? 'The school must keep at least one owner.' : 'Could not remove.'); adminStaffLoad(); }], ['Cancel', null, true]]);
+    }
+  } catch (x) { msg('Could not reach the cloud.'); }
+});
 async function adminCodeLoad() {   // the school code students type once on a new device
   try { const j = await adminCall('getSchoolCode'); $('#admCode').innerHTML = j.ok ? `🏫 School code: <b style="font-size:1.3rem;letter-spacing:.08em">${esc(j.code)}</b> <button class="btn ghost" id="admCodeChange" style="padding:6px 12px;margin-left:8px">Change</button><div class="small" style="opacity:.75;margin-top:4px">Students type this code once on a new device. Devices that are already set up keep working when you change it.</div>` : ''; } catch (e) { $('#admCode').textContent = ''; }
 }
@@ -4133,7 +4196,7 @@ function adminRender(j) {
   const avg = played.length ? Math.round(played.reduce((a, s) => a + s.accuracy, 0) / played.length) : 0;
   $('#admCards').innerHTML = [[ADM.students.length, 'students'], [today, 'played today'], [inactive, 'not played for 7+ days'], [avg + '%', 'average accuracy'], [Math.round(ADM.students.reduce((a, s) => a + s.minutes, 0)), 'total minutes']]
     .map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
-  adminSets(); adminTable(); adminAppUsers(); $('#admDetail').style.display = 'none';
+  if (ADM_ROLE !== 'teacher') adminSets(); adminTable(); if (!String(ADMKEY).startsWith('tk_')) adminAppUsers(); else $('#admApp').textContent = ''; $('#admDetail').style.display = 'none';
 }
 const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
 function adminTable() {
@@ -4196,7 +4259,7 @@ async function adminStudent(id) {
   } catch (e) { box.innerHTML = '<p>Could not load this student. ' + esc(e.message || '') + '</p>'; }
 }
 $('#adminLink').onclick = e => { e.preventDefault(); adminAsk(); };
-$('#admBack').onclick = () => { ADMKEY = null; show('login'); };
+$('#admBack').onclick = () => { if (String(ADMKEY).startsWith('tk_')) adminCall('staffLogout').catch(() => {}); ADMKEY = null; ADM_ROLE = ''; show('login'); };
 $('#admRefresh').onclick = async () => { try { const j = await adminCall('list'); if (j.ok) adminRender(j); } catch (e) { toast('Could not refresh'); } };
 $('#admSearch').oninput = () => { ADM.filter = $('#admSearch').value; adminTable(); };
 $('#admTable').onclick = e => {
@@ -4352,7 +4415,7 @@ async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline' / 
       if (!j.valid) return false;
       if (j.suspended) return 'suspended';
       lsSet('tq_school_name', j.schoolName || '');
-      if (CFG.SCRIPT_URL) { CFG.SCRIPT_URL = j.scriptUrl; lsSet('tq_school_url', j.scriptUrl); }   // (a test copy has no cloud: it never gets a school link)
+      if (CFG.SCRIPT_URL && !TEST_BUILD) { CFG.SCRIPT_URL = j.scriptUrl; lsSet('tq_school_url', j.scriptUrl); }   // (a test copy has no cloud: it never gets a school link)
       return true;
     } catch (e) { return 'offline'; }
   }
