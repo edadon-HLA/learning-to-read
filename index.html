@@ -6,6 +6,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#3a1c71">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="SpellQuest">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Learning to Read</title>
@@ -512,7 +513,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 </section>
 
 <section id="login" class="screen">
-  <h1>✨ Learning to Read ✨</h1>
+  <h1 id="loginTitle">✨ Learning to Read ✨</h1>
   <p class="sub">An adventure game: learn to read and write Hebrew, one spell at a time!</p>
   <div class="card center" style="max-width:420px;margin:24px auto">
     <h2>Welcome, hero!</h2>
@@ -814,6 +815,7 @@ const CFG = {
 };
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
 if (APP) CFG.SCRIPT_URL = '';        // the app never saves any game data online
+if (APP) { document.title = 'SpellQuest: AlphaBet Adventure'; const lt = document.getElementById('loginTitle'); if (lt) lt.innerHTML = '✨ SpellQuest ✨<div class="small" style="font-size:1rem;opacity:.9;margin-top:4px">AlphaBet Adventure</div><div class="heb" style="font-size:1.1rem;margin-top:2px">לחשים: הרפתקת קריאה</div>'; }   // the installed app's name
 
 /* ====================== CONTENT ====================== */
 // letter -> [sound, example English word]
