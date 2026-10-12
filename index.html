@@ -583,6 +583,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="card" id="admStaff" style="display:none"></div>
   <div class="card" id="admClasses" style="display:none"></div>
   <div class="card" id="admWait" style="display:none"></div>
+  <div class="card" id="admMoved" style="display:none"></div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
@@ -722,7 +723,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="owlBtn" id="owlBtn" title="Show me how to play" aria-label="Show me how to play"></button>
   </div>
   <div class="row" style="margin-top:10px"><button class="btn ghost danger" id="abandonMapBtn" style="display:none">🏳️ Abandon quest</button></div>
-  <div class="row" id="heroTools" style="margin-top:8px;gap:8px;flex-wrap:wrap;justify-content:center"><span class="modeBadge" id="modeBadge"></span><button class="btn ghost small" id="saveHeroBtn">💾 Save my hero</button><button class="btn ghost small" id="upHomeBtn" style="display:none">🏠 Make this a home hero</button><button class="btn ghost small" id="privBtn">🔒 Privacy</button></div>
+  <div class="row" id="heroTools" style="margin-top:8px;gap:8px;flex-wrap:wrap;justify-content:center"><span class="modeBadge" id="modeBadge"></span><button class="btn ghost small" id="saveHeroBtn">💾 Save my hero</button><button class="btn ghost small" id="upHomeBtn" style="display:none">🏠 Make this a home hero</button><button class="btn ghost small" id="toPrivBtn" style="display:none">🏠 Move to private</button><button class="btn ghost small" id="privBtn">🔒 Privacy</button></div>
   <button class="ghostSmall" id="logoutBtn" title="Switch hero">🚪 Switch hero</button>
   <div class="credit small">Created by Dr. Dadon Eldar in collaboration with HLA Hebrew Public</div>
 </section>
@@ -1416,14 +1417,16 @@ function saveSoon(now) {
   saveTimer = setTimeout(cloudSave, now ? 0 : 4000);
 }
 async function cloudSave() {
-  if (!P || !CFG.SCRIPT_URL || P.mode !== 'school') return;
+  if (!P || !CFG.SCRIPT_URL || P.mode !== 'school' || SCHOOL_ST.suspended) return;
   const total = Object.values(P.sec).reduce((a, b) => a + b, 0);
   const body = JSON.stringify({ id: P.id, nick: P.nick, tier: P.tier, xp: P.xp, n: P.n, acc: P.n ? Math.round(100 * P.ok / P.n) : 0,
     min: Math.round(total / 60), coins: Math.floor(P.coins || 0), craftAcc: P.craft && P.craft.n ? Math.round(100 * P.craft.ok / P.craft.n) : 0, restarts: P.restartsTotal || 0, real: (P.realPending && P.realPending.real) || '', cls: (P.realPending && P.realPending.cls) || '', code: lsGet('tq_school_code') || '', data: JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined, realPending: undefined })) });   // the real name and class go in their own fields, not inside the game data
   try {
     const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
     const j = await r.json();
+    if (SCHOOL_ST.suspended) return;
     if (j.deleted) { removedByTeacher(); return; }   // the teacher deleted this student
+    if (j.moved) { movedHero(); return; }
     if (j.error === 'code') { try { localStorage.removeItem('tq_school_code'); } catch (x) {} setCloud('off'); modal(tr('codeH'), `<p>${tr('codeWrong')}</p>`, [[tr('ok'), null]]); return; }   // the school code is no longer accepted
     if (j.conflict && j.data) {         // cloud copy is newer: adopt it
       const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('tq_p_' + P.id, JSON.stringify(P));
@@ -1436,7 +1439,7 @@ async function cloudSave() {
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
-  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false;
+  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false, movedNum = false;
   try { const t = lsGet('tq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
@@ -1445,6 +1448,7 @@ async function loadProfile(id) {
       if (!j.ok && j.error === 'rate') limited = true;   // too many tries for a minute: the answer says nothing about the number
       if (j.ok && j.deleted) deleted = true;
       if (j.ok && j.pending) pendingHero = true;
+      if (j.ok && j.moved) movedNum = true;
       if (j.ok && j.rejected) rejectedHero = true;
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
@@ -1454,7 +1458,7 @@ async function loadProfile(id) {
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
   if (deleted) { try { localStorage.removeItem('tq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
-  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero };
+  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum };
 }
 
 /* ====================== SCREENS / MODAL ====================== */
@@ -1498,6 +1502,7 @@ $('#loginBtn').onclick = async () => {   // 🏫 a school student types their nu
   if (r.limited) { modal(tr('waitH'), `<p>${tr('waitP')}</p>`, [[tr('ok'), null]]); return; }
   if (r.pending) { modal('⏳ Waiting', '<p>Your teacher has not approved this number yet. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
   if (r.rejected) { modal('Not approved', '<p>This number was not approved. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
+  if (r.moved) { modal('🏠 Moved to home', '<p>This number was moved to home. If your family got a hero file, tap <b>Load a hero from a file</b> on the start screen.</p>', [[tr('ok'), null]]); return; }
   const warn = r.offline ? `<p>${tr('offlineWarn')}</p>` : '';
   modal(tr('unknownH'), `<p>${tr('unknownP').replace('{id}', esc(id))}</p>${warn}<p>${tr('unknownP2')}</p>`, [[tr('tryAgain'), null], [tr('newBtn'), () => $('#newBtn').click(), true]]);
 };
@@ -4265,7 +4270,7 @@ async function adminEnter(viaPassword) {
     $('#admWho').textContent = 'Signed in: ' + ADM_EMAIL + ' · ' + (teacher ? 'Teacher' : 'School owner');
     ['admCode', 'admDemoCard', 'admSound'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; });
     adminRender(j); if (!teacher) { adminCodeLoad(); adminStaffLoad(); } else $('#admStaff').style.display = 'none';
-    adminClassesLoad(); adminWaitLoad();
+    adminClassesLoad(); adminWaitLoad(); if (!teacher) adminMovedLoad(); else $('#admMoved').style.display = 'none';
   } catch (e) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
 }
 /* ----- classes, approval settings (owner) and the waiting list (owner and teachers) ----- */
@@ -4350,6 +4355,40 @@ async function printCards(list) {
   document.body.appendChild(sheet);
   $('#pcPrint').onclick = () => window.print(); $('#pcClose').onclick = () => sheet.remove();
 }
+/* ----- Move to home: the student leaves the school (hand-over file or e-mail to the parent) ----- */
+function moveHomeAsk(id) {
+  const s = ADM.students.find(x => x.id === id), nm = s ? (s.real || s.nick) : id;
+  modal('🏠 Move to home', `<p>Move <b>${esc(nm)}</b> to home?</p><p class="small">The school will no longer see this wizard. The family keeps playing at home with an e-mail sign-up. The school owner can undo this for 30 days.</p>
+    <button class="btn" id="mvFile" style="margin:4px 0">💾 Move and download the hand-over file</button>
+    <div class="small" style="margin-top:8px">Or send the file to the parent:</div><input id="mvMail" type="email" autocapitalize="none" placeholder="parent e-mail" maxlength="80" style="margin:4px 0"><button class="btn" id="mvSend">✉️ Move and e-mail the parent</button><div class="msg" id="mvMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
+  const msg = t => { $('#mvMsg').textContent = t; };
+  const run = async parentEmail => {
+    msg('Working…'); $('#mvFile').disabled = $('#mvSend').disabled = true;
+    try {
+      const j = await adminCall('student', { id }); if (!j.ok) throw new Error('read');
+      const file = handoverText(JSON.parse(j.data));
+      if (!parentEmail) saveTextFile('SpellQuest-' + String((s && s.nick) || 'hero').replace(/[^\w֐-׿-]+/g, '_') + '.hero.json', file);
+      const r = await adminCall('moveStudent', { id, parentEmail, file: parentEmail ? file : undefined, gameUrl: location.origin + location.pathname.replace(/index\.html$/, '') });
+      if (!r.ok) { msg(r.error === 'mail' ? 'The e-mail could not be sent, so nothing was moved. Try again or download the file instead.' : 'Could not move: ' + (r.error || 'error')); $('#mvFile').disabled = $('#mvSend').disabled = false; return; }
+      $('#modal').classList.remove('on'); toast('🏠 Moved to home' + (r.mailed ? '. The file was e-mailed.' : '. Keep the downloaded file safe.'));
+      ADM.students = ADM.students.filter(x => x.id !== id); adminTable(); if (ADM_ROLE === 'owner') adminMovedLoad();
+    } catch (e) { msg('Something went wrong. Please try again.'); $('#mvFile').disabled = $('#mvSend').disabled = false; }
+  };
+  $('#mvFile').onclick = () => run('');
+  $('#mvSend').onclick = () => { const em = $('#mvMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type the parent e-mail.'); return; } run(em); };
+}
+async function adminMovedLoad() {   // the school owner: recently moved students (undo for 30 days) and the self-move switch
+  const box = $('#admMoved'); let j; try { j = await adminCall('listMoved'); } catch (e) { return; }
+  if (!j || !j.ok) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML = '<b>🏠 Moving to home</b>' + `<label class="row" style="justify-content:flex-start;gap:8px;margin:8px 0"><input type="checkbox" id="selfMoveOn" ${j.selfMove ? 'checked' : ''} style="width:auto"> <span>Students may move their own wizard to private</span></label>` +
+    (j.moved.length ? '<div class="small" style="opacity:.8;margin:6px 0">Recently moved (you can undo for 30 days):</div>' + j.moved.map(m => `<div class="setRow"><div class="setName"><b>${esc(m.nick)}</b> <small>#${esc(m.id)} · ${m.movedAt ? new Date(m.movedAt).toLocaleDateString() : ''} · by ${esc(m.by)}</small></div><div class="setBtns">${m.restorable ? `<button class="btn ghost" data-undo="${esc(m.id)}">↩ Undo</button>` : '<small style="opacity:.6">cannot undo</small>'}</div></div>`).join('') : '<p class="small" style="opacity:.7">Nobody was moved yet.</p>');
+}
+document.addEventListener('change', e => { if (e.target.id === 'selfMoveOn') adminCall('setSelfMove', { on: e.target.checked }).catch(() => toast('Could not save.')); });
+document.addEventListener('click', async e => {
+  const u = e.target.closest('[data-undo]'); if (!u) return;
+  try { const j = await adminCall('undoMove', { id: u.dataset.undo }); toast(j.ok ? '↩ Restored to the school' : 'Could not restore.'); await adminMovedLoad(); adminRefreshStudents(); } catch (x) { toast('Could not reach the cloud.'); }
+});
 async function adminStaffLoad() {   // the school owner adds and removes staff by e-mail
   const box = $('#admStaff'); let j;
   try { j = await adminCall('listStaff'); } catch (e) { box.style.display = ''; box.innerHTML = '<p class="small">Could not load the staff list.</p>'; return; }
@@ -4421,7 +4460,7 @@ function adminTable() {
     .sort((a, b) => { const k = ADM.sortKey; const va = k === 'last' ? (a.last || '') : k === 'nick' ? a.nick.toLowerCase() : a[k], vb = k === 'last' ? (b.last || '') : k === 'nick' ? b.nick.toLowerCase() : b[k]; return (va > vb ? 1 : va < vb ? -1 : 0) * ADM.sortDir; });
   ADM.ticked = ADM.ticked || new Set(); adminCardsRender();
   $('#admTable').innerHTML = '<thead><tr><th class="tickCell" style="cursor:default"><input type="checkbox" id="admAllTick" title="Select all" style="width:auto"></th>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
-    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td class="tickCell"><input type="checkbox" class="admTick" data-id="${esc(s.id)}" ${ADM.ticked.has(s.id) ? 'checked' : ''} style="width:auto"></td><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
+    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td class="tickCell"><input type="checkbox" class="admTick" data-id="${esc(s.id)}" ${ADM.ticked.has(s.id) ? 'checked' : ''} style="width:auto"></td><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small> <button class="btn ghost mvHome" data-id="${esc(s.id)}" style="padding:2px 8px;font-size:.78rem;margin-left:4px">🏠 Move to home</button>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
       <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${s.coins || 0}</td><td>${s.craftAcc ? s.craftAcc + "%" : "–"}</td><td>${s.restarts || 0}</td><td>${agoText(s.days)}${s.days === 0 && s.minToday ? ' · ' + s.minToday + ' min' : ''}</td></tr>`).join('')
       : '<tr><td colspan="10" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
 }
@@ -4487,6 +4526,7 @@ $('#admPrint').onclick = () => {   // the ticked students, or everybody you see
   printCards(list);
 };
 $('#admTable').onclick = e => {
+  const mv = e.target.closest('.mvHome'); if (mv) { moveHomeAsk(mv.dataset.id); return; }
   if (e.target.closest('.tickCell')) { if (e.target.id === 'admAllTick') { adminFiltered().forEach(s => e.target.checked ? ADM.ticked.add(s.id) : ADM.ticked.delete(s.id)); adminTable(); } else if (e.target.classList.contains('admTick')) { e.target.checked ? ADM.ticked.add(e.target.dataset.id) : ADM.ticked.delete(e.target.dataset.id); } return; }
   const th = e.target.closest('th'); if (th) { const k = th.dataset.k; ADM.sortDir = ADM.sortKey === k ? -ADM.sortDir : (k === 'nick' ? 1 : -1); ADM.sortKey = k; adminTable(); return; }
   const tr = e.target.closest('tbody tr[data-id]'); if (tr) adminStudent(tr.dataset.id);
@@ -4697,6 +4737,13 @@ const hash53 = (str, seed = 0) => {   // a small checksum against accidental dam
   h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 };
+function saveTextFile(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: type || 'application/json' })); a.download = name; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+}
+function handoverText(p) {   // the hand-over file of a student leaving the school: a home hero without the real name and class
+  const h = JSON.parse(JSON.stringify(p)); delete h.real; delete h.cls; delete h.realPending; delete h.waiting; h.mode = 'home';
+  const core = { game: 'read', v: PROFILE_V, mode: 'home', hero: h }; return JSON.stringify(Object.assign({}, core, { sum: hash53(JSON.stringify(core)) }));
+}
 function downloadHero() {
   if (!P || P.mode === 'school') return;
   const core = { game: 'read', v: PROFILE_V, mode: P.mode, hero: JSON.parse(JSON.stringify(P)) }, text = JSON.stringify(Object.assign({}, core, { sum: hash53(JSON.stringify(core)) }));
@@ -4722,7 +4769,35 @@ function renderHeroTools() {
   const m = P.mode || 'school';
   $('#modeBadge').textContent = MODE_BADGE[m] + ' ' + { school: 'School', home: 'Home', offline: 'Offline' }[m];
   $('#saveHeroBtn').style.display = m === 'school' ? 'none' : ''; $('#upHomeBtn').style.display = m === 'offline' ? '' : 'none';
+  $('#toPrivBtn').style.display = m === 'school' && (SCHOOL_ST.suspended || SCHOOL_ST.selfMove) ? '' : 'none';
+  if (m === 'school') schoolStatusCheck();
 }
+/* ----- a school hero: is the school still allowed? may the student move their own wizard? ----- */
+const SCHOOL_ST = { suspended: false, selfMove: false, at: 0, shown: false };
+async function schoolStatusCheck() {
+  if (!P || P.mode !== 'school' || Date.now() - SCHOOL_ST.at < 300000) return;   // at most every 5 minutes
+  SCHOOL_ST.at = Date.now(); const code = lsGet('tq_school_code') || lsGet('tq_staff_code');
+  if (CFG.REGISTRY_URL && code) { try { const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json(); if (j.ok && j.valid) SCHOOL_ST.suspended = !!j.suspended; } catch (e) {} }   // no answer: the school keeps working
+  if (!SCHOOL_ST.suspended && CFG.SCRIPT_URL) { try { const j = await (await fetch(CFG.SCRIPT_URL + '?action=classes')).json(); if (j.ok) SCHOOL_ST.selfMove = !!j.selfMove; } catch (e) {} }
+  if (!P || P.mode !== 'school') return;
+  $('#toPrivBtn').style.display = SCHOOL_ST.suspended || SCHOOL_ST.selfMove ? '' : 'none';
+  if (SCHOOL_ST.suspended && !SCHOOL_ST.shown) {
+    SCHOOL_ST.shown = true;
+    modal('⏸ School access ended', "<p>Your school's access to the game has ended.</p><p>You can keep your wizard: move it to private and keep playing at home with an e-mail sign-up.</p>", [['Move my wizard to private', () => moveToPrivate()], ['Close', () => { P = null; SCHOOL_ST.shown = false; show('login'); renderStart(); }, true]]);
+  }
+}
+function moveToPrivate() {   // a school hero becomes a home hero on this device (no teacher needed)
+  const go = () => {
+    if (!SCHOOL_ST.suspended && SCHOOL_ST.selfMove && CFG.SCRIPT_URL) fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'selfMove', id: P.id }), keepalive: true }).catch(() => {});   // the school is told, when it allows this
+    P.mode = 'home'; delete P.realPending; delete P.waiting; delete P.real; delete P.cls; lsSet('tq_homeok', '1'); saveSoon(true); setCloud('none'); renderHeroTools(); openMenu(); toast('🏠 Your wizard is now a private home hero.');
+  };
+  if (lsGet('tq_homeok') === '1') go(); else emailSignup(go);
+}
+function movedHero() {   // the teacher moved this hero to home: it carries on here
+  P.mode = 'offline'; delete P.realPending; delete P.waiting; delete P.real; delete P.cls; saveSoon(); setCloud('none'); renderHeroTools();
+  modal('🏠 Moved to home', '<p>Your teacher moved your wizard to home. You can keep playing on this device. To play at home on other devices too, sign up with an e-mail.</p>', [['Sign up with e-mail', () => emailSignup(() => { P.mode = 'home'; lsSet('tq_homeok', '1'); saveSoon(true); renderHeroTools(); openMenu(); toast('🏠 This hero is now a home hero.'); })], ['Later', null, true]]);
+}
+$('#toPrivBtn').onclick = () => modal('🏠 Move to private?', '<p>Your wizard will leave the school and become a private home hero. The school will no longer see your progress.</p>', [['Yes, move it', () => moveToPrivate()], ['Cancel', null, true]]);
 $('#saveHeroBtn').onclick = () => downloadHero();
 $('#upHomeBtn').onclick = () => emailSignup(() => { P.mode = 'home'; lsSet('tq_homeok', '1'); saveSoon(true); openMenu(); toast('🏠 This hero is now a home hero.'); });
 $('#privBtn').onclick = () => openPrivacy();
