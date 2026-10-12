@@ -4220,7 +4220,7 @@ function adminAsk(kind) {
     <input id="stSchool" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" placeholder="School code" value="${esc(lsGet('aq_staff_code') || lsGet('aq_school_code') || '')}" style="margin-bottom:8px">
     <input id="stMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="name@school.org"><button class="btn" id="stSend" style="margin-top:8px">Send me a code</button>
     <div id="stBox" style="display:none;margin-top:10px"><input id="stCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="stGo" style="margin-top:8px">Sign in</button></div>
-    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>${teacher ? '' : '<div style="margin-top:8px"><a href="#" id="stPw" style="color:inherit;opacity:.7;font-size:.85rem">Use the school password instead</a></div>'}`, [['Cancel', null, true]]);
+    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
   const msg = t => { $('#stMsg').textContent = t; };
   $('#stSend').onclick = async () => {
     const em = $('#stMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
