@@ -4394,11 +4394,12 @@ async function adminStaffLoad() {   // the school owner adds and removes staff b
   if (!j.ok) { box.style.display = 'none'; return; }
   box.style.display = '';
   box.innerHTML = '<b>👩‍🏫 Staff</b><p class="small" style="margin:6px 0;opacity:.85">People who sign in with their school e-mail. Owners can do everything. Teachers can look at the students.</p>' +
-    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button>` : ''}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
-    `<div class="row" style="justify-content:flex-start;margin-top:10px;gap:8px;flex-wrap:wrap"><input id="stfMail" type="email" placeholder="e-mail to add" autocapitalize="none" style="max-width:260px;padding:8px;font-size:1rem"><select id="stfRole" style="padding:8px;font-size:1rem"><option value="teacher">Teacher</option><option value="owner">Owner</option></select><button class="btn" id="stfAdd" style="padding:8px 14px">+ Add</button></div><div class="msg" id="stfMsg" style="min-height:1.2em"></div>`;
+    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button>` : ''}${s.role === 'owner' ? (j.staff.filter(x => x.role === 'owner').length > 1 ? `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="teacher" data-cls="${esc(s.classes || 'ALL')}">Make teacher only</button>` : '') : `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="owner" data-cls="${esc(s.classes || 'ALL')}">Also an owner</button>`}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
+    `<div class="row" style="justify-content:flex-start;margin-top:10px;gap:8px;flex-wrap:wrap"><input id="stfMail" type="email" placeholder="e-mail to add" autocapitalize="none" style="max-width:260px;padding:8px;font-size:1rem"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="stfOwner" style="width:auto"> Also an owner</label><button class="btn" id="stfAdd" style="padding:8px 14px">+ Add</button></div><div class="msg" id="stfMsg" style="min-height:1.2em"></div>`;
 }
 document.addEventListener('click', async e => {
-  const rm = e.target.closest('[data-stf]'), add = e.target.closest('#stfAdd'), sc = e.target.closest('[data-stfcls]');
+  const rm = e.target.closest('[data-stf]'), add = e.target.closest('#stfAdd'), sc = e.target.closest('[data-stfcls]'), rl = e.target.closest('[data-stfrole]');
+  if (rl) { try { const j = await adminCall('addStaff', { email: rl.dataset.stfrole, role: rl.dataset.to, classes: rl.dataset.cls || 'ALL' }); if (!j.ok) toast('Could not change.'); await adminStaffLoad(); } catch (x) { toast('Could not reach the cloud.'); } return; }
   if (sc) {
     const em = sc.dataset.stfcls, names = ADM_CLASSES.filter(c => !c.archived).map(c => c.name);
     modal('Classes of ' + esc(em), `<p class="small">Which classes can this teacher see? Type ALL, or class names separated by commas${names.length ? ' (' + esc(names.join(', ')) + ')' : ''}.</p><input id="stfClsIn" type="text" value="${esc(sc.dataset.cur)}" maxlength="200">`, [['Save', async () => { const j = await adminCall('setStaffClasses', { email: em, classes: ($('#stfClsIn') ? $('#stfClsIn').value : 'ALL').trim() || 'ALL' }); if (!j.ok) toast('Could not save.'); adminStaffLoad(); }], ['Cancel', null, true]]);
@@ -4409,7 +4410,7 @@ document.addEventListener('click', async e => {
   try {
     if (add) {
       const em = $('#stfMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
-      const j = await adminCall('addStaff', { email: em, role: $('#stfRole').value, classes: 'ALL' }); if (!j.ok) { msg('Could not add: ' + (j.error || 'error')); return; }
+      const j = await adminCall('addStaff', { email: em, role: $('#stfOwner').checked ? 'owner' : 'teacher', classes: 'ALL' }); if (!j.ok) { msg('Could not add: ' + (j.error || 'error')); return; }
       await adminStaffLoad(); const m = $('#stfMsg'); if (m) m.textContent = '✅ ' + em + ' can now sign in.';
     } else {
       const em = rm.dataset.stf;
