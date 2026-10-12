@@ -447,7 +447,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .admcards>div{background:var(--panel);border:1px solid #fff2;border-radius:14px;padding:10px;text-align:center;font-size:.9rem}
 .admcards b{display:block;font-size:1.7rem;color:var(--gold)}
 .tblwrap{overflow-x:auto;margin-top:8px}
-#admTable{width:100%;border-collapse:collapse;font-size:.95rem}
+#admTable,#sysTable{width:100%;border-collapse:collapse;font-size:.95rem}#sysTable th{text-align:left;padding:8px;border-bottom:1px solid #fff4;white-space:nowrap}#sysTable td{padding:8px;border-bottom:1px solid #fff1;vertical-align:top}.chip{border-radius:8px;padding:2px 8px;font-size:.78rem;font-weight:700;background:#ffffff33}.chip.act{background:#2ecc71;color:#06330f}.chip.sus{background:#e74c3c;color:#fff}.chip.wai{background:#ffd166;color:#3a2300}
 #admTable th{text-align:left;padding:8px;cursor:pointer;border-bottom:1px solid #fff4;white-space:nowrap;user-select:none}
 #admTable td{padding:8px;border-bottom:1px solid #fff1;white-space:nowrap}
 #admTable tbody tr:hover{background:#ffffff14;cursor:pointer}
@@ -551,15 +551,29 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
       <div style="margin-top:8px"><a href="#" class="adminLink" id="changeCode" data-t="changeCode"></a> · <a href="#" class="adminLink loginBack" data-t="back"></a></div>
     </div>
   </div>
-  <div class="center loginLinks"><a href="#" id="adminLink" class="adminLink">🔧 <span data-t="teacher"></span></a> · <a href="#" id="privLink" class="adminLink">🔒 <span data-t="privacy"></span></a> · <a href="#" id="langLink" class="adminLink">🌐 <span id="langName"></span></a></div>
+  <div class="center loginLinks"><a href="#" id="lnkAdmin" class="adminLink">🛡 <span data-t="lAdmin"></span></a> · <a href="#" id="lnkSchool" class="adminLink">🏫 <span data-t="lSchool"></span></a> · <a href="#" id="lnkTeacher" class="adminLink">👩‍🏫 <span data-t="lTeacher"></span></a> · <a href="#" id="privLink" class="adminLink">🔒 <span data-t="privacy"></span></a> · <a href="#" id="langLink" class="adminLink">🌐 <span id="langName"></span></a></div>
   <div class="center"><button class="btn ghost" id="installBtn" style="display:none;margin-top:10px">📲 Install the game on this device</button></div>
   <div class="credit">Created by Dr. Dadon Eldar<br>in collaboration with HLA Hebrew Public</div>
 </section>
 
+<section id="sysadmin" class="screen" style="max-width:1000px">
+  <div class="top">
+    <button class="ib" id="sysBack">← Back</button>
+    <h2 style="margin:0" class="grow">🛡 Admin area</h2>
+    <button class="btn ghost" id="sysRefresh" style="padding:8px 14px">⟳ Refresh counts</button>
+  </div>
+  <div class="small center" style="opacity:.85;margin:4px 0 8px">You see only how many players each school has. Names, classes and progress stay in the school's own Google account.</div>
+  <div class="admcards" id="sysCards"></div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><b>Schools</b><button class="btn" id="sysAdd" style="padding:8px 14px">+ Add a school</button></div>
+    <div class="tblwrap"><table id="sysTable"></table></div>
+    <div class="msg" id="sysMsg" style="min-height:1.2em"></div>
+  </div>
+</section>
 <section id="admin" class="screen" style="max-width:1000px">
   <div class="top">
     <button class="ib" id="admBack">← Back</button>
-    <h2 style="margin:0" class="grow">🔧 Teacher area</h2>
+    <h2 style="margin:0" class="grow" id="admTitle">🏫 School area</h2>
     <button class="btn ghost" id="admRefresh" style="padding:8px 14px">⟳ Refresh</button>
   </div>
   <div class="admcards" id="admCards"></div>
@@ -4069,6 +4083,68 @@ setInterval(() => {
 document.addEventListener('visibilitychange', () => { if (document.hidden && P) saveSoon(true); });
 window.addEventListener('pagehide', () => { if (P) saveSoon(true); });
 
+/* ====================== ADMIN AREA (the registry: schools and player counts only) ====================== */
+let SYSKEY = null, SYS = [];
+async function sysCall(action, extra) {
+  const r = await fetch(CFG.REGISTRY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(Object.assign({ action, key: SYSKEY }, extra || {})) });
+  return r.json();
+}
+function sysAsk() {
+  if (!CFG.REGISTRY_URL) { modal('Admin', '<p>The registry is not set up here.</p>', [['OK', null]]); return; }
+  modal('🛡 Admin sign-in', `<p class="small">Only the Admin e-mail can sign in. We send it a 6-digit code.</p><input id="syMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="admin e-mail"><button class="btn" id="sySend" style="margin-top:8px">Send me a code</button>
+    <div id="syBox" style="display:none;margin-top:10px"><input id="syCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="syGo" style="margin-top:8px">Sign in</button></div><div class="msg" id="syMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
+  const msg = t => { $('#syMsg').textContent = t; }, post = async body => (await fetch(CFG.REGISTRY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })).json();
+  $('#sySend').onclick = async () => {
+    const em = $('#syMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
+    msg('Sending…'); $('#sySend').disabled = true;
+    try { const j = await post({ action: 'adminRequest', email: em }); if (j.ok) { msg('If this is the Admin e-mail, a code is on its way. It works for 10 minutes.'); $('#syBox').style.display = ''; $('#syCode').focus(); } else msg(j.error === 'rate' ? 'Too many tries. Please wait a while.' : 'The e-mail could not be sent.'); } catch (e) { msg('I could not reach the registry. Please check the internet.'); }
+    $('#sySend').disabled = false;
+  };
+  $('#syGo').onclick = async () => {
+    const em = $('#syMail').value.trim().toLowerCase(), code = $('#syCode').value.trim(); if (!/^\d{6}$/.test(code)) { msg('The code has 6 digits.'); return; }
+    msg('Checking…'); $('#syGo').disabled = true;
+    try { const j = await post({ action: 'adminVerify', email: em, code }); if (j.ok) { $('#modal').classList.remove('on'); SYSKEY = j.token; sysEnter(); return; } msg('That code is not right, or it has expired.'); } catch (e) { msg('I could not reach the registry.'); }
+    $('#syGo').disabled = false;
+  };
+  $('#syMail').onkeydown = e => { if (e.key === 'Enter') $('#sySend').click(); }; $('#syCode').onkeydown = e => { if (e.key === 'Enter') $('#syGo').click(); };
+  setTimeout(() => { const i = $('#syMail'); if (i) i.focus(); }, 60);
+}
+async function sysEnter() {
+  toast('Loading…');
+  try { const j = await sysCall('listSchools'); if (!j.ok) { SYSKEY = null; modal('Admin', '<p>Could not sign in.</p>', [['OK', null]]); return; } SYS = j.schools; show('sysadmin'); sysRender(); }
+  catch (e) { SYSKEY = null; modal('Admin', '<p>I could not reach the registry. Please check the internet.</p>', [['OK', null]]); }
+}
+function sysRender() {
+  const players = SYS.reduce((a, s) => a + (Number(s.players) || 0), 0), act = SYS.reduce((a, s) => a + (Number(s.activeToday) || 0), 0);
+  $('#sysCards').innerHTML = [[SYS.length, 'schools'], [SYS.filter(s => s.status === 'active').length, 'active'], [players, 'players in total'], [act, 'played today']].map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
+  const chip = s => `<span class="chip ${s === 'active' ? 'act' : s === 'suspended' ? 'sus' : 'wai'}">${s === 'waiting' ? 'setting up' : esc(s)}</span>`;
+  const ago = iso => { if (!iso) return 'never'; const d = Math.round((Date.now() - new Date(iso)) / 864e5); return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago'; };
+  $('#sysTable').innerHTML = '<thead><tr><th>School</th><th>Code</th><th>Status</th><th>Games</th><th>Players</th><th>Today</th><th>Counted</th><th>Script</th><th></th></tr></thead><tbody>' +
+    (SYS.length ? SYS.map(s => `<tr data-sid="${esc(s.schoolId)}"><td><b>${esc(s.name)}</b><br><small style="opacity:.7">${esc(s.ownerGmail || '')}</small></td><td><b>${esc(s.code)}</b></td><td>${chip(s.status)}</td><td>${esc(s.games || 'read')}</td><td>${Number(s.players) || 0}</td><td>${Number(s.activeToday) || 0}</td><td>${ago(s.lastActive)}</td><td>${esc(String(s.scriptVersion || ''))}</td>
+      <td style="white-space:nowrap"><button class="btn ghost" data-sys="${s.status === 'suspended' ? 'resume' : 'suspend'}" style="padding:6px 10px">${s.status === 'suspended' ? 'Resume' : 'Suspend'}</button> <button class="btn ghost" data-sys="code" style="padding:6px 10px">Code</button> <button class="btn ghost" data-sys="token" style="padding:6px 10px">Setup token</button> <button class="btn ghost" data-sys="delete" style="padding:6px 10px">🗑</button></td></tr>`).join('') : '<tr><td colspan="9" style="opacity:.7">No schools yet.</td></tr>') + '</tbody>';
+}
+async function sysReload() { const j = await sysCall('listSchools'); if (j.ok) { SYS = j.schools; sysRender(); } }
+$('#sysBack').onclick = () => { if (SYSKEY && SYSKEY.startsWith('ad_')) sysCall('adminLogout').catch(() => {}); SYSKEY = null; show('login'); };
+$('#sysRefresh').onclick = async () => { toast('Counting…'); try { await sysCall('refreshCounts'); await sysReload(); toast('Counts updated'); } catch (e) { toast('Could not reach the registry.'); } };
+$('#sysAdd').onclick = () => {
+  modal('+ Add a school', `<input id="saName" type="text" maxlength="80" placeholder="School name" style="margin-bottom:6px"><input id="saMail" type="email" autocapitalize="none" placeholder="Owner Gmail (keeps the data)" style="margin-bottom:6px"><input id="saCode" type="text" autocapitalize="characters" maxlength="20" placeholder="School code (empty: made for you)">
+    <label class="small" style="display:block;margin-top:8px"><input type="checkbox" id="saRead" checked style="width:auto"> Reading game</label><label class="small" style="display:block"><input type="checkbox" id="saMath" style="width:auto"> Math game</label>`,
+    [['Add', async () => {
+      const games = [$('#saRead').checked ? 'read' : '', $('#saMath').checked ? 'math' : ''].filter(Boolean).join(',') || 'read';
+      const j = await sysCall('addSchool', { name: $('#saName').value.trim(), ownerGmail: $('#saMail').value.trim(), code: $('#saCode').value.trim(), games });
+      if (!j.ok) { toast(j.error === 'taken' ? 'That code is already used.' : j.error === 'short' ? 'The code needs at least 4 letters or digits.' : 'Could not add: check the name and the Gmail.'); return; }
+      modal('School added', `<p>School code: <b>${esc(j.code)}</b></p><p>Setup token (shown now; you can make a new one later):</p><p style="font-family:Consolas,monospace;font-size:1.2rem;user-select:all"><b>${esc(j.setupToken)}</b></p><p class="small">The school owner pastes this token into the school's setup sheet.</p>`, [['OK', null]]); sysReload();
+    }], ['Cancel', null, true]]);
+};
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-sys]'); if (!b) return;
+  const sid = b.closest('tr').dataset.sid, s = SYS.find(x => x.schoolId === sid), what = b.dataset.sys; if (!s) return;
+  if (what === 'suspend') modal('Suspend ' + esc(s.name) + '?', '<p>Students of this school can no longer play in school mode. They can move their wizard to home. The school keeps all its data.</p>', [['Suspend', async () => { await sysCall('setStatus', { schoolId: sid, status: 'suspended' }); sysReload(); }], ['Cancel', null, true]]);
+  else if (what === 'resume') sysCall('setStatus', { schoolId: sid, status: 'active' }).then(j => { if (!j.ok) toast('Could not resume: ' + (j.error || 'error')); sysReload(); });
+  else if (what === 'code') modal('Change the code of ' + esc(s.name), '<p class="small">New devices need the new code. Printed cards still show the old one.</p><input id="scCode" type="text" autocapitalize="characters" maxlength="20" value="' + esc(s.code) + '">', [['Save', async () => { const j = await sysCall('setCode', { schoolId: sid, code: $('#scCode').value.trim() }); if (!j.ok) toast(j.error === 'taken' ? 'That code is already used.' : 'Could not change the code.'); sysReload(); }], ['Cancel', null, true]]);
+  else if (what === 'token') modal('New setup token', '<p>Make a new setup token for ' + esc(s.name) + '? The old token stops working.</p>', [['Make it', async () => { const j = await sysCall('newSetupToken', { schoolId: sid }); if (!j.ok) { toast('Could not make a token.'); return; } modal('Setup token', `<p style="font-family:Consolas,monospace;font-size:1.2rem;user-select:all"><b>${esc(j.setupToken)}</b></p>`, [['OK', null]]); }], ['Cancel', null, true]]);
+  else if (what === 'delete') modal('Delete ' + esc(s.name) + '?', '<p>This removes the school from the registry. Its students can no longer find it by its code. The school’s own Google Sheet is not touched.</p>', [['Delete', async () => { await sysCall('deleteSchool', { schoolId: sid }); sysReload(); }], ['Cancel', null, true]]);
+});
 /* ====================== TEACHER (ADMIN) AREA ====================== */
 // The password is checked by the Google script, never by this page, and it is kept in memory only (gone when the tab closes).
 let ADMKEY = null; const ADM = { students: [], sortKey: 'last', sortDir: -1, filter: '', soundVer: 0 };
@@ -4126,16 +4202,27 @@ function startDemo() {
   openMenu();
 }
 $('#admDemo').onclick = () => startDemo();
-let ADM_ROLE = '', ADM_EMAIL = '';
-function adminAsk() {
-  if (!CFG.SCRIPT_URL) { modal('Teacher area', '<p>The cloud is not set up, so there is no student data to show.</p>', [['OK', null]]); return; }
-  modal('🔧 Staff sign-in', `<p class="small">Enter your school e-mail. We send you a 6-digit code.</p><input id="stMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="name@school.org"><button class="btn" id="stSend" style="margin-top:8px">Send me a code</button>
+let ADM_ROLE = '', ADM_EMAIL = '', ADM_KIND = 'school';
+async function useSchool(code) {   // find the school's own service from its code: true / a message
+  code = String(code || '').trim().toUpperCase(); if (code.length < 3) return 'Please type the school code.';
+  const r = await checkSchoolCode(code);
+  if (r === true) { lsSet('tq_staff_code', code); return true; }
+  return r === 'suspended' ? "This school's access to the game has ended. The school's data is still in its own Google Sheet." : r === 'rate' ? 'Too many tries. Please wait a minute.' : r === 'offline' ? 'I could not reach the service. Please check the internet.' : 'That school code is not right.';
+}
+function adminAsk(kind) {
+  ADM_KIND = kind || ADM_KIND || 'school'; const teacher = ADM_KIND === 'teacher';
+  modal(teacher ? '👩‍🏫 Teacher sign-in' : '🏫 School sign-in', `<p class="small">${teacher ? 'Sign in with the e-mail your school added for you.' : 'For the school owner. Your school code and your e-mail.'} We send you a 6-digit code.</p>
+    <input id="stSchool" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" placeholder="School code" value="${esc(lsGet('tq_staff_code') || lsGet('tq_school_code') || '')}" style="margin-bottom:8px">
+    <input id="stMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="name@school.org"><button class="btn" id="stSend" style="margin-top:8px">Send me a code</button>
     <div id="stBox" style="display:none;margin-top:10px"><input id="stCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="stGo" style="margin-top:8px">Sign in</button></div>
-    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div><div style="margin-top:8px"><a href="#" id="stPw" style="color:inherit;opacity:.7;font-size:.85rem">Use the teacher password instead</a></div>`, [['Cancel', null, true]]);
+    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>${teacher ? '' : '<div style="margin-top:8px"><a href="#" id="stPw" style="color:inherit;opacity:.7;font-size:.85rem">Use the school password instead</a></div>'}`, [['Cancel', null, true]]);
   const msg = t => { $('#stMsg').textContent = t; };
   $('#stSend').onclick = async () => {
     const em = $('#stMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
-    msg('Sending…'); $('#stSend').disabled = true;
+    msg('Checking the school…'); $('#stSend').disabled = true;
+    const u = await useSchool($('#stSchool').value); if (u !== true) { msg(u); $('#stSend').disabled = false; return; }
+    if (!CFG.SCRIPT_URL) { msg('The cloud is not set up here.'); $('#stSend').disabled = false; return; }
+    msg('Sending…');
     try {
       const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffRequest', email: em }) }), j = await r.json();
       if (j.ok) { msg('If this e-mail is on the staff list, a code is on its way. It works for 10 minutes.'); $('#stBox').style.display = ''; $('#stCode').focus(); }
@@ -4148,17 +4235,20 @@ function adminAsk() {
     msg('Checking…'); $('#stGo').disabled = true;
     try {
       const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffVerify', email: em, code }) }), j = await r.json();
-      if (j.ok) { $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; adminEnter(); return; }
+      if (j.ok) {
+        if (!teacher && j.role !== 'owner') { fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffLogout', key: j.token }) }).catch(() => {}); msg('This e-mail is a teacher, not a school owner. Please use "Teacher" on the start screen.'); $('#stGo').disabled = false; return; }
+        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = teacher ? 'teacher' : j.role; ADM_EMAIL = j.email; adminEnter(); return;   // the Teacher entrance always shows the teacher's view; the school's own service decides what the person may really do
+      }
       msg('That code is not right, or it has expired. Ask for a new one.');
     } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
     $('#stGo').disabled = false;
   };
-  $('#stMail').onkeydown = e => { if (e.key === 'Enter') $('#stSend').click(); }; $('#stCode').onkeydown = e => { if (e.key === 'Enter') $('#stGo').click(); };
-  $('#stPw').onclick = e => { e.preventDefault(); adminPassAsk(); };
-  setTimeout(() => { const i = $('#stMail'); if (i) i.focus(); }, 60);
+  $('#stSchool').onkeydown = $('#stMail').onkeydown = e => { if (e.key === 'Enter') $('#stSend').click(); }; $('#stCode').onkeydown = e => { if (e.key === 'Enter') $('#stGo').click(); };
+  if ($('#stPw')) $('#stPw').onclick = async e => { e.preventDefault(); const u = await useSchool($('#stSchool').value); if (u !== true) { msg(u); return; } adminPassAsk(); };
+  setTimeout(() => { const i = $('#stSchool').value ? $('#stMail') : $('#stSchool'); if (i) i.focus(); }, 60);
 }
 function adminPassAsk() {
-  modal('🔧 Teacher area', '<p>Enter the teacher password.</p><input id="admPass" type="password" autocomplete="off" style="margin:6px 0">', [['Open', adminOpen], ['Cancel', null, true]]);
+  modal('🏫 School area', '<p>Enter the school password.</p><input id="admPass" type="password" autocomplete="off" style="margin:6px 0">', [['Open', adminOpen], ['Cancel', null, true]]);
   setTimeout(() => { const i = $('#admPass'); if (i) { i.focus(); i.onkeydown = e => { if (e.key === 'Enter') $('#mBtns button').click(); }; } }, 60);
 }
 async function adminOpen() {
@@ -4169,8 +4259,9 @@ async function adminEnter(viaPassword) {
   toast('Checking…');
   try {
     const j = await adminCall('list');
-    if (!j.ok) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : viaPassword ? 'That password is not right.' : 'Could not sign in.'}</p>`, [['Try again', adminAsk], ['Close', null, true]]); return; }
+    if (!j.ok) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : viaPassword ? 'That password is not right.' : 'Could not sign in.'}</p>`, [['Try again', () => adminAsk()], ['Close', null, true]]); return; }
     show('admin'); const teacher = ADM_ROLE === 'teacher';
+    $('#admTitle').textContent = teacher ? '👩‍🏫 Teacher area' : '🏫 School area';
     $('#admWho').textContent = 'Signed in: ' + ADM_EMAIL + ' · ' + (teacher ? 'Teacher' : 'School owner');
     ['admCode', 'admDemoCard', 'admSound'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; });
     adminRender(j); if (!teacher) { adminCodeLoad(); adminStaffLoad(); } else $('#admStaff').style.display = 'none';
@@ -4383,7 +4474,9 @@ async function adminStudent(id) {
       [['Yes, delete', async () => { try { const r = await adminCall('deleteStudent', { id: p.id }); if (r.ok) { ADM.students = ADM.students.filter(s => s.id !== p.id); box.style.display = 'none'; adminRender({ students: ADM.students, soundVer: ADM.soundVer }); toast('Student deleted'); } else toast('Could not delete: ' + (r.error || '')); } catch (e) { toast('Could not reach the cloud'); } }], ['Cancel', null, true]]);
   } catch (e) { box.innerHTML = '<p>Could not load this student. ' + esc(e.message || '') + '</p>'; }
 }
-$('#adminLink').onclick = e => { e.preventDefault(); adminAsk(); };
+$('#lnkAdmin').onclick = e => { e.preventDefault(); sysAsk(); };
+$('#lnkSchool').onclick = e => { e.preventDefault(); adminAsk('school'); };
+$('#lnkTeacher').onclick = e => { e.preventDefault(); adminAsk('teacher'); };
 $('#admBack').onclick = () => { if (String(ADMKEY).startsWith('tk_')) adminCall('staffLogout').catch(() => {}); ADMKEY = null; ADM_ROLE = ''; show('login'); };
 $('#admRefresh').onclick = async () => { try { const j = await adminCall('list'); if (j.ok) adminRender(j); } catch (e) { toast('Could not refresh'); } };
 $('#admSearch').oninput = () => { ADM.filter = $('#admSearch').value; adminTable(); };
@@ -4467,7 +4560,7 @@ const TT = {
   en: {
     sub: 'An adventure game: learn to read and write Hebrew, one spell at a time!', continue: 'Continue as:',
     mSchool: "🏫 I'm a school student", mHome: '🏠 Play at home', mOffline: '📴 Play offline', mLoad: '📂 Load a hero from a file',
-    teacher: 'Teacher area', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
+    teacher: 'Teacher area', lAdmin: 'Admin', lSchool: 'School', lTeacher: 'Teacher', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
     codeH: 'School code', codeP: 'Your teacher gives you this code. You type it only once on this device.', codePh: 'School code',
     numH: 'Your student number', numP: 'Type your student number to begin.', numPh: 'Your number', go: "Let's go! ▶", newBtn: '🌟 I am new', changeCode: 'Change the school code',
     codeShort: 'Please type the school code.', codeSusp: "This school's access to the game has ended. Ask your teacher.", checking: 'Checking…', codeWrong: 'That code is not right. Ask your teacher.', codeRate: 'Too many tries. Please wait a minute.', codeOffline: "I can't reach the school right now. Check the internet and try again.",
@@ -4488,7 +4581,7 @@ const TT = {
   he: {
     sub: 'משחק הרפתקאות: לומדים לקרוא ולכתוב עברית, לחש אחרי לחש!', continue: 'להמשיך בתור:',
     mSchool: '🏫 אני תלמיד/ה בבית ספר', mHome: '🏠 משחקים בבית', mOffline: '📴 משחקים בלי אינטרנט', mLoad: '📂 טעינת גיבור מקובץ',
-    teacher: 'אזור מורים', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
+    teacher: 'אזור מורים', lAdmin: 'מנהל המערכת', lSchool: 'בית ספר', lTeacher: 'מורה', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
     codeH: 'קוד בית הספר', codeP: 'המורה נותן לכם את הקוד הזה. מקלידים אותו רק פעם אחת במכשיר הזה.', codePh: 'קוד בית הספר',
     numH: 'מספר התלמיד/ה שלך', numP: 'הקלידו את מספר התלמיד/ה שלכם כדי להתחיל.', numPh: 'המספר שלך', go: 'יאללה! ▶', newBtn: '🌟 אני חדש/ה', changeCode: 'החלפת קוד בית הספר',
     codeShort: 'נא להקליד את קוד בית הספר.', codeSusp: 'הגישה של בית הספר למשחק הסתיימה. שאלו את המורה.', checking: 'בודקים…', codeWrong: 'הקוד לא נכון. שאלו את המורה.', codeRate: 'יותר מדי ניסיונות. המתינו דקה.', codeOffline: 'אין חיבור לבית הספר כרגע. בדקו את האינטרנט ונסו שוב.',
