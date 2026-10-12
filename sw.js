@@ -1,6 +1,6 @@
 /* Learning to Read: service worker. The game keeps a saved copy so it opens quickly and works offline, but it always checks for a newer version first. */
-const CACHE = 'ltr-v2';
-const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'syllables.json', 'syllables.wav'];
+const CACHE = 'ltr-v3';
+const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-512-maskable.png', 'syllables.json', 'syllables.wav'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(new Request(u, { cache: 'reload' })).catch(() => {})))).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
