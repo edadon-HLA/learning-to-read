@@ -33,6 +33,7 @@ h2{margin:.2em 0}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #9b6411}
 .btn.ghost{background:#fff1;color:#fff;box-shadow:none;border:1px solid #fff3}
 .btn:disabled{opacity:.5}
+select.ctl{width:100%;padding:12px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.15rem;text-align:center}select.ctl option{color:#000}select.ctl.sm{width:auto;padding:8px;font-size:1rem}
 input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.3rem;text-align:center}
 .center{text-align:center}
 .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
@@ -559,9 +560,12 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="small center" id="admWho" style="opacity:.85;margin:2px 0 6px"></div>
   <div class="card center" id="admCode" style="margin:6px 0"></div>
   <div class="card" id="admStaff" style="display:none"></div>
+  <div class="card" id="admClasses" style="display:none"></div>
+  <div class="card" id="admWait" style="display:none"></div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
+      <select id="admClassSel" class="ctl sm"><option value="">All classes</option></select>
       <button class="btn ghost" id="admCsv" style="padding:8px 14px">⬇ Download (CSV)</button></div>
     <div class="tblwrap"><table id="admTable"></table></div>
     <div class="small" style="opacity:.7;margin-top:6px">Tap a student to see details. Tap a column title to sort.</div>
@@ -588,6 +592,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
       <input id="regName" type="text" maxlength="40" placeholder="First name and last name" autocomplete="off">
       <label class="regLbl">Your class</label>
       <input id="regClass" type="text" maxlength="15" placeholder="For example 3B" autocomplete="off">
+      <select id="regClassSel" class="ctl" style="display:none"></select>
       <div class="msg" id="regMsg"></div>
       <div class="row"><button class="btn ghost" id="regBack">← Back</button><button class="btn" id="regGo">Get my number ▶</button></div>
     </div>
@@ -1376,7 +1381,7 @@ function streak() {
 }
 function setCloud(s) {
   cloudState = s;
-  const m = { ok: ['☁️✓', 'Progress saved to the cloud'], pend: ['☁️…', 'Saving…'], off: ['⚠️', 'Cloud not reachable. Progress is saved on this device.'], none: ['', 'Saved on this device'] }[s] || ['', ''];
+  const m = { wait: ['⏳', 'Waiting for your teacher to approve your number. You can keep playing.'], ok: ['☁️✓', 'Progress saved to the cloud'], pend: ['☁️…', 'Saving…'], off: ['⚠️', 'Cloud not reachable. Progress is saved on this device.'], none: ['', 'Saved on this device'] }[s] || ['', ''];
   for (const id of ['#cloud', '#menuCloud']) { const e = $(id); if (e) { e.textContent = m[0]; e.title = m[1]; e.style.display = m[0] ? '' : 'none'; } }
 }
 function saveSoon(now) {
@@ -1401,12 +1406,15 @@ async function cloudSave() {
     if (j.conflict && j.data) {         // cloud copy is newer: adopt it
       const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('tq_p_' + P.id, JSON.stringify(P));
     }
+    if (j.rejected) { P.mode = 'offline'; delete P.realPending; saveSoon(); setCloud('none'); modal('Not approved', '<p>Your teacher did not approve this number for the school. You can keep playing here on this device. Please ask your teacher for help.</p>', [[tr('ok'), null]]); return; }
+    if (j.ok && j.pending) { P.waiting = true; setCloud('wait'); return; }   // the teacher has not approved yet: the device keeps the name and class and asks again at the next save
+    if (j.ok && P.waiting) { delete P.waiting; toast('✅ Your teacher approved you!'); }
     if (j.ok && P.realPending) { delete P.realPending; lsSet('tq_p_' + P.id, JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined }))); }   // the school sheet has the name and class now
     setCloud('ok');
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
-  let local = null, cloud = null, offline = false, deleted = false, limited = false;
+  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false;
   try { const t = lsGet('tq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
@@ -1414,6 +1422,8 @@ async function loadProfile(id) {
       const j = await r.json();
       if (!j.ok && j.error === 'rate') limited = true;   // too many tries for a minute: the answer says nothing about the number
       if (j.ok && j.deleted) deleted = true;
+      if (j.ok && j.pending) pendingHero = true;
+      if (j.ok && j.rejected) rejectedHero = true;
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
     } catch (e) { offline = true; }
@@ -1422,7 +1432,7 @@ async function loadProfile(id) {
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
   if (deleted) { try { localStorage.removeItem('tq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
-  return { profile: best, offline, limited };
+  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero };
 }
 
 /* ====================== SCREENS / MODAL ====================== */
@@ -1464,6 +1474,8 @@ $('#loginBtn').onclick = async () => {   // 🏫 a school student types their nu
   if (r.profile && (r.profile.mode || 'school') === 'school') { P = r.profile; P.mode = 'school'; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
   if (r.deleted) { modal(tr('deletedH'), `<p>${tr('deletedP')}</p>`, [[tr('newBtn'), () => $('#newBtn').click()], [tr('ok'), null, true]]); return; }
   if (r.limited) { modal(tr('waitH'), `<p>${tr('waitP')}</p>`, [[tr('ok'), null]]); return; }
+  if (r.pending) { modal('⏳ Waiting', '<p>Your teacher has not approved this number yet. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
+  if (r.rejected) { modal('Not approved', '<p>This number was not approved. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
   const warn = r.offline ? `<p>${tr('offlineWarn')}</p>` : '';
   modal(tr('unknownH'), `<p>${tr('unknownP').replace('{id}', esc(id))}</p>${warn}<p>${tr('unknownP2')}</p>`, [[tr('tryAgain'), null], [tr('newBtn'), () => $('#newBtn').click(), true]]);
 };
@@ -1475,10 +1487,19 @@ function removedByTeacher() {   // the teacher deleted this student: forget the 
   const id = P && P.id; P = null; try { if (id) localStorage.removeItem('tq_p_' + id); } catch (e) {}
   show('login'); renderStart(); modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['OK', null]]);
 }
-$('#newBtn').onclick = () => { $('#regName').value = ''; $('#regClass').value = ''; $('#regMsg').textContent = ''; $('#regMsg2').textContent = ''; $('#regTick').checked = false; $('#regForm').style.display = ''; $('#regDone').style.display = 'none'; show('register'); };
+let schoolClasses = [];
+async function loadSchoolClasses() {   // the school's class list (names only) for the dropdown; no list: the student types the class as before
+  schoolClasses = []; const sel = $('#regClassSel'); sel.style.display = 'none'; $('#regClass').style.display = '';
+  if (!CFG.SCRIPT_URL) return;
+  try {
+    const j = await (await fetch(CFG.SCRIPT_URL + '?action=classes')).json();
+    if (j.ok && j.classes && j.classes.length) { schoolClasses = j.classes; sel.innerHTML = '<option value="">— choose your class —</option>' + j.classes.map(c => `<option>${esc(c)}</option>`).join(''); sel.style.display = ''; $('#regClass').style.display = 'none'; }
+  } catch (e) {}
+}
+$('#newBtn').onclick = () => { loadSchoolClasses(); $('#regName').value = ''; $('#regClass').value = ''; $('#regMsg').textContent = ''; $('#regMsg2').textContent = ''; $('#regTick').checked = false; $('#regForm').style.display = ''; $('#regDone').style.display = 'none'; show('register'); };
 $('#regBack').onclick = () => { show('login'); loginView('number'); };
 $('#regGo').onclick = async () => {
-  const name = $('#regName').value.trim().replace(/\s+/g, ' '), cls = $('#regClass').value.trim().replace(/\s+/g, ' '), msg = $('#regMsg');
+  const name = $('#regName').value.trim().replace(/\s+/g, ' '), cls = ($('#regClassSel').style.display !== 'none' ? $('#regClassSel').value : $('#regClass').value).trim().replace(/\s+/g, ' '), msg = $('#regMsg');
   if (name.length < 4 || !name.includes(' ')) { msg.textContent = 'Please write your full name: first name and last name.'; return; }
   if (!cls) { msg.textContent = 'Please write your class.'; return; }
   msg.textContent = 'Making your number…'; $('#regGo').disabled = true;
@@ -4145,19 +4166,87 @@ async function adminEnter(viaPassword) {
     $('#admWho').textContent = 'Signed in: ' + ADM_EMAIL + ' · ' + (teacher ? 'Teacher' : 'School owner');
     ['admCode', 'admDemoCard', 'admSound'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; });
     adminRender(j); if (!teacher) { adminCodeLoad(); adminStaffLoad(); } else $('#admStaff').style.display = 'none';
+    adminClassesLoad(); adminWaitLoad();
   } catch (e) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
 }
+/* ----- classes, approval settings (owner) and the waiting list (owner and teachers) ----- */
+let ADM_CLASSES = [], ADM_APPROVAL = false;
+const clsKey = s => String(s || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '');
+async function adminClassesLoad() {
+  let j; try { j = await adminCall('listClasses'); } catch (e) { return; }
+  if (!j || !j.ok) return;
+  ADM_CLASSES = j.classes; ADM_APPROVAL = !!j.approval;
+  const sel = $('#admClassSel'), cur = ADM.cls || '', names = ADM_CLASSES.filter(c => !c.archived).map(c => c.name);
+  const fromStudents = [...new Set(ADM.students.map(s => s.cls).filter(Boolean))];   // classes typed by hand before the class list existed
+  const all = [...new Set([...names, ...fromStudents])].sort();
+  sel.innerHTML = '<option value="">All classes</option>' + all.map(c => `<option ${c === cur ? 'selected' : ''}>${esc(c)}</option>`).join('');
+  const box = $('#admClasses');
+  if (ADM_ROLE !== 'owner') { box.style.display = 'none'; return; }
+  box.style.display = '';
+  box.innerHTML = '<b>🏫 Classes and approval</b><p class="small" style="margin:6px 0;opacity:.85">The classes new students can choose from. If the list is empty, students type their class themselves.</p>' +
+    (ADM_CLASSES.length ? ADM_CLASSES.map(c => `<div class="setRow"><div class="setName"><b>${esc(c.name)}</b>${c.archived ? ' <span class="setBadge">archived</span>' : ''}</div><div class="setBtns"><button class="btn ghost" data-clsarch="${esc(c.name)}" data-to="${c.archived ? 0 : 1}">${c.archived ? 'Restore' : 'Archive'}</button></div></div>`).join('') : '<p class="small" style="opacity:.7">No classes yet.</p>') +
+    `<div class="row" style="justify-content:flex-start;margin-top:8px;gap:8px;flex-wrap:wrap"><input id="clsNew" type="text" placeholder="New class, e.g. 3B" maxlength="20" style="max-width:200px;padding:8px;font-size:1rem"><button class="btn" id="clsAdd" style="padding:8px 14px">+ Add class</button></div><div class="msg" id="clsMsg" style="min-height:1.2em"></div>
+    <hr style="opacity:.2"><label class="row" style="justify-content:flex-start;gap:8px"><input type="checkbox" id="apprOn" ${ADM_APPROVAL ? 'checked' : ''} style="width:auto"> <span>New students must be approved by a teacher</span></label><div class="small" style="opacity:.75;margin-top:4px">${ADM_APPROVAL ? 'A new student plays at once, but is saved to the school only after a teacher approves.' : 'Off: new students are saved to the school straight away.'}</div>`;
+}
+async function adminWaitLoad() {
+  const box = $('#admWait'); let j; try { j = await adminCall('pendingList'); } catch (e) { return; }
+  if (!j || !j.ok) { box.style.display = 'none'; return; }
+  ADM.wait = j.pending;
+  if (!j.pending.length && !ADM_APPROVAL) { box.style.display = 'none'; return; }
+  box.style.display = '';
+  const classes = [...new Set([...ADM_CLASSES.filter(c => !c.archived).map(c => c.name), ...j.pending.map(p => p.cls)])];
+  const fc = ADM.waitCls || '', shown = j.pending.filter(p => !fc || clsKey(p.cls) === clsKey(fc));
+  box.innerHTML = `<div class="row" style="justify-content:space-between"><b>⏳ Waiting for approval (${j.pending.length})</b><select id="waitCls" class="ctl sm"><option value="">All classes</option>${[...new Set(j.pending.map(p => p.cls))].sort().map(c => `<option ${c === fc ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>` +
+    (shown.length ? `<div class="row" style="justify-content:flex-start;margin:8px 0;gap:8px;flex-wrap:wrap"><label class="small"><input type="checkbox" id="waitAll" style="width:auto"> Select all</label><button class="btn" id="waitOk" style="padding:8px 14px">✔ Approve selected</button><button class="btn" id="waitOkAll" style="padding:8px 14px">✔✔ Approve all${fc ? ' in ' + esc(fc) : ''} (${shown.length})</button><button class="btn ghost" id="waitNo" style="padding:8px 14px">✖ Reject selected</button></div>` +
+      shown.map(p => `<div class="setRow" data-wid="${esc(p.id)}"><label style="display:flex;gap:8px;align-items:center;flex:1;min-width:220px"><input type="checkbox" class="waitTick" style="width:auto"><span class="setName"><b>${esc(p.nick)}</b> <small>#${esc(p.id)} · asked ${p.requested ? new Date(p.requested).toLocaleDateString() : ''}</small></span></label>
+        <input type="text" class="waitName" value="${esc(p.real)}" maxlength="60" style="max-width:200px;padding:6px;font-size:.95rem"><select class="ctl sm waitClsSel">${classes.map(c => `<option ${clsKey(c) === clsKey(p.cls) ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>`).join('') +
+      '<div class="msg" id="waitMsg" style="min-height:1.2em"></div>' : '<p class="small" style="opacity:.7;margin-top:8px">Nobody is waiting.</p>');
+}
+document.addEventListener('change', e => {
+  if (e.target.id === 'waitCls') { ADM.waitCls = e.target.value; adminWaitLoad(); }
+  if (e.target.id === 'waitAll') document.querySelectorAll('#admWait .waitTick').forEach(c => { c.checked = e.target.checked; });
+  if (e.target.id === 'apprOn') adminCall('setApproval', { on: e.target.checked }).then(() => adminClassesLoad().then(adminWaitLoad)).catch(() => toast('Could not save.'));
+});
+document.addEventListener('click', async e => {
+  const t = e.target, arch = t.closest('[data-clsarch]');
+  try {
+    if (t.id === 'clsAdd') { const n = $('#clsNew').value.trim(); if (!n) return; const j = await adminCall('addClass', { name: n }); if (!j.ok) { $('#clsMsg').textContent = 'Could not add.'; return; } await adminClassesLoad(); return; }
+    if (arch) { await adminCall('archiveClass', { name: arch.dataset.clsarch, archived: arch.dataset.to === '1' }); await adminClassesLoad(); return; }
+    const picked = () => [...document.querySelectorAll('#admWait .setRow')].filter(r => r.querySelector('.waitTick').checked);
+    const msg = s => { const m = $('#waitMsg'); if (m) m.textContent = s; };
+    if (t.id === 'waitOk') {
+      const rows = picked(); if (!rows.length) { msg('Tick the students first.'); return; }
+      const j = await adminCall('approve', { items: rows.map(r => ({ id: r.dataset.wid, real: r.querySelector('.waitName').value.trim(), cls: r.querySelector('.waitClsSel').value })) });
+      toast(j.ok ? '✅ Approved ' + j.done : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); return;
+    }
+    if (t.id === 'waitOkAll') {
+      const n = ADM.wait.filter(p => !ADM.waitCls || clsKey(p.cls) === clsKey(ADM.waitCls)).length, cls = ADM.waitCls || '';
+      modal('Approve all', `<p>Approve ${n} student${n === 1 ? '' : 's'}${cls ? ' in class <b>' + esc(cls) + '</b>' : ''}?</p>`, [['Approve', async () => { const j = await adminCall('approveAll', { cls }); toast(j.ok ? '✅ Approved ' + j.done : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); }], ['Cancel', null, true]]);
+      return;
+    }
+    if (t.id === 'waitNo') {
+      const rows = picked(); if (!rows.length) { msg('Tick the students first.'); return; }
+      modal('Reject', `<p>Reject ${rows.length} student${rows.length === 1 ? '' : 's'}? They can keep playing on their device but will not be part of the school.</p>`, [['Reject', async () => { const j = await adminCall('reject', { ids: rows.map(r => r.dataset.wid) }); toast(j.ok ? 'Rejected ' + j.done : 'Could not reject.'); await adminWaitLoad(); }], ['Cancel', null, true]]);
+    }
+  } catch (x) { toast('Could not reach the cloud.'); }
+});
+async function adminRefreshStudents() { try { const j = await adminCall('list'); if (j.ok) { adminRender(j); } } catch (e) {} }
 async function adminStaffLoad() {   // the school owner adds and removes staff by e-mail
   const box = $('#admStaff'); let j;
   try { j = await adminCall('listStaff'); } catch (e) { box.style.display = ''; box.innerHTML = '<p class="small">Could not load the staff list.</p>'; return; }
   if (!j.ok) { box.style.display = 'none'; return; }
   box.style.display = '';
   box.innerHTML = '<b>👩‍🏫 Staff</b><p class="small" style="margin:6px 0;opacity:.85">People who sign in with their school e-mail. Owners can do everything. Teachers can look at the students.</p>' +
-    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>${esc(s.classes || 'ALL')}</small></div><div class="setBtns"><button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
+    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button>` : ''}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
     `<div class="row" style="justify-content:flex-start;margin-top:10px;gap:8px;flex-wrap:wrap"><input id="stfMail" type="email" placeholder="e-mail to add" autocapitalize="none" style="max-width:260px;padding:8px;font-size:1rem"><select id="stfRole" style="padding:8px;font-size:1rem"><option value="teacher">Teacher</option><option value="owner">Owner</option></select><button class="btn" id="stfAdd" style="padding:8px 14px">+ Add</button></div><div class="msg" id="stfMsg" style="min-height:1.2em"></div>`;
 }
 document.addEventListener('click', async e => {
-  const rm = e.target.closest('[data-stf]'), add = e.target.closest('#stfAdd');
+  const rm = e.target.closest('[data-stf]'), add = e.target.closest('#stfAdd'), sc = e.target.closest('[data-stfcls]');
+  if (sc) {
+    const em = sc.dataset.stfcls, names = ADM_CLASSES.filter(c => !c.archived).map(c => c.name);
+    modal('Classes of ' + esc(em), `<p class="small">Which classes can this teacher see? Type ALL, or class names separated by commas${names.length ? ' (' + esc(names.join(', ')) + ')' : ''}.</p><input id="stfClsIn" type="text" value="${esc(sc.dataset.cur)}" maxlength="200">`, [['Save', async () => { const j = await adminCall('setStaffClasses', { email: em, classes: ($('#stfClsIn') ? $('#stfClsIn').value : 'ALL').trim() || 'ALL' }); if (!j.ok) toast('Could not save.'); adminStaffLoad(); }], ['Cancel', null, true]]);
+    return;
+  }
   if (!rm && !add) return;
   const msg = t => { const m = $('#stfMsg'); if (m) m.textContent = t; };
   try {
@@ -4201,8 +4290,8 @@ function adminRender(j) {
 const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
 function adminTable() {
   const cols = [['nick', 'Student'], ['tier', 'Level'], ['accuracy', 'Accuracy'], ['answers', 'Answers'], ['minutes', 'Minutes'], ['coins', 'Coins'], ['craftAcc', 'Crafting'], ['restarts', 'Restarts'], ['last', 'Last played']];
-  const f = ADM.filter.trim().toLowerCase();
-  const rows = ADM.students.filter(s => !f || (s.nick + ' ' + s.id + ' ' + (s.real || '') + ' ' + (s.cls || '')).toLowerCase().includes(f))
+  const f = ADM.filter.trim().toLowerCase(), fc = (ADM.cls || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '');
+  const rows = ADM.students.filter(s => (!fc || String(s.cls || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '') === fc) && (!f || (s.nick + ' ' + s.id + ' ' + (s.real || '') + ' ' + (s.cls || '')).toLowerCase().includes(f)))
     .sort((a, b) => { const k = ADM.sortKey; const va = k === 'last' ? (a.last || '') : k === 'nick' ? a.nick.toLowerCase() : a[k], vb = k === 'last' ? (b.last || '') : k === 'nick' ? b.nick.toLowerCase() : b[k]; return (va > vb ? 1 : va < vb ? -1 : 0) * ADM.sortDir; });
   $('#admTable').innerHTML = '<thead><tr>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
     (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
@@ -4262,6 +4351,7 @@ $('#adminLink').onclick = e => { e.preventDefault(); adminAsk(); };
 $('#admBack').onclick = () => { if (String(ADMKEY).startsWith('tk_')) adminCall('staffLogout').catch(() => {}); ADMKEY = null; ADM_ROLE = ''; show('login'); };
 $('#admRefresh').onclick = async () => { try { const j = await adminCall('list'); if (j.ok) adminRender(j); } catch (e) { toast('Could not refresh'); } };
 $('#admSearch').oninput = () => { ADM.filter = $('#admSearch').value; adminTable(); };
+$('#admClassSel').onchange = () => { ADM.cls = $('#admClassSel').value; adminTable(); };
 $('#admTable').onclick = e => {
   const th = e.target.closest('th'); if (th) { const k = th.dataset.k; ADM.sortDir = ADM.sortKey === k ? -ADM.sortDir : (k === 'nick' ? 1 : -1); ADM.sortKey = k; adminTable(); return; }
   const tr = e.target.closest('tbody tr[data-id]'); if (tr) adminStudent(tr.dataset.id);
