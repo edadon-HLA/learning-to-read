@@ -4128,12 +4128,18 @@ function sysRender() {
     (SYS.length ? SYS.map(s => `<tr data-sid="${esc(s.schoolId)}"><td><b>${esc(s.name)}</b><br><small style="opacity:.7">${esc(s.ownerGmail || '')}</small></td><td><b>${esc(s.code)}</b></td><td>${chip(s.status)}</td><td>${esc(s.games || 'read')}</td><td>${Number(s.players) || 0}</td><td>${Number(s.activeToday) || 0}</td><td>${ago(s.lastActive)}</td><td>${esc(String(s.scriptVersion || ''))}</td>
       <td style="white-space:nowrap"><button class="btn ghost" data-sys="${s.status === 'suspended' ? 'resume' : 'suspend'}" style="padding:6px 10px">${s.status === 'suspended' ? 'Resume' : 'Suspend'}</button> <button class="btn ghost" data-sys="code" style="padding:6px 10px">Code</button> <button class="btn ghost" data-sys="token" style="padding:6px 10px">New kit link</button> <button class="btn ghost" data-sys="delete" style="padding:6px 10px">🗑</button></td></tr>`).join('') : '<tr><td colspan="9" style="opacity:.7">No schools yet.</td></tr>') + '</tbody>';
 }
+async function copyText(t) {   // copy to the clipboard; the old way (a hidden text box) is the fallback when the browser refuses
+  try { await navigator.clipboard.writeText(t); return true; } catch (e) {
+    try { const a = document.createElement('textarea'); a.value = t; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.focus(); a.select(); const ok = document.execCommand('copy'); a.remove(); return !!ok; } catch (x) { return false; }
+  }
+}
 function kitModal(title, j, extra) {   // the Admin sends ONE link to the school owner
   const link = j.kitLink || '';
   modal(title, `<p>${extra || ''}School code: <b>${esc(j.code || '')}</b></p>` + (link
-    ? `<p>Send this <b>one link</b> to the school owner:</p><p style="word-break:break-all;user-select:all;font-family:Consolas,monospace;font-size:.95rem"><b>${esc(link)}</b></p><p class="small" style="opacity:.8">It makes a ready copy for the school: the code and token are already inside. <b>Wait about 10 minutes before sending it</b> (Google needs a little time to attach the script). The owner must open it in a window signed in <b>only</b> to the school's Google account.</p>`
+    ? `<p>Send this <b>one link</b> to the school owner:</p><input id="kitLinkBox" type="text" readonly value="${esc(link)}" onclick="this.select()" style="font-size:.85rem;text-align:left"><button class="btn" id="kitCopy" style="margin:8px 0">📋 Copy the link</button><span class="small" id="kitCopyMsg" style="margin-left:8px"></span><p class="small" style="opacity:.8">It makes a ready copy for the school: the code and token are already inside. <b>Wait about 10 minutes before sending it</b> (Google needs a little time to attach the script). The owner must open it in a window signed in <b>only</b> to the school's Google account.</p>`
     : `<p class="small" style="color:#ffb4b4">The ready copy could not be made${j.kitError ? ' (' + esc(j.kitError) + ')' : ''}. Setup token (shown once): <b style="font-family:Consolas,monospace;user-select:all">${esc(j.setupToken || '')}</b>. The owner can use the plain template and type the code and token in the Setup sheet.</p>`),
-    [link ? ['Copy the link', () => { try { navigator.clipboard.writeText(link); toast('Link copied'); } catch (e) { toast('Select the link and copy it.'); } }] : ['OK', null], ['Close', null, true]]);
+    [['Close', null, true]]);
+  const cb = document.getElementById('kitCopy'); if (cb) cb.onclick = async () => { const ok = await copyText(link); document.getElementById('kitCopyMsg').textContent = ok ? '✅ Copied' : 'Could not copy: click the link box and press Ctrl+C.'; if (!ok) document.getElementById('kitLinkBox').select(); };
 }
 async function sysReload() { const j = await sysCall('listSchools'); if (j.ok) { SYS = j.schools; sysRender(); } }
 $('#sysBack').onclick = () => { if (SYSKEY && SYSKEY.startsWith('ad_')) sysCall('adminLogout').catch(() => {}); SYSKEY = null; show('login'); };
