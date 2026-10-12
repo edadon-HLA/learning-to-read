@@ -551,7 +551,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
       <div style="margin-top:8px"><a href="#" class="adminLink" id="changeCode" data-t="changeCode"></a> · <a href="#" class="adminLink loginBack" data-t="back"></a></div>
     </div>
   </div>
-  <div class="center loginLinks"><a href="#" id="lnkAdmin" class="adminLink">🛡 <span data-t="lAdmin"></span></a> · <a href="#" id="lnkSchool" class="adminLink">🏫 <span data-t="lSchool"></span></a> · <a href="#" id="lnkTeacher" class="adminLink">👩‍🏫 <span data-t="lTeacher"></span></a> · <a href="#" id="privLink" class="adminLink">🔒 <span data-t="privacy"></span></a> · <a href="#" id="langLink" class="adminLink">🌐 <span id="langName"></span></a></div>
+  <div class="center loginLinks"><a href="#" id="lnkAdmin" class="adminLink">🛡 <span data-t="lAdmin"></span></a> · <a href="#" id="lnkStaff" class="adminLink">🏫 <span data-t="lStaff"></span></a> · <a href="#" id="privLink" class="adminLink">🔒 <span data-t="privacy"></span></a> · <a href="#" id="langLink" class="adminLink">🌐 <span id="langName"></span></a></div>
   <div class="center"><button class="btn ghost" id="installBtn" style="display:none;margin-top:10px">📲 Install the game on this device</button></div>
   <div class="credit">Created by Dr. Dadon Eldar<br>in collaboration with HLA Hebrew Public</div>
 </section>
@@ -4215,12 +4215,12 @@ async function useSchool(code) {   // find the school's own service from its cod
   return r === 'suspended' ? "This school's access to the game has ended. The school's data is still in its own Google Sheet." : r === 'rate' ? 'Too many tries. Please wait a minute.' : r === 'offline' ? 'I could not reach the service. Please check the internet.' : 'That school code is not right.';
 }
 function adminAsk(kind) {
-  ADM_KIND = kind || ADM_KIND || 'school'; const teacher = ADM_KIND === 'teacher';
-  modal(teacher ? '👩‍🏫 Teacher sign-in' : '🏫 School sign-in', `<p class="small">${teacher ? 'Sign in with the e-mail your school added for you.' : 'For the school owner. Your school code and your e-mail.'} We send you a 6-digit code.</p>
+  ADM_KIND = 'staff';
+  modal('🏫 School / Teacher sign-in', `<p class="small">Your school code and the e-mail your school added for you. We send you a 6-digit code. School owners see the whole school; teachers see their own classes.</p>
     <input id="stSchool" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" placeholder="School code" value="${esc(lsGet('tq_staff_code') || lsGet('tq_school_code') || '')}" style="margin-bottom:8px">
     <input id="stMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="name@school.org"><button class="btn" id="stSend" style="margin-top:8px">Send me a code</button>
     <div id="stBox" style="display:none;margin-top:10px"><input id="stCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="stGo" style="margin-top:8px">Sign in</button></div>
-    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>${teacher ? '' : '<div style="margin-top:8px"><a href="#" id="stPw" style="color:inherit;opacity:.7;font-size:.85rem">Use the school password instead</a></div>'}`, [['Cancel', null, true]]);
+    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
   const msg = t => { $('#stMsg').textContent = t; };
   $('#stSend').onclick = async () => {
     const em = $('#stMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
@@ -4241,8 +4241,7 @@ function adminAsk(kind) {
     try {
       const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffVerify', email: em, code }) }), j = await r.json();
       if (j.ok) {
-        if (!teacher && j.role !== 'owner') { fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffLogout', key: j.token }) }).catch(() => {}); msg('This e-mail is a teacher, not a school owner. Please use "Teacher" on the start screen.'); $('#stGo').disabled = false; return; }
-        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = teacher ? 'teacher' : j.role; ADM_EMAIL = j.email; adminEnter(); return;   // the Teacher entrance always shows the teacher's view; the school's own service decides what the person may really do
+        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; adminEnter(); return;   // an owner sees the whole school, a teacher the teacher screen; the school's own service decides what each may really do
       }
       msg('That code is not right, or it has expired. Ask for a new one.');
     } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
@@ -4514,8 +4513,7 @@ async function adminStudent(id) {
   } catch (e) { box.innerHTML = '<p>Could not load this student. ' + esc(e.message || '') + '</p>'; }
 }
 $('#lnkAdmin').onclick = e => { e.preventDefault(); sysAsk(); };
-$('#lnkSchool').onclick = e => { e.preventDefault(); adminAsk('school'); };
-$('#lnkTeacher').onclick = e => { e.preventDefault(); adminAsk('teacher'); };
+$('#lnkStaff').onclick = e => { e.preventDefault(); adminAsk(); };   // one entrance for the school owner and the teachers: the e-mail decides what is shown
 $('#admBack').onclick = () => { if (String(ADMKEY).startsWith('tk_')) adminCall('staffLogout').catch(() => {}); ADMKEY = null; ADM_ROLE = ''; show('login'); };
 $('#admRefresh').onclick = async () => { try { const j = await adminCall('list'); if (j.ok) adminRender(j); } catch (e) { toast('Could not refresh'); } };
 $('#admSearch').oninput = () => { ADM.filter = $('#admSearch').value; adminTable(); };
@@ -4600,7 +4598,7 @@ const TT = {
   en: {
     sub: 'An adventure game: learn to read and write Hebrew, one spell at a time!', continue: 'Continue as:',
     mSchool: "🏫 I'm a school student", mHome: '🏠 Play at home', mOffline: '📴 Play offline', mLoad: '📂 Load a hero from a file',
-    teacher: 'Teacher area', lAdmin: 'Admin', lSchool: 'School', lTeacher: 'Teacher', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
+    teacher: 'Teacher area', lAdmin: 'Admin', lStaff: 'School / Teacher', lSchool: 'School', lTeacher: 'Teacher', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
     codeH: 'School code', codeP: 'Your teacher gives you this code. You type it only once on this device.', codePh: 'School code',
     numH: 'Your student number', numP: 'Type your student number to begin.', numPh: 'Your number', go: "Let's go! ▶", newBtn: '🌟 I am new', changeCode: 'Change the school code',
     codeShort: 'Please type the school code.', codeSusp: "This school's access to the game has ended. Ask your teacher.", checking: 'Checking…', codeWrong: 'That code is not right. Ask your teacher.', codeRate: 'Too many tries. Please wait a minute.', codeOffline: "I can't reach the school right now. Check the internet and try again.",
@@ -4621,7 +4619,7 @@ const TT = {
   he: {
     sub: 'משחק הרפתקאות: לומדים לקרוא ולכתוב עברית, לחש אחרי לחש!', continue: 'להמשיך בתור:',
     mSchool: '🏫 אני תלמיד/ה בבית ספר', mHome: '🏠 משחקים בבית', mOffline: '📴 משחקים בלי אינטרנט', mLoad: '📂 טעינת גיבור מקובץ',
-    teacher: 'אזור מורים', lAdmin: 'מנהל המערכת', lSchool: 'בית ספר', lTeacher: 'מורה', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
+    teacher: 'אזור מורים', lAdmin: 'מנהל המערכת', lStaff: 'בית ספר / מורה', lSchool: 'בית ספר', lTeacher: 'מורה', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
     codeH: 'קוד בית הספר', codeP: 'המורה נותן לכם את הקוד הזה. מקלידים אותו רק פעם אחת במכשיר הזה.', codePh: 'קוד בית הספר',
     numH: 'מספר התלמיד/ה שלך', numP: 'הקלידו את מספר התלמיד/ה שלכם כדי להתחיל.', numPh: 'המספר שלך', go: 'יאללה! ▶', newBtn: '🌟 אני חדש/ה', changeCode: 'החלפת קוד בית הספר',
     codeShort: 'נא להקליד את קוד בית הספר.', codeSusp: 'הגישה של בית הספר למשחק הסתיימה. שאלו את המורה.', checking: 'בודקים…', codeWrong: 'הקוד לא נכון. שאלו את המורה.', codeRate: 'יותר מדי ניסיונות. המתינו דקה.', codeOffline: 'אין חיבור לבית הספר כרגע. בדקו את האינטרנט ונסו שוב.',
