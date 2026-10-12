@@ -4195,6 +4195,7 @@ async function adminWaitLoad() {
   if (!j.pending.length && !ADM_APPROVAL) { box.style.display = 'none'; return; }
   box.style.display = '';
   const classes = [...new Set([...ADM_CLASSES.filter(c => !c.archived).map(c => c.name), ...j.pending.map(p => p.cls)])];
+  if (ADM.waitCls && !j.pending.some(p => clsKey(p.cls) === clsKey(ADM.waitCls))) ADM.waitCls = '';   // that class has nobody waiting any more: show everyone
   const fc = ADM.waitCls || '', shown = j.pending.filter(p => !fc || clsKey(p.cls) === clsKey(fc));
   box.innerHTML = `<div class="row" style="justify-content:space-between"><b>⏳ Waiting for approval (${j.pending.length})</b><select id="waitCls" class="ctl sm"><option value="">All classes</option>${[...new Set(j.pending.map(p => p.cls))].sort().map(c => `<option ${c === fc ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></div>` +
     (shown.length ? `<div class="row" style="justify-content:flex-start;margin:8px 0;gap:8px;flex-wrap:wrap"><label class="small"><input type="checkbox" id="waitAll" style="width:auto"> Select all</label><button class="btn" id="waitOk" style="padding:8px 14px">✔ Approve selected</button><button class="btn" id="waitOkAll" style="padding:8px 14px">✔✔ Approve all${fc ? ' in ' + esc(fc) : ''} (${shown.length})</button><button class="btn ghost" id="waitNo" style="padding:8px 14px">✖ Reject selected</button></div>` +
@@ -4217,11 +4218,11 @@ document.addEventListener('click', async e => {
     if (t.id === 'waitOk') {
       const rows = picked(); if (!rows.length) { msg('Tick the students first.'); return; }
       const j = await adminCall('approve', { items: rows.map(r => ({ id: r.dataset.wid, real: r.querySelector('.waitName').value.trim(), cls: r.querySelector('.waitClsSel').value })) });
-      toast(j.ok ? '✅ Approved ' + j.done : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); return;
+      toast(j.ok ? '✅ Approved ' + j.done + '. They appear in the student list when they next play.' : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); return;
     }
     if (t.id === 'waitOkAll') {
       const n = ADM.wait.filter(p => !ADM.waitCls || clsKey(p.cls) === clsKey(ADM.waitCls)).length, cls = ADM.waitCls || '';
-      modal('Approve all', `<p>Approve ${n} student${n === 1 ? '' : 's'}${cls ? ' in class <b>' + esc(cls) + '</b>' : ''}?</p>`, [['Approve', async () => { const j = await adminCall('approveAll', { cls }); toast(j.ok ? '✅ Approved ' + j.done : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); }], ['Cancel', null, true]]);
+      modal('Approve all', `<p>Approve ${n} student${n === 1 ? '' : 's'}${cls ? ' in class <b>' + esc(cls) + '</b>' : ''}?</p>`, [['Approve', async () => { const j = await adminCall('approveAll', { cls }); toast(j.ok ? '✅ Approved ' + j.done + '. They appear in the student list when they next play.' : 'Could not approve.'); await adminWaitLoad(); adminRefreshStudents(); }], ['Cancel', null, true]]);
       return;
     }
     if (t.id === 'waitNo') {
