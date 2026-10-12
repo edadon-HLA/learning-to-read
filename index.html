@@ -33,6 +33,13 @@ h2{margin:.2em 0}
 .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #9b6411}
 .btn.ghost{background:#fff1;color:#fff;box-shadow:none;border:1px solid #fff3}
 .btn:disabled{opacity:.5}
+#printSheet{position:fixed;inset:0;z-index:100000;background:#fff;color:#000;overflow:auto;padding:56px 12px 12px}
+#printSheet .pbar{position:fixed;top:0;left:0;right:0;background:#222;color:#fff;padding:8px 12px;display:flex;gap:10px;align-items:center;z-index:2}
+#printSheet .pgrid{display:grid;grid-template-columns:repeat(2,97mm);justify-content:center}
+#printSheet .pcard{box-sizing:border-box;width:97mm;height:68mm;border:1px dashed #888;padding:4mm 5mm;page-break-inside:avoid;break-inside:avoid;font-family:system-ui,Arial,sans-serif;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+#printSheet .pcard .sc{font-size:9pt;opacity:.7}#printSheet .pcard .nm{font-size:15pt;font-weight:700;line-height:1.1}#printSheet .pcard .no{font-size:24pt;font-weight:800;letter-spacing:.12em;font-family:Consolas,monospace}
+#printSheet .pcard .row2{display:flex;gap:4mm;align-items:center;justify-content:space-between}#printSheet .pcard .how{font-size:7.5pt;line-height:1.25}#printSheet .pcard svg{width:20mm;height:20mm;flex:none}
+@media print{@page{size:A4;margin:8mm}body>*:not(#printSheet){display:none!important}#printSheet{position:static;padding:0;overflow:visible}#printSheet .pbar{display:none}}
 select.ctl{width:100%;padding:12px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.15rem;text-align:center}select.ctl option{color:#000}select.ctl.sm{width:auto;padding:8px;font-size:1rem}
 input[type=text],input[type=password]{width:100%;padding:14px;border-radius:12px;border:2px solid #fff4;background:#0004;color:#fff;font:inherit;font-size:1.3rem;text-align:center}
 .center{text-align:center}
@@ -566,6 +573,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
       <select id="admClassSel" class="ctl sm"><option value="">All classes</option></select>
+      <button class="btn ghost" id="admPrint" style="padding:8px 14px">🖨 Login cards</button>
       <button class="btn ghost" id="admCsv" style="padding:8px 14px">⬇ Download (CSV)</button></div>
     <div class="tblwrap"><table id="admTable"></table></div>
     <div class="small" style="opacity:.7;margin-top:6px">Tap a student to see details. Tap a column title to sort.</div>
@@ -4232,6 +4240,25 @@ document.addEventListener('click', async e => {
   } catch (x) { toast('Could not reach the cloud.'); }
 });
 async function adminRefreshStudents() { try { const j = await adminCall('list'); if (j.ok) { adminRender(j); } } catch (e) {} }
+/* ----- printable login cards: 8 per A4 page ----- */
+function loadQr() {   // a small public library, loaded only when cards are printed (needs the internet)
+  return new Promise(res => { if (window.qrcode) return res(true); const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; s.onload = () => res(!!window.qrcode); s.onerror = () => res(false); document.head.appendChild(s); });
+}
+async function printCards(list) {
+  toast('Preparing the cards…');
+  let code = '', schoolName = '';
+  try { const j = await adminCall('getSchoolCode'); if (j.ok) code = j.code; } catch (e) {}
+  if (CFG.REGISTRY_URL && code) { try { const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json(); if (j.ok && j.valid) schoolName = j.schoolName || ''; } catch (e) {} }
+  const url = location.origin + location.pathname.replace(/index\.html$/, ''), host = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  let qr = ''; if (await loadQr()) { try { const q = qrcode(0, 'M'); q.addData(url); q.make(); qr = q.createSvgTag({ cellSize: 3, margin: 0, scalable: true }); } catch (e) {} }
+  const card = s => `<div class="pcard"><div><div class="sc">${esc(schoolName || 'School')} ${s.cls ? '· ' + esc(s.cls) : ''}</div><div class="nm">${esc(s.real || s.nick)}</div></div>
+    <div><div class="sc">Your hero number · המספר שלך</div><div class="no">${esc(s.id)}</div></div>
+    <div class="row2"><div class="how"><b>1.</b> Open ${esc(host)} · <b>2.</b> Tap “School” · <b>3.</b> School code: <b>${esc(code)}</b> · <b>4.</b> Type your number.<div dir="rtl" style="margin-top:1mm">פותחים את המשחק, לוחצים “בית ספר”, מקלידים את קוד בית הספר <b>${esc(code)}</b> ואת המספר שלכם.</div></div>${qr}</div></div>`;
+  const sheet = document.createElement('div'); sheet.id = 'printSheet';
+  sheet.innerHTML = `<div class="pbar"><b>🖨 ${list.length} login card${list.length === 1 ? '' : 's'}</b><button class="btn" id="pcPrint" style="padding:6px 14px">Print</button><button class="btn ghost" id="pcClose" style="padding:6px 14px">Close</button><span class="small" style="opacity:.8">Keep the cards private: each shows a student's number.</span></div><div class="pgrid">${list.map(card).join('')}</div>`;
+  document.body.appendChild(sheet);
+  $('#pcPrint').onclick = () => window.print(); $('#pcClose').onclick = () => sheet.remove();
+}
 async function adminStaffLoad() {   // the school owner adds and removes staff by e-mail
   const box = $('#admStaff'); let j;
   try { j = await adminCall('listStaff'); } catch (e) { box.style.display = ''; box.innerHTML = '<p class="small">Could not load the staff list.</p>'; return; }
@@ -4277,27 +4304,35 @@ async function adminAppUsers() {   // only a count: the app keeps no names and n
     if (j.ok) $('#admApp').innerHTML = `📱 App users (verified by email): <b>${j.total}</b> in total · ${j.week} new this week · ${j.day} new today`; else $('#admApp').textContent = '';
   } catch (e) { $('#admApp').textContent = ''; }
 }
+const clsNorm = s => String(s || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '');
+function adminFiltered() {   // the students shown: the class filter and the search box
+  const f = ADM.filter.trim().toLowerCase(), fc = clsNorm(ADM.cls);
+  return ADM.students.filter(s => (!fc || clsNorm(s.cls) === fc) && (!f || (s.nick + ' ' + s.id + ' ' + (s.real || '') + ' ' + (s.cls || '')).toLowerCase().includes(f)));
+}
+function adminCardsRender() {   // the numbers at the top are for the students you see (the whole school, or the chosen class)
+  const rows = adminFiltered(), played = rows.filter(s => s.answers > 0), today = rows.filter(s => s.days === 0).length, inactive = rows.filter(s => s.days >= 7).length;
+  const avg = played.length ? Math.round(played.reduce((a, s) => a + s.accuracy, 0) / played.length) : 0, minToday = rows.reduce((a, s) => a + (s.days === 0 ? (s.minToday || 0) : 0), 0);
+  $('#admCards').innerHTML = [[rows.length, ADM.cls ? 'students in ' + esc(ADM.cls) : 'students'], [today + ' of ' + rows.length, 'played today'], [minToday, 'minutes played today'], [inactive, 'not played for 7+ days'], [avg + '%', 'average accuracy'], [Math.round(rows.reduce((a, s) => a + s.minutes, 0)), 'total minutes']]
+    .map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
+}
 function adminRender(j) {
   const byId = {}; for (const s of j.students) if (!byId[s.id] || s.answers >= byId[s.id].answers) byId[s.id] = s;   // one row per student
   ADM.students = Object.values(byId); ADM.soundVer = j.soundVer || 0;
   const dayDiff = iso => { if (!iso) return 9999; const a = new Date(iso), n = new Date(); return Math.round((new Date(n.getFullYear(), n.getMonth(), n.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5); };
   ADM.students.forEach(s => { s.days = dayDiff(s.last); });
-  const played = ADM.students.filter(s => s.answers > 0), today = ADM.students.filter(s => s.days === 0).length, inactive = ADM.students.filter(s => s.days >= 7).length;
-  const avg = played.length ? Math.round(played.reduce((a, s) => a + s.accuracy, 0) / played.length) : 0;
-  $('#admCards').innerHTML = [[ADM.students.length, 'students'], [today, 'played today'], [inactive, 'not played for 7+ days'], [avg + '%', 'average accuracy'], [Math.round(ADM.students.reduce((a, s) => a + s.minutes, 0)), 'total minutes']]
-    .map(([v, l]) => `<div><b>${v}</b>${l}</div>`).join('');
+  adminCardsRender();
   if (ADM_ROLE !== 'teacher') adminSets(); adminTable(); if (!String(ADMKEY).startsWith('tk_')) adminAppUsers(); else $('#admApp').textContent = ''; $('#admDetail').style.display = 'none';
 }
 const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
 function adminTable() {
   const cols = [['nick', 'Student'], ['tier', 'Level'], ['accuracy', 'Accuracy'], ['answers', 'Answers'], ['minutes', 'Minutes'], ['coins', 'Coins'], ['craftAcc', 'Crafting'], ['restarts', 'Restarts'], ['last', 'Last played']];
-  const f = ADM.filter.trim().toLowerCase(), fc = (ADM.cls || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '');
-  const rows = ADM.students.filter(s => (!fc || String(s.cls || '').toUpperCase().replace(/[^A-Z0-9֐-׿]/g, '') === fc) && (!f || (s.nick + ' ' + s.id + ' ' + (s.real || '') + ' ' + (s.cls || '')).toLowerCase().includes(f)))
+  const rows = adminFiltered()
     .sort((a, b) => { const k = ADM.sortKey; const va = k === 'last' ? (a.last || '') : k === 'nick' ? a.nick.toLowerCase() : a[k], vb = k === 'last' ? (b.last || '') : k === 'nick' ? b.nick.toLowerCase() : b[k]; return (va > vb ? 1 : va < vb ? -1 : 0) * ADM.sortDir; });
-  $('#admTable').innerHTML = '<thead><tr>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
-    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
-      <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${s.coins || 0}</td><td>${s.craftAcc ? s.craftAcc + "%" : "–"}</td><td>${s.restarts || 0}</td><td>${agoText(s.days)}</td></tr>`).join('')
-      : '<tr><td colspan="9" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
+  ADM.ticked = ADM.ticked || new Set(); adminCardsRender();
+  $('#admTable').innerHTML = '<thead><tr><th class="tickCell" style="cursor:default"><input type="checkbox" id="admAllTick" title="Select all" style="width:auto"></th>' + cols.map(([k, l]) => `<th data-k="${k}">${l}${ADM.sortKey === k ? (ADM.sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '</tr></thead><tbody>' +
+    (rows.length ? rows.map(s => `<tr data-id="${esc(s.id)}"><td class="tickCell"><input type="checkbox" class="admTick" data-id="${esc(s.id)}" ${ADM.ticked.has(s.id) ? 'checked' : ''} style="width:auto"></td><td><span class="dot ${s.days === 0 ? 'on' : s.days >= 7 ? 'old' : ''}"></span><b>${esc(s.nick)}</b> <small style="opacity:.7">#${esc(s.id)}</small>${s.real ? `<br><small style="opacity:.85">${esc(s.real)}${s.cls ? " · " + esc(s.cls) : ""}</small>` : ""}</td>
+      <td>${s.tier}: ${esc(TIERS[s.tier] || '')}</td><td><span class="pbar2"><i style="width:${s.accuracy}%"></i></span>${s.answers ? s.accuracy + '%' : '–'}</td><td>${s.answers}</td><td>${s.minutes}</td><td>${s.coins || 0}</td><td>${s.craftAcc ? s.craftAcc + "%" : "–"}</td><td>${s.restarts || 0}</td><td>${agoText(s.days)}${s.days === 0 && s.minToday ? ' · ' + s.minToday + ' min' : ''}</td></tr>`).join('')
+      : '<tr><td colspan="10" style="opacity:.7">No students found.</td></tr>') + '</tbody>';
 }
 function keyLabel(k) {
   const t = k[0], body = k.slice(2);
@@ -4353,7 +4388,13 @@ $('#admBack').onclick = () => { if (String(ADMKEY).startsWith('tk_')) adminCall(
 $('#admRefresh').onclick = async () => { try { const j = await adminCall('list'); if (j.ok) adminRender(j); } catch (e) { toast('Could not refresh'); } };
 $('#admSearch').oninput = () => { ADM.filter = $('#admSearch').value; adminTable(); };
 $('#admClassSel').onchange = () => { ADM.cls = $('#admClassSel').value; adminTable(); };
+$('#admPrint').onclick = () => {   // the ticked students, or everybody you see
+  const shown = adminFiltered(), ticked = shown.filter(s => ADM.ticked && ADM.ticked.has(s.id)), list = (ticked.length ? ticked : shown).slice().sort((a, b) => (a.cls || '').localeCompare(b.cls || '') || (a.real || a.nick).localeCompare(b.real || b.nick));
+  if (!list.length) { toast('No students to print.'); return; }
+  printCards(list);
+};
 $('#admTable').onclick = e => {
+  if (e.target.closest('.tickCell')) { if (e.target.id === 'admAllTick') { adminFiltered().forEach(s => e.target.checked ? ADM.ticked.add(s.id) : ADM.ticked.delete(s.id)); adminTable(); } else if (e.target.classList.contains('admTick')) { e.target.checked ? ADM.ticked.add(e.target.dataset.id) : ADM.ticked.delete(e.target.dataset.id); } return; }
   const th = e.target.closest('th'); if (th) { const k = th.dataset.k; ADM.sortDir = ADM.sortKey === k ? -ADM.sortDir : (k === 'nick' ? 1 : -1); ADM.sortKey = k; adminTable(); return; }
   const tr = e.target.closest('tbody tr[data-id]'); if (tr) adminStudent(tr.dataset.id);
 };
