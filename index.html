@@ -801,6 +801,7 @@ const APP = (() => { try { return matchMedia('(display-mode: standalone)').match
 const CFG = {
   // Paste the Apps Script web app URL here to save progress to the school Google Sheet.
   SCRIPT_URL: '',
+  REGISTRY_URL: 'https://script.google.com/macros/s/AKfycbzwSI8sFuc5iTm_hjd8gMgZbieTMQbnLbl5D8iEbvMpbISW3BD0kGvhtMsmtSezmgNI6w/exec',   // the Admin's registry: which school service belongs to a school code (it holds no student data)
   DAILY_SEC: 600,           // 10 minutes a day
   MIN_FIGHTS: 5, MAX_FIGHTS: 10,   // normal encounters before the boss / big request (rolled at random when a quest starts, never shown)
   MAX_HEARTS: 3,            // hearts (fights) or smileys (village) a quest starts with; healing (win, potion) stops here
@@ -817,6 +818,7 @@ const CFG = {
   UP_ACC: 0.85, DOWN_ACC: 0.5, MIN_WINDOW: 8, MAX_WINDOW: 10,   // levels 1-7: up at 85% over the last 8-10 answers
   READ_UP_ACC: 0.9, READ_MIN_WINDOW: 12, READ_MAX_WINDOW: 15, READ_FIGHTS: [8, 14], MAX_LEVEL: 16   // from level 8 (reading): up at 90% over the last 12-15 answers; quests have 8-14 normal stops
 };
+(function () { const u = (function () { try { return localStorage.getItem('tq_school_url') || ''; } catch (e) { return ''; } })(); if (u && CFG.SCRIPT_URL) CFG.SCRIPT_URL = u; })();   // a device that joined another school uses that school's service
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
 // (school heroes save to the cloud; home and offline heroes never do: that is decided per hero, not per device)
 if (APP) { document.title = 'SpellQuest: AlphaBet Adventure'; const lt = document.getElementById('loginTitle'); if (lt) lt.innerHTML = '✨ SpellQuest ✨<div class="small" style="font-size:1rem;opacity:.9;margin-top:4px">AlphaBet Adventure</div><div class="heb" style="font-size:1.1rem;margin-top:2px">לחשים: הרפתקת קריאה</div>'; }   // the installed app's name
@@ -4273,7 +4275,7 @@ const TT = {
     teacher: 'Teacher area', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
     codeH: 'School code', codeP: 'Your teacher gives you this code. You type it only once on this device.', codePh: 'School code',
     numH: 'Your student number', numP: 'Type your student number to begin.', numPh: 'Your number', go: "Let's go! ▶", newBtn: '🌟 I am new', changeCode: 'Change the school code',
-    codeShort: 'Please type the school code.', checking: 'Checking…', codeWrong: 'That code is not right. Ask your teacher.', codeRate: 'Too many tries. Please wait a minute.', codeOffline: "I can't reach the school right now. Check the internet and try again.",
+    codeShort: 'Please type the school code.', codeSusp: "This school's access to the game has ended. Ask your teacher.", checking: 'Checking…', codeWrong: 'That code is not right. Ask your teacher.', codeRate: 'Too many tries. Please wait a minute.', codeOffline: "I can't reach the school right now. Check the internet and try again.",
     numShort: 'Your number looks too short. Check it and try again!', looking: 'Looking for your hero…',
     unknownH: "I don't know this number", unknownP: "I can't find the number <b>{id}</b>.", unknownP2: 'Check it and try again. If you are new, tap <b>I am new</b>.', offlineWarn: "⚠️ I can't reach the school right now, so I can't check your number. Try again in a moment.", tryAgain: 'Try again', waitH: 'Please wait a moment', waitP: 'Too many tries in a short time. Please wait a minute and try again.', ok: 'OK',
     deletedH: 'This number is not active anymore', deletedP: 'Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.',
@@ -4294,7 +4296,7 @@ const TT = {
     teacher: 'אזור מורים', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
     codeH: 'קוד בית הספר', codeP: 'המורה נותן לכם את הקוד הזה. מקלידים אותו רק פעם אחת במכשיר הזה.', codePh: 'קוד בית הספר',
     numH: 'מספר התלמיד/ה שלך', numP: 'הקלידו את מספר התלמיד/ה שלכם כדי להתחיל.', numPh: 'המספר שלך', go: 'יאללה! ▶', newBtn: '🌟 אני חדש/ה', changeCode: 'החלפת קוד בית הספר',
-    codeShort: 'נא להקליד את קוד בית הספר.', checking: 'בודקים…', codeWrong: 'הקוד לא נכון. שאלו את המורה.', codeRate: 'יותר מדי ניסיונות. המתינו דקה.', codeOffline: 'אין חיבור לבית הספר כרגע. בדקו את האינטרנט ונסו שוב.',
+    codeShort: 'נא להקליד את קוד בית הספר.', codeSusp: 'הגישה של בית הספר למשחק הסתיימה. שאלו את המורה.', checking: 'בודקים…', codeWrong: 'הקוד לא נכון. שאלו את המורה.', codeRate: 'יותר מדי ניסיונות. המתינו דקה.', codeOffline: 'אין חיבור לבית הספר כרגע. בדקו את האינטרנט ונסו שוב.',
     numShort: 'המספר נראה קצר מדי. בדקו ונסו שוב!', looking: 'מחפשים את הגיבור שלך…',
     unknownH: 'המספר הזה לא מוכר', unknownP: 'לא מצאתי את המספר <b>{id}</b>.', unknownP2: 'בדקו ונסו שוב. אם אתם חדשים, לחצו על <b>אני חדש/ה</b>.', offlineWarn: '⚠️ אין חיבור לבית הספר כרגע, אז אי אפשר לבדוק את המספר. נסו שוב עוד רגע.', tryAgain: 'לנסות שוב', waitH: 'רגע, בבקשה', waitP: 'יותר מדי ניסיונות בזמן קצר. המתינו דקה ונסו שוב.', ok: 'אישור',
     deletedH: 'המספר הזה כבר לא פעיל', deletedP: 'המורה הסיר את המספר הזה. בקשו עזרה מהמורה, או לחצו על <b>אני חדש/ה</b> כדי להתחיל מחדש.',
@@ -4342,7 +4344,18 @@ function openPrivacy() {   // in simple words, in the language chosen on the sta
 /* ----- 🏫 school student ----- */
 $('#mSchool').onclick = () => loginView(lsGet('tq_school_code') || lsGet('tq_last') ? 'number' : 'code');
 $('#changeCode').onclick = e => { e.preventDefault(); try { localStorage.removeItem('tq_school_code'); } catch (x) {} loginView('code'); };
-async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline'
+async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline' / 'suspended'. The registry says which school service the code belongs to.
+  if (CFG.REGISTRY_URL) {
+    try {
+      const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json();
+      if (!j.ok) return j.error === 'rate' ? 'rate' : 'offline';
+      if (!j.valid) return false;
+      if (j.suspended) return 'suspended';
+      lsSet('tq_school_name', j.schoolName || '');
+      if (CFG.SCRIPT_URL) { CFG.SCRIPT_URL = j.scriptUrl; lsSet('tq_school_url', j.scriptUrl); }   // (a test copy has no cloud: it never gets a school link)
+      return true;
+    } catch (e) { return 'offline'; }
+  }
   if (!CFG.SCRIPT_URL) return true;   // a test copy without the cloud: any code is fine
   try { const j = await (await fetch(CFG.SCRIPT_URL + '?action=checkCode&code=' + encodeURIComponent(code))).json(); if (!j.ok) return j.error === 'rate' ? 'rate' : 'offline'; return !!j.valid; } catch (e) { return 'offline'; }
 }
@@ -4351,7 +4364,7 @@ $('#codeGo').onclick = async () => {
   if (code.length < 3) { msg.textContent = tr('codeShort'); return; }
   msg.textContent = tr('checking'); $('#codeGo').disabled = true; const r = await checkSchoolCode(code); $('#codeGo').disabled = false;
   if (r === true) { lsSet('tq_school_code', code); loginView('number'); }
-  else msg.textContent = r === 'rate' ? tr('codeRate') : r === 'offline' ? tr('codeOffline') : tr('codeWrong');
+  else msg.textContent = r === 'suspended' ? tr('codeSusp') : r === 'rate' ? tr('codeRate') : r === 'offline' ? tr('codeOffline') : tr('codeWrong');
 };
 $('#schoolCode').addEventListener('keydown', e => { if (e.key === 'Enter') $('#codeGo').click(); });
 /* ----- 🏠 play at home (an e-mail code, once per device) and 📴 offline ----- */
