@@ -416,6 +416,8 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .tileSlots{grid-column:1/-1;display:flex;gap:10px;justify-content:center;margin:2px 0 8px;direction:rtl}.tileSlot{min-width:42%;min-height:60px;display:flex;align-items:center;justify-content:center;border:3px dashed #fff5;border-radius:16px;background:#0003;font-size:1.9rem;font-weight:700;color:#fff;padding:4px 8px}.tileSlot.full{border-style:solid;border-color:var(--gold,#ffd166);background:#ffd16622}
 .tileRow{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.tileRow .tile{flex:1 1 40%;max-width:48%;font-size:1.9rem}.tile.used{opacity:.35;transform:scale(.96)}
 .rGear.away{opacity:1}.rGear.away::before{content:"";position:absolute;inset:18%;border:2px dashed #ffffff55;border-radius:50%}.stOpt .gIco.away{border:2px dashed #ffffff55;border-radius:50%}
+.modeBtn{display:block;width:100%;margin:8px 0;font-size:1.15rem;padding:14px 16px}.heroPick{display:block;width:100%;margin:6px 0}.loginLinks{margin:10px 0;opacity:.95}.modeBadge{background:#0004;border:1px solid #fff3;border-radius:999px;padding:4px 12px;font-size:.85rem}.privBody p{margin:8px 0;line-height:1.45}
+#login[dir=rtl] .sub,#login[dir=rtl] .card{text-align:center}
 .hBonus{filter:drop-shadow(0 0 5px #ffd166) drop-shadow(0 0 9px #ffb703) hue-rotate(-35deg) saturate(1.3);margin-left:4px;animation:hbPulse 2.2s ease-in-out infinite}@keyframes hbPulse{50%{filter:drop-shadow(0 0 8px #ffd166) drop-shadow(0 0 14px #ffb703) hue-rotate(-35deg) saturate(1.3)}}
 @media (prefers-reduced-motion:reduce){.hBonus{animation:none}}
 .float{position:absolute;font-weight:700;font-size:1.6rem;pointer-events:none;animation:up 1s forwards;text-shadow:0 2px 0 #000a}
@@ -514,34 +516,34 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 
 <section id="login" class="screen">
   <h1 id="loginTitle">✨ Learning to Read ✨</h1>
-  <p class="sub">An adventure game: learn to read and write Hebrew, one spell at a time!</p>
-  <div class="card center" style="max-width:420px;margin:24px auto">
-    <h2>Welcome, hero!</h2>
-    <p id="loginHint">Type your <b>student number</b> to begin.</p>
-    <input id="sid" type="text" placeholder="Your number" autocomplete="off" autocapitalize="characters" maxlength="20">
-    <div id="appLogin" style="display:none">
-      <div id="appHeroesBox" style="display:none"><div class="small" style="margin-bottom:6px">Continue as:</div><div id="appHeroes"></div><div class="or">— or —</div></div>
-      <div id="appStep1">
-        <button class="btn" id="appSignBtn">📧 Sign up with my email</button>
-        <div class="small" style="opacity:.8;margin:4px 0 8px">We send a code to your email. We do not keep your email address.</div>
-      </div>
-      <div id="appStep2" style="display:none">
-        <input id="appEmail" type="email" placeholder="Your email" autocomplete="email" autocapitalize="none" maxlength="80">
-        <button class="btn" id="appSend" style="margin-top:8px">Send me a code ▶</button>
-        <div id="appCodeBox" style="display:none;margin-top:10px"><div class="small">Type the 6-digit code from your email:</div><input id="appCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" style="margin:6px 0"><button class="btn" id="appVerify">Check the code ✔</button><div><a href="#" id="appResend" class="adminLink">Send a new code</a></div></div>
-        <div class="msg" id="appMsg"></div>
-        <a href="#" id="appBack" class="adminLink">← Back</a>
-      </div>
-      <div class="or">— or —</div>
-      <button class="btn ghost" id="appOffline">📴 Play offline (not counted)</button>
+  <p class="sub" data-t="sub"></p>
+  <div class="card center" style="max-width:440px;margin:20px auto">
+    <div id="vStart">
+      <div id="heroesBox" style="display:none"><div class="small" style="margin-bottom:6px" data-t="continue"></div><div id="heroList"></div><div class="or">— ✦ —</div></div>
+      <button class="btn modeBtn" id="mSchool" data-t="mSchool"></button>
+      <button class="btn modeBtn" id="mHome" data-t="mHome"></button>
+      <button class="btn modeBtn ghost" id="mOffline" data-t="mOffline"></button>
+      <button class="btn ghost small" id="mLoad" data-t="mLoad" style="margin-top:10px"></button><input type="file" id="heroFile" accept=".json,application/json" style="display:none">
     </div>
-    <div class="msg" id="loginMsg"></div>
-    <button class="btn" id="loginBtn">Let's go! ▶</button>
-    <div class="or" id="orLine">— or —</div>
-    <button class="btn ghost" id="newBtn">🌟 I am new</button>
+    <div id="vCode" style="display:none">
+      <h2 data-t="codeH"></h2><p class="small" data-t="codeP"></p>
+      <input id="schoolCode" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" data-tp="codePh">
+      <div class="msg" id="codeMsg"></div>
+      <button class="btn" id="codeGo" data-t="next"></button>
+      <div style="margin-top:8px"><a href="#" class="adminLink loginBack" data-t="back"></a></div>
+    </div>
+    <div id="vNumber" style="display:none">
+      <h2 data-t="numH"></h2>
+      <p id="loginHint" data-t="numP"></p>
+      <input id="sid" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" data-tp="numPh">
+      <div class="msg" id="loginMsg"></div>
+      <button class="btn" id="loginBtn" data-t="go"></button>
+      <div class="or" id="orLine">— ✦ —</div>
+      <button class="btn ghost" id="newBtn" data-t="newBtn"></button>
+      <div style="margin-top:8px"><a href="#" class="adminLink" id="changeCode" data-t="changeCode"></a> · <a href="#" class="adminLink loginBack" data-t="back"></a></div>
+    </div>
   </div>
-  <div class="center" id="adminWrap"><a href="#" id="adminLink" class="adminLink">🔧 Teacher area</a></div>
-  <div class="credit" id="privNote" style="display:none">🔒 Your hero stays on this device. Nothing is sent online.</div>
+  <div class="center loginLinks"><a href="#" id="adminLink" class="adminLink">🔧 <span data-t="teacher"></span></a> · <a href="#" id="privLink" class="adminLink">🔒 <span data-t="privacy"></span></a> · <a href="#" id="langLink" class="adminLink">🌐 <span id="langName"></span></a></div>
   <div class="center"><button class="btn ghost" id="installBtn" style="display:none;margin-top:10px">📲 Install the game on this device</button></div>
   <div class="credit">Created by Dr. Dadon Eldar<br>in collaboration with HLA Hebrew Public</div>
 </section>
@@ -554,6 +556,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   </div>
   <div class="admcards" id="admCards"></div>
   <div class="small center" id="admApp" style="opacity:.85;margin:4px 0 10px"></div>
+  <div class="card center" id="admCode" style="margin:6px 0"></div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
@@ -690,7 +693,8 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <button class="owlBtn" id="owlBtn" title="Show me how to play" aria-label="Show me how to play"></button>
   </div>
   <div class="row" style="margin-top:10px"><button class="btn ghost danger" id="abandonMapBtn" style="display:none">🏳️ Abandon quest</button></div>
-  <button class="ghostSmall" id="logoutBtn" title="Switch student">🚪 Switch student</button>
+  <div class="row" id="heroTools" style="margin-top:8px;gap:8px;flex-wrap:wrap;justify-content:center"><span class="modeBadge" id="modeBadge"></span><button class="btn ghost small" id="saveHeroBtn">💾 Save my hero</button><button class="btn ghost small" id="upHomeBtn" style="display:none">🏠 Make this a home hero</button><button class="btn ghost small" id="privBtn">🔒 Privacy</button></div>
+  <button class="ghostSmall" id="logoutBtn" title="Switch hero">🚪 Switch hero</button>
   <div class="credit small">Created by Dr. Dadon Eldar in collaboration with HLA Hebrew Public</div>
 </section>
 
@@ -814,7 +818,7 @@ const CFG = {
   READ_UP_ACC: 0.9, READ_MIN_WINDOW: 12, READ_MAX_WINDOW: 15, READ_FIGHTS: [8, 14], MAX_LEVEL: 16   // from level 8 (reading): up at 90% over the last 12-15 answers; quests have 8-14 normal stops
 };
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
-if (APP) CFG.SCRIPT_URL = '';        // the app never saves any game data online
+// (school heroes save to the cloud; home and offline heroes never do: that is decided per hero, not per device)
 if (APP) { document.title = 'SpellQuest: AlphaBet Adventure'; const lt = document.getElementById('loginTitle'); if (lt) lt.innerHTML = '✨ SpellQuest ✨<div class="small" style="font-size:1rem;opacity:.9;margin-top:4px">AlphaBet Adventure</div><div class="heb" style="font-size:1.1rem;margin-top:2px">לחשים: הרפתקת קריאה</div>'; }   // the installed app's name
 
 /* ====================== CONTENT ====================== */
@@ -1349,6 +1353,7 @@ function migrate(p) {
   if (v < 4 && p.inv && p.inv.mint) { p.inv.leaf = (p.inv.leaf || 0) + p.inv.mint; }   // version 4: the herb mint was removed; any mint becomes a leaf
   if (p.inv) delete p.inv.mint;
   p.carry = p.carry || {}; p.pot = p.pot || {};
+  p.mode = p.mode || (p.app ? (p.local || String(p.id).startsWith('local-') ? 'offline' : 'home') : 'school');   // how this hero plays: school (cloud), home or offline (this device only)
   p.worn = p.worn || {}; p.cos = p.cos || { neck: 'pendant', hand: 'staff', belt: 'leather' }; p.cosShow = p.cosShow || { neck: true, hand: true, belt: true };   // version 13: one magic item per slot is worn (existing items stay worn) and the wardrobe looks
   p.v = PROFILE_V;
   return p;
@@ -1372,24 +1377,26 @@ function setCloud(s) {
 function saveSoon(now) {
   if (!P) return;
   P.updated = Date.now(); pruneSec();
-  lsSet('aq_p_' + P.id, JSON.stringify(P));
+  lsSet('aq_p_' + P.id, JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined })));   // the device never keeps the real name or class
   clearTimeout(saveTimer);
-  if (!CFG.SCRIPT_URL) { setCloud('none'); return; }
+  if (!CFG.SCRIPT_URL || P.mode !== 'school') { setCloud('none'); return; }   // only school heroes are saved online
   setCloud('pend');
   saveTimer = setTimeout(cloudSave, now ? 0 : 4000);
 }
 async function cloudSave() {
-  if (!P || !CFG.SCRIPT_URL) return;
+  if (!P || !CFG.SCRIPT_URL || P.mode !== 'school') return;
   const total = Object.values(P.sec).reduce((a, b) => a + b, 0);
   const body = JSON.stringify({ id: P.id, nick: P.nick, tier: P.tier, xp: P.xp, n: P.n, acc: P.n ? Math.round(100 * P.ok / P.n) : 0,
-    min: Math.round(total / 60), coins: Math.floor(P.coins || 0), craftAcc: P.craft && P.craft.n ? Math.round(100 * P.craft.ok / P.craft.n) : 0, restarts: P.restartsTotal || 0, real: P.real || '', cls: P.cls || '', data: JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined })) });   // the real name and class go in their own fields, not inside the game data
+    min: Math.round(total / 60), coins: Math.floor(P.coins || 0), craftAcc: P.craft && P.craft.n ? Math.round(100 * P.craft.ok / P.craft.n) : 0, restarts: P.restartsTotal || 0, real: (P.realPending && P.realPending.real) || '', cls: (P.realPending && P.realPending.cls) || '', code: lsGet('aq_school_code') || '', data: JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined, realPending: undefined })) });   // the real name and class go in their own fields, not inside the game data
   try {
     const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
     const j = await r.json();
     if (j.deleted) { removedByTeacher(); return; }   // the teacher deleted this student
+    if (j.error === 'code') { try { localStorage.removeItem('aq_school_code'); } catch (x) {} setCloud('off'); modal(tr('codeH'), `<p>${tr('codeWrong')}</p>`, [[tr('ok'), null]]); return; }   // the school code is no longer accepted
     if (j.conflict && j.data) {         // cloud copy is newer: adopt it
       const c = migrate(JSON.parse(j.data)); Object.assign(P, c); lsSet('aq_p_' + P.id, JSON.stringify(P));
     }
+    if (j.ok && P.realPending) { delete P.realPending; lsSet('aq_p_' + P.id, JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined }))); }   // the school sheet has the name and class now
     setCloud('ok');
   } catch (e) { setCloud('off'); }
 }
@@ -1440,23 +1447,20 @@ function confetti(emojis = ['⭐', '✨', '🎉', '🪄']) {
 const norm = s => s.trim().toUpperCase().replace(/\s+/g, '');
 let pendingId = '', cr = { g: 'm', color: COLORS[1], skin: SKINS[2], hair: null };
 
-$('#sid').value = lsGet(APP ? 'aq_app_last' : 'aq_last') || '';
+$('#sid').value = lsGet('aq_last') || '';
 $('#sid').addEventListener('keydown', e => { if (e.key === 'Enter') $('#loginBtn').click(); });
-$('#loginBtn').onclick = async () => {
-  const id = APP ? $('#sid').value.trim().toLowerCase() : norm($('#sid').value), msg = $('#loginMsg');
-  if (APP && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(id)) { msg.textContent = 'Please type a real email address, like name@example.com.'; return; }
-  if (!APP && id.length < 4) { msg.textContent = 'Your number looks too short. Check it and try again!'; return; }
-  msg.textContent = 'Looking for your hero…'; $('#loginBtn').disabled = true;
+$('#loginBtn').onclick = async () => {   // 🏫 a school student types their number
+  const id = norm($('#sid').value), msg = $('#loginMsg');
+  if (id.length < 4) { msg.textContent = tr('numShort'); return; }
+  msg.textContent = tr('looking'); $('#loginBtn').disabled = true;
   const r = await loadProfile(id);
   $('#loginBtn').disabled = false; msg.textContent = '';
-  lsSet(APP ? 'aq_app_last' : 'aq_last', id);
-  if (r.profile) { P = r.profile; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
-  if (APP) { modal('🌟 New hero?', `<p>There is no hero for <b>${esc(id)}</b> on this device yet.</p><p>Create a new hero? It will stay on this device only.</p>`, [['Yes, create my hero', () => { pendingId = id; pendingReal = pendingCls = ''; openCreator(); }], ['No, I mistyped', null, true]]); return; }
-  if (r.deleted) { modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['I am new 🌟', () => $('#newBtn').click()], ['OK', null, true]]); return; }
-  if (r.limited) { modal('Please wait a moment', '<p>Too many tries in a short time. Please wait a minute and try again.</p>', [['OK', null]]); return; }
-  const warn = r.offline ? '<p>⚠️ I can\'t reach the cloud right now, so I can\'t check your number. Try again in a moment.</p>' : '';
-  modal('I don\'t know this number', `<p>I can\'t find the number <b>${esc(id)}</b>.</p>${warn}<p>Check it and try again. If you are new, tap <b>I am new</b>.</p>`,
-    [['Try again', null], ['I am new 🌟', () => $('#newBtn').click(), true]]);
+  lsSet('aq_last', id);
+  if (r.profile && (r.profile.mode || 'school') === 'school') { P = r.profile; P.mode = 'school'; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
+  if (r.deleted) { modal(tr('deletedH'), `<p>${tr('deletedP')}</p>`, [[tr('newBtn'), () => $('#newBtn').click()], [tr('ok'), null, true]]); return; }
+  if (r.limited) { modal(tr('waitH'), `<p>${tr('waitP')}</p>`, [[tr('ok'), null]]); return; }
+  const warn = r.offline ? `<p>${tr('offlineWarn')}</p>` : '';
+  modal(tr('unknownH'), `<p>${tr('unknownP').replace('{id}', esc(id))}</p>${warn}<p>${tr('unknownP2')}</p>`, [[tr('tryAgain'), null], [tr('newBtn'), () => $('#newBtn').click(), true]]);
 };
 /* ----- new students: "I am new" -> full real name + class -> a generated 5-character number to write down ----- */
 let pendingReal = '', pendingCls = '';
@@ -1464,10 +1468,10 @@ const ID_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // no I, O, 0, 1: they ar
 function genId() { let s; do { s = ''; for (let i = 0; i < 5; i++) s += ID_CHARS[Math.floor(Math.random() * ID_CHARS.length)]; } while (!/[A-Z]/.test(s) || !/[2-9]/.test(s)); return s; }   // always some letters and some digits
 function removedByTeacher() {   // the teacher deleted this student: forget the local copy and go back to the start
   const id = P && P.id; P = null; try { if (id) localStorage.removeItem('aq_p_' + id); } catch (e) {}
-  show('login'); modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['OK', null]]);
+  show('login'); renderStart(); modal('This number is not active anymore', '<p>Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.</p>', [['OK', null]]);
 }
 $('#newBtn').onclick = () => { $('#regName').value = ''; $('#regClass').value = ''; $('#regMsg').textContent = ''; $('#regMsg2').textContent = ''; $('#regTick').checked = false; $('#regForm').style.display = ''; $('#regDone').style.display = 'none'; show('register'); };
-$('#regBack').onclick = () => show('login');
+$('#regBack').onclick = () => { show('login'); loginView('number'); };
 $('#regGo').onclick = async () => {
   const name = $('#regName').value.trim().replace(/\s+/g, ' '), cls = $('#regClass').value.trim().replace(/\s+/g, ' '), msg = $('#regMsg');
   if (name.length < 4 || !name.includes(' ')) { msg.textContent = 'Please write your full name: first name and last name.'; return; }
@@ -1477,7 +1481,7 @@ $('#regGo').onclick = async () => {
   for (let k = 0; k < 8 && !id; k++) { const c = genId(), r = await loadProfile(c); if (r.offline || (!r.profile && !r.deleted)) id = c; }   // a number nobody has used (offline, the chance of a clash is tiny)
   $('#regGo').disabled = false; msg.textContent = '';
   if (!id) { msg.textContent = 'Something went wrong. Please try again.'; return; }
-  pendingId = id; pendingReal = name; pendingCls = cls; lsSet(APP ? 'aq_app_last' : 'aq_last', id); $('#sid').value = id;
+  pendingId = id; pendingReal = name; pendingCls = cls; pendingMode = 'school'; lsSet('aq_last', id); $('#sid').value = id;
   $('#regId').textContent = id; $('#regForm').style.display = 'none'; $('#regDone').style.display = '';
 };
 $('#regNext').onclick = () => { if (!$('#regTick').checked) { $('#regMsg2').textContent = 'Please write your number down and tick the box.'; return; } openCreator(); };
@@ -1570,7 +1574,7 @@ document.querySelectorAll('.gbtn').forEach(b => b.onclick = () => { cr.g = b.dat
 $('#createBtn').onclick = () => {
   const nick = $('#nick').value.trim();
   if (nick.length < 2) { $('#creatorMsg').textContent = 'Please choose a nickname (at least 2 letters).'; return; }
-  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls, cr.skin, cr.hair); P.beard = cr.g === 'm' ? cr.beard : 'none'; if (APP) { P.app = true; if (pendingId.startsWith('local-')) P.local = true; } pendingReal = pendingCls = ''; saveSoon(true); openMenu(); if (!P.tutorialDone) startTutorial();
+  P = newProfile(pendingId, nick, cr.g, cr.color, pendingReal, pendingCls, cr.skin, cr.hair); P.beard = cr.g === 'm' ? cr.beard : 'none'; P.mode = pendingMode || 'school'; if (P.mode === 'school') { P.realPending = { real: pendingReal, cls: pendingCls }; P.real = ''; P.cls = ''; } pendingReal = pendingCls = ''; saveSoon(true); openMenu(); if (!P.tutorialDone) startTutorial();   // the real name and class travel to the school sheet once; they are never kept on the device
 };
 
 /* ====================== MENU ====================== */
@@ -1589,7 +1593,7 @@ function openMenu() {
   G.quest = null; show('menu');
   $('#menuHero').innerHTML = heroOf(P).replace('<svg ', '<svg style="height:100px" ');
   $('#menuWho').textContent = P.nick;
-  $('#menuRank').innerHTML = `<button class="wizBadge" data-wizlv="1" title="Wizard level">Lv ${wizLevel(P.xp)}</button> ${rankOf(P.xp)} · ${P.xp} XP` + (APP ? '' : ' · my number: ' + esc(P.id));
+  $('#menuRank').innerHTML = `<button class="wizBadge" data-wizlv="1" title="Wizard level">Lv ${wizLevel(P.xp)}</button> ${rankOf(P.xp)} · ${P.xp} XP` + (P.mode === 'school' ? ' · my number: ' + esc(P.id) : '');
   $('#menuXp').style.width = ((P.xp % 400) / 4) + '%';
   $('#menuTier').textContent = 'Level ' + P.tier + ': ' + TIERS[P.tier];
   const t = P.sec[today()] || 0;
@@ -1600,7 +1604,7 @@ function openMenu() {
   $('#ptGate').textContent = 'Chapter ' + P.quest.battle.ch + ': ' + AREAS[(P.quest.battle.ch - 1) % AREAS.length];
   $('#ptBoard').textContent = 'Village ' + P.quest.peace.ch + ': ' + VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length];
   $('#mapHero').innerHTML = heroOf(P); walking = false; placeHero(START.x, START.y); workshopState();
-  setCloud(cloudState || (CFG.SCRIPT_URL ? 'ok' : 'none'));
+  setCloud(P.mode === 'school' ? (cloudState || (CFG.SCRIPT_URL ? 'ok' : 'none')) : 'none'); renderHeroTools();
   $('#abandonMapBtn').style.display = runOf() ? '' : 'none';
   askLookOnce();
 }
@@ -1651,7 +1655,7 @@ document.querySelectorAll('.place').forEach(b => b.onclick = () => walkTo(b.data
   };
   h.addEventListener('pointerup', end); h.addEventListener('pointercancel', end);
 })();
-$('#logoutBtn').onclick = async () => { saveSoon(true); await sleep(300); P = null; $('#sid').value = ''; show('login'); };
+$('#logoutBtn').onclick = async () => { saveSoon(true); await sleep(300); P = null; show('login'); renderStart(); };
 $('#menuMute').onclick = $('#muteBtn').onclick = () => setMute(!muted);
 $('#homeBtn').onclick = () => { saveSoon(true); G.quest === 'shop' ? openShop() : G.quest === 'craft' ? openHome() : G.quest === 'forge' ? openWorkshop() : openMenu(); };
 
@@ -4089,7 +4093,6 @@ function startDemo() {
 }
 $('#admDemo').onclick = () => startDemo();
 function adminAsk() {
-  if (APP) return;   // there is no teacher area in the app
   if (!CFG.SCRIPT_URL) { modal('Teacher area', '<p>The cloud is not set up, so there is no student data to show.</p>', [['OK', null]]); return; }
   modal('🔧 Teacher area', '<p>Enter the teacher password.</p><input id="admPass" type="password" autocomplete="off" style="margin:6px 0">', [['Open', adminOpen], ['Cancel', null, true]]);
   setTimeout(() => { const i = $('#admPass'); if (i) { i.focus(); i.onkeydown = e => { if (e.key === 'Enter') $('#mBtns button').click(); }; } }, 60);
@@ -4100,9 +4103,19 @@ async function adminOpen() {
   try {
     const j = await adminCall('list');
     if (!j.ok) { ADMKEY = null; modal('Teacher area', `<p>${j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes and try again.' : 'That password is not right.'}</p>`, [['Try again', adminAsk], ['Close', null, true]]); return; }
-    show('admin'); adminRender(j);
+    show('admin'); adminRender(j); adminCodeLoad();
   } catch (e) { ADMKEY = null; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
 }
+async function adminCodeLoad() {   // the school code students type once on a new device
+  try { const j = await adminCall('getSchoolCode'); $('#admCode').innerHTML = j.ok ? `🏫 School code: <b style="font-size:1.3rem;letter-spacing:.08em">${esc(j.code)}</b> <button class="btn ghost" id="admCodeChange" style="padding:6px 12px;margin-left:8px">Change</button><div class="small" style="opacity:.75;margin-top:4px">Students type this code once on a new device. Devices that are already set up keep working when you change it.</div>` : ''; } catch (e) { $('#admCode').textContent = ''; }
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#admCodeChange')) return;
+  modal('🏫 Change the school code', '<p class="small">4 to 20 letters, digits or dashes, for example <b>HLA-7</b>. New devices will need the new code.</p><input id="newSchoolCode" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" style="margin:6px 0"><div class="msg" id="newCodeMsg"></div>', [['Save', async () => {
+    const c = $('#newSchoolCode').value.trim().toUpperCase().replace(/[^A-Z0-9-]/g, ''); if (c.length < 4) { toast('The code needs at least 4 letters or digits.'); return; }
+    try { const j = await adminCall('setSchoolCode', { code: c }); toast(j.ok ? '✅ The school code is now ' + c : 'Could not change the code.'); } catch (x) { toast('Could not reach the cloud.'); } adminCodeLoad();
+  }], ['Cancel', null, true]]);
+});
 async function adminAppUsers() {   // only a count: the app keeps no names and no emails
   try {
     const r = await fetch(VERIFY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'appStats', key: ADMKEY }) }), j = await r.json();
@@ -4248,8 +4261,172 @@ async function sha256(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
 }
+/* ====================== LOGIN: three ways to play, the same on the web and in the app ====================== */
+// 🏫 School student: a student number (and the school code once per device). Progress is on the device AND in the school's Google Sheet. The real name and class live only in the sheet.
+// 🏠 Play at home: a parent signs up once with an e-mail code. The hero stays on this device only (only a scrambled fingerprint of the e-mail is used to count people).
+// 📴 Offline: nothing is sent anywhere. Home and offline heroes can be saved to a file and loaded on another device.
+let LANG = (() => { const s = lsGet('aq_lang'); return s === 'he' || s === 'en' ? s : (String(navigator.language || '').toLowerCase().startsWith('he') ? 'he' : 'en'); })();
+const TT = {
+  en: {
+    sub: 'An adventure game: learn to read and write Hebrew, one spell at a time!', continue: 'Continue as:',
+    mSchool: "🏫 I'm a school student", mHome: '🏠 Play at home', mOffline: '📴 Play offline', mLoad: '📂 Load a hero from a file',
+    teacher: 'Teacher area', privacy: 'Privacy', next: 'Continue ▶', back: '← Back', cancel: 'Cancel',
+    codeH: 'School code', codeP: 'Your teacher gives you this code. You type it only once on this device.', codePh: 'School code',
+    numH: 'Your student number', numP: 'Type your student number to begin.', numPh: 'Your number', go: "Let's go! ▶", newBtn: '🌟 I am new', changeCode: 'Change the school code',
+    codeShort: 'Please type the school code.', checking: 'Checking…', codeWrong: 'That code is not right. Ask your teacher.', codeRate: 'Too many tries. Please wait a minute.', codeOffline: "I can't reach the school right now. Check the internet and try again.",
+    numShort: 'Your number looks too short. Check it and try again!', looking: 'Looking for your hero…',
+    unknownH: "I don't know this number", unknownP: "I can't find the number <b>{id}</b>.", unknownP2: 'Check it and try again. If you are new, tap <b>I am new</b>.', offlineWarn: "⚠️ I can't reach the school right now, so I can't check your number. Try again in a moment.", tryAgain: 'Try again', waitH: 'Please wait a moment', waitP: 'Too many tries in a short time. Please wait a minute and try again.', ok: 'OK',
+    deletedH: 'This number is not active anymore', deletedP: 'Your teacher removed this number. Please ask your teacher for help, or tap <b>I am new</b> to start again.',
+    emailH: 'Sign up with my email', emailP: 'Please ask a parent to type their email. We send a code to it. We do not keep the email address.', emailPh: "Parent's email", sendCode: 'Send me a code ▶', codeIs: 'Type the 6-digit code from the email:', verify: 'Check the code ✔', resend: 'Send a new code',
+    badEmail: 'Please type a real email address, like name@example.com.', sending: 'Sending the code…', sent: '✉️ Code sent! Check the email (and the spam folder).', code6: 'The code has 6 numbers.',
+    eEmail: 'That email does not look right.', eWait: 'Too many codes for this email. Please wait a while.', eBusy: 'Many people are signing up right now. Please try again later.', eMail: 'The email could not be sent. You can play offline for now.', eGen: 'Something went wrong. You can play offline for now.', eNet: 'No internet right now. You can play offline, or try again later.',
+    wrong: 'That code is not right. Try again.', expired: 'The code expired. Tap "Send a new code".', locked: 'Too many wrong tries. Tap "Send a new code".', eGen2: 'Something went wrong. Try again.', eNet2: 'No internet right now. Please try again, or play offline.',
+    privH: '🔒 Privacy: what is saved, and where',
+    pSchool: '<b>🏫 School student</b><br>Your progress is saved on this device and in your school\'s Google Sheet. Your real name and class are saved only there, for your teacher. If a parent wants a child\'s data deleted, they can ask the teacher, who can remove the student.',
+    pHome: '<b>🏠 Play at home</b><br>A parent signs up once with an email code. The email address is never saved: only a scrambled fingerprint is used, to count how many people play. Your hero and progress stay on this device only.',
+    pOffline: '<b>📴 Play offline</b><br>Nothing is sent anywhere. Your hero stays on this device only. It is not counted.',
+    pBackup: '<b>💾 Keeping a hero safe</b><br>Home and offline heroes live only on the device. In the menu, "Save my hero" makes a small file you can keep, and "Load a hero from a file" puts it on any device. Installing the app also helps keep the hero safe.',
+    fileBad: 'This file does not look like a saved hero.', fileOther: 'This file is for a different game.', fileSchool: "School heroes can't be loaded from a file. They are saved by your school.", fileNew: 'This file was saved by a newer version of the game. Please update the game first.', fileDamaged: 'The file looks damaged, so I did not load it.', fileReplace: 'A hero with the same number is already on this device. Replace it with the one from the file?', replace: 'Replace it', keep: 'Keep this one', loaded: '📂 Hero loaded!'
+  },
+  he: {
+    sub: 'משחק הרפתקאות: לומדים לקרוא ולכתוב עברית, לחש אחרי לחש!', continue: 'להמשיך בתור:',
+    mSchool: '🏫 אני תלמיד/ה בבית ספר', mHome: '🏠 משחקים בבית', mOffline: '📴 משחקים בלי אינטרנט', mLoad: '📂 טעינת גיבור מקובץ',
+    teacher: 'אזור מורים', privacy: 'פרטיות', next: 'המשך ▶', back: '← חזרה', cancel: 'ביטול',
+    codeH: 'קוד בית הספר', codeP: 'המורה נותן לכם את הקוד הזה. מקלידים אותו רק פעם אחת במכשיר הזה.', codePh: 'קוד בית הספר',
+    numH: 'מספר התלמיד/ה שלך', numP: 'הקלידו את מספר התלמיד/ה שלכם כדי להתחיל.', numPh: 'המספר שלך', go: 'יאללה! ▶', newBtn: '🌟 אני חדש/ה', changeCode: 'החלפת קוד בית הספר',
+    codeShort: 'נא להקליד את קוד בית הספר.', checking: 'בודקים…', codeWrong: 'הקוד לא נכון. שאלו את המורה.', codeRate: 'יותר מדי ניסיונות. המתינו דקה.', codeOffline: 'אין חיבור לבית הספר כרגע. בדקו את האינטרנט ונסו שוב.',
+    numShort: 'המספר נראה קצר מדי. בדקו ונסו שוב!', looking: 'מחפשים את הגיבור שלך…',
+    unknownH: 'המספר הזה לא מוכר', unknownP: 'לא מצאתי את המספר <b>{id}</b>.', unknownP2: 'בדקו ונסו שוב. אם אתם חדשים, לחצו על <b>אני חדש/ה</b>.', offlineWarn: '⚠️ אין חיבור לבית הספר כרגע, אז אי אפשר לבדוק את המספר. נסו שוב עוד רגע.', tryAgain: 'לנסות שוב', waitH: 'רגע, בבקשה', waitP: 'יותר מדי ניסיונות בזמן קצר. המתינו דקה ונסו שוב.', ok: 'אישור',
+    deletedH: 'המספר הזה כבר לא פעיל', deletedP: 'המורה הסיר את המספר הזה. בקשו עזרה מהמורה, או לחצו על <b>אני חדש/ה</b> כדי להתחיל מחדש.',
+    emailH: 'הרשמה עם אימייל', emailP: 'בקשו מהורה להקליד את האימייל שלו. נשלח אליו קוד. אנחנו לא שומרים את כתובת האימייל.', emailPh: 'אימייל של הורה', sendCode: 'שלחו לי קוד ▶', codeIs: 'הקלידו את הקוד בן 6 הספרות מהאימייל:', verify: 'בדיקת הקוד ✔', resend: 'שליחת קוד חדש',
+    badEmail: 'נא להקליד כתובת אימייל אמיתית, למשל name@example.com.', sending: 'שולחים את הקוד…', sent: '✉️ הקוד נשלח! בדקו באימייל (וגם בספאם).', code6: 'הקוד מורכב מ-6 ספרות.',
+    eEmail: 'האימייל הזה לא נראה תקין.', eWait: 'נשלחו יותר מדי קודים לאימייל הזה. המתינו קצת.', eBusy: 'הרבה אנשים נרשמים עכשיו. נסו שוב מאוחר יותר.', eMail: 'לא הצלחנו לשלוח אימייל. אפשר לשחק בלי אינטרנט בינתיים.', eGen: 'משהו השתבש. אפשר לשחק בלי אינטרנט בינתיים.', eNet: 'אין אינטרנט כרגע. אפשר לשחק בלי אינטרנט, או לנסות שוב מאוחר יותר.',
+    wrong: 'הקוד לא נכון. נסו שוב.', expired: 'הקוד פג תוקף. לחצו על "שליחת קוד חדש".', locked: 'יותר מדי ניסיונות שגויים. לחצו על "שליחת קוד חדש".', eGen2: 'משהו השתבש. נסו שוב.', eNet2: 'אין אינטרנט כרגע. נסו שוב, או שחקו בלי אינטרנט.',
+    privH: '🔒 פרטיות: מה נשמר ואיפה',
+    pSchool: '<b>🏫 תלמיד/ה בבית ספר</b><br>ההתקדמות נשמרת במכשיר הזה ובגיליון של בית הספר (Google Sheets). השם האמיתי והכיתה נשמרים רק שם, בשביל המורה. הורה שרוצה למחוק את המידע של ילד/ה יכול לבקש מהמורה, שיכול להסיר את התלמיד/ה.',
+    pHome: '<b>🏠 משחקים בבית</b><br>הורה נרשם פעם אחת עם קוד באימייל. כתובת האימייל לא נשמרת אף פעם: משתמשים רק בטביעת אצבע מעורבלת כדי לספור כמה אנשים משחקים. הגיבור וההתקדמות נשארים במכשיר הזה בלבד.',
+    pOffline: '<b>📴 משחקים בלי אינטרנט</b><br>שום דבר לא נשלח לשום מקום. הגיבור נשאר במכשיר הזה בלבד. לא נספרים.',
+    pBackup: '<b>💾 שומרים על הגיבור</b><br>גיבורים של משחק בבית או בלי אינטרנט קיימים רק במכשיר. בתפריט, "שמירת הגיבור" יוצרת קובץ קטן לשמירה, ו"טעינת גיבור מקובץ" מעלה אותו לכל מכשיר. גם התקנת האפליקציה עוזרת לשמור על הגיבור.',
+    fileBad: 'הקובץ הזה לא נראה כמו גיבור שמור.', fileOther: 'הקובץ הזה שייך למשחק אחר.', fileSchool: 'אי אפשר לטעון גיבורי בית ספר מקובץ. בית הספר שומר אותם.', fileNew: 'הקובץ נשמר בגרסה חדשה יותר של המשחק. עדכנו קודם את המשחק.', fileDamaged: 'הקובץ נראה פגום, ולכן לא טענתי אותו.', fileReplace: 'כבר יש במכשיר הזה גיבור עם אותו מספר. להחליף אותו בגיבור מהקובץ?', replace: 'להחליף', keep: 'להשאיר את הקיים', loaded: '📂 הגיבור נטען!'
+  }
+};
+const tr = k => (TT[LANG] && TT[LANG][k]) || TT.en[k] || k;
+function applyLoginLang() {
+  const L = $('#login'); L.dir = LANG === 'he' ? 'rtl' : 'ltr';
+  L.querySelectorAll('[data-t]').forEach(e => { e.textContent = tr(e.dataset.t); }); L.querySelectorAll('[data-tp]').forEach(e => { e.placeholder = tr(e.dataset.tp); });
+  $('#langName').textContent = LANG === 'he' ? 'English' : 'עברית';
+}
+const MODE_BADGE = { school: '🏫', home: '🏠', offline: '📴' };
+function deviceHeroes() {   // home and offline heroes on this device (school heroes are never listed: a shared tablet must not show other students)
+  const out = []; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (!k.startsWith('aq_p_')) continue; const p = migrate(JSON.parse(localStorage.getItem(k))); if (p && p.mode !== 'school') out.push(p); } } catch (e) {}
+  return out.sort((a, b) => (b.updated || 0) - (a.updated || 0));
+}
+function loginView(v) {
+  for (const [id, name] of [['#vStart', 'start'], ['#vCode', 'code'], ['#vNumber', 'number']]) $(id).style.display = v === name ? '' : 'none';
+  $('#codeMsg').textContent = ''; $('#loginMsg').textContent = '';
+  if (v === 'code') setTimeout(() => $('#schoolCode').focus(), 50); if (v === 'number') setTimeout(() => $('#sid').focus(), 50);
+}
+function renderStart() {
+  applyLoginLang(); const hs = deviceHeroes(); $('#heroesBox').style.display = hs.length ? '' : 'none';
+  $('#heroList').innerHTML = hs.map(p => `<button class="btn heroPick" data-id="${esc(p.id)}">${MODE_BADGE[p.mode] || ''} ${esc(p.nick)}</button>`).join('');
+  $('#sid').value = lsGet('aq_last') || ''; loginView('start');
+}
+$('#heroList').onclick = e => { const b = e.target.closest('.heroPick'); if (!b) return; try { const p = migrate(JSON.parse(localStorage.getItem('aq_p_' + b.dataset.id))); if (p) { P = p; setCloud('none'); openMenu(); } } catch (err) {} };
+$('#langLink').onclick = e => { e.preventDefault(); LANG = LANG === 'he' ? 'en' : 'he'; lsSet('aq_lang', LANG); applyLoginLang(); };
+document.querySelectorAll('.loginBack').forEach(a => { a.onclick = e => { e.preventDefault(); loginView('start'); }; });
+$('#privLink').onclick = e => { e.preventDefault(); openPrivacy(); };
+function openPrivacy() {   // in simple words, in the language chosen on the start screen
+  const he = LANG === 'he';
+  modal(tr('privH'), `<div class="privBody" ${he ? 'dir="rtl"' : ''}><p>${tr('pSchool')}</p><p>${tr('pHome')}</p><p>${tr('pOffline')}</p><p>${tr('pBackup')}</p></div>`, [[tr('ok'), null]]);
+}
+/* ----- 🏫 school student ----- */
+$('#mSchool').onclick = () => loginView(lsGet('aq_school_code') || lsGet('aq_last') ? 'number' : 'code');
+$('#changeCode').onclick = e => { e.preventDefault(); try { localStorage.removeItem('aq_school_code'); } catch (x) {} loginView('code'); };
+async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline'
+  if (!CFG.SCRIPT_URL) return true;   // a test copy without the cloud: any code is fine
+  try { const j = await (await fetch(CFG.SCRIPT_URL + '?action=checkCode&code=' + encodeURIComponent(code))).json(); if (!j.ok) return j.error === 'rate' ? 'rate' : 'offline'; return !!j.valid; } catch (e) { return 'offline'; }
+}
+$('#codeGo').onclick = async () => {
+  const code = $('#schoolCode').value.trim().toUpperCase(), msg = $('#codeMsg');
+  if (code.length < 3) { msg.textContent = tr('codeShort'); return; }
+  msg.textContent = tr('checking'); $('#codeGo').disabled = true; const r = await checkSchoolCode(code); $('#codeGo').disabled = false;
+  if (r === true) { lsSet('aq_school_code', code); loginView('number'); }
+  else msg.textContent = r === 'rate' ? tr('codeRate') : r === 'offline' ? tr('codeOffline') : tr('codeWrong');
+};
+$('#schoolCode').addEventListener('keydown', e => { if (e.key === 'Enter') $('#codeGo').click(); });
+/* ----- 🏠 play at home (an e-mail code, once per device) and 📴 offline ----- */
+let pendingMode = 'school';
+function startNewHero(mode) { pendingMode = mode; pendingId = 'h-' + Math.random().toString(36).slice(2, 10); pendingReal = pendingCls = ''; openCreator(); }
+$('#mHome').onclick = () => { if (lsGet('aq_homeok') === '1') startNewHero('home'); else emailSignup(() => { lsSet('aq_homeok', '1'); startNewHero('home'); }); };
+$('#mOffline').onclick = () => startNewHero('offline');
+async function appPost(body) {
+  const r = await fetch(VERIFY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); return r.json();
+}
+function emailSignup(done) {   // a small window: the parent's e-mail, then the 6-digit code. Only a scrambled fingerprint is kept (to count people), never the address.
+  modal('📧 ' + tr('emailH'), `<p class="small">${tr('emailP')}</p><input id="suEmail" type="email" placeholder="${tr('emailPh')}" autocomplete="email" autocapitalize="none" maxlength="80"><button class="btn" id="suSend" style="margin-top:8px">${tr('sendCode')}</button>
+    <div id="suCodeBox" style="display:none;margin-top:10px"><div class="small">${tr('codeIs')}</div><input id="suCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" style="margin:6px 0"><button class="btn" id="suVerify">${tr('verify')}</button><div><a href="#" id="suResend" class="adminLink">${tr('resend')}</a></div></div><div class="msg" id="suMsg"></div>`, [[tr('cancel'), null, true]]);
+  const sendCode = async () => {
+    const em = $('#suEmail').value.trim().toLowerCase(), msg = $('#suMsg');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg.textContent = tr('badEmail'); return; }
+    msg.textContent = tr('sending'); $('#suSend').disabled = true;
+    try {
+      const j = await appPost({ action: 'appCode', email: em });
+      if (j.ok) { msg.textContent = tr('sent'); $('#suCodeBox').style.display = ''; $('#suCode').focus(); }
+      else msg.textContent = { email: tr('eEmail'), wait: tr('eWait'), busy: tr('eBusy'), mail: tr('eMail') }[j.error] || tr('eGen');
+    } catch (e) { msg.textContent = tr('eNet'); }
+    $('#suSend').disabled = false;
+  };
+  $('#suSend').onclick = sendCode; $('#suResend').onclick = e => { e.preventDefault(); sendCode(); };
+  $('#suVerify').onclick = async () => {
+    const em = $('#suEmail').value.trim().toLowerCase(), code = $('#suCode').value.trim(), msg = $('#suMsg');
+    if (!/^\d{6}$/.test(code)) { msg.textContent = tr('code6'); return; }
+    msg.textContent = tr('checking'); $('#suVerify').disabled = true;
+    try {
+      const j = await appPost({ action: 'appVerify', email: em, code });
+      if (j.ok) { $('#modal').classList.remove('on'); done(); return; }
+      msg.textContent = { wrong: tr('wrong'), expired: tr('expired'), locked: tr('locked') }[j.error] || tr('eGen2');
+    } catch (e) { msg.textContent = tr('eNet2'); }
+    $('#suVerify').disabled = false;
+  };
+}
+/* ----- 💾 save a hero to a file and 📂 load it on any device (home and offline heroes) ----- */
+const hash53 = (str, seed = 0) => {   // a small checksum against accidental damage (not a secret)
+  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
+  for (let i = 0; i < str.length; i++) { const ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909); h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+};
+function downloadHero() {
+  if (!P || P.mode === 'school') return;
+  const core = { game: 'read', v: PROFILE_V, mode: P.mode, hero: JSON.parse(JSON.stringify(P)) }, text = JSON.stringify(Object.assign({}, core, { sum: hash53(JSON.stringify(core)) }));
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'application/json' })); a.download = 'SpellQuest-' + String(P.nick || 'hero').replace(/[^\w֐-׿-]+/g, '_') + '.hero.json'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  toast('💾 Your hero was saved to a file. Keep it safe!');
+}
+async function loadHeroFile(file) {
+  let obj; try { obj = JSON.parse(await file.text()); } catch (e) { return modal('📂', `<p>${tr('fileBad')}</p>`, [[tr('ok'), null]]); }
+  const bad = m => modal('📂', `<p>${tr(m)}</p>`, [[tr('ok'), null]]);
+  if (!obj || typeof obj !== 'object' || !obj.hero || typeof obj.hero !== 'object') return bad('fileBad');
+  if (obj.game !== 'read') return bad('fileOther');
+  if (obj.mode !== 'home' && obj.mode !== 'offline') return bad('fileSchool');
+  if (!(obj.v <= PROFILE_V)) return bad('fileNew');
+  const core = { game: obj.game, v: obj.v, mode: obj.mode, hero: obj.hero }; if (hash53(JSON.stringify(core)) !== obj.sum) return bad('fileDamaged');
+  const p = migrate(obj.hero); p.mode = obj.mode; if (!p.id || !p.nick) return bad('fileBad');
+  const put = () => { lsSet('aq_p_' + p.id, JSON.stringify(p)); P = p; setCloud('none'); toast(tr('loaded')); openMenu(); };
+  if (lsGet('aq_p_' + p.id)) modal('📂', `<p>${tr('fileReplace')}</p>`, [[tr('replace'), put], [tr('keep'), null, true]]); else put();
+}
+$('#mLoad').onclick = () => $('#heroFile').click();
+$('#heroFile').onchange = e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) loadHeroFile(f); };
+/* ----- the menu: which way this hero plays, the backup file, moving an offline hero to "home", and Privacy ----- */
+function renderHeroTools() {
+  const m = P.mode || 'school';
+  $('#modeBadge').textContent = MODE_BADGE[m] + ' ' + { school: 'School', home: 'Home', offline: 'Offline' }[m];
+  $('#saveHeroBtn').style.display = m === 'school' ? 'none' : ''; $('#upHomeBtn').style.display = m === 'offline' ? '' : 'none';
+}
+$('#saveHeroBtn').onclick = () => downloadHero();
+$('#upHomeBtn').onclick = () => emailSignup(() => { P.mode = 'home'; lsSet('aq_homeok', '1'); saveSoon(true); openMenu(); toast('🏠 This hero is now a home hero.'); });
+$('#privBtn').onclick = () => openPrivacy();
 async function tryGate(code) { try { return (await sha256('rtr-adventure:' + code)) === GATE_HASH; } catch (e) { return false; } }
-function openGate() { show('login'); }
+function openGate() { show('login'); renderStart(); }
 // The unlock is remembered only for this browser tab (so a refresh doesn't ask again), never across visits.
 const ssGet = k => { try { return sessionStorage.getItem(k); } catch (e) { return null; } };
 const ssSet = (k, v) => { try { sessionStorage.setItem(k, v); } catch (e) {} };
@@ -4263,57 +4440,6 @@ try { localStorage.removeItem('aq_gate'); } catch (e) {}   // forget the old alw
   $('#pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gateBtn').click(); });
 })();
 
-/* ----- app: sign up with an e-mail code (so the number of users is known), or play offline. Game data never leaves the device. ----- */
-function appHeroList() {   // heroes saved on this device by the app
-  const out = []; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (!k.startsWith('aq_p_')) continue; const p = JSON.parse(localStorage.getItem(k)); if (p && p.app) out.push(p); } } catch (e) {}
-  return out.sort((a, b) => (b.updated || 0) - (a.updated || 0));
-}
-function renderAppLogin() {
-  const hs = appHeroList(); $('#appHeroesBox').style.display = hs.length ? '' : 'none';
-  $('#appHeroes').innerHTML = hs.map(p => `<button class="btn appHero" data-id="${esc(p.id)}">${p.local ? '📴' : '✅'} ${esc(p.nick)}</button>`).join('');
-  $('#appStep1').style.display = ''; $('#appStep2').style.display = 'none'; $('#appMsg').textContent = '';
-}
-async function appPost(body) {
-  const r = await fetch(VERIFY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); return r.json();
-}
-if (APP) {
-  $('#sid').style.display = 'none'; $('#loginBtn').style.display = 'none'; $('#loginHint').innerHTML = 'Welcome, hero!'; $('#appLogin').style.display = ''; renderAppLogin();
-  $('#privNote').innerHTML = '🔒 Your hero stays on this device. Only a scrambled fingerprint of your email is used, once, to count how many people use the app. Your email is never saved.';
-  $('#appHeroes').onclick = async e => { const b = e.target.closest('.appHero'); if (!b) return; const r = await loadProfile(b.dataset.id); if (r.profile) { P = r.profile; setCloud('none'); openMenu(); } };
-  $('#appSignBtn').onclick = () => { $('#appStep1').style.display = 'none'; $('#appStep2').style.display = ''; $('#appEmail').focus(); };
-  $('#appBack').onclick = e => { e.preventDefault(); renderAppLogin(); };
-  const sendCode = async () => {
-    const em = $('#appEmail').value.trim().toLowerCase(), msg = $('#appMsg');
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg.textContent = 'Please type a real email address, like name@example.com.'; return; }
-    msg.textContent = 'Sending the code…'; $('#appSend').disabled = true;
-    try {
-      const j = await appPost({ action: 'appCode', email: em });
-      if (j.ok) { msg.textContent = '✉️ Code sent! Check your email (and the spam folder).'; $('#appCodeBox').style.display = ''; $('#appCode').focus(); }
-      else msg.textContent = { email: 'That email does not look right.', wait: 'Too many codes for this email. Please wait a while.', busy: 'Many people are signing up right now. Please try again later.', mail: 'The email could not be sent. You can play offline for now.' }[j.error] || 'Something went wrong. You can play offline for now.';
-    } catch (e) { msg.textContent = 'No internet right now. You can play offline, or try again later.'; }
-    $('#appSend').disabled = false;
-  };
-  $('#appSend').onclick = sendCode; $('#appResend').onclick = e => { e.preventDefault(); sendCode(); };
-  $('#appVerify').onclick = async () => {
-    const em = $('#appEmail').value.trim().toLowerCase(), code = $('#appCode').value.trim(), msg = $('#appMsg');
-    if (!/^\d{6}$/.test(code)) { msg.textContent = 'The code has 6 numbers.'; return; }
-    msg.textContent = 'Checking…'; $('#appVerify').disabled = true;
-    try {
-      const j = await appPost({ action: 'appVerify', email: em, code });
-      if (j.ok) {
-        const r = await loadProfile(em); msg.textContent = '';
-        if (r.profile) { P = r.profile; P.app = true; setCloud('none'); openMenu(); }   // this email already has a hero on this device
-        else { pendingId = em; pendingReal = pendingCls = ''; openCreator(); }
-      } else msg.textContent = { wrong: 'That code is not right. Try again.', expired: 'The code expired. Tap "Send a new code".', locked: 'Too many wrong tries. Tap "Send a new code".' }[j.error] || 'Something went wrong. Try again.';
-    } catch (e) { msg.textContent = 'No internet right now. Please try again, or play offline.'; }
-    $('#appVerify').disabled = false;
-  };
-  $('#appOffline').onclick = () => { pendingId = 'local-' + Math.random().toString(36).slice(2, 10); pendingReal = pendingCls = ''; openCreator(); };
-}
-/* ----- app mode: texts and hidden parts ----- */
-if (APP) {
-  $('#newBtn').style.display = 'none'; $('#orLine').style.display = 'none'; $('#adminWrap').style.display = 'none'; $('#installBtn').style.display = 'none'; $('#privNote').style.display = '';
-}
 /* init */
 setMute(muted); setCloud(CFG.SCRIPT_URL ? '' : 'none');
 </script>
