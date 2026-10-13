@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>/* the pretend school is used unless the page address has ?live, ?reg= or ?svc= (then the real test services are used); ?sandbox always brings it back */
+try { var s = location.search, st = localStorage.getItem('ts_cfg_reg'), real = /[?&](live|reg=|svc=)/.test(s) || (st && !/MOCK/.test(st)); if (/[?&]sandbox/.test(s) || !real) document.write('<script src="sandbox.js"><\/script>'); } catch (e) {}</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <link rel="manifest" href="manifest.webmanifest">
@@ -4851,6 +4854,7 @@ try { localStorage.removeItem('ts_gate'); } catch (e) {}   // forget the old alw
 /* ====================== "Admin and teacher" features (test copy): settings, voice sets (school, shared, teachers), recorder bridge, bulk add of students ====================== */
 // Test copy only: the addresses of the TEST registry and TEST school service can be given in the page address once (?reg=...&svc=...), and are remembered in this browser.
 (function () {
+  if (window.__SANDBOX) { CFG.SCRIPT_URL = window.__SANDBOX.school; CFG.REGISTRY_URL = window.__SANDBOX.registry; return; }   // the pretend school and registry inside this page
   try {
     const q = new URLSearchParams(location.search);
     if (q.get('resetcfg')) { localStorage.removeItem('ts_cfg_reg'); localStorage.removeItem('ts_cfg_svc'); }
@@ -4866,8 +4870,9 @@ const fmtDay = v => { try { return v ? new Date(v).toLocaleDateString() : ''; } 
 
 /* ----- the recorder opens in its own window and asks THIS window (same address) for where to save; the key stays in memory and never goes in a link ----- */
 let REC_CTX = null;
-window.addEventListener('message', e => {
-  if (e.origin !== location.origin || !e.data || e.data.t !== 'sq-auth?' || !REC_CTX || !e.source) return;
+window.addEventListener("message", async e => {
+  if (e.origin === location.origin && e.data && e.data.t === "sq-call" && window.__sandboxRoute && e.source) { let r = null; try { r = await window.__sandboxRoute(e.data.url, e.data.body); } catch (x) { r = { ok: false, error: "failed" }; } try { e.source.postMessage({ t: "sq-result", id: e.data.id, result: r }, location.origin); } catch (x) {} return; }
+  if (e.origin !== location.origin || !e.data || e.data.t !== "sq-auth?" || !REC_CTX || !e.source) return;
   try { e.source.postMessage(Object.assign({ t: 'sq-auth' }, REC_CTX()), location.origin); } catch (x) {}
 });
 function openRecorder(ctx) { REC_CTX = ctx; if (!window.open('recorder.html', 'sqrecorder')) toast('Please allow pop-ups for this page to open the recorder.'); }
