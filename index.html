@@ -4310,7 +4310,7 @@ function startDemo() {
   saveSoon = () => {}; cloudSave = async () => {};   // the demo student is never saved
   CFG.SCRIPT_URL = ''; window.__fast = false;
   const w = ms => new Promise(r => setTimeout(r, ms));
-  P = newProfile('demo', 'Demo', 'm', '#3498db'); P.beard = 'long'; P.tier = 9; P.coins = 900; P.exp = 700;
+  P = newProfile('demo', 'Demo', 'm', '#3498db'); P.beard = 'long'; P.tier = 9; P.coins = 900; P.exp = wzTotal(10);
   P.inv = { star: 3, moon: 2, comet: 1, rainbow: 1, cloud: 1, diamond: 2, pearl: 1, crown: 1, leaf: 4, seed: 3, flower: 3, root: 2, mushroom: 2, g_fire: 2, g_water: 2, feather: 2 };
   P.pot = { heart: 2, sound: 2, power: 2, second: 2, super: 1 }; P.own.decor = ['d_plant', 'd_cat', 'd_candle', 'd_picture', 'd_clock', 'd_rug']; P.own.caul = 1;
   const blank = () => ({ amulet: 0, staff: 0, belt: 0 });
