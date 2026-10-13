@@ -1775,9 +1775,9 @@ function openMenu() {
   G.quest = null; show('menu');
   $('#menuHero').innerHTML = heroOf(P).replace('<svg ', '<svg style="height:100px" ');
   $('#menuWho').textContent = P.nick;
-  $('#menuRank').innerHTML = `<button class="wizBadge" data-wizlv="1" title="Wizard level">Lv ${wizLevel()}</button> ${wzTitle()} · ${Math.round(P.exp || 0)} XP` + (P.mode === 'school' ? ' · my number: ' + esc(P.id) : '');
+  $('#menuRank').innerHTML = `<button class="wizBadge" data-wizlv="1" title="Wizard level">Lv ${wizLevel()}</button> ${wzTitle()} · ${Math.round(P.exp || 0)} XP${wzReady() ? ' · 📜 Ready for the test!' : ''}` + (P.mode === 'school' ? ' · my number: ' + esc(P.id) : '');
   $('#menuXp').style.width = (wzFrac() * 100) + '%';
-  $('#menuTier').textContent = 'Level ' + P.tier + ': ' + TIERS[P.tier] + (wzReady() ? ' · 📜 Ready for the test!' : '');
+  $('#menuTier').textContent = 'Hebrew level ' + P.tier + ': ' + TIERS[P.tier];
   const t = P.sec[today()] || 0;
   $('#menuToday').textContent = Math.min(10, Math.floor(t / 60)) + '/10 min' + (t >= CFG.DAILY_SEC ? ' ⭐' : '');
   $('#menuStreak').textContent = streak() + ' day' + (streak() === 1 ? '' : 's');
@@ -2896,7 +2896,7 @@ function updateBars() {
   $('#hearts').innerHTML = heartsHtml(G.hearts, b);
   $('#heroBox').classList.toggle('heroGlow', b && G.combo >= 3);   // on a hot streak the hero glows
   $('#hpFill').style.width = (b ? G.mon.hp / G.mon.max * 100 : G.helped / G.need * 100) + '%';
-  $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}` + (wzReady() ? ' · 📜 Ready for the test!' : '');
+  $('#tierLbl').textContent = `Hebrew level ${P.tier}: ${TIERS[P.tier]}`;
   $('#xpFill').style.width = (wzFrac() * 100) + '%'; wizBadges();
   renderPotBar();   // the bottom bar shows the coins and ingredients too
 }
@@ -3131,8 +3131,8 @@ async function flySpell(emoji) {
   } catch (e) {}
 }
 function after(tier) {
-  if (tier === 'up') { sfx.up(); confetti(['⬆️', '⭐', '✨']); toast(`⬆️ Level up! Level ${P.tier}: ${TIERS[P.tier]}`); }
-  if (tier === 'down') toast(`Let's practice a bit more. Level ${P.tier}: ${TIERS[P.tier]}`);
+  if (tier === 'up') { sfx.up(); confetti(['⬆️', '⭐', '✨']); toast(`⬆️ Level up! Hebrew level ${P.tier}: ${TIERS[P.tier]}`); }
+  if (tier === 'down') toast(`Let's practice a bit more. Hebrew level ${P.tier}: ${TIERS[P.tier]}`);
   updateBars(); saveSoon();
 }
 function toast(t) {
@@ -3722,7 +3722,7 @@ function craftQuestion() {
   $('#foeName').textContent = `${CAULDRONS[P.own.caul || 0]} · ${pBoth(C.potion)}`;
   $('#mid').innerHTML = `<b>🧪 Brewing</b><br>${C.ings.map((id, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote"></div>`;
   $('#hearts').textContent = POTIONS[C.potion].em; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / C.ings.length) + '%';
-  $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
+  $('#tierLbl').textContent = `Hebrew level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
   craftNote();
   nameQuestion(ING[C.ings[C.i]], Object.values(ING), { listen: '🫕 The cauldron bubbles… Listen!', read: 'Read the ingredient and pick its picture!', sub: 'Which one goes in the cauldron?', write: 'Write the name of this ingredient in Hebrew!' });
 }
@@ -3885,7 +3885,7 @@ function forgeQuestion() {
   const C = G.craft, m = MAGIC[C.forge], last = C.i >= C.ings.length, total = C.ings.length + 1;
   $('#foeName').textContent = 'Artificer'; $('#hearts').innerHTML = magicIcon(C.forge); $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / total) + '%';
   $('#mid').innerHTML = `<b>🔨 Forging: ${m.en}</b><br>${Array.from({ length: total }, (_, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote">${last ? 'Last question: the name of the item!' : `Ingredient ${C.i + 1} of ${C.ings.length}. A wrong answer costs nothing.`}</div>`;
-  $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
+  $('#tierLbl').textContent = `Hebrew level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
   nameQuestion(last ? MAGIC_Q.find(x => x.id === C.forge) : ING[C.ings[C.i]], last ? MAGIC_Q : Object.values(ING),
     { listen: '🛠️ The artificer says… Listen!', read: last ? 'Read the name and pick the item!' : 'Read the ingredient and pick its picture!', sub: last ? 'Which item are we making?' : 'Which one goes in the forge?', write: last ? 'Write the name of the item in Hebrew!' : 'Write the name of this ingredient in Hebrew!' });
 }
@@ -4096,7 +4096,7 @@ function startShopBuy(id) {
   $('#foeBody').className = 'foeBody'; $('#foeBody').style.filter = ''; $('#foeBody').innerHTML = `<span class="shMerchBody">${merchantSVG(SH_SKINS[shopShelf().skin % SH_SKINS.length])}</span>`; $('#foeName').textContent = 'Merchant';
   $('#mid').innerHTML = `<b>🛒 The shop</b><div class="runNote">To buy ${isRobeItem(s) ? 'this robe' : s.kind === 'potion' ? 'this potion' : s.wtype === 'look' ? 'this look' : s.em}, answer the merchant's question. Wrong answers cost nothing!</div>`;
   $('#hearts').textContent = '🪙 ' + s.price; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = '0%';
-  $('#tierLbl').textContent = `Level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
+  $('#tierLbl').textContent = `Hebrew level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
   nameQuestion(s, Object.values(SHOP), { listen: '🧙 The merchant says… Listen!', read: 'Read the name and pick the picture!', sub: 'Which one are you buying?', write: 'The merchant wants the name written in Hebrew!' });
 }
 function shopBought() {
@@ -4643,7 +4643,7 @@ async function adminStudent(id) {
     const sec2 = (title, html) => `<div class="stuSec"><b>${title}</b>${html}</div>`;
     box.innerHTML = `<div class="row" style="justify-content:space-between;align-items:flex-start;flex-wrap:nowrap"><div><b style="font-size:1.3rem">${esc(p.nick)}</b> <small style="opacity:.7">#${esc(p.id)}</small>
         <div>${p.real ? '👤 ' + esc(p.real) : '<span style="opacity:.6">(no real name saved: this student joined before names were asked)</span>'}${p.cls ? ' · 🏫 ' + esc(p.cls) : ''}</div></div><button class="ib" id="admDetailClose">✕</button></div>` +
-      sec2('Overview', `<div class="kv"><span>📖 Level ${p.tier}: ${esc(TIERS[p.tier] || '')}</span><span>🏅 ${wzTitleOfLv(wzRaw(p.xp))} · Lv ${wzRaw(p.xp)} · ⭐ ${p.xp} XP</span><span>🎯 ${total} answers · ${pct(right, total)} correct</span><span>✅ ${mastered} items mastered</span>
+      sec2('Overview', `<div class="kv"><span>📖 Hebrew level ${p.tier}: ${esc(TIERS[p.tier] || '')}</span><span>🏅 ${wzTitleOfLv(wzRaw(p.xp))} · Lv ${wzRaw(p.xp)} · ⭐ ${p.xp} XP</span><span>🎯 ${total} answers · ${pct(right, total)} correct</span><span>✅ ${mastered} items mastered</span>
         <span>⏱️ ${totalMin} min in total</span><span>📅 ${daysPlayed.length} days played${daysPlayed.length ? ' · about ' + Math.round(totalMin / daysPlayed.length) + ' min a day' : ''}</span><span>🕒 Created ${p.created ? new Date(p.created).toLocaleDateString() : '?'} · last saved ${p.updated ? new Date(p.updated).toLocaleDateString() : '?'}</span></div>`) +
       sec2('Skills', skillRows ? `<div class="tblwrap"><table class="skillTbl"><thead><tr><th>Skill</th><th>Answers</th><th>Correct</th><th>Items seen</th><th>Mastered</th><th>Needs work</th></tr></thead><tbody>${skillRows}</tbody></table></div>` : '<p style="opacity:.7;margin:4px 0">No answers yet.</p>') +
       sec2('Practice time, last 14 days (minutes)', `<div class="days">${days.map(x => `<div title="${x.d.toLocaleDateString()}: ${Math.round(x.s / 60)} min" style="height:${Math.max(3, 100 * x.s / mx)}%"></div>`).join('')}</div><div class="dayLbl">${days.map(x => `<span>${x.d.getDate()}</span>`).join('')}</div>
