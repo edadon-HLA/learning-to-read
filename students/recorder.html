@@ -353,7 +353,10 @@ function playBuilt(name) {
   const [s, d] = builtSet.idx[name]; prevSrc = prevCtx.createBufferSource(); prevSrc.buffer = buf; prevSrc.connect(prevCtx.destination); prevSrc.start(0, s, d + 0.03);
 }
 function toB64(ab) { const u = new Uint8Array(ab); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
-async function postAdmin(body) { const r = await fetch(AUTH.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); return r.json(); }
+function callHost(body) {   // the pretend school inside the game window: ask that window to make the call
+  return new Promise(res => { const host = window.opener || (window.parent !== window ? window.parent : null), id = Math.random().toString(36).slice(2); const on = e => { if (e.origin !== location.origin || !e.data || e.data.t !== 'sq-result' || e.data.id !== id) return; window.removeEventListener('message', on); res(e.data.result); }; window.addEventListener('message', on); host.postMessage({ t: 'sq-call', id, url: AUTH.url, body }, location.origin); });
+}
+async function postAdmin(body) { if (/\/MOCK[A-Z]+\/exec$/.test(AUTH.url)) return callHost(body); const r = await fetch(AUTH.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); return r.json(); }
 const authMsg = j => j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes.' : j.error === 'auth' ? 'Your sign-in ended. Close this window and sign in again in the game.' : j.error === 'forbidden' ? 'You are not allowed to do this.' : (j.error || 'something went wrong');
 async function publish() {
   const m = $('pubMsg'); if (!builtSet) { m.className = 'msg bad'; m.textContent = 'Build the set first.'; return; }
