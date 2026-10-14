@@ -536,6 +536,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .stage.exam.conjure .side.foe{padding-top:6px}
 .stage.exam .mid{height:100%}
 .stage.exam.conjure .foeWrap{display:block;width:118px;padding:0}.stage.exam.conjure .foeBody{width:118px;font-size:0;animation:none}
+.forgeMarks{font-size:1.1rem;letter-spacing:2px;margin-top:-4px}
 </style>
 <style id="p3css">
 /* Patch 3: the level badge, the Academy, the test */
@@ -1587,7 +1588,9 @@ async function loadProfile(id) {
 }
 
 /* ====================== SCREENS / MODAL ====================== */
+function stageClean() { try { ['#anvilBox', '#pipShoulder', '#vKids', '#conjAgain', '#exProf'].forEach(s => { const e = document.querySelector(s); if (e) e.remove(); }); } catch (e) {} }
 function show(id) {
+  stageClean();
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
   document.body.classList.toggle('peace', (id === 'game' || id === 'journey') && G.quest === 'peace');
   window.scrollTo(0, 0);
@@ -3683,6 +3686,7 @@ function rmFly(id, then) {   // one ingredient flies from the bottom of the room
   a.onfinish = () => { f.remove(); then(); };
 }
 function openHome() {
+  tutAbort();
   G.quest = null; show('home'); wizBadges(); rmSetup(); rmPanel = null;
   const tok = ++rmTok, disp = Object.assign({}, P.inv), sat = Object.entries(P.satchel || {}).filter(([, n]) => n > 0);
   for (const [id, n] of sat) P.inv[id] = (P.inv[id] || 0) + n;   // the data is updated at once; only the picture fills up step by step
@@ -3737,6 +3741,7 @@ function pickIngredients(potion) {   // the student chooses which ingredients to
 
 /* ----- brewing: one question per ingredient. Mistakes cost nothing; the student just tries again. ----- */
 function startCraft(potion, ings) {
+  tutAbort();
   G.quest = 'craft'; G.craft = { potion, ings, i: 0, done: [] }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = false;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft'; setStageBg(); $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
@@ -3908,6 +3913,7 @@ function unpackSatchel() {   // ingredients found on a quest are in the satchel 
   let t = 0; for (const [id, n] of sat) { P.inv[id] = (P.inv[id] || 0) + n; t += n; } P.satchel = {}; saveSoon(true); return t;
 }
 function openWorkshop() {
+  tutAbort();
   const unp = unpackSatchel(); if (unp) setTimeout(() => toast(`🎒 You put ${unp} ingredient${unp > 1 ? 's' : ''} from your satchel on the artificer's shelf.`), 500);
   G.quest = null; show('workshop'); $('#wsCoins').textContent = Math.floor(P.coins || 0); renderWorkshop();
   if (!P.ws.hi) { P.ws.hi = true; saveSoon(true); modal('🛠️ Hello, hello!', `<div style="text-align:center"><div style="width:7rem;margin:0 auto">${artificerSVG(WS_SKINS[2])}</div></div><p>I am the artificer! I build magic items from rare ingredients: an amulet, a staff and a belt. Bring me <b>epic</b> things from bosses, and common things from the forest, and I will make you something special!</p>`, [['Let us see! ▶', null]]); }
@@ -3930,6 +3936,7 @@ function pickForge(slot) {   // choose which ingredients to use (one for each ne
   render();
 }
 function startForge(slot, ings) {
+  tutAbort();
   G.quest = 'forge'; G.craft = { forge: slot, ings, i: 0 }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = false;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft'; setStageBg(); $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
@@ -3939,7 +3946,7 @@ function startForge(slot, ings) {
 function forgeQuestion() {
   const C = G.craft, m = MAGIC[C.forge], last = C.i >= C.ings.length, total = C.ings.length + 1;
   $('#foeName').textContent = 'Artificer'; $('#hearts').innerHTML = magicIcon(C.forge); $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / total) + '%';
-  $('#mid').innerHTML = `<b>🔨 Forging: ${m.en}</b><br>${Array.from({ length: total }, (_, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}<div class="runNote">${last ? 'Last question: the name of the item!' : `Ingredient ${C.i + 1} of ${C.ings.length}. A wrong answer costs nothing.`}</div>`;
+  $('#mid').innerHTML = `<div class="forgeMarks">${Array.from({ length: total }, (_, k) => k < C.i ? '✅' : k === C.i ? '❓' : '▫️').join(' ')}</div>`;
   $('#tierLbl').textContent = `Hebrew level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
   nameQuestion(last ? MAGIC_Q.find(x => x.id === C.forge) : ING[C.ings[C.i]], last ? MAGIC_Q : Object.values(ING),
     { listen: '🛠️ The artificer says… Listen!', read: last ? 'Read the name and pick the item!' : 'Read the ingredient and pick its picture!', sub: last ? 'Which item are we making?' : 'Which one goes in the forge?', write: last ? 'Write the name of the item in Hebrew!' : 'Write the name of this ingredient in Hebrew!' });
@@ -4114,6 +4121,7 @@ function renderShopPanel() {
   else p.innerHTML = `<h3>👗 Robes, accessories and item looks <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="shopGrid">${[...ROBE_EXTRA.map(r => r[0]), ...ROBE_STYLES.map(r => r[0]), ...ACCS.map(a => a[0]), ...LOOK_IDS].map(id => shopCard(SHOP[id])).join('')}</div>`;
 }
 function openShop() {
+  tutAbort();
   G.quest = null; show('shop'); shopPanel = null;
   $('#shopCoins').textContent = Math.floor(P.coins || 0);
   $('#shBtnPots .potIco').innerHTML = potionSVG('any'); renderShop(); renderShopPanel();
@@ -5276,6 +5284,7 @@ function academyAsk() {
 
 /* ----- the test itself: the question screen with an examiner, an hourglass that shows progress, a scroll, and three allowed mistakes ----- */
 function startExam(kind, practice) {
+  tutAbort();
   const ti = exTi(), T = WZ.TEST[ti];
   G.quest = 'exam'; G.exam = { kind, ti, witch: wzTi() % 2 === 1, n: practice ? 6 : T.n, need: Math.ceil(T.n * T.pass), i: 0, ok: 0, bad: 0, missed: [], items: [], practice: !!practice };
   G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.mon = null; G.fname = 'the Examiner'; G.helped = 0; G.locked = false;
@@ -5519,6 +5528,7 @@ $('#shop').onclick = e => {
   const b = e.target.closest('[data-buy]'); if (b) openShopItem(SHOP[b.dataset.buy], shopList(b.dataset.list));
 };
 function openShop() {
+  tutAbort();
   G.quest = null; show('shop'); shopPanel = null; P.shopSay = '';
   $('#shopCoins').textContent = Math.floor(P.coins || 0); renderShop(); renderShopPanel();
   if (P.shopNote) { const n = P.shopNote; P.shopNote = null; saveSoon(true); setTimeout(() => toast(n), 400); }
@@ -5568,7 +5578,8 @@ function labStageBg() {   // behind the forging scene (400 x 200)
     <g transform="rotate(-9 200 12)"><path d="M200 0 V20" stroke="#6a4524" stroke-width="2"/><path d="M184 38 L200 18 L216 38Z" fill="#c9a23a"/><ellipse cx="200" cy="39" rx="16" ry="4" fill="#ffd166"/><ellipse cx="200" cy="64" rx="34" ry="20" fill="#ffd16620"/></g>`;
 }
 const anvilStage = () => `<div class="anvilBox" id="anvilBox"><div class="anvilArt">${anvilSVG()}</div><div class="hammer" id="hammer">${hammerSVG()}</div><div class="anvilItem" id="anvilItem"></div></div>`;
-function startForge(slot, ings) {   // the same forging, in a lab: the wizard hammers at the anvil
+function startForge(slot, ings) {
+  tutAbort();   // the same forging, in a lab: the wizard hammers at the anvil
   G.quest = 'forge'; G.craft = { forge: slot, ings, i: 0 }; G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.noCount = false;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
   $('#stage').className = 'stage craft forge'; $('#stageBg').innerHTML = labStageBg(); $('#stageBg').dataset.key = 'lab'; $('#stageVig').style.display = 'none'; $('#aura').innerHTML = ''; $('#heroBox').classList.remove('hurt');
@@ -5933,6 +5944,7 @@ function hatDeco(k, color, f, uid, dark) {
     <path d="M32 38 L35 16 L45 27 L53 8 L61 24 L67 6 L75 26 L84 14 L88 38Q60 47 32 38Z" fill="#ffd166" stroke="#b07d17" stroke-width="1.2"/><circle cx="53" cy="14" r="2.2" fill="#e5546b"/><circle cx="67" cy="12" r="2.2" fill="#4aa8ff"/><circle cx="60" cy="32" r="2.6" fill="#3ddc97"/>${hatStar(98, 4, .9, '#fff3a8')}${hatStar(22, 10, .8, '#fff3a8')}${hatStar(104, 26, .6, '#ffe9a0')}`;
 }
 
+function tutAbort() { if (!TUT.on) return; TUT.on = false; TUT.tok++; try { tutResolve(); tutHl(null); speechSynthesis.cancel(); } catch (e) {} $('#tutFin').classList.remove('on'); $('#coach').hidden = true; document.body.classList.remove('tutOn'); stageClean(); }
 /* init */
 setMute(muted); setCloud(CFG.SCRIPT_URL ? '' : 'none');
 </script>
