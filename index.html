@@ -508,6 +508,12 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 #tierLbl{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.8rem;line-height:1.15}
 @media (max-width:560px){.stage{min-height:clamp(200px,33vh,330px)}.potBar{margin:2px auto}.fb{min-height:1.8em;margin-top:4px}.qsub{margin-bottom:4px}}
 @media (max-height:700px){.side svg{height:112px}.hearts{font-size:1.1rem}.mid{font-size:.8rem}.panel{padding:8px}.opt{min-height:52px;font-size:1.75rem}.opt.w{font-size:1.35rem}}
+/* "Admin and teacher" features */
+.setHead{font-weight:700;font-size:.9rem;margin:10px 0 4px;opacity:.85}
+.warnBox{background:#ff9f1c33;border:1px solid #ff9f1c88;border-radius:10px;padding:6px 10px;margin:6px 0;font-size:.85rem}
+.bkCls{background:#ffd16622;border:1px solid #ffd16688;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:.92rem}.bkCls select,.bkCls input{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #fff4;background:#0004;color:#fff}
+.bkTbl{width:100%;border-collapse:collapse;font-size:.9rem}.bkTbl th,.bkTbl td{padding:4px 8px;text-align:left;border-bottom:1px solid #fff2}
+.bkTbl tr.bad td{opacity:.6;background:#ff6a5a18}.bkTbl tr.new td{background:#ffd16618}.bkTbl tr.ok td:nth-child(4){color:#7dffb0}
 </style>
 </head>
 <body>
@@ -569,6 +575,13 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="tblwrap"><table id="sysTable"></table></div>
     <div class="msg" id="sysMsg" style="min-height:1.2em"></div>
   </div>
+  <div class="card" id="sysDemoCard"><b>🧪 Demo run</b><p class="small" style="margin:6px 0;opacity:.85">Try the game as a pretend student: pick any level, jump to the workshop, shop or home, start a quest, give yourself items. Nothing is saved and no student is changed. It works without any school.</p><button class="btn" id="sysDemo">▶ Start a demo run</button></div>
+  <div class="card" id="sysSound">
+    <b>🎙️ Pronunciations: shared sets</b>
+    <p class="small" style="margin:6px 0;opacity:.85">Sets you record here are <b>shared with every school</b>. In each school's voice-set list they appear under “Shared sets (from SpellQuest)”. The school owner can listen and choose one for the students. If you delete a set, the schools that used it go back to the built-in voice.</p>
+    <div id="sysSets"></div>
+    <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="sysRec">🎙️ Open the recorder</button></div>
+  </div>
 </section>
 <section id="admin" class="screen" style="max-width:1000px">
   <div class="top">
@@ -584,6 +597,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="card" id="admClasses" style="display:none"></div>
   <div class="card" id="admWait" style="display:none"></div>
   <div class="card" id="admMoved" style="display:none"></div>
+  <div class="card" id="admBulk" style="display:none"></div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
@@ -597,10 +611,10 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="card" id="admDemoCard"><b>🧪 Demo run</b><p class="small" style="margin:6px 0;opacity:.85">Try the game as a pretend student: pick any level, jump to the workshop, shop or home, start a quest, give yourself items. Nothing is saved and no student is changed.</p><button class="btn" id="admDemo">▶ Start a demo run</button></div>
   <div class="card" id="admSound">
     <b>🎙️ Pronunciations</b>
-    <p class="small" style="margin:6px 0;opacity:.85">Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one.</p>
+    <p class="small" id="admSoundHelp" style="margin:6px 0;opacity:.85">Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one.</p>
     <div id="admSets"></div>
     <div class="row" style="justify-content:flex-start;margin-top:8px">
-      <a class="btn" id="admRec" href="recorder.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">🎙️ Open the recorder</a>
+      <button class="btn" id="admRec">🎙️ Open the recorder</button>
     </div>
     <div class="small" style="opacity:.75">In the recorder: record the syllables, build the set, give it a name and press “Save set”. It appears here; nothing changes for students until you press “Use this”.</div>
   </div>
@@ -1097,7 +1111,12 @@ async function syncSounds(serverVer) {
       await idbDel('custom'); sprite = null; spritePromise = null; for (const k in clipCache) delete clipCache[k];
       await loadSprite(); return;
     }
-    const j = await (await fetch(CFG.SCRIPT_URL + '?action=getSound')).json();
+    let j = await (await fetch(CFG.SCRIPT_URL + '?action=getSound')).json();
+    if (j.ok && j.shared) {   // a shared set from SpellQuest: the school only keeps a pointer
+      let r = null; try { r = await (await fetch(CFG.REGISTRY_URL + '?action=getPublicSet&id=' + encodeURIComponent(j.shared))).json(); } catch (e2) {}
+      if (!r || !r.ok || !r.wav) { await idbDel('custom'); sprite = null; spritePromise = null; for (const k in clipCache) delete clipCache[k]; await loadSprite(); return; }   // the set was removed: back to the built-in voice
+      j = { ok: true, ver: j.ver, idx: r.idx, wav: r.wav };
+    }
     if (!j.ok || !j.ver || !j.wav) return;
     const bin = atob(j.wav), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     AC = AC || new (window.AudioContext || window.webkitAudioContext)();
@@ -1439,7 +1458,7 @@ async function cloudSave() {
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
-  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false, movedNum = false;
+  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false, movedNum = false, preregNum = false;
   try { const t = lsGet('aq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
@@ -1449,6 +1468,7 @@ async function loadProfile(id) {
       if (j.ok && j.deleted) deleted = true;
       if (j.ok && j.pending) pendingHero = true;
       if (j.ok && j.moved) movedNum = true;
+      if (j.ok && j.prereg) preregNum = true;
       if (j.ok && j.rejected) rejectedHero = true;
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
@@ -1458,7 +1478,7 @@ async function loadProfile(id) {
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
   if (deleted) { try { localStorage.removeItem('aq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
-  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum };
+  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum, prereg: preregNum };
 }
 
 /* ====================== SCREENS / MODAL ====================== */
@@ -1500,6 +1520,7 @@ $('#loginBtn').onclick = async () => {   // 🏫 a school student types their nu
   if (r.profile && (r.profile.mode || 'school') === 'school') { P = r.profile; P.mode = 'school'; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
   if (r.deleted) { modal(tr('deletedH'), `<p>${tr('deletedP')}</p>`, [[tr('newBtn'), () => $('#newBtn').click()], [tr('ok'), null, true]]); return; }
   if (r.limited) { modal(tr('waitH'), `<p>${tr('waitP')}</p>`, [[tr('ok'), null]]); return; }
+  if (r.prereg) { pendingId = id; pendingReal = ''; pendingCls = ''; pendingMode = 'school'; lsSet('aq_last', id); modal(LANG === 'he' ? '🌟 ברוכים הבאים!' : '🌟 Welcome!', `<p>${LANG === 'he' ? 'המורה כבר רשמה אותך. בואו נכין את הקוסם שלך!' : 'Your teacher already put you on the list. Let\'s make your wizard!'}</p>`, [[LANG === 'he' ? 'יאללה ▶' : 'Make my wizard ▶', () => openCreator()]]); return; }
   if (r.pending) { modal('⏳ Waiting', '<p>Your teacher has not approved this number yet. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
   if (r.rejected) { modal('Not approved', '<p>This number was not approved. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
   if (r.moved) { modal('🏠 Moved to home', '<p>This number was moved to home. If your family got a hero file, tap <b>Load a hero from a file</b> on the start screen.</p>', [[tr('ok'), null]]); return; }
@@ -4116,7 +4137,7 @@ function sysAsk() {
 }
 async function sysEnter() {
   toast('Loading…');
-  try { const j = await sysCall('listSchools'); if (!j.ok) { SYSKEY = null; modal('Admin', '<p>Could not sign in.</p>', [['OK', null]]); return; } SYS = j.schools; show('sysadmin'); sysRender(); }
+  try { const j = await sysCall('listSchools'); if (!j.ok) { SYSKEY = null; modal('Admin', '<p>Could not sign in.</p>', [['OK', null]]); return; } SYS = j.schools; show('sysadmin'); sysRender(); sysSetsLoad(); }
   catch (e) { SYSKEY = null; modal('Admin', '<p>I could not reach the registry. Please check the internet.</p>', [['OK', null]]); }
 }
 function sysRender() {
@@ -4253,7 +4274,7 @@ function adminAsk(kind) {
     try {
       const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffVerify', email: em, code }) }), j = await r.json();
       if (j.ok) {
-        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; adminEnter(); return;   // an owner sees the whole school, a teacher the teacher screen; the school's own service decides what each may really do
+        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; ADM_CANREC = !!j.canRecord; ADM_OWN = j.classes || 'ALL'; adminEnter(); return;   // an owner sees the whole school, a teacher the teacher screen; the school's own service decides what each may really do
       }
       msg('That code is not right, or it has expired. Ask for a new one.');
     } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
@@ -4279,7 +4300,7 @@ async function adminEnter(viaPassword) {
     show('admin'); const teacher = ADM_ROLE === 'teacher';
     $('#admTitle').textContent = teacher ? '👩‍🏫 Teacher area' : '🏫 School area';
     $('#admWho').textContent = 'Signed in: ' + ADM_EMAIL + ' · ' + (teacher ? 'Teacher' : 'School owner');
-    ['admCode', 'admDemoCard', 'admSound'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; });
+    ['admCode', 'admDemoCard'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; }); { const e = document.getElementById('admSound'); if (e) e.style.display = (!teacher || ADM_CANREC) ? '' : 'none'; } bkOpen();
     adminRender(j); if (!teacher) { adminCodeLoad(); adminStaffLoad(); } else $('#admStaff').style.display = 'none';
     adminClassesLoad(); adminWaitLoad(); if (!teacher) adminMovedLoad(); else $('#admMoved').style.display = 'none';
   } catch (e) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
@@ -4406,7 +4427,7 @@ async function adminStaffLoad() {   // the school owner adds and removes staff b
   if (!j.ok) { box.style.display = 'none'; return; }
   box.style.display = '';
   box.innerHTML = '<b>👩‍🏫 Staff</b><p class="small" style="margin:6px 0;opacity:.85">People who sign in with their school e-mail. Owners can do everything. Teachers can look at the students.</p>' +
-    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button>` : ''}${s.role === 'owner' ? (j.staff.filter(x => x.role === 'owner').length > 1 ? `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="teacher" data-cls="${esc(s.classes || 'ALL')}">Make teacher only</button>` : '') : `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="owner" data-cls="${esc(s.classes || 'ALL')}">Also an owner</button>`}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
+    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button><button class="btn ghost" data-stfrec="${esc(s.email)}" data-on="${s.canRecord ? 0 : 1}" title="Let this teacher record voice sets">${s.canRecord ? '🎙️ Can record ✓' : '🎙️ Allow recording'}</button>` : ''}${s.role === 'owner' ? (j.staff.filter(x => x.role === 'owner').length > 1 ? `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="teacher" data-cls="${esc(s.classes || 'ALL')}">Make teacher only</button>` : '') : `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="owner" data-cls="${esc(s.classes || 'ALL')}">Also an owner</button>`}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
     `<div class="row" style="justify-content:flex-start;margin-top:10px;gap:8px;flex-wrap:wrap"><input id="stfMail" type="email" placeholder="e-mail to add" autocapitalize="none" style="max-width:260px;padding:8px;font-size:1rem"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="stfOwner" style="width:auto"> Also an owner</label><button class="btn" id="stfAdd" style="padding:8px 14px">+ Add</button></div><div class="msg" id="stfMsg" style="min-height:1.2em"></div>`;
 }
 document.addEventListener('click', async e => {
@@ -4463,7 +4484,7 @@ function adminRender(j) {
   const dayDiff = iso => { if (!iso) return 9999; const a = new Date(iso), n = new Date(); return Math.round((new Date(n.getFullYear(), n.getMonth(), n.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5); };
   ADM.students.forEach(s => { s.days = dayDiff(s.last); });
   adminCardsRender();
-  if (ADM_ROLE !== 'teacher') adminSets(); adminTable(); if (!String(ADMKEY).startsWith('tk_')) adminAppUsers(); else $('#admApp').textContent = ''; $('#admDetail').style.display = 'none';
+  if (ADM_ROLE !== 'teacher' || ADM_CANREC) adminSets(); adminTable(); if (!String(ADMKEY).startsWith('tk_')) adminAppUsers(); else $('#admApp').textContent = ''; $('#admDetail').style.display = 'none';
 }
 const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
 function adminTable() {
@@ -4684,7 +4705,7 @@ function openPrivacy() {   // in simple words, in the language chosen on the sta
 $('#mSchool').onclick = () => loginView(lsGet('aq_school_code') || lsGet('aq_last') ? 'number' : 'code');
 $('#changeCode').onclick = e => { e.preventDefault(); try { localStorage.removeItem('aq_school_code'); } catch (x) {} loginView('code'); };
 async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline' / 'suspended'. The registry says which school service the code belongs to.
-  if (CFG.REGISTRY_URL) {
+  if (CFG.REGISTRY_URL && !TEST_BUILD) {
     try {
       const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json();
       if (!j.ok) return j.error === 'rate' ? 'rate' : 'offline';
@@ -4826,6 +4847,206 @@ try { localStorage.removeItem('aq_gate'); } catch (e) {}   // forget the old alw
   };
   $('#pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gateBtn').click(); });
 })();
+
+/* ====================== "Admin and teacher" features: settings, voice sets (school, shared, teachers), recorder bridge, bulk add of students ====================== */
+let ADM_CANREC = false, ADM_OWN = 'ALL';
+const ownOk = cls => ADM_ROLE === 'owner' || ADM_OWN.trim().toUpperCase() === 'ALL' || ADM_OWN.split(',').some(x => clsKey(x) === clsKey(cls));
+const fmtDay = v => { try { return v ? new Date(v).toLocaleDateString() : ''; } catch (e) { return ''; } };
+
+/* ----- the recorder opens in its own window and asks THIS window (same address) for where to save; the key stays in memory and never goes in a link ----- */
+let REC_CTX = null;
+window.addEventListener("message", async e => {
+  if (e.origin === location.origin && e.data && e.data.t === "sq-call" && window.__sandboxRoute && e.source) { let r = null; try { r = await window.__sandboxRoute(e.data.url, e.data.body); } catch (x) { r = { ok: false, error: "failed" }; } try { e.source.postMessage({ t: "sq-result", id: e.data.id, result: r }, location.origin); } catch (x) {} return; }
+  if (e.origin !== location.origin || !e.data || e.data.t !== "sq-auth?" || !REC_CTX || !e.source) return;
+  try { e.source.postMessage(Object.assign({ t: 'sq-auth' }, REC_CTX()), location.origin); } catch (x) {}
+});
+function openRecorder(ctx) { REC_CTX = ctx; if (!window.open('recorder.html', 'sqrecorder')) toast('Please allow pop-ups for this page to open the recorder.'); }
+$('#admRec').onclick = () => openRecorder(() => ({ url: CFG.SCRIPT_URL, key: ADMKEY, action: 'putSound', who: ADM_ROLE === 'owner' ? 'Saves to your school: students hear it only when you choose it.' : 'Saves to your own sets. The school owner decides which set students hear.' }));
+$('#sysRec').onclick = () => openRecorder(() => ({ url: CFG.REGISTRY_URL, key: SYSKEY, action: 'putPublicSet', who: 'Saves a SHARED set: every school can listen to it and choose it.' }));
+
+/* ----- playing a set: the built-in voice, a set of this school, or a shared set (read from the registry, no key needed) ----- */
+const setAudio = {};
+async function loadSetAudio(id) {
+  AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') await AC.resume();
+  if (id === 'builtin') { await loadSpriteBuiltin(); return builtinSprite; }
+  if (setAudio[id]) return setAudio[id];
+  let j;
+  if (id.indexOf('pub:') === 0) j = await (await fetch(CFG.REGISTRY_URL + '?action=getPublicSet&id=' + encodeURIComponent(id.slice(4)))).json();
+  else j = await adminCall('getSoundSet', { id });   // the staff key travels in the POST body, never in a link
+  if (!j.ok) throw new Error(j.error || 'failed');
+  const bin = atob(j.wav), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return (setAudio[id] = { buf: await AC.decodeAudioData(bytes.buffer), idx: j.idx });
+}
+async function playSetSample(id) {
+  audSrcs.forEach(s => { try { s.stop(); } catch (e) {} }); audSrcs = [];
+  const { buf, idx } = await loadSetAudio(id); let T = AC.currentTime + 0.05;
+  for (const nm of ['05d1a', '05d3a', '05dca', '05e2a', '05e1a', '05d1o', '05d3i', '05dce']) {   // ba, ga, la, a, sa ... a few sample syllables
+    const e = idx[nm]; if (!e) continue;
+    const src = AC.createBufferSource(); src.buffer = buf; const g = AC.createGain(); g.gain.value = Math.max(vol, .3); src.connect(g); g.connect(AC.destination);
+    src.start(T, e[0], e[1] + 0.03); audSrcs.push(src); T += e[1] + 0.45;
+  }
+}
+const setRowHtml = (id, name, sub, on, btns) => `<div class="setRow ${on ? 'on' : ''}" data-id="${esc(id)}"><div class="setName"><b>${esc(name)}</b> ${on ? '<span class="setBadge">In the game now</span>' : ''}<small>${esc(sub)}</small></div><div class="setBtns">${btns}</div></div>`;
+const bListen = '<button class="btn ghost" data-a="listen">🔊 Listen</button>', bUse = '<button class="btn" data-a="use">✔ Use this</button>', bEdit = '<button class="btn ghost" data-a="rename">✏️</button><button class="btn ghost" data-a="del">🗑</button>';
+
+/* ----- the school's voice-set list (owner: all sets and the choice; allowed teacher: their own sets) ----- */
+async function adminSets() {
+  let j, pub = [], pubOk = false;
+  try { j = await adminCall('listSets'); } catch (e) { j = null; }
+  if (!j || !j.ok) { $('#admSets').innerHTML = '<p class="small">Could not load the voice sets.</p>'; return; }
+  SETS = j;
+  if (CFG.REGISTRY_URL) { try { const r = await (await fetch(CFG.REGISTRY_URL + '?action=listPublicSets')).json(); if (r.ok) { pub = r.sets; pubOk = true; } } catch (e) {} }
+  const owner = ADM_ROLE === 'owner', act = j.active;
+  $('#admSoundHelp').textContent = owner ? 'Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one. You can also let your teachers record.' : 'Your own recordings. Only the school owner chooses which set students hear.';
+  let h = owner ? setRowHtml('builtin', 'Built-in voice', 'The original set that comes with the game', act === 'builtin', bListen + (act === 'builtin' ? '' : bUse)) : '';
+  if (owner) h += '<div class="setHead">Recorded in our school</div>';
+  h += j.sets.map(s => setRowHtml(s.id, s.name, `${s.clips} sounds · saved ${fmtDay(s.created)}${s.by ? ' · by ' + s.by : ''}`, act === s.id, bListen + (owner && act !== s.id ? bUse : '') + bEdit)).join('') || (owner ? '<p class="small" style="opacity:.75;margin:4px 0">No set of your own yet.</p>' : '<p class="small" style="opacity:.75;margin:4px 0">You have not recorded a set yet.</p>');
+  h += '<div class="setHead">Shared sets (from SpellQuest)</div>' + (pub.length ? pub.map(s => setRowHtml('pub:' + s.id, s.name, `${s.clips} sounds · shared set`, act === 'pub:' + s.id, bListen + (owner && act !== 'pub:' + s.id ? bUse : ''))).join('') : `<p class="small" style="opacity:.75;margin:4px 0">${pubOk || !CFG.REGISTRY_URL ? 'No shared sets yet.' : 'Could not load the shared sets.'}</p>`);
+  if (act.indexOf('pub:') === 0 && pubOk && !pub.some(s => 'pub:' + s.id === act)) h = (owner ? '<div class="warnBox">The shared set students were using was removed by SpellQuest. They now hear the built-in voice.</div>' : '') + h;
+  $('#admSets').innerHTML = h;
+}
+$('#admSets').onclick = async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const id = b.closest('.setRow').dataset.id, a = b.dataset.a, set = SETS.sets.find(s => s.id === id), nm = id === 'builtin' ? 'the built-in voice' : `"${set ? set.name : (b.closest('.setRow').querySelector('b') || {}).textContent || id}"`;
+  const done = async (action, extra, msg) => { try { const j = await adminCall(action, Object.assign({ id }, extra || {})); if (j.ok) { toast(msg); adminSets(); } else toast(j.error === 'name taken' ? 'That name is already used' : j.error === 'forbidden' ? 'You cannot do that.' : 'Could not do that: ' + (j.error || '')); } catch (err) { toast('Could not reach the cloud'); } };
+  if (a === 'listen') { try { await playSetSample(id); } catch (err) { toast('Could not play this set'); } }
+  else if (a === 'use') modal('Use this set in the game?', `<p>All students will hear ${esc(nm)} the next time they log in.</p>`, [['Yes, use it', () => done('setActive', {}, 'Done: students will hear ' + nm)], ['Cancel', null, true]]);
+  else if (a === 'rename') { modal('Rename the set', '<input id="admNewName" type="text" maxlength="40" value="' + esc(set ? set.name : '') + '">', [['Save', () => { const v = ($('#admNewName') || {}).value || ''; if (v.trim()) done('renameSet', { name: v }, 'Renamed'); }], ['Cancel', null, true]]); }
+  else if (a === 'del') modal('Delete this set?', `<p>${esc(nm)} will be deleted for good.${SETS.active === id ? ' Students will go back to the built-in voice.' : ''}</p>`, [['Yes, delete', () => done('deleteSet', {}, 'Deleted')], ['Cancel', null, true]]);
+};
+
+/* ----- the Admin's shared sets (kept in the registry, heard by every school that chooses one) ----- */
+let PUBS = [];
+async function sysSetsLoad() {
+  const box = $('#sysSets'); if (!box) return;
+  let j; try { j = await sysCall('listPublicSets'); } catch (e) { j = null; }
+  if (!j || !j.ok) { box.innerHTML = '<p class="small">Could not load the shared sets.</p>'; return; }
+  PUBS = j.sets;
+  box.innerHTML = PUBS.length ? PUBS.map(s => setRowHtml('pub:' + s.id, s.name, `${s.clips} sounds · saved ${fmtDay(s.created)}`, false, bListen + bEdit)).join('') : '<p class="small" style="opacity:.75;margin:4px 0">No shared set yet.</p>';
+}
+$('#sysDemo').onclick = () => startDemo();
+$('#sysSets').onclick = async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const id = b.closest('.setRow').dataset.id, pid = id.slice(4), a = b.dataset.a, set = PUBS.find(s => s.id === pid), nm = `"${set ? set.name : pid}"`;
+  const done = async (action, extra, msg) => { try { const j = await sysCall(action, Object.assign({ id: pid }, extra || {})); if (j.ok) { toast(msg); delete setAudio[id]; sysSetsLoad(); } else toast(j.error === 'name taken' ? 'That name is already used' : 'Could not do that: ' + (j.error || '')); } catch (err) { toast('Could not reach the registry'); } };
+  if (a === 'listen') { try { await playSetSample(id); } catch (err) { toast('Could not play this set'); } }
+  else if (a === 'rename') modal('Rename the shared set', '<input id="sysNewName" type="text" maxlength="40" value="' + esc(set ? set.name : '') + '">', [['Save', () => { const v = ($('#sysNewName') || {}).value || ''; if (v.trim()) done('renamePublicSet', { name: v }, 'Renamed'); }], ['Cancel', null, true]]);
+  else if (a === 'del') modal('Delete this shared set?', `<p>${esc(nm)} will be deleted for good. Schools that use it go back to the built-in voice.</p>`, [['Yes, delete', () => done('deletePublicSet', {}, 'Deleted')], ['Cancel', null, true]]);
+};
+
+/* ----- the owner lets a teacher record ----- */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-stfrec]'); if (!b) return;
+  try { const j = await adminCall('setStaffRecord', { email: b.dataset.stfrec, on: b.dataset.on === '1' }); if (!j.ok) toast('Could not change.'); await adminStaffLoad(); } catch (x) { toast('Could not reach the cloud.'); }
+});
+
+/* ====================== ADD MANY STUDENTS (owner and teachers) ====================== */
+const BK = { rows: [], defCls: '', stage: 'start' };
+const normStr = s => String(s == null ? '' : s).replace(/‏|‎|﻿/g, '').replace(/\s+/g, ' ').trim();
+function bkDecode(buf) {   // UTF-8 first; a file saved by Excel for Hebrew Windows is Windows-1255
+  const u = new Uint8Array(buf);
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(u).replace(/^﻿/, ''); } catch (e) {}
+  try { return new TextDecoder('windows-1255').decode(u); } catch (e) { return new TextDecoder().decode(u); }
+}
+function bkSplit(text) {   // a small CSV reader: quotes, and a comma, semicolon or tab between the columns
+  const lines = text.replace(/\r\n?/g, '\n').split('\n').filter(l => l.trim()); if (!lines.length) return [];
+  const sample = lines.slice(0, 5).join('\n'), cnt = c => (sample.match(new RegExp(c === '\t' ? '\\t' : c, 'g')) || []).length;
+  const d = [['\t', cnt('\t')], [';', cnt(';')], [',', cnt(',')]].sort((a, b) => b[1] - a[1])[0][0];
+  return lines.map(line => { const out = []; let cur = '', q = false; for (let i = 0; i < line.length; i++) { const ch = line[i]; if (q) { if (ch === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; } else if (ch === '"') q = true; else if (ch === d) { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out.map(normStr); });
+}
+const RX_FIRST = /first|given|פרטי/i, RX_LAST = /last|family|surname|משפחה/i, RX_CLASS = /class|grade|כיתה|קבוצה|שכבה/i, RX_NAME = /^(full ?name|name|שם|שם מלא|תלמיד)$/i;
+function bkRows(table) {   // table = array of arrays of text -> [{first,last,cls}]
+  if (!table.length) return [];
+  let first = -1, last = -1, cls = -1, full = -1, start = 0; const h = table[0];
+  const hasHead = h.some(c => RX_FIRST.test(c) || RX_LAST.test(c) || RX_CLASS.test(c) || RX_NAME.test(c));
+  if (hasHead) { start = 1; h.forEach((c, i) => { if (first < 0 && RX_FIRST.test(c)) first = i; else if (last < 0 && RX_LAST.test(c)) last = i; else if (cls < 0 && RX_CLASS.test(c)) cls = i; else if (full < 0 && RX_NAME.test(c)) full = i; }); }
+  else { const w = Math.max(...table.map(r => r.length)); if (w >= 3) { first = 0; last = 1; cls = 2; } else if (w === 2) { first = 0; last = 1; } else full = 0; }
+  if (first < 0 && last < 0 && full < 0) { first = 0; last = 1; if (cls < 0 && h.length > 2) cls = 2; }
+  return table.slice(start).map(r => {
+    let f = first >= 0 ? normStr(r[first]) : '', l = last >= 0 ? normStr(r[last]) : '';
+    if (full >= 0 && !f && !l) { const parts = normStr(r[full]).split(' '); f = parts.shift() || ''; l = parts.join(' '); }
+    return { first: f, last: l, cls: cls >= 0 ? normStr(r[cls]) : '' };
+  }).filter(r => r.first || r.last || r.cls);
+}
+function loadXlsxLib() {   // a small public library, loaded only when an Excel file is chosen (the game stays light)
+  return new Promise(res => { if (window.XLSX) return res(true); const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload = () => res(!!window.XLSX); s.onerror = () => res(false); document.head.appendChild(s); });
+}
+async function bkReadFile(file) {
+  const name = (file.name || '').toLowerCase(), buf = await file.arrayBuffer();
+  if (/\.xlsx?$/.test(name)) {
+    if (!(await loadXlsxLib())) throw new Error('lib');
+    const wb = XLSX.read(buf, { type: 'array' }), ws = wb.Sheets[wb.SheetNames[0]];
+    return bkRows(XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '' }).map(r => r.map(normStr)));
+  }
+  return bkRows(bkSplit(bkDecode(buf)));
+}
+function bkOwnClasses() { return ADM_CLASSES.filter(c => !c.archived).map(c => c.name).filter(ownOk); }
+function bkCanCreate() { return ADM_ROLE === 'owner' || ADM_OWN.trim().toUpperCase() === 'ALL'; }
+function bkStatus(r, i, seen, exist, known) {   // what will happen to this row
+  if (!r.first || !r.last) return { k: 'bad', t: 'name missing' };
+  if (!r.cls) return { k: 'bad', t: 'class missing' };
+  if (!ownOk(r.cls)) return { k: 'bad', t: 'not your class' };
+  const key = clsKey(r.first + ' ' + r.last) + '|' + clsKey(r.cls);
+  if (exist.has(key)) return { k: 'bad', t: 'already in the school' };
+  if (seen.has(key)) return { k: 'bad', t: 'repeated in the list' };
+  seen.add(key);
+  if (!known.has(clsKey(r.cls))) return bkCanCreate() ? { k: 'new', t: 'new class' } : { k: 'bad', t: 'unknown class' };
+  return { k: 'ok', t: 'ok' };
+}
+function bkRender() {
+  const box = $('#admBulk'), mine = bkOwnClasses();
+  if (BK.stage === 'start') {
+    box.innerHTML = `<b>➕ Add many students</b><p class="small" style="margin:6px 0;opacity:.85">Paste a list or choose a file (CSV, text or Excel) with three columns: <b>first name, last name, class</b>. A header row is fine. The students are added at once, each with their own number${ADM_ROLE === 'teacher' ? ', for your own classes' : ''}.</p>
+      <textarea id="bkText" rows="4" placeholder="Dana, Levi, 3A&#10;Yossi, Cohen, 3A" style="width:100%;font:inherit;padding:8px;border-radius:10px;border:2px solid #fff4;background:#0004;color:#fff"></textarea>
+      <div class="row" style="justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn" id="bkRead">Read the list</button><label class="btn ghost" style="cursor:pointer;margin:0">📂 Choose a file<input type="file" id="bkFile" accept=".csv,.txt,.tsv,.xlsx,.xls,text/csv,text/plain" hidden></label></div><div class="msg" id="bkMsg" style="min-height:1.2em"></div>`;
+    $('#bkRead').onclick = () => { const t = $('#bkText').value; if (!t.trim()) { $('#bkMsg').textContent = 'Paste a list first, or choose a file.'; return; } bkLoad(bkRows(bkSplit(t))); };
+    $('#bkFile').onchange = async ev => { const f = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!f) return; $('#bkMsg').textContent = 'Reading…'; try { bkLoad(await bkReadFile(f)); } catch (x) { $('#bkMsg').textContent = x.message === 'lib' ? 'I could not load the Excel reader (no internet?). Save the file as CSV and try again.' : 'I could not read this file.'; } };
+    return;
+  }
+  const known = new Set(ADM_CLASSES.filter(c => !c.archived).map(c => clsKey(c.name))), exist = new Set(ADM.students.filter(s => s.real).map(s => clsKey(s.real) + '|' + clsKey(s.cls))), seen = new Set();
+  const noCls = BK.rows.some(r => !r.cls);
+  const rows = BK.rows.map(r => Object.assign({}, r, { cls: r.cls || BK.defCls }));
+  const st = rows.map((r, i) => bkStatus(r, i, seen, exist, known)), good = rows.filter((r, i) => st[i].k !== 'bad'), newCls = [...new Set(rows.filter((r, i) => st[i].k === 'new').map(r => r.cls))];
+  let h = `<b>➕ Add many students</b>`;
+  const isNew = !!BK.defCls && !mine.includes(BK.defCls);
+  if (noCls) h += `<div class="bkCls">Some students have no class. Choose one class for all of them: <select id="bkCls"><option value="">— choose —</option>${mine.map(c => `<option ${c === BK.defCls ? 'selected' : ''}>${esc(c)}</option>`).join('')}${bkCanCreate() ? `<option value="__new" ${isNew ? 'selected' : ''}>➕ A new class…</option>` : ''}</select> <input id="bkClsNew" type="text" maxlength="20" placeholder="new class, e.g. 4C" value="${isNew ? esc(BK.defCls) : ''}" style="${isNew ? '' : 'display:none;'}max-width:140px;padding:6px"></div>`;
+  h += `<div class="small" style="margin:8px 0">${rows.length} in the list · <b>${good.length}</b> will be added${rows.length - good.length ? ` · <span style="color:#ffb4b4">${rows.length - good.length} will be skipped</span>` : ''}${newCls.length ? ` · new classes: <b>${esc(newCls.join(', '))}</b> (will be created)` : ''}</div>`;
+  h += `<div class="tblwrap" style="max-height:260px"><table class="bkTbl"><thead><tr><th>First name</th><th>Last name</th><th>Class</th><th>What happens</th><th></th></tr></thead><tbody>${rows.map((r, i) => `<tr class="${st[i].k}"><td>${esc(r.first)}</td><td>${esc(r.last)}</td><td>${esc(r.cls)}</td><td>${st[i].k === 'ok' ? '✅ add' : st[i].k === 'new' ? '🆕 add + ' + st[i].t : '⚠️ ' + st[i].t}</td><td><button class="ib" data-bkdel="${i}" aria-label="Remove this row">✕</button></td></tr>`).join('')}</tbody></table></div>`;
+  h += `<div class="row" style="justify-content:flex-start;gap:8px;margin-top:8px"><button class="btn" id="bkGo" ${good.length ? '' : 'disabled'}>Add ${good.length} student${good.length === 1 ? '' : 's'}</button><button class="btn ghost" id="bkCancel">Cancel</button></div><div class="msg" id="bkMsg" style="min-height:1.2em"></div>`;
+  box.innerHTML = h;
+  const sel = $("#bkCls"); if (sel) sel.onchange = () => { const nw = $("#bkClsNew"); if (sel.value === "__new") { nw.style.display = ""; nw.focus(); BK.defCls = clsText(nw.value); } else { nw.style.display = "none"; BK.defCls = sel.value; bkRender(); } };
+  const nw = $('#bkClsNew'); if (nw) nw.oninput = () => { BK.defCls = clsText(nw.value); };
+  if (nw) nw.onchange = () => bkRender();
+  $('#bkCancel').onclick = () => { BK.stage = 'start'; BK.rows = []; BK.defCls = ''; bkRender(); };
+  $('#bkGo').onclick = async () => {
+    const send = rows.filter((r, i) => st[i].k !== 'bad').map(r => ({ first: r.first, last: r.last, cls: r.cls })); if (!send.length) return;
+    $('#bkGo').disabled = true; $('#bkMsg').textContent = 'Adding…';
+    try {
+      const j = await adminCall('addStudents', { students: send, createClasses: bkCanCreate() });
+      if (!j.ok) { $('#bkGo').disabled = false; $('#bkMsg').textContent = j.error === 'forbidden' ? 'One of the classes is not yours, so nothing was added.' : 'Could not add: ' + (j.error || 'error'); return; }
+      bkDone(j);
+    } catch (x) { $('#bkGo').disabled = false; $('#bkMsg').textContent = 'I could not reach the cloud. Nothing was added.'; }
+  };
+}
+const clsText = s => String(s || '').replace(/\s+/g, ' ').trim().substring(0, 20);
+document.addEventListener('click', e => { const d = e.target.closest('[data-bkdel]'); if (!d) return; BK.rows.splice(+d.dataset.bkdel, 1); if (!BK.rows.length) BK.stage = 'start'; bkRender(); });
+function bkLoad(rows) {
+  if (!rows.length) { $('#bkMsg').textContent = 'I found no students in that list.'; return; }
+  if (rows.length > 300) { $('#bkMsg').textContent = 'That is more than 300 students. Please add them in smaller lists.'; return; }
+  BK.rows = rows; BK.defCls = ''; BK.stage = 'preview'; bkRender();
+}
+function bkDone(j) {
+  const box = $('#admBulk'), list = j.added.map(a => ({ id: a.id, real: a.real, cls: a.cls, nick: '' }));
+  box.innerHTML = `<b>✅ ${j.added.length} student${j.added.length === 1 ? '' : 's'} added</b>${j.skipped.length ? `<div class="small" style="margin:4px 0;color:#ffd7a0">${j.skipped.length} skipped: ${esc(j.skipped.slice(0, 5).map(s => (s.first + ' ' + s.last).trim() + ' (' + s.reason + ')').join(', '))}${j.skipped.length > 5 ? '…' : ''}</div>` : ''}${j.classesCreated && j.classesCreated.length ? `<div class="small" style="margin:4px 0">New classes: ${esc(j.classesCreated.join(', '))}</div>` : ''}
+    <p class="small" style="margin:6px 0;opacity:.85">Each student types their number to start (the school code once on a device). Print the login cards now, or find the numbers in the table below.</p>
+    <div class="row" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="btn" id="bkPrint">🖨 Print login cards for these students</button><button class="btn ghost" id="bkCsv">⬇ Download the numbers (CSV)</button><button class="btn ghost" id="bkAgain">Add more</button></div>
+    <div class="tblwrap" style="max-height:200px;margin-top:8px"><table class="bkTbl"><thead><tr><th>Name</th><th>Class</th><th>Number</th></tr></thead><tbody>${list.map(a => `<tr><td>${esc(a.real)}</td><td>${esc(a.cls)}</td><td><b>${esc(a.id)}</b></td></tr>`).join('')}</tbody></table></div>`;
+  $('#bkPrint').onclick = () => printCards(list.slice().sort((a, b) => a.cls.localeCompare(b.cls) || a.real.localeCompare(b.real)));
+  $('#bkCsv').onclick = () => { const csv = [['name', 'class', 'number'], ...list.map(a => [a.real, a.cls, a.id])].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'new-students.csv'; a.click(); };
+  $('#bkAgain').onclick = () => { BK.stage = 'start'; BK.rows = []; BK.defCls = ''; bkRender(); };
+  adminClassesLoad(); adminRefreshStudents();
+}
+function bkOpen() { BK.stage = 'start'; BK.rows = []; BK.defCls = ''; $('#admBulk').style.display = ''; bkRender(); }
 
 /* init */
 setMute(muted); setCloud(CFG.SCRIPT_URL ? '' : 'none');
