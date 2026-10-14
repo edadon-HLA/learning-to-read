@@ -105,10 +105,9 @@
     </div>
     <div id="pubBox" style="display:none;margin-top:12px">
       <b>Save this set to your library</b>
-      <p class="hint" style="margin:4px 0">Give the set a name. Saving does NOT change what students hear — later, in the Teacher area of the game, you choose which set is used. You need the teacher password.</p>
+      <p class="hint" style="margin:4px 0">Give the set a name. <span id="pubWho">Open this recorder from the game (the Admin area or the school area): it saves where the game tells it to.</span></p>
       <div class="row" style="justify-content:flex-start">
         <input id="setName" type="text" maxlength="40" placeholder="Set name (e.g. Mom's voice, take 2)" autocomplete="off" style="font:inherit;padding:11px;border-radius:10px;border:2px solid #fff4;background:#0004;color:#fff">
-        <input id="pubKey" type="password" placeholder="Teacher password" autocomplete="off" style="font:inherit;padding:11px;border-radius:10px;border:2px solid #fff4;background:#0004;color:#fff">
         <button id="pubBtn">💾 Save set</button>
       </div>
       <div class="msg" id="pubMsg"></div>
@@ -271,7 +270,18 @@ async function saveAll() {
 }
 
 /* ---------- build a new sound set from the recordings, preview it, publish it ---------- */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_WgFcze8lH_KTjGD1oI_m5BTocs8REMrOJwYrs6fkX5Pir_C1BzRGQJIkX-kG3ESN/exec';
+// where to save comes from the game window that opened this recorder (the key stays in memory; it is never typed or put in a link)
+let AUTH = null;
+function askGame() {
+  return new Promise(res => {
+    const host = window.opener || (window.parent !== window ? window.parent : null); if (!host) return res(null);
+    const t = setTimeout(() => res(null), 3000);
+    const on = e => { if (e.origin !== location.origin || !e.data || e.data.t !== 'sq-auth') return; clearTimeout(t); window.removeEventListener('message', on); res(e.data); };
+    window.addEventListener('message', on);
+    try { host.postMessage({ t: "sq-auth?" }, location.origin); } catch (x) { res(null); }
+  });
+}
+askGame().then(a => { AUTH = a; if (a && a.who) { const w = document.getElementById('pubWho'); if (w) w.textContent = a.who; } });
 const SR = 16000, GAP = Math.round(SR * 0.1);
 function wavToF32(ab) {
   const v = new DataView(ab); let off = 12;
@@ -343,20 +353,24 @@ function playBuilt(name) {
   const [s, d] = builtSet.idx[name]; prevSrc = prevCtx.createBufferSource(); prevSrc.buffer = buf; prevSrc.connect(prevCtx.destination); prevSrc.start(0, s, d + 0.03);
 }
 function toB64(ab) { const u = new Uint8Array(ab); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
-async function postAdmin(body) { const r = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); return r.json(); }
-const authMsg = j => j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes.' : j.error === 'auth' ? 'That password is not right.' : (j.error || 'something went wrong');
+function callHost(body) {   // the pretend school inside the game window: ask that window to make the call
+  return new Promise(res => { const host = window.opener || (window.parent !== window ? window.parent : null), id = Math.random().toString(36).slice(2); const on = e => { if (e.origin !== location.origin || !e.data || e.data.t !== 'sq-result' || e.data.id !== id) return; window.removeEventListener('message', on); res(e.data.result); }; window.addEventListener('message', on); host.postMessage({ t: 'sq-call', id, url: AUTH.url, body }, location.origin); });
+}
+async function postAdmin(body) { if (/\/MOCK[A-Z]+\/exec$/.test(AUTH.url)) return callHost(body); const r = await fetch(AUTH.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) }); return r.json(); }
+const authMsg = j => j.error === 'locked' ? 'Too many wrong tries. Please wait 10 minutes.' : j.error === 'auth' ? 'Your sign-in ended. Close this window and sign in again in the game.' : j.error === 'forbidden' ? 'You are not allowed to do this.' : (j.error || 'something went wrong');
 async function publish() {
   const m = $('pubMsg'); if (!builtSet) { m.className = 'msg bad'; m.textContent = 'Build the set first.'; return; }
   const name = $('setName').value.trim(); if (!name) { m.className = 'msg bad'; m.textContent = 'Please give the set a name.'; return; }
-  const key = $('pubKey').value; if (!key) { m.className = 'msg bad'; m.textContent = 'Please enter the teacher password.'; return; }
+  const a = AUTH || (AUTH = await askGame()); if (!a || !a.url || !a.key) { m.className = 'msg bad'; m.textContent = 'Open the recorder from the game (the Admin area or the school area) so it knows where to save.'; return; }
+  const key = a.key;
   m.className = 'msg warn'; m.textContent = 'Saving… this can take up to a minute.';
   try {
-    let j = await postAdmin({ action: 'putSound', key, name, idx: builtSet.idx, wav: toB64(builtSet.wav) });
+    let j = await postAdmin({ action: a.action, key, name, idx: builtSet.idx, wav: toB64(builtSet.wav) });
     if (!j.ok && j.error === 'name taken' && confirm(`A set called "${name}" already exists. Replace it with this new recording?`)) {
       m.textContent = 'Replacing… this can take up to a minute.';
-      j = await postAdmin({ action: 'putSound', key, name, replace: true, idx: builtSet.idx, wav: toB64(builtSet.wav) });
+      j = await postAdmin({ action: a.action, key, name, replace: true, idx: builtSet.idx, wav: toB64(builtSet.wav) });
     }
-    if (j.ok) { m.className = 'msg ok'; m.textContent = `Saved ✓ "${name}" is in your library. Students will NOT hear it until you choose it in the Teacher area of the game.`; }
+    if (j.ok) { m.className = 'msg ok'; m.textContent = a.action === 'putPublicSet' ? `Saved ✓ "${name}" is now a shared set. Schools can listen to it and choose it.` : `Saved ✓ "${name}" is in your library. Students will NOT hear it until the school owner chooses it in the school area of the game.`; }
     else { m.className = 'msg bad'; m.textContent = 'Not saved: ' + (j.error === 'name taken' ? 'that name is already used.' : j.error === 'too many sets' ? 'the library is full — delete an old set in the Teacher area first.' : authMsg(j)); }
   } catch (e) { m.className = 'msg bad'; m.textContent = 'Could not reach the cloud: ' + e.message; }
 }
