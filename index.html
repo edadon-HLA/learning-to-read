@@ -514,11 +514,10 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .bkCls{background:#ffd16622;border:1px solid #ffd16688;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:.92rem}.bkCls select,.bkCls input{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #fff4;background:#0004;color:#fff}
 .bkTbl{width:100%;border-collapse:collapse;font-size:.9rem}.bkTbl th,.bkTbl td{padding:4px 8px;text-align:left;border-bottom:1px solid #fff2}
 .bkTbl tr.bad td{opacity:.6;background:#ff6a5a18}.bkTbl tr.new td{background:#ffd16618}.bkTbl tr.ok td:nth-child(4){color:#7dffb0}
-.exitDoor{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);z-index:70;min-width:56px;min-height:60px;padding:2px 6px 1px;border:2px solid #ffffff55;border-radius:12px;background:#1d1547cc;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font:700 .62rem system-ui;box-shadow:0 3px 8px #0006}
-.exitDoor svg{width:30px;height:38px}.exitDoor:active{transform:translateX(-50%) scale(.94)}.exitDoor:focus-visible{outline:3px solid #ffd166}
+#homeBack,#shopBack,#wsBackBtn,#jBack,#homeBtn,#wdBack{font-size:1.9rem;min-width:56px;min-height:56px;padding:4px 10px;border-radius:16px;border:2px solid #ffffff66;box-shadow:0 2px 0 #0005}
 #mBtns button:first-child:not(.ghost){font-size:1.15rem;padding:15px 28px;min-height:56px}
 .bolts{letter-spacing:-1px;white-space:nowrap}
-.rulesList{display:flex;flex-direction:column;gap:7px;margin:4px 0}.rulesList div{display:flex;align-items:center;gap:10px;background:#ffffff14;border-radius:10px;padding:8px 10px;font-size:.98rem}.rulesList span{font-size:1.5rem;width:1.7rem;text-align:center;flex:none}
+.rulesList{display:flex;flex-direction:column;gap:7px;margin:4px 0}.rulesList>div{display:flex;align-items:center;gap:10px;background:#ffffff14;border-radius:10px;padding:8px 10px;font-size:.98rem}.rulesList>div>span{font-size:1.5rem;width:1.7rem;text-align:center;flex:none}
 .exMarkI{font-style:normal;display:inline-block;width:20px;height:20px;border:2px solid #ff6a5a;border-radius:5px;text-align:center;line-height:16px;color:#ff6a5a;margin-left:3px;font-size:.8rem}
 .stage.exam .hpbar{display:none}
 .stage.exam .side.foe{padding-top:30px}
@@ -530,6 +529,13 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .exConj{position:relative;width:170px;height:135px;display:block}.exConjWho{position:absolute;left:-6%;top:-6%;width:62%}.exConjPed{position:absolute;right:-8%;bottom:-4%;width:66%}.exConjWho svg,.exConjPed svg{width:100%;height:auto;display:block}
 .tutOpt{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}.tutEn{font:600 .72rem system-ui;opacity:.85;letter-spacing:.02em}
 .tut-hl.tutOpt{box-shadow:0 0 0 3px #ffd166,0 0 18px #ffd166aa}
+.rulesPow{align-items:flex-start!important}.rulesPow small{opacity:.85;font-size:.82rem;line-height:1.3;display:block;margin-top:2px}.rulesPow b{font-size:1.15rem;white-space:nowrap}
+.rulesList p{margin:0;flex:1;min-width:0}
+.stage.exam.conjure .exProf{position:absolute;right:1%;bottom:8px;width:29%;max-width:132px;z-index:2;pointer-events:none}.exProf svg{width:100%;height:auto;display:block;overflow:visible}
+.exConjPed{width:112px;max-width:100%;margin-left:auto;margin-right:auto}.exConjPed svg{width:100%;height:auto;display:block}
+.stage.exam.conjure .side.foe{padding-top:6px}
+.stage.exam .mid{height:100%}
+.stage.exam.conjure .foeWrap{display:block;width:118px;padding:0}.stage.exam.conjure .foeBody{width:118px;font-size:0;animation:none}
 </style>
 <style id="p3css">
 /* Patch 3: the level badge, the Academy, the test */
@@ -837,7 +843,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 
 <section id="home" class="screen" style="max-width:760px">
   <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="whoRow"><div class="who">🏡 <span class="heb">בית</span> · Home</div><button class="wizBadge" data-wizlv="1" id="hWiz" title="Wizard level"></button></div><div class="small">Tap the cauldron to brew, the wardrobe to dress up, a shelf to look closer. Tap 🪑 Arrange to move, flip and put away your furniture.</div></div></div>
-  <div class="rScene" id="rmScene" aria-label="Your room"><svg class="rShell" id="rmShell" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg><div id="rmProps"></div><div class="rVig"></div><button class="exitDoor" data-exit="home" aria-label="Leave this room" title="Leave"><svg viewBox="0 0 40 52" aria-hidden="true"><rect x="3" y="2" width="34" height="48" rx="3" fill="#7a4a24" stroke="#3a210d" stroke-width="2"/><rect x="8" y="7" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><rect x="8" y="28" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><circle cx="30" cy="27" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/></svg><span>Exit</span></button></div>
+  <div class="rScene" id="rmScene" aria-label="Your room"><svg class="rShell" id="rmShell" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg><div id="rmProps"></div><div class="rVig"></div></div>
   <div class="rBar"><button class="btn ghost" id="tidyBtn">🧹 Put everything back</button></div>
   <section class="rPanel" id="roomPanel" hidden aria-live="polite"></section>
   <div class="small center" style="opacity:.7;margin:10px 0">🪴 Furniture and pets are sold in the shop 🏪. When you buy one, it appears in your room.</div>
@@ -857,7 +863,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div id="shProps"></div>
     <svg class="shLayer" id="shCounter" viewBox="0 0 100 80" preserveAspectRatio="none" style="z-index:50;pointer-events:none" aria-hidden="true"></svg>
     <div id="shFront"></div>
-    <div class="rVig"></div><button class="exitDoor" data-exit="shop" aria-label="Leave this room" title="Leave"><svg viewBox="0 0 40 52" aria-hidden="true"><rect x="3" y="2" width="34" height="48" rx="3" fill="#7a4a24" stroke="#3a210d" stroke-width="2"/><rect x="8" y="7" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><rect x="8" y="28" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><circle cx="30" cy="27" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/></svg><span>Exit</span></button>
+    <div class="rVig"></div>
   </div>
   <div class="rBar" style="display:none"><button class="btn ghost" id="shBtnPots"><span class="potIco"></span> Potions</button><button class="btn ghost" id="shBtnWear">👗 Robes and accessories</button></div>
   <section class="rPanel" id="shopPanel" hidden></section>
@@ -915,7 +921,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div id="wsProps"></div>
     <svg class="shLayer" id="wsCounter" viewBox="0 0 100 80" preserveAspectRatio="none" style="z-index:50;pointer-events:none" aria-hidden="true"></svg>
     <div id="wsFront"></div>
-    <div class="rVig"></div><button class="exitDoor" data-exit="ws" aria-label="Leave this room" title="Leave"><svg viewBox="0 0 40 52" aria-hidden="true"><rect x="3" y="2" width="34" height="48" rx="3" fill="#7a4a24" stroke="#3a210d" stroke-width="2"/><rect x="8" y="7" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><rect x="8" y="28" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><circle cx="30" cy="27" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/></svg><span>Exit</span></button>
+    <div class="rVig"></div>
   </div>
   <div class="wsCards" id="wsCards"></div>
   <div class="small center" style="opacity:.7;margin:10px 0">🔮 You wear every item you make. Epic items can be upgraded to legendary.</div>
@@ -2801,7 +2807,7 @@ function jArrive(i) {
   }
   else { title = '🪧 A signpost'; body = `<p>${J_SIGNS[J.q][+code.slice(1)]}</p>`; }
   sfx.ok(); saveSoon(true); jDraw(); jHud();
-  modal(title, body, [['Continue ▶', () => { jDraw(); jHud(); }]]);
+  modal(title, body, [['Continue ▶', () => { jDraw(); jHud(); setTimeout(() => { try { if (!J.busy && $('#journey').classList.contains('on')) jWalk(); } catch (e) {} }, 350); }]]);
 }
 function enterFight() {
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted); newEncounter();
@@ -3717,7 +3723,6 @@ $('#home').onclick = e => {
   if (jr) { const g = ING[jr.dataset.ing]; if (!findHeVoice()) toast(`${g.emt || g.em} ${g.nk} (this device has no Hebrew voice)`); else playSound({ say: g.nk }); jr.classList.remove('pop'); void jr.offsetWidth; jr.classList.add('pop'); }
 };
 $('#homeBack').onclick = () => { saveSoon(true); openMenu(); };
-document.addEventListener('click', e => { const d = e.target.closest('[data-exit]'); if (!d) return; const k = d.dataset.exit; $(k === 'home' ? '#homeBack' : k === 'shop' ? '#shopBack' : '#wsBackBtn').click(); });
 function pickIngredients(potion) {   // the student chooses which ingredients to use (one for each slot, all different)
   const r = RECIPES[potion], chosen = r.slots.map(() => null);
   const render = () => {
@@ -3873,13 +3878,13 @@ function renderWorkshop() {
   const skin = WS_SKINS[(shopShelf().skin + 2) % WS_SKINS.length];
   $('#wsBack').innerHTML = wsBackSVG(); $('#wsCounter').innerHTML = shCounterSVG().replace(/shCsh/g, 'wsCsh').replace(/shCbl/g, 'wsCbl');
   const jars = Object.keys(ING).filter(id => ING[id].r >= 3 && (P.inv[id] || 0) > 0).sort((a, b) => ING[b].r - ING[a].r);
-  let p = '<div class="shAt shProp" style="--x:12;--y:76;z-index:16">⚙️</div><div class="shAt shProp" style="--x:90;--y:74;z-index:16;font-size:calc(var(--u)*5)">🛢️</div>';
+  let p = '<div class="shAt shProp" style="--x:12;--y:76;z-index:16">⚙️</div>';
   jars.slice(0, 8).forEach((id, i) => { const [x, y] = SH_SLOTS[i]; p += `<div class="rJar jarbox" style="left:${x}%;top:${y * 1.25}%">${jarInner(id, P.inv[id])}</div>`; });
   if (!jars.length) p += '<div class="shAt wsEmpty" style="--x:50;--y:30">Rare ingredients go on these shelves</div>';
   p += `<div class="shAt shMerchant" style="--x:50;--y:58.4" aria-label="The artificer">${artificerSVG(skin)}</div>`;
-  p += `<div class="shAt wsMan" style="--x:92;--y:78;z-index:45" aria-label="The artificer's mannequin">${mannequinSVG()}</div>`;
+
   $('#wsProps').innerHTML = p;
-  $('#wsFront').innerHTML = `<div class="shAt shCau" style="--x:20;--y:74;pointer-events:none">${cauldronArt(2)}</div><div class="shAt shSay" id="wsSay" style="--x:72;--y:55">${wsSay}</div>`;
+  $('#wsFront').innerHTML = `<div class="shAt shSay" id="wsSay" style="--x:72;--y:55">${wsSay}</div>`;
   if (!window.CSS || !CSS.supports || !CSS.supports('width', '1cqw')) { const sc = $('#wsScene'); sc.style.setProperty('--u', (sc.clientWidth / 100) + 'px'); }
   renderWsCards();
 }
@@ -4380,6 +4385,7 @@ function startDemo() {
     nearBoss() { const q = G.quest === 'peace' || J.q === 'peace' ? 'peace' : 'battle'; if (!P.quest[q].path) { toast('Start a quest first'); return; } P.quest[q].at = P.quest[q].path.length - 2; P.quest[q].enc = P.quest[q].len; openJourney(q); },
     ko() { if (!$('#game').classList.contains('on') || !(G.quest === 'battle' || G.quest === 'peace')) { toast('Open a fight first'); return; } G.hearts = 0; P.quest[G.quest].hearts = 0; endOrSecond(G.quest === 'battle' ? knockout : villageFail); },
     win() { if (!$('#game').classList.contains('on') || !G.mon && G.quest === 'battle') { toast('Open a fight first'); return; } if (G.quest === 'battle') { G.mon.hp = 0; victory(); } else { G.helped = G.need; villageDone(); } },
+    exam(t, kind) { window.__demoTi = t; document.querySelector('#modal').classList.remove('on'); document.querySelector('#demoPanel').classList.remove('on'); G.quest = null; examRules(kind); },
     tutorial() { document.querySelector('#modal').classList.remove('on'); document.querySelector('#demoPanel').classList.remove('on'); startTutorial(); },
     finale() { act('peace', ['s0', 'B']); P.quest.peace.at = 1; openJourney('peace'); },
     exit() { location.reload(); },
@@ -4393,6 +4399,7 @@ function startDemo() {
   const B = (label, call) => `<button data-d="${call}">${label}</button>`;
   panel.innerHTML = '<b>🧪 Demo run: a pretend student</b> ' + B('✖ Exit demo', 'exit()') + B('🦉 Play the tutorial', 'tutorial()') +
     '<h4>Level</h4>' + [5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(t => B(t, `level(${t})`)).join('') + B('Show locked workshop', 'fresh()') +
+    '<h4>Academy: try any test (rules screen first)</h4>' + [1, 2, 3, 4, 5].map(t => '<span style="white-space:nowrap">' + B(`${t}. ${WZ.TITLES[t]} ⚔️ fight`, `exam(${t},'fight')`) + B('🪄 conjure', `exam(${t},'conjure')`) + '</span>').join('<br>') +
     '<h4>Go to</h4>' + B('🗺️ Map', 'map()') + B('⚒️ Workshop', 'workshop()') + B('🏡 Home', 'home()') + B('🏪 Shop', 'shop()') +
     '<h4>Quests</h4>' + B('⚔️ Start monster quest', 'fight()') + B('🌿 Start village quest', 'village()') + B('⏭️ Jump near the boss', 'nearBoss()') + B('🏛️ Festival finale (village)', 'finale()') +
     '<h4>Fight areas (backgrounds)</h4>' + [1, 2, 3, 4, 5, 6].map(n => B(AREAS[n - 1], `area(${n})`)).join('') + '<h4>Monsters (storm and stone are new)</h4>' + Object.keys(MON_DEF).map(k => B(MON_DEF[k].name + (MON_DEF[k].boss ? ' 👑' : ''), `mon("${k}")`)).join('') + '<h4>Village sites (backgrounds)</h4>' + SITES.filter((s, i) => i < 12 || ['Blacksmith', 'Carpenter'].includes(s.name)).map(s => B(s.name, `site(${SITES.indexOf(s)})`)).join('') +
@@ -5269,7 +5276,7 @@ function academyAsk() {
 
 /* ----- the test itself: the question screen with an examiner, an hourglass that shows progress, a scroll, and three allowed mistakes ----- */
 function startExam(kind, practice) {
-  const ti = wzTi() + 1, T = WZ.TEST[ti];
+  const ti = exTi(), T = WZ.TEST[ti];
   G.quest = 'exam'; G.exam = { kind, ti, witch: wzTi() % 2 === 1, n: practice ? 6 : T.n, need: Math.ceil(T.n * T.pass), i: 0, ok: 0, bad: 0, missed: [], items: [], practice: !!practice };
   G.sess = 0; G.combo = 0; G.potUsed = true; G.snap = null; G.mon = null; G.fname = 'the Examiner'; G.helped = 0; G.locked = false;
   show('game'); $('#who').textContent = P.nick; $('#heroSvg').innerHTML = heroOf(P); setMute(muted);
@@ -5331,7 +5338,7 @@ function examEnd(pass, early) {
 }
 function examPass(X) {
   const frac = X.ok / X.n, medal = frac >= 0.93 ? 'gold' : frac >= 0.87 ? 'silver' : 'bronze', l0 = wizLevel();
-  P.wt = Math.min(5, (P.wt || 0) + 1); const ti = P.wt; P.hat = ti; (P.certs = P.certs || []).push({ t: ti, d: today(), m: medal, ok: X.ok, n: X.n }); wzGrant(WZ.TIERREW[ti].concat(['cert' + ti]));
+  P.wt = window.__demoTi ? window.__demoTi : Math.min(5, (P.wt || 0) + 1); const ti = P.wt; P.hat = ti; (P.certs = P.certs || []).push({ t: ti, d: today(), m: medal, ok: X.ok, n: X.n }); wzGrant(WZ.TIERREW[ti].concat(['cert' + ti]));
   const l1 = wizLevel(); if (l1 > l0) wzLevelUp(l0, l1);   // the XP that was waiting turns into levels
   saveSoon(true); graduation(ti, medal, X);
 }
@@ -5790,11 +5797,12 @@ $('#roomPanel').addEventListener('click', e => {
 WZ.MULT = [2, 3, 4, 5, 6, 7];
 WZ.TEST = [null, { n: 8, pass: 0.75 }, { n: 10, pass: 0.8 }, { n: 12, pass: 0.8 }, { n: 14, pass: 0.85 }, { n: 16, pass: 0.85 }];
 const bolts = n => '<span class="bolts" title="' + n + ' power">' + '⚡'.repeat(n) + '</span>';
+const exTi = () => window.__demoTi || (wzTi() + 1);   // the test being taken (the demo can pick any of the five)
 const EX_W = [null, [1], [1, 1, 2], [2], [2, 2, 3], [2, 3, 3]];   // weaknesses per dummy, by the test (1 = Spellcaster ... 5 = Grand Sage); three-weakness dummies only in the highest tests
 
 /* ----- the message when the test opens, and the rules screen before it starts ----- */
 function examOffer(fromQuest) {   // once per tier, and again from the Academy sign on the map
-  const ti = wzTi() + 1;
+  const ti = exTi();
   modal('📜 The Test of Proficiency', `<div style="text-align:center;width:6rem;margin:0 auto">${ACADEMY_SVG}</div><p>You can take the <b>Test of Proficiency</b> for <b>${WZ.TITLES[ti]}</b>.</p><p class="small">${fromQuest ? 'You can leave this quest now, or finish it and go to the Academy later.' : 'You can go to the Academy now, or later.'}</p>`,
     fromQuest ? [['🏛️ Leave the quest and go to the Academy', () => { saveSoon(true); openMenu(); setTimeout(academyAsk, 300); }], ['Finish the quest first', null, true]]
       : [['🏛️ Go to the Academy', academyAsk], ['Later', null, true]]);
@@ -5805,16 +5813,17 @@ function examOfferCheck() {   // called when the map or the quest map opens
   setTimeout(() => { if (!$('#modal').classList.contains('on')) examOffer(!!(G.quest && P.quest && P.quest[G.quest] && P.quest[G.quest].act && $('#journey').classList.contains('on'))); }, 700);
 }
 function examRules(kind) {
-  const ti = wzTi() + 1, T = WZ.TEST[ti], need = Math.ceil(T.n * T.pass), miss = T.n - need, rw = WZ.TIERREW[ti].map(id => WZ.REWNAME[id]);
+  const ti = exTi(), T = WZ.TEST[ti], need = Math.ceil(T.n * T.pass), miss = T.n - need, rw = WZ.TIERREW[ti].map(id => WZ.REWNAME[id]);
   modal(`📋 Rules of the test · ${WZ.TITLES[ti]}`, `<div class="rulesList">
     <div><span>❓</span><b>${T.n}</b> questions</div><div><span>✅</span>You need <b>${need}</b> right (${Math.round(T.pass * 100)}%)</div>
     <div><span>✖️</span>${miss} mistake${miss === 1 ? '' : 's'} allowed: ${Array.from({ length: miss }, () => '<i class="exMarkI">✖</i>').join('')}</div><div><span>🙈</span>No hints, no potions, no hearts</div>
-    <div><span>🏆</span>You win: a new title, a hat, stronger spells ${bolts(WZ.MULT[ti])}${rw.length ? ', ' + rw.join(' and ') : ''}</div></div><p class="small" style="text-align:center">If you do not pass, nothing is lost. You can try again at once.</p>`,
+    <div><span>🏆</span><p>You win: a new title, a new hat${rw.length ? ', ' + rw.join(' and ') : ''}</p></div>
+    <div class="rulesPow"><span>⚡</span><p><b>Spell power: ${bolts(WZ.MULT[ti])}</b><small>Each ⚡ is one point of spell power. Every new rank gives you more, so your spells grow bigger and brighter.</small></p></div></div><p class="small" style="text-align:center">If you do not pass, nothing is lost. You can try again at once.</p>`,
     [['Start ▶', () => startExam(kind)], ['Not yet', null, true]]);
 }
 function academyAsk() {
   G.exam = null;
-  const ti = wzTi() + 1, T = WZ.TEST[ti], miss = T.n - Math.ceil(T.n * T.pass);
+  const ti = exTi(), T = WZ.TEST[ti], miss = T.n - Math.ceil(T.n * T.pass);
   modal('🏛️ The Academy', `<div style="text-align:center"><div style="width:6.5rem;margin:0 auto">${examinerSVG(exWitch())}</div><p><b>You can take the Test of Proficiency.</b></p></div>
     <p class="small">${exName()} will test you for <b>${WZ.TITLES[ti]}</b>: ${T.n} questions at your level. You may miss up to ${miss}. Nothing is lost if you do not pass.</p><p class="small">Choose your trial:</p>`,
     [['⚔️ Fighting trial', () => examRules('fight')], ['🪄 Conjuring trial', () => examRules('conjure')], ['Not yet', null, true]]);
@@ -5858,7 +5867,9 @@ function examPaint() {
   if (X.kind === 'fight') { const ds = X.dums || []; row.innerHTML = ds.map((d, idx) => `<span class="exDum ${idx < X.d ? 'done' : idx === X.d ? 'cur' : ''}" style="--c:${EX_COL[d.w[0]]}" title="${d.w.length} weakness${d.w.length > 1 ? 'es' : ''}">${'●'.repeat(0)}</span>`).join(''); }
   else row.innerHTML = X.items.map(h => `<span class="exItem">${h}</span>`).join('') || '<span class="exHint">Items you conjure appear here</span>';
 }
-const exConjSvg = item => `<div class="exConj"><div class="exConjWho">${examinerSVG(exWitch())}</div><div class="exConjPed">${pedestalSVG(item ? `<g transform="translate(70 62)"><text text-anchor="middle" dominant-baseline="central" font-size="40">${item}</text></g>` : '')}</div></div>`;
+const exConjSvg = item => `<div class="exConjPed">${pedestalSVG(item ? `<g transform="translate(70 62)"><text text-anchor="middle" dominant-baseline="central" font-size="40">${item}</text></g>` : '')}</div>`;   // the pedestal only: the magic flies to it, and the item appears on it after the magic arrives
+const exProfShow = () => { if (!$('#exProf')) $('#mid').insertAdjacentHTML('beforeend', `<div class="exProf" id="exProf">${examinerSVG(exWitch())}</div>`); };   // the professor stands on the right, in full
+const exProfReact = () => { try { const p = $('#exProf'); p.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-12px) rotate(-3deg)' }, { transform: 'translateY(0)' }], { duration: 520 }); } catch (e) {} };
 function examNext(first) {
   const X = G.exam; X.res = X.res || [];
   if (X.kind === 'fight') {
@@ -5870,7 +5881,7 @@ function examNext(first) {
     const dd = X.dums[X.d], k = dd.ans.length, el = dd.w[k]; X.el = el;
     G.mon = { key: 'dummy', name: 'Training dummy', el, boss: false, max: 1, hp: 1 };
     $('#foeBody').className = 'foeBody'; exDrawDummy();
-  } else { $('#foeName').textContent = exName(); $('#foeBody').className = 'foeBody'; $('#foeBody').innerHTML = exConjSvg(''); }
+  } else { $('#foeName').textContent = ''; $('#foeBody').className = 'foeBody'; $('#foeBody').innerHTML = exConjSvg(''); exProfShow(); }
   examPaint(); examQ();
 }
 async function examAnswer(ok, btn, q, o) {
@@ -5886,9 +5897,9 @@ async function examAnswer(ok, btn, q, o) {
     if (ok) {
       X.ok++; sfx.ok(); if (btn && btn.classList) btn.classList.add('good');
       X.last = q.reveal ? String(q.reveal) : '✨'; X.items.push(X.last);
-      $('#foeBody').innerHTML = exConjSvg(X.last && X.last.startsWith('<') ? '✨' : X.last); examPaint();
-      try { await helpMagic(q, true); } catch (e) { burst('✨', 8); }   // a spell effect for every conjuring
-      await sleep(500); $('#foeBody').innerHTML = exConjSvg(''); await sleep(250);   // the item disappears before the next request
+      try { await helpMagic(q, true); } catch (e) { burst('✨', 8); }   // the spell flies to the pedestal first...
+      $('#foeBody').innerHTML = exConjSvg(X.last && X.last.startsWith('<') ? '✨' : X.last); examPaint(); burst('✨', 8); exProfReact();   // ...and only then does the item appear and the professor react
+      await sleep(900); $('#foeBody').innerHTML = exConjSvg(''); await sleep(250);   // the item disappears before the next request
     } else { X.bad++; X.missed.push(examWord(q)); sfx.bad(); if (btn && btn.classList) btn.classList.add('bad'); $('#fb').textContent = ''; examPaint(); await sleep(1000); }
   }
   if (!X.practice && X.bad > X.n - X.need) return examEnd(false, true);   // too many mistakes: it can no longer be passed
@@ -5899,8 +5910,9 @@ function examQ() {   // the next question of the test: the same questions as in 
   const X = G.exam; G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = true; G.snap = null; G.optSound = false; const q = G.q;
   if (X.kind === 'fight') { q.title = X.ti <= 2 ? `Hit the weakness ${EL[X.el].badge} with the right spell!` : 'Which spell hits the glowing weakness?'; q.big = q.big === G.mon.name ? '' : q.big; q.bigSm = true; q.sub = q.kind === 'choice' ? 'Read the spells and pick the one that works.' : q.sub; }
   else {
-    q.title = `${exName()} says: conjure it!`; q.sub = q.kind === 'choice' ? 'Pick the right one to conjure.' : q.sub;
-    try { const okO = (q.options || []).find(o => o.ok), m = okO && /<\/span>\s*=\s*([A-Za-z' -]+)/.exec(okO.note || ''), en = m && m[1].trim(); if (en) q.speech = `Conjure ` + (/^[aeiou]/i.test(en) ? 'an ' : 'a ') + en + '!'; } catch (e) {}   // the examiner says what to conjure (no village clue)
+    const riddle = Math.random() < 0.35;   // some requests are a riddle (the village clue), most simply say what to conjure
+    q.title = riddle ? `${exName()} has a riddle. What should you conjure?` : `${exName()} says: conjure it!`; q.sub = q.kind === 'choice' ? 'Pick the right one to conjure.' : q.sub;
+    if (!riddle) try { const okO = (q.options || []).find(o => o.ok), m = okO && /<\/span>\s*=\s*([A-Za-z' -]+)/.exec(okO.note || ''), en = m && m[1].trim(); if (en) q.speech = `Conjure ` + (/^[aeiou]/i.test(en) ? 'an ' : 'a ') + en + '!'; } catch (e) {}   // the examiner says what to conjure (no village clue)
   }
   showQuestion();
 }
