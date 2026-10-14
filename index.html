@@ -537,6 +537,9 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .stage.exam .mid{height:100%}
 .stage.exam.conjure .foeWrap{display:block;width:118px;padding:0}.stage.exam.conjure .foeBody{width:118px;font-size:0;animation:none}
 .forgeMarks{font-size:1.1rem;letter-spacing:2px;margin-top:-4px}
+.stage.exam.conjure .foeBody{position:relative}.exConjPed{position:relative}
+.exBigItem{position:absolute;left:50%;top:15%;transform:translateX(-50%);font-size:3.6rem;line-height:1;z-index:4;filter:drop-shadow(0 0 14px #ffd166);animation:exBigPop .4s ease-out;pointer-events:none}
+.exBigItem .icoSvg{width:1em;height:1em}@keyframes exBigPop{0%{transform:translateX(-50%) scale(.2);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
 </style>
 <style id="p3css">
 /* Patch 3: the level badge, the Academy, the test */
@@ -3120,7 +3123,12 @@ const vmTxt = (x, y, ch, size = 24, extra = {}) => { const e = spEl('text', Obje
 const vmRing = (x, y, c, r1 = 4, r2 = 40, ms = 600, w = 2.5) => { const e = spEl('circle', { cx: x, cy: y, r: r1, fill: 'none', stroke: c, 'stroke-width': w }); try { e.animate([{ r: r1, opacity: 1 }, { r: r2, opacity: 0 }], { duration: ms, fill: 'forwards' }); } catch (x) {} spKill(e, ms + 40); };
 const vmStar = (x, y, s, c, ms = 700, delay = 0) => { const e = spEl('path', { d: `M${x} ${y - s} Q${x} ${y} ${x + s} ${y} Q${x} ${y} ${x} ${y + s} Q${x} ${y} ${x - s} ${y} Q${x} ${y} ${x} ${y - s}Z`, fill: c }); e.style.transformBox = 'fill-box'; e.style.transformOrigin = 'center'; try { e.animate([{ transform: 'scale(.2) rotate(0)', opacity: 0 }, { transform: 'scale(1.2) rotate(45deg)', opacity: 1 }, { transform: 'scale(.1) rotate(90deg)', opacity: 0 }], { duration: ms, delay, fill: 'forwards' }); } catch (x) {} spKill(e, ms + delay + 60); };
 const vmFlame = (r = 8) => `<path d="M${-r} 0 Q${-r * 1.4} ${-r * 1.4} 0 ${-r * 2.6} Q${r * 1.4} ${-r * 1.4} ${r} 0 Q0 ${r * .9} ${-r} 0Z" fill="#ff7a2e"/><path d="M${-r * .5} 0 Q${-r * .8} ${-r} 0 ${-r * 1.6} Q${r * .8} ${-r} ${r * .5} 0 Q0 ${r * .5} ${-r * .5} 0Z" fill="#ffe27a"/>`;
-function vmPts() {   // the hero's staff and the villager's hands, in the overlay's 400-wide units
+function vmPts() {   // Patch 4: in the conjuring test the "hand" is the pedestal's orb, so every spell effect lands there
+  const p = vmPts_orig();
+  try { if (G.exam && G.exam.kind === 'conjure') { const ped = document.querySelector('.exConjPed'), st = $('#stage').getBoundingClientRect(), k = 400 / Math.max(1, st.width); if (ped) { const r = ped.getBoundingClientRect(); p.hand = [(r.left - st.left + r.width * .5) * k, (r.top - st.top + r.height * .4) * k]; } } } catch (e) {}
+  return p;
+}
+function vmPts_orig() {   // the hero's staff and the villager's hands, in the overlay's 400-wide units
   const st = $('#stage').getBoundingClientRect(), k = 400 / Math.max(1, st.width), h = $('#heroSvg').getBoundingClientRect(), v = $('#foeBody').getBoundingClientRect();
   return { staff: [(h.left - st.left + h.width * (98.5 / 120)) * k, (h.top - st.top + h.height * (46 / 186)) * k], hand: [(v.left - st.left + v.width * .72) * k, (v.top - st.top + v.height * .62) * k] };
 }
@@ -5876,9 +5884,9 @@ function examPaint() {
   $('#exGlass').innerHTML = hourglassSVG(X.i / X.n);
   const row = $('#exRow');
   if (X.kind === 'fight') { const ds = X.dums || []; row.innerHTML = ds.map((d, idx) => `<span class="exDum ${idx < X.d ? 'done' : idx === X.d ? 'cur' : ''}" style="--c:${EX_COL[d.w[0]]}" title="${d.w.length} weakness${d.w.length > 1 ? 'es' : ''}">${'●'.repeat(0)}</span>`).join(''); }
-  else row.innerHTML = X.items.map(h => `<span class="exItem">${h}</span>`).join('') || '<span class="exHint">Items you conjure appear here</span>';
+  else row.innerHTML = '';   // nothing piles up on the ground
 }
-const exConjSvg = item => `<div class="exConjPed">${pedestalSVG(item ? `<g transform="translate(70 62)"><text text-anchor="middle" dominant-baseline="central" font-size="40">${item}</text></g>` : '')}</div>`;   // the pedestal only: the magic flies to it, and the item appears on it after the magic arrives
+const exConjSvg = item => `<div class="exConjPed">${pedestalSVG('')}${item ? `<div class="exBigItem">${item}</div>` : ''}</div>`;   // the pedestal; the big item sits on its orb
 const exProfShow = () => { if (!$('#exProf')) $('#mid').insertAdjacentHTML('beforeend', `<div class="exProf" id="exProf">${examinerSVG(exWitch())}</div>`); };   // the professor stands on the right, in full
 const exProfReact = () => { try { const p = $('#exProf'); p.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-12px) rotate(-3deg)' }, { transform: 'translateY(0)' }], { duration: 520 }); } catch (e) {} };
 function examNext(first) {
@@ -5905,13 +5913,18 @@ async function examAnswer(ok, btn, q, o) {
     if (full && dd.ans.every(Boolean)) { burst('💥', 5); $('#foeBody').classList.add('die'); }
     examPaint(); await sleep(full ? 1100 : 800); if (full) X.d++;
   } else {
-    if (ok) {
-      X.ok++; sfx.ok(); if (btn && btn.classList) btn.classList.add('good');
-      X.last = q.reveal ? String(q.reveal) : '✨'; X.items.push(X.last);
-      try { await helpMagic(q, true); } catch (e) { burst('✨', 8); }   // the spell flies to the pedestal first...
-      $('#foeBody').innerHTML = exConjSvg(X.last && X.last.startsWith('<') ? '✨' : X.last); examPaint(); burst('✨', 8); exProfReact();   // ...and only then does the item appear and the professor react
-      await sleep(900); $('#foeBody').innerHTML = exConjSvg(''); await sleep(250);   // the item disappears before the next request
-    } else { X.bad++; X.missed.push(examWord(q)); sfx.bad(); if (btn && btn.classList) btn.classList.add('bad'); $('#fb').textContent = ''; examPaint(); await sleep(1000); }
+    const enOf = op => { const m = op && /<\/span>\s*=\s*([A-Za-z' -]+)/.exec(op.note || ''); return m ? m[1].trim() : ''; }, art = en => (/^[aeiou]/i.test(en) ? 'an ' : 'a ') + en;
+    const right = (q.options || []).find(x => x.ok), enRight = enOf(right), shown = o ? o.em : (ok ? (q.reveal || '✨') : '❓');   // the item shown is what the student chose, right or wrong
+    if (ok) { X.ok++; sfx.ok(); if (btn && btn.classList) btn.classList.add('good'); } else { X.bad++; X.missed.push(examWord(q)); sfx.bad(); if (btn && btn.classList) btn.classList.add('bad'); $('#fb').textContent = ''; }
+    X.items = []; examPaint();
+    // 1. the skill flies from the staff to the pedestal  2. the big item appears on it (right or wrong) and stays for one second  3. the professor says if it is good, and explains a wrong one in English
+    try { spSetup(); const p = vmPts(); await vmConjure(p.staff, p.hand); vmRing(p.hand[0], p.hand[1], '#ffd166', 6, 52, 700, 3); tierConjure(q); } catch (e) { burst('✨', 8); }
+    $('#foeBody').innerHTML = exConjSvg(shown); burst('✨', 8);
+    await sleep(1000); $('#foeBody').innerHTML = exConjSvg(''); try { const g = $('#spFx'); if (g) g.innerHTML = ''; } catch (e) {}   // the item stays for one second, then it is gone and the professor speaks
+    const enPicked = enOf(o), hePicked = o && /<span class="he">([^<]+)<\/span>/.exec(o.note || '');
+    $('#bubble').textContent = ok ? `Yes! That is ${enRight ? art(enRight) : 'right'}!` : 'Not quite.' + (enPicked ? ` That is ${art(enPicked)}${hePicked ? ' (' + hePicked[1] + ')' : ''}.` : '') + (enRight ? ` We needed ${art(enRight)}.` : '');
+    exProfReact(); await sleep(ok ? 1500 : 3400);
+    $('#foeBody').innerHTML = exConjSvg(''); try { const g = $('#spFx'); if (g) g.innerHTML = ''; } catch (e) {} await sleep(250);   // nothing stays on the stage
   }
   if (!X.practice && X.bad > X.n - X.need) return examEnd(false, true);   // too many mistakes: it can no longer be passed
   if (X.i >= X.n) return examEnd(X.practice || X.ok >= X.need);
