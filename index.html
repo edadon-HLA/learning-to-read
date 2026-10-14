@@ -540,17 +540,17 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .stage.exam.conjure .foeBody{position:relative}.exConjPed{position:relative}
 .exBigItem{position:absolute;left:50%;top:15%;transform:translateX(-50%);font-size:3.6rem;line-height:1;z-index:4;filter:drop-shadow(0 0 14px #ffd166);animation:exBigPop .4s ease-out;pointer-events:none}
 .exBigItem .icoSvg{width:1em;height:1em}@keyframes exBigPop{0%{transform:translateX(-50%) scale(.2);opacity:0}100%{transform:translateX(-50%) scale(1);opacity:1}}
-.shWard{z-index:20;transform:translate(-50%,-50%);width:calc(var(--u)*15);background:none;border:0;padding:0;cursor:pointer;color:inherit;font-family:inherit}.shWard svg{display:block;width:100%;height:auto}
-.shManS{z-index:20;transform:translate(-50%,-100%);width:calc(var(--u)*8.5);background:none;border:0;padding:0;cursor:pointer;color:inherit;font-family:inherit}.shManS svg{display:block;width:100%;height:auto}
+.shWardHit{z-index:40;transform:translate(-50%,-50%);width:calc(var(--u)*10);height:calc(var(--u)*28);background:none;border:0;padding:0;cursor:pointer;color:inherit;font-family:inherit;display:flex;align-items:flex-start;justify-content:center}
+.shManS{z-index:70;transform:translate(-50%,-100%);width:calc(var(--u)*14);background:none;border:0;padding:0;cursor:pointer;color:inherit;font-family:inherit}.shManS svg{display:block;width:100%;height:auto}
 .shTag{display:block;margin:calc(var(--u)*-.6) auto 0;background:#f3e6c4;color:#3a2a14;border-radius:calc(var(--u)*.7);padding:0 calc(var(--u)*.9);font-size:max(7px,calc(var(--u)*1.6));font-weight:600;white-space:nowrap;line-height:calc(var(--u)*2.1);width:max-content}
+.shWardHit .shTag{margin:calc(var(--u)*-2.2) auto 0}
 .shItem{z-index:30;transform:translate(-50%,-100%);background:none;border:0;padding:0;cursor:pointer;color:inherit;font-family:inherit;display:block}
-.shIm{display:grid;place-items:center;font-size:calc(var(--u)*4.6);line-height:1;width:calc(var(--u)*6.2);height:calc(var(--u)*6.2)}.shIm svg,.shIm .icoSvg{width:calc(var(--u)*4.8);height:calc(var(--u)*4.8)}
-.shItem.ing .shIm{background:radial-gradient(circle at 35% 30%,#ffffff55,#ffffff1a);border:calc(var(--u)*.25) solid #ffffff66;border-radius:30% 30% 24% 24%;position:relative}
-.shItem.ing .shIm::before{content:'';position:absolute;top:calc(var(--u)*-.9);left:25%;width:50%;height:calc(var(--u)*1);background:#a8703c;border-radius:calc(var(--u)*.3)}
+.shIm{display:grid;place-items:center;font-size:calc(var(--u)*4.8);line-height:1;width:calc(var(--u)*6.2);height:calc(var(--u)*6.2)}.shIm svg,.shIm .icoSvg{width:calc(var(--u)*5.4);height:calc(var(--u)*5.4)}
 .shItem.dec .shIm{filter:drop-shadow(0 calc(var(--u)*.4) calc(var(--u)*.3) #0006)}
 .shItem.locked{opacity:.55;filter:grayscale(.8)}.shItem.sold .shIm{opacity:.4}.shSold{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%) rotate(-12deg);background:#c8402f;color:#fff;font:700 max(6px,calc(var(--u)*1.4))/1 system-ui;padding:calc(var(--u)*.2) calc(var(--u)*.6);border-radius:calc(var(--u)*.4)}
-.shPot svg{width:calc(var(--u)*4.4)!important;height:calc(var(--u)*6)!important}
+.shPot{transform:translate(-50%,-100%) scale(var(--sc,1))!important;transform-origin:50% 100%}.shPot svg{width:calc(var(--u)*4.2)!important;height:calc(var(--u)*5.6)!important}
 .accHead{margin:10px 0 4px;font-weight:700;opacity:.9}.catPic .catRobe svg{width:2.4rem;height:3.4rem}
+.acadQuick{min-width:56px;min-height:56px;padding:4px 8px;border-radius:16px;border:2px solid #ffd166;background:#3a2a66;animation:acadGlow 2s ease-in-out infinite}.acadQuick .acadSvg{width:34px;height:40px}
 </style>
 <style id="p3css">
 /* Patch 3: the level badge, the Academy, the test */
@@ -857,7 +857,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 </section>
 
 <section id="home" class="screen" style="max-width:760px">
-  <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="whoRow"><div class="who">🏡 <span class="heb">בית</span> · Home</div><button class="wizBadge" data-wizlv="1" id="hWiz" title="Wizard level"></button></div><div class="small">Tap the cauldron to brew, the wardrobe to dress up, a shelf to look closer. Tap 🪑 Arrange to move, flip and put away your furniture.</div></div></div>
+  <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><button class="ib acadQuick" aria-label="Academy: take the test" title="The Academy test is open" style="display:none"></button><div class="grow"><div class="whoRow"><div class="who">🏡 <span class="heb">בית</span> · Home</div><button class="wizBadge" data-wizlv="1" id="hWiz" title="Wizard level"></button></div><div class="small">Tap the cauldron to brew, the wardrobe to dress up, a shelf to look closer. Tap 🪑 Arrange to move, flip and put away your furniture.</div></div></div>
   <div class="rScene" id="rmScene" aria-label="Your room"><svg class="rShell" id="rmShell" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg><div id="rmProps"></div><div class="rVig"></div></div>
   <div class="rBar"><button class="btn ghost" id="tidyBtn">🧹 Put everything back</button></div>
   <section class="rPanel" id="roomPanel" hidden aria-live="polite"></section>
@@ -872,7 +872,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 </section>
 
 <section id="shop" class="screen" style="max-width:760px">
-  <div class="top"><button class="ib" id="shopBack" title="Back to map">🗺️</button><div class="grow"><div class="who">🏪 <span class="heb">חנות</span> · Shop</div><div class="small">Tap something on the shelves to look at it. To buy, answer the merchant's question.</div></div><div class="coinBox">🪙 <b id="shopCoins">0</b></div></div>
+  <div class="top"><button class="ib" id="shopBack" title="Back to map">🗺️</button><button class="ib acadQuick" aria-label="Academy: take the test" title="The Academy test is open" style="display:none"></button><div class="grow"><div class="who">🏪 <span class="heb">חנות</span> · Shop</div><div class="small">Tap something on the shelves to look at it. To buy, answer the merchant's question.</div></div><div class="coinBox">🪙 <b id="shopCoins">0</b></div></div>
   <div class="shScene" id="shScene" aria-label="The shop">
     <svg class="shLayer" id="shBack" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg>
     <div id="shProps"></div>
@@ -882,7 +882,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   </div>
   <div class="rBar" style="display:none"><button class="btn ghost" id="shBtnPots"><span class="potIco"></span> Potions</button><button class="btn ghost" id="shBtnWear">👗 Robes and accessories</button></div>
   <section class="rPanel" id="shopPanel" hidden></section>
-  <div class="small center" style="opacity:.7;margin:10px 0">🛍️ Robes in the wardrobe, accessories on the mannequin, potions on the right, ingredients and little decorations on the shelves, furniture in the catalogue book. Things you buy wait for you at Home.</div>
+  <div class="small center" style="opacity:.7;margin:10px 0">🛍️ Robes in the wardrobe, accessories on the mannequin, potions on the right wall, little things on the shelves and furniture in the catalogue book. Things you buy wait for you at Home.</div>
 </section>
 
 <section id="game" class="screen">
@@ -920,7 +920,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 
 
 <section id="journey" class="screen" style="max-width:760px">
-  <div class="top"><button class="ib" id="jBack" title="Back to map">🗺️</button><button class="ib" id="jAbandon" title="Abandon the quest" style="display:none">🏳️</button>
+  <div class="top"><button class="ib" id="jBack" title="Back to map">🗺️</button><button class="ib acadQuick" aria-label="Academy: take the test" title="The Academy test is open" style="display:none"></button><button class="ib" id="jAbandon" title="Abandon the quest" style="display:none">🏳️</button>
     <div class="grow"><div class="who" id="jArea"></div><div class="small" id="jStory"></div></div><div class="jHearts" id="jHearts"></div></div>
   <div class="jBanner" id="jBanner" aria-live="polite"></div>
   <div class="jStage" id="jStage"><svg id="jMap" aria-label="Journey map"></svg></div>
@@ -930,7 +930,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 </section>
 
 <section id="workshop" class="screen" style="max-width:760px">
-  <div class="top"><button class="ib" id="wsBackBtn" title="Back to map">🗺️</button><div class="grow"><div class="who">🛠️ <span class="heb">סדנה</span> · Workshop</div><div class="small">The artificer builds magic items from rare ingredients.</div></div><div class="coinBox">🪙 <b id="wsCoins">0</b></div></div>
+  <div class="top"><button class="ib" id="wsBackBtn" title="Back to map">🗺️</button><button class="ib acadQuick" aria-label="Academy: take the test" title="The Academy test is open" style="display:none"></button><div class="grow"><div class="who">🛠️ <span class="heb">סדנה</span> · Workshop</div><div class="small">The artificer builds magic items from rare ingredients.</div></div><div class="coinBox">🪙 <b id="wsCoins">0</b></div></div>
   <div class="shScene" id="wsScene" aria-label="The workshop">
     <svg class="shLayer" id="wsBack" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg>
     <div id="wsProps"></div>
@@ -1604,7 +1604,7 @@ async function loadProfile(id) {
 /* ====================== SCREENS / MODAL ====================== */
 function stageClean() { try { ['#anvilBox', '#pipShoulder', '#vKids', '#conjAgain', '#exProf'].forEach(s => { const e = document.querySelector(s); if (e) e.remove(); }); } catch (e) {} }
 function show(id) {
-  stageClean();
+  stageClean(); try { acadQuickSync(); } catch (e) {}
   document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === id));
   document.body.classList.toggle('peace', (id === 'game' || id === 'journey') && G.quest === 'peace');
   window.scrollTo(0, 0);
@@ -4184,7 +4184,7 @@ function startShopBuy(id) {
   $('#tierLbl').textContent = `Hebrew level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
   nameQuestion(s, Object.values(SHOP), { listen: '🧙 The merchant says… Listen!', read: 'Read the name and pick the picture!', sub: 'Which one are you buying?', write: 'The merchant wants the name written in Hebrew!' });
 }
-function shopBought_p3() {
+function shopBought() {
   const s = SHOP[G.shop.id];
   if (Math.floor(P.coins || 0) < s.price || owns(s)) { openShop(); return; }
   P.coins = Math.round((P.coins - s.price) * 1000) / 1000;
@@ -5974,47 +5974,40 @@ function hatDeco(k, color, f, uid, dark) {
 
 function tutAbort() { if (!TUT.on) return; TUT.on = false; TUT.tok++; try { tutResolve(); tutHl(null); speechSynthesis.cancel(); } catch (e) {} $('#tutFin').classList.remove('on'); $('#coach').hidden = true; document.body.classList.remove('tutOn'); stageClean(); }
 /* ====================== PATCH 4, section 3: the shop ====================== */
-// A wardrobe on the left wall (robes), a small mannequin (accessories), a small potion rack on the right wall, shelves on the back wall (ingredients and small decorations),
-// the catalogue book on the counter (furniture only). The bucket and the basket are gone.
+// A wardrobe built into the left wall (robes), a mannequin in front of the counter (accessories), a potion shelf built into the right wall, shelves on the back wall (small items),
+// the catalogue book on the counter (furniture only). The bucket, the basket and the speech bubble are gone.
 
-/* ----- ingredients can be bought now (they go onto the shelf at home) ----- */
-const ING_PRICE = [6, 16, 38, 90, 180];
-for (const [id, g] of Object.entries(ING)) SHOP['i_' + id] = { id: 'i_' + id, kind: 'ing', ing: id, he: g.he, nk: g.nk, em: g.em, en: g.en, price: ING_PRICE[g.r] || 10, tier: Math.min(6, (g.r || 0) + 1) };
-function shopBought_p4() {
-  const s = SHOP[G.shop.id];
-  if (Math.floor(P.coins || 0) < s.price) { openShop(); return; }
-  P.coins = Math.round((P.coins - s.price) * 1000) / 1000; P.inv[s.ing] = (P.inv[s.ing] || 0) + 1; saveSoon(true); sfx.win(); confetti(['🪙', '✨', '💛']);
-  $('#shopCoins').textContent = Math.floor(P.coins || 0); renderShop(); renderShopPanel();
-  modal('🎉 Thank you!', `<p style="text-align:center;font-size:3rem;margin:6px">${shPic(s)}</p><p style="text-align:center">You bought <b class="heb">${s.nk}</b>! It is on your shelf at Home (you have ${P.inv[s.ing]}).</p>`,
-    [['Keep shopping 🛒', openShop], ['Go home 🏡', openHome], ['Back to map', openMenu, true]]);
+/* ----- the small items: they stand on the back-wall shelves (the catalogue book keeps the furniture) ----- */
+const isSmallItem = s => s.kind === 'decor' && (/^d_/.test(s.id) || (ROOM_ITEMS[s.id] && ROOM_ITEMS[s.id].t === 'small'));
+function shelfPicks() {   // today's 8 small items (the choice is saved for the day; a bought one stays on the shelf, marked SOLD, until tomorrow)
+  const d = today(); let sh = P.shelfS;
+  if (!sh || sh.d !== d || !Array.isArray(sh.ids)) {
+    const r = rngSeed(strHash(d + P.id + 'small')), pool = Object.values(SHOP).filter(s => isSmallItem(s) && !owns(s));
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    sh = P.shelfS = { d, ids: pool.slice(0, 8).map(s => s.id) }; saveSoon();
+  }
+  return sh.ids;
 }
-function shopBought() { const s = SHOP[G.shop.id]; if (s && s.kind === 'ing') return shopBought_p4(); return shopBought_p3(); }
-
-/* ----- what is on the back-wall shelves today: 4 ingredients (you can buy the ones your rank allows) and 4 small decorations ----- */
-function shelfPicks() {
-  const r = rngSeed(strHash(today() + P.id + 'ing')), pool = Object.keys(ING).filter(id => SHOP['i_' + id] && ING[id].r <= wzTi());
-  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-  return { ing: pool.slice(0, 4).map(id => 'i_' + id), dec: shopShelf().ids.slice(0, 4) };
-}
-const SH_SHELF_TOP = [31, 44, 57, 70], SH_SHELF_LOW = [26, 36, 64, 74];   // the lower shelf leaves the middle free for the merchant's hat
+const SH_SHELF_TOP = [27, 37, 63, 73], SH_SHELF_LOW = [26, 36, 64, 74];   // both shelves leave the middle free for the merchant
 
 /* ----- the pictures ----- */
-const wardrobeShopSVG = () => `<svg viewBox="0 0 60 112" aria-hidden="true"><ellipse cx="30" cy="108" rx="28" ry="3.6" fill="#000" opacity=".3"/><rect x="2" y="4" width="56" height="12" rx="3" fill="#6a4524" stroke="#3a210d" stroke-width="1.6"/><rect x="5" y="14" width="50" height="90" rx="2" fill="#8a5a2e" stroke="#3a210d" stroke-width="1.8"/>
-  <rect x="9" y="19" width="20" height="80" rx="2" fill="#a8703c" stroke="#5a3417" stroke-width="1.2"/><rect x="31" y="19" width="20" height="80" rx="2" fill="#a8703c" stroke="#5a3417" stroke-width="1.2"/><rect x="13" y="25" width="12" height="26" rx="1.5" fill="none" stroke="#c98f52" stroke-width="1"/><rect x="35" y="25" width="12" height="26" rx="1.5" fill="none" stroke="#c98f52" stroke-width="1"/>
-  <rect x="13" y="58" width="12" height="34" rx="1.5" fill="none" stroke="#c98f52" stroke-width="1"/><rect x="35" y="58" width="12" height="34" rx="1.5" fill="none" stroke="#c98f52" stroke-width="1"/><circle cx="27" cy="62" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/><circle cx="33" cy="62" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/>
-  <path d="M31 99 L31 90 Q36 86 40 92 L40 99Z" fill="${(P && P.color) || '#6a5acd'}" opacity=".95"/><rect x="8" y="102" width="9" height="6" fill="#4a2c12"/><rect x="43" y="102" width="9" height="6" fill="#4a2c12"/></svg>`;
-const shopManSmall = () => `<svg viewBox="0 0 60 112" aria-hidden="true"><ellipse cx="30" cy="106" rx="18" ry="3.6" fill="#000" opacity=".3"/><rect x="28" y="60" width="4" height="42" fill="#7a4d27"/><ellipse cx="30" cy="103" rx="14" ry="3.4" fill="#5e3a1d"/>
+const shopManBig = () => `<svg viewBox="0 0 60 112" aria-hidden="true"><ellipse cx="30" cy="106" rx="20" ry="3.6" fill="#000" opacity=".3"/><rect x="28" y="60" width="4" height="42" fill="#7a4d27"/><ellipse cx="30" cy="103" rx="15" ry="3.4" fill="#5e3a1d"/>
   <path d="M12 36 Q30 28 48 36 L44 58 Q30 64 16 58Z" fill="#d8c8a4" stroke="#8a7650" stroke-width="1.3"/><path d="M12 36 L6 44 L14 48 L16 42Z M48 36 L54 44 L46 48 L44 42Z" fill="#d8c8a4" stroke="#8a7650" stroke-width="1.1"/><rect x="26" y="26" width="8" height="10" rx="2" fill="#d8c8a4" stroke="#8a7650" stroke-width="1"/><ellipse cx="30" cy="16" rx="9.5" ry="11.5" fill="#d8c8a4" stroke="#8a7650" stroke-width="1.3"/>
   <path d="M20 12 L30 -4 L40 12Z" fill="#7a3a9a" stroke="#4a2468" stroke-width="1"/><path d="M26 40 q4 5 8 0" stroke="#e5546b" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>`;
+// a potion shelf drawn INTO the right wall (in perspective, like the shelves in the home)
+const rwPt = (t, f) => { const fy = 46 + 34 * t, H = 38 + 42 * t; return [+(80 + 20 * t).toFixed(2), +(fy - f * H).toFixed(2)]; };
+const rwShelf = (t0, t1, f) => { const a = rwPt(t0, f), b = rwPt(t1, f), c = rwPt(t1, f - .035), d = rwPt(t0, f - .035), e = rwPt(t1, f - .08), g = rwPt(t0, f - .08);
+  return `<polygon points="${a} ${b} ${c} ${d}" fill="#c58f58"/><polygon points="${d} ${c} ${e} ${g}" fill="#7a4d27"/>`; };
+const SH_POT_POS = [[.22, .74], [.48, .74], [.74, .74], [.35, .52], [.64, .52]];   // [how far along the wall, how high]: three on the upper shelf, two on the lower one
 
-/* ----- the back wall: the room without the robe rail and the wall of potion shelves; the back shelves and the small potion rack are drawn here ----- */
+/* ----- the room: the back wall with its shelves, the wardrobe built into the left wall, the potion shelf built into the right wall ----- */
 function shBackSVG() {
   const planks = [], floorLeft = y => 20 * (SH.FRONT - y) / (SH.FRONT - SH.BACK_Y1);
   for (let i = -8; i <= 8; i++) { const xf = 50 + i * 12.5, t = (SH.FRONT - SH.BACK_Y1) / (SH.FRONT - 30), xb = xf + (50 - xf) * t; planks.push(`<line x1="${xf}" y1="${SH.FRONT}" x2="${xb.toFixed(2)}" y2="${SH.BACK_Y1}" stroke="#5a3417" stroke-opacity=".5" stroke-width=".25"/>`); }
   for (let i = 1; i < 9; i++) { const y = SH.BACK_Y1 + (SH.FRONT - SH.BACK_Y1) * Math.pow(i / 9, 1.7); planks.push(`<line x1="${floorLeft(y).toFixed(2)}" y1="${y.toFixed(2)}" x2="${(100 - floorLeft(y)).toFixed(2)}" y2="${y.toFixed(2)}" stroke="#5a3417" stroke-opacity=".3" stroke-width=".2"/>`); }
   let awning = ''; for (let i = 0; i < 10; i++) awning += `<rect x="${20 + i * 6}" y="8" width="6" height="6" fill="${i % 2 ? '#fff0d6' : '#e5546b'}"/><circle cx="${23 + i * 6}" cy="14" r="3" fill="${i % 2 ? '#fff0d6' : '#e5546b'}"/>`;
   const board = (x1, x2, y) => `<polygon points="${x1},${y} ${x2},${y} ${x2 + .6},${y + 1} ${x1 - .6},${y + 1}" fill="#c58f58"/><rect x="${x1 - .6}" y="${y + 1}" width="${x2 - x1 + 1.2}" height="1" fill="#7a4d27"/><path d="M${x1 + 1} ${y + 2} l2 3 M${x2 - 1} ${y + 2} l-2 3" stroke="#7a4d27" stroke-width=".6"/>`;
-  const rack = y => `<polygon points="83,${y} 99,${y} 99.6,${y + 1} 82.4,${y + 1}" fill="#c58f58"/><rect x="82.4" y="${y + 1}" width="17.2" height="1" fill="#7a4d27"/>`;
+  const ward = rmWardrobe().replace(/<g id="wardBtn"[^>]*>/, '<g>');   // the same wardrobe as in the home, built into the left wall
   return `<defs>
     <linearGradient id="shWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b5aa0"/><stop offset="1" stop-color="#5e4580"/></linearGradient>
     <linearGradient id="shSideL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3a2a66"/><stop offset="1" stop-color="#4b3a80"/></linearGradient>
@@ -6024,27 +6017,28 @@ function shBackSVG() {
     <polygon points="0,0 100,0 80,8 20,8" fill="url(#shCeil)"/><polygon points="20,8 80,8 80,46 20,46" fill="url(#shWall)"/>
     <polygon points="0,0 20,8 20,46 0,80" fill="url(#shSideL)"/><polygon points="100,0 80,8 80,46 100,80" fill="url(#shSideR)"/>
     <polygon points="20,46 80,46 100,80 0,80" fill="url(#shFloor)"/>${planks.join('')}<polygon points="20,44.4 80,44.4 80,46 20,46" fill="#2a1a3d"/>
-    ${board(24, 76, 28)}${board(21, 41, 41)}${board(59, 79, 41)}${rack(37)}${rack(51)}${awning}
+    ${board(24, 76, 28)}${board(21, 41, 41)}${board(59, 79, 41)}${rwShelf(.12, .88, .72)}${rwShelf(.12, .88, .5)}${ward}${awning}
     <path d="M42 17 L50 13 L58 17 L58 21 L42 21Z" fill="#4a2f66" stroke="#ffd166" stroke-width=".35"/><text x="50" y="20" text-anchor="middle" font-size="3.4" font-weight="700" fill="#ffd166" font-family="Noto Sans Hebrew,Arial,sans-serif">חנות</text>
     <g opacity=".6"><path d="M20 8 Q35 11 50 8 Q65 11 80 8" fill="none" stroke="#ffd166" stroke-width=".3" stroke-dasharray=".8 1.2"/></g>`;
 }
 
-/* ----- the room ----- */
 function renderShop() {
-  const sh = shopShelf(), skin = SH_SKINS[sh.skin % SH_SKINS.length], c = P.own.caul || 0, next = SHOP['caul' + (c + 1)], pk = shelfPicks();
+  const sh = shopShelf(), skin = SH_SKINS[sh.skin % SH_SKINS.length], c = P.own.caul || 0, next = SHOP['caul' + (c + 1)], ids = shelfPicks();
   $('#shBack').innerHTML = shBackSVG(); $('#shCounter').innerHTML = shCounterSVG();
-  let p = `<button class="shAt shWard" data-open="robes" style="--x:9.5;--y:41" aria-label="Wardrobe: robes">${wardrobeShopSVG()}<span class="shTag">👗 Robes</span></button>`;
-  p += `<button class="shAt shManS" data-open="acc" style="--x:91;--y:77" aria-label="Mannequin: accessories">${shopManSmall()}<span class="shTag">🎩 Wear</span></button>`;
-  p += `<div class="shAt shMerchant" style="--x:50;--y:58.4" aria-label="The merchant">${merchantSVG(skin)}</div><div class="shAt shSay" id="shSay" style="--x:68;--y:54">${shSayText()}</div>`;
-  const item = (id, x, y, list, cls) => { const s = SHOP[id]; if (!s) return ''; const lk = shopLockedBy(s), sold = owns(s);
-    return `<button class="shAt shItem ${cls}${lk ? ' locked' : ''}${sold ? ' sold' : ''}" data-buy="${s.id}" data-list="${list}" style="--x:${x};--y:${y}" aria-label="${s.en}, ${s.price} coins"><span class="shIm">${s.kind === 'ing' ? ING[s.ing].em : s.em}</span>${sold ? '<span class="shSold">SOLD</span>' : ''}</button>`; };
-  pk.ing.forEach((id, i) => { p += item(id, SH_SHELF_TOP[i], 27.2, 'shelf:ing', 'ing'); });   // ingredient jars on the top shelf
-  pk.dec.forEach((id, i) => { p += item(id, SH_SHELF_LOW[i], 40.2, 'shelf:dec', 'dec'); });   // decorations on the lower shelves
-  // the potion rack on the right wall (small)
-  POTION_IDS.forEach((pid, i) => { const s = SHOP['pot_' + pid], lk = shopLockedBy(s), row = i < 3 ? 0 : 1, col = i < 3 ? i : i - 3;
-    p += `<button class="shAt shPot${lk ? ' locked' : ''}" data-buy="${s.id}" data-list="pots" style="--x:${row ? 88 + col * 7 : 85.5 + col * 5.6};--y:${row ? 50.2 : 36.2}" aria-label="${s.en}, ${s.price} coins">${potionSVG(pid)}${lk ? `<span class="lk">🔒</span>` : ''}</button>`; });
+  // the wardrobe is part of the wall: only an invisible button sits on it, with its small tag
+  let p = `<button class="shAt shWardHit" data-open="robes" style="--x:10;--y:49" aria-label="Wardrobe: robes"><span class="shTag">👗 Robes</span></button>`;
+  p += `<div class="shAt shMerchant" style="--x:50;--y:58.4" aria-label="The merchant">${merchantSVG(skin)}</div>`;
+  const item = (id, x, y, cls) => { const s = SHOP[id]; if (!s) return ''; const lk = shopLockedBy(s), sold = owns(s);
+    return `<button class="shAt shItem ${cls}${lk ? ' locked' : ''}${sold ? ' sold' : ''}" data-buy="${s.id}" data-list="shelf:small" style="--x:${x};--y:${y}" aria-label="${s.en}, ${s.price} coins"><span class="shIm">${s.em}</span>${sold ? '<span class="shSold">SOLD</span>' : ''}</button>`; };
+  ids.slice(0, 4).forEach((id, i) => { p += item(id, SH_SHELF_TOP[i], 27.2, 'dec'); });
+  ids.slice(4, 8).forEach((id, i) => { p += item(id, SH_SHELF_LOW[i], 40.2, 'dec'); });
+  // the potions stand on the shelf in the right wall, a little higher than before
+  POTION_IDS.forEach((pid, i) => { const s = SHOP['pot_' + pid], lk = shopLockedBy(s), [t, f] = SH_POT_POS[i] || SH_POT_POS[0], [x, y] = rwPt(t, f - .02), sc = (38 + 42 * t) / 56;
+    p += `<button class="shAt shPot${lk ? ' locked' : ''}" data-buy="${s.id}" data-list="pots" style="--x:${x};--y:${y};--sc:${sc.toFixed(2)}" aria-label="${s.en}, ${s.price} coins">${potionSVG(pid)}${lk ? `<span class="lk">🔒</span>` : ''}</button>`; });
   $('#shProps').innerHTML = p;
-  let f = '<div class="shAt shCoin" style="--x:76;--y:59">🪙</div><div class="shAt shCoin" style="--x:80;--y:59;font-size:calc(var(--u)*3)">🪙</div><div class="shAt shCoin" style="--x:88;--y:59;font-size:calc(var(--u)*4.4)">🔔</div>';
+  // in front of the counter: the mannequin (it hides a little of the counter); the bell and the coins moved to the left of it
+  let f = '<div class="shAt shCoin" style="--x:60;--y:59">🪙</div><div class="shAt shCoin" style="--x:64;--y:59;font-size:calc(var(--u)*3)">🪙</div><div class="shAt shCoin" style="--x:71;--y:59;font-size:calc(var(--u)*4.4)">🔔</div>';
+  f += `<button class="shAt shManS" data-open="acc" style="--x:83;--y:77.5" aria-label="Mannequin: accessories">${shopManBig()}<span class="shTag">🎩 Wear</span></button>`;
   f += `<button class="shAt shBook" id="shBook" style="--x:36;--y:60" aria-label="Furniture catalogue"><span class="bk">📖</span><span class="shPrice">Furniture</span></button>`;
   f += next ? `<button class="shAt shCau" data-buy="${next.id}" style="--x:21;--y:59" aria-label="${next.en}, ${next.price} coins">${cauldronArt(c + 1)}<span class="shPrice">${shopLockedBy(next) ? '🔒 ' + shopLockedBy(next) : '🪙 ' + next.price}</span></button>` : '<div class="shAt shFull" style="--x:21;--y:59">Fully upgraded</div>';
   $('#shFront').innerHTML = f;
@@ -6055,7 +6049,7 @@ function renderShop() {
 const ACC_SLOT_NAMES = { head: '🎩 Head', face: '👓 Face', neck: '📿 Neck', belt: '🎀 Belt', hand: '🪄 Hand', back: '🧣 Back', aura: '✨ Aura', pet: '🦜 Pet' };
 const shopTile = (s, spec) => { const lk = shopLockedBy(s), own = owns(s);
   return `<button class="catItem${lk ? ' locked' : ''}${own ? ' own' : ''}" data-buy="${s.id}" data-list="${spec}" style="--rar:${SHOP_RAR[shopTier(s)]}" aria-label="${s.en}, ${s.price} coins"><span class="catPic">${s.wtype === 'robe' || s.wtype === 'style' ? '<span class="catRobe">' + robeMini(s) + '</span>' : s.em}</span><span class="catTag">${own ? '✓ yours' : lk ? '🔒 ' + lk : '🪙 ' + s.price}</span></button>`; };
-const furnList = () => Object.values(SHOP).filter(s => s.kind === 'decor' && !/^d_/.test(s.id));   // the catalogue is for furniture only; small decorations are on the shelves
+const furnList = () => Object.values(SHOP).filter(s => s.kind === 'decor' && !isSmallItem(s));   // the catalogue is for furniture only; small items are on the shelves
 function renderShopPanel() {
   const p = $('#shopPanel'); if (!shopPanel) { p.hidden = true; return; } p.hidden = false;
   if (shopPanel === 'robes') { p.innerHTML = `<h3>👗 The wardrobe <button class="ib" data-close="1" aria-label="Close">✕</button></h3><div class="catGrid">${shopRobes().map(s => shopTile(s, 'robes')).join('')}</div>`; return; }
@@ -6069,7 +6063,7 @@ function renderShopPanel() {
     <div class="catGrid">${list.map(s => shopTile(s, 'cat:' + shopCat)).join('')}</div>`;
 }
 function shopList(spec) {
-  if (spec === 'shelf:ing') return shelfPicks().ing.map(id => SHOP[id]); if (spec === 'shelf:dec') return shelfPicks().dec.map(id => SHOP[id]);
+  if (spec === 'shelf:small') return shelfPicks().map(id => SHOP[id]).filter(Boolean);
   if (spec && spec.startsWith('cat:')) return furnList().filter(s => furnCat(s) === spec.slice(4)).sort((a, b) => shopTier(a) - shopTier(b) || a.price - b.price);
   return shopList_p3(spec);
 }
@@ -6080,6 +6074,10 @@ $('#shop').onclick = e => {
   const ct = e.target.closest('[data-cat]'); if (ct) { shopCat = ct.dataset.cat; renderShopPanel(); return; }
   const b = e.target.closest('[data-buy]'); if (b) openShopItem(SHOP[b.dataset.buy], shopList(b.dataset.list));
 };
+
+/* ----- the Academy icon: when the test is open, a small icon sits next to the map icon on the top bar of every room ----- */
+function acadQuickSync() { const on = !!P && wzReady(); document.querySelectorAll('.acadQuick').forEach(b => { b.style.display = on ? '' : 'none'; if (on && !b.dataset.art) { b.dataset.art = 1; b.innerHTML = ACADEMY_SVG; } }); }
+document.addEventListener('click', e => { const b = e.target.closest('.acadQuick'); if (!b) return; const inQuest = $('#journey').classList.contains('on') && G.quest && P.quest && P.quest[G.quest] && P.quest[G.quest].act; if (inQuest) examOffer(true); else academyAsk(); });
 
 /* init */
 setMute(muted); setCloud(CFG.SCRIPT_URL ? '' : 'none');
