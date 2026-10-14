@@ -554,7 +554,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .acadQuick{min-width:56px;min-height:56px;padding:4px 8px;border-radius:16px;border:2px solid #ffd166;background:#3a2a66;animation:acadGlow 2s ease-in-out infinite}.acadQuick .acadSvg{width:34px;height:40px}
 .hArt{width:1em;height:1em}
 #home .rBar{display:none}
-#rmScene .rCaul{left:73.5%;top:calc(78*1.25%)}
+#rmScene .rCaul{left:70%;top:calc(78.5*1.25%)}
 .hmI{position:absolute;background:none;border:0;padding:0;margin:0;cursor:pointer;color:inherit;line-height:0}.hmI svg{display:block;width:100%;height:auto}.hmI .fsv,.hmI .icoSvg{width:100%;height:auto}.hmI.hmRug{pointer-events:auto}
 .hmPlus{position:absolute;z-index:900;width:calc(var(--u)*4.6);height:calc(var(--u)*4.6);transform:translate(-50%,-50%);border-radius:50%;border:calc(var(--u)*.3) dashed #ffd166;background:#ffd16622;color:#ffd166;font:700 calc(var(--u)*3)/1 system-ui;cursor:pointer;animation:hmGlow 2s ease-in-out infinite;padding:0}@keyframes hmGlow{50%{box-shadow:0 0 calc(var(--u)*1.6) #ffd166}}
 .hmEditOn .hmI{outline:calc(var(--u)*.2) dashed #ffffff55;outline-offset:2px;border-radius:4px}
@@ -5989,15 +5989,17 @@ function tutAbort() { if (!TUT.on) return; TUT.on = false; TUT.tok++; try { tutR
 
 /* ----- the small items: they stand on the back-wall shelves (the catalogue book keeps the furniture) ----- */
 const isSmallItem = s => s.kind === 'decor' && (/^d_/.test(s.id) || (ROOM_ITEMS[s.id] && ROOM_ITEMS[s.id].t === 'small'));
-function shelfPicks() {   // today's 8 small items (the choice is saved for the day; a bought one stays on the shelf, marked SOLD, until tomorrow)
+function shelfPicks() {   // today's 8 small items (saved for the day; a bought one stays on the shelf, marked SOLD, until tomorrow). Most of them can be bought now; a couple are locked teasers.
   const d = today(); let sh = P.shelfS;
-  if (!sh || sh.d !== d || !Array.isArray(sh.ids)) {
-    const r = rngSeed(strHash(d + P.id + 'small')), pool = Object.values(SHOP).filter(s => isSmallItem(s) && !owns(s));
-    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-    sh = P.shelfS = { d, ids: pool.slice(0, 8).map(s => s.id) }; saveSoon();
+  if (!sh || sh.d !== d || sh.t !== wzTi() || !Array.isArray(sh.ids)) {
+    const r = rngSeed(strHash(d + P.id + 'small' + wzTi())), mix = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    const pool = Object.values(SHOP).filter(s => isSmallItem(s) && !owns(s)), open = mix(pool.filter(s => !shopLockedBy(s))), shut = mix(pool.filter(s => shopLockedBy(s)));
+    const pick = [...open.slice(0, 6), ...shut.slice(0, 2)]; for (const s of [...open.slice(6), ...shut.slice(2)]) { if (pick.length >= 8) break; pick.push(s); }
+    sh = P.shelfS = { d, t: wzTi(), ids: mix(pick).map(s => s.id) }; saveSoon();
   }
   return sh.ids;
 }
+
 const SH_SHELF_TOP = [27, 37, 63, 73], SH_SHELF_LOW = [26, 36, 64, 74];   // both shelves leave the middle free for the merchant
 
 /* ----- the pictures ----- */
@@ -6201,7 +6203,7 @@ for (const [vid, he, nk, en, cat, price, art] of HFIXED) { const id = 'h_' + vid
 FURN_CATS[0][2] = 'Sofas and beds'; FURN_CATS[1][2] = 'Tables and chairs';
 
 /* ----- what a piece fits: the new pieces say it themselves; the older pieces are matched by their kind ----- */
-const HK_EXTRA = { r_rugglow: ['rugB'], r_readlamp: ['lamp'], d_picture: ['paint'], d_clock: ['clock'], d_banner: ['paint'], d_lamp: ['candle'], d_candle: ['candle'], d_books: ['books'], d_vase: ['splant'], d_chair: ['stool'], d_teddy: ['pet'], d_turtle: ['pet'], d_cactus: ['splant'],
+const HK_EXTRA = { r_rugglow: ['rugB'], r_readlamp: ['lamp'], r_trophy: ['curio'], r_crystal: ['curio'], r_statue: ['curio'], r_banner: ['paint'], d_picture: ['paint'], d_clock: ['clock'], d_banner: ['paint'], d_lamp: ['candle'], d_candle: ['candle'], d_books: ['books'], d_vase: ['splant'], d_chair: ['stool'], d_teddy: ['pet'], d_turtle: ['pet'], d_cactus: ['splant'],
   d_scope: ['curio'], d_map: ['paint'], d_key: ['paint'], d_shield: ['paint'], d_violin: ['paint'], d_mirror: ['paint'], d_plant: ['splant', 'fplant'], d_cat: ['pet'], d_egg: ['curio'], d_owl: ['pet'], d_rug: ['rugA', 'rugB'],
   f_hammock: ['main'], f_stool: ['stool'], f_armchair: ['stool'], f_rocker: ['stool'], f_throne: ['stool'], f_chess: ['ctable'], f_rug4: ['rugA'], f_floorlamp: ['lamp'], f_fish: ['curio'], f_potrack: ['curio'], f_trophy: ['curio'] };
 const HK_CAT = { beds: ['main'], tables: ['ctable', 'dtable'], storage: ['sideboard'], rugs: ['rugA', 'rugB'], lights: ['lamp', 'candle'], wall: ['paint'], windows: ['paint'], plants: ['fplant', 'cplant', 'splant'], pets: ['pet'], magic: ['curio'], large: ['sideboard'] };
@@ -6213,18 +6215,19 @@ const HSLOTS = [
   ['paintL', 'Painting on the wall', ['paint'], 31, 13, 9, 'wall'], ['clock', 'Clock', ['clock', 'paint'], 51, 9.2, 6.2, 'wall'], ['paintR', 'Picture on the wall', ['paint'], 72, 11.5, 8, 'wall'],
   ['sideboard', 'Sideboard', ['sideboard'], 30, 54.5, 19, 'floor'],
   ['sbCandle', 'Candle', ['candle'], 24.8, 47.2, 3.4, 'on', 'sideboard'], ['sbBooks', 'Books', ['books'], 30.6, 47.2, 6, 'on', 'sideboard'], ['sbPlant', 'Plant', ['splant'], 36.4, 47.2, 4.8, 'on', 'sideboard'],
-  ['main', 'Sofa or bed', ['main'], 50, 58.5, 26, 'floor'], ['cush1', 'Cushion', ['cushion'], 43, 52.6, 6.4, 'on', 'main'], ['cush2', 'Cushion', ['cushion'], 57.2, 52.6, 6.4, 'on', 'main'], ['throw', 'Blanket', ['throw'], 61, 55.6, 9.4, 'on', 'main'],
+  ['main', 'Sofa or bed', ['main'], 50, 58.5, 26, 'floor'], ['cush1', 'Cushion', ['cushion'], 43, 52.6, 6.4, 'on', 'main'], ['cush2', 'Cushion', ['cushion'], 57.2, 52.6, 6.4, 'on', 'main'], ['throw', 'Blanket', ['throw'], 62.4, 55.6, 8.6, 'on', 'main'],
   ['rugA', 'Rug', ['rugA'], 50, 69.5, 38, 'rug'],
   ['ctable', 'Coffee table', ['ctable'], 50, 69, 16, 'floor'], ['mug', 'Mug', ['mug'], 45.8, 64.8, 3.8, 'on', 'ctable'], ['cbooks', 'Books', ['books'], 51.4, 64.8, 6, 'on', 'ctable'], ['cplantS', 'Small plant', ['splant'], 56.6, 64.8, 4.6, 'on', 'ctable'],
-  ['lamp', 'Floor lamp', ['lamp'], 68.5, 57, 7, 'floor'], ['stool', 'Stool', ['stool'], 64, 63.5, 6.4, 'floor'],
-  ['chairs', 'Chairs', ['chairs'], 27, 70.8, 30, 'floor'], ['dtable', 'Dining table', ['dtable'], 27, 71.6, 21, 'floor'], ['runner', 'Table runner', ['runner'], 27, 71.6, 21, 'runnerOn', 'dtable'], ['tplant', 'Plant for the table', ['splant'], 27, 64.2, 5.6, 'on', 'dtable'],
-  ['rugB', 'Round rug', ['rugB'], 73.5, 78.5, 24, 'rug'], ['stool2', 'Stool', ['stool'], 48, 79.5, 6.4, 'floor'], ['pet', 'Pet', ['pet'], 58, 79.5, 8, 'floor'],
-  ['sidetable', 'Side table', ['sidetable'], 88.5, 66, 12, 'floor'], ['obook', 'Open book', ['openbook'], 86.4, 59.6, 6.4, 'on', 'sidetable'], ['bottles', 'Bottles', ['bottles'], 90.8, 59.6, 6, 'on', 'sidetable'],
-  ['cplant', 'Tall plant', ['cplant', 'fplant'], 87.5, 54, 8.5, 'floor'], ['fplant', 'Plant', ['fplant', 'cplant'], 8.5, 78.5, 11, 'floor'], ['curio', 'Something special', ['curio'], 40, 79.5, 7.5, 'floor']
+  ['lamp', 'Floor lamp', ['lamp'], 67.5, 56.5, 7, 'floor'], ['stool', 'Stool', ['stool'], 60, 62.4, 6, 'floor'],
+  ['sidetable', 'Side table', ['sidetable'], 77, 56.5, 10, 'floor'], ['obook', 'Open book', ['openbook'], 74.2, 51, 5.2, 'on', 'sidetable'], ['bottles', 'Bottles', ['bottles'], 78.4, 51, 5, 'on', 'sidetable'],
+  ['cplant', 'Tall plant', ['cplant', 'fplant'], 82.9, 52, 6.6, 'floor'],
+  ['chairs', 'Chairs', ['chairs'], 28.5, 72.6, 27, 'floor'], ['dtable', 'Dining table', ['dtable'], 28.5, 73.4, 19.5, 'floor'], ['runner', 'Table runner', ['runner'], 28.5, 73.4, 19.5, 'runnerOn', 'dtable'], ['tplant', 'Plant for the table', ['splant'], 28.5, 66.6, 5.2, 'on', 'dtable'],
+  ['rugB', 'Round rug', ['rugB'], 70, 79.5, 24, 'rug'], ['stool2', 'Stool', ['stool'], 42, 79.6, 6, 'floor'], ['pet', 'Pet', ['pet'], 52, 79.6, 8, 'floor'],
+  ['fplant', 'Plant', ['fplant', 'cplant'], 17, 79.6, 9, 'floor'], ['curio', 'Something special', ['curio'], 31, 79.6, 7, 'floor'], ['curio2', 'Something special', ['curio'], 88, 79.6, 7, 'floor']
 ];
 const hSlot = id => HSLOTS.find(s => s[0] === id);
 const hSlotActive = s => { if (!s[7]) return true; const par = P.home.slots[s[7]]; return !!par && homeItemSub(par); };
-const hSlotZ = s => { const par = s[7] ? hSlot(s[7]) : null; return s[6] === 'wall' ? 8 : s[6] === 'rug' ? 3 : par ? 11 + Math.round(par[4]) + 1 : (s[0] === 'chairs' ? 8 : 10) + Math.round(s[4]); };
+const hSlotZ = s => { const par = s[7] ? hSlot(s[7]) : null; return s[6] === 'wall' ? 8 : s[6] === 'rug' ? 3 : s[6] === 'runnerOn' ? 10 + Math.round(par[4]) + 1 : par ? 12 + Math.round(par[4]) + 1 : (s[0] === 'chairs' ? 8 : 10) + Math.round(s[4]); };
 
 /* ----- the profile: a new home starts with the basic pieces; an older home keeps every piece (it moves to the slot of its kind, the extras wait in storage) ----- */
 function homeInit() {
@@ -6250,16 +6253,17 @@ function rmShell() {
 
 /* ----- drawing the room: the pieces that stand in the slots, the "+" marks, the fixed rewards ----- */
 let hmEdit = false, hmSlotOpen = null;
-const hmArt = id => { const it = ROOM_ITEMS[id] || {}, s = SHOP[id]; return it.draw ? it.draw() : s.em; };
+const hmArt = id => { const it = ROOM_ITEMS[id] || {}, s = SHOP[id]; if (id === 'd_rug') return HART.rugA({ c: '#e5546b', s: 'stripes' }); return it.draw ? it.draw() : s.em; };
 function hmItem(sl, id) {
   const d = rmDepth(sl[4]), w = sl[6] === 'floor' || sl[6] === 'rug' ? sl[5] * d : sl[5], wall = sl[6] === 'wall', rug = sl[6] === 'rug', art = hmArt(id), isSvg = String(art).startsWith('<svg'), z = hSlotZ(sl);
   const tf = wall || rug ? 'translate(-50%,-50%)' : 'translate(-50%,-100%)', flat = rug && isSvg && !String(art).includes('class="hArt"'), inner = isSvg ? (flat ? `<span style="display:block;transform:scaleY(.5)">${art}</span>` : art) : `<span style="display:block;font-size:calc(var(--u)*${w.toFixed(2)});line-height:1;text-align:center">${art}</span>`;
   let x = sl[3], y = sl[4];
-  if (sl[6] === 'runnerOn') { return `<button class="hmI" data-slot="${sl[0]}" aria-label="${esc(SHOP[id].en)}" style="left:${x}%;top:${y * 1.25}%;width:calc(var(--u)*${(sl[5] * d).toFixed(2)});transform:translate(-50%,-100%);z-index:${z + 1}">${inner}</button>`; }
+  if (sl[6] === 'runnerOn') { return `<button class="hmI" data-slot="${sl[0]}" aria-label="${esc(SHOP[id].en)}" style="left:${x}%;top:${y * 1.25}%;width:calc(var(--u)*${(sl[5] * d).toFixed(2)});transform:translate(-50%,-100%);z-index:${z}">${inner}</button>`; }
   return `<button class="hmI${rug ? ' hmRug' : ''}" data-slot="${sl[0]}" aria-label="${esc(SHOP[id].en)}" style="left:${x}%;top:${y * 1.25}%;width:calc(var(--u)*${w.toFixed(2)});transform:${tf};z-index:${z}">${inner}</button>`;
 }
 function hmPlus(sl) { const d = rmDepth(sl[4]), up = sl[6] === 'wall' || sl[6] === 'rug' ? 0 : (sl[6] === 'on' ? 1.6 : (sl[5] * d * .3)); return `<button class="hmPlus" data-slot="${sl[0]}" aria-label="Add: ${esc(sl[1])}" style="left:${sl[3]}%;top:${(sl[4] - up) * 1.25}%">+</button>`; }
-const HRES = { r_plaque: [42.2, 10.2], r_banner: [61.5, 12], r_cert1: [24.6, 32.2], r_cert2: [29.4, 32.2], r_cert3: [34.2, 32.2], r_cert4: [39, 32.2], r_cert5: [43, 33.5], r_starlamp: [50.5, 40], r_trophy: [93, 77], r_crystal: [93.5, 71.5], r_statue: [11, 66] };
+const HRES = { r_plaque: [40.4, 9.6], r_cert1: [24, 32], r_cert2: [28.4, 32], r_cert3: [32.8, 32], r_cert4: [37.2, 32], r_cert5: [41.2, 32], r_starlamp: [50.5, 40] };
+for (const id of ['r_cert1', 'r_cert2', 'r_cert3', 'r_cert4', 'r_cert5']) if (ROOM_ITEMS[id]) ROOM_ITEMS[id].b = 4.4;   // the certificates are small, so five of them fit on the wall
 for (const [id, [x, y]] of Object.entries(HRES)) if (ROOM_ITEMS[id]) { ROOM_ITEMS[id].x = x; ROOM_ITEMS[id].y = y; }
 Object.assign(ROOM_ITEMS.r_bookshelf, { t: 'wall', b: 6.5, x: 33, y: 39.8, draw: () => `<span style="opacity:${P && P.bookShelved ? 1 : .4};display:block">${HART.bookOnShelf()}</span>` });
 const rmPlacedIds = () => Object.keys(ROOM_ITEMS).filter(id => /^r_/.test(id) && !HK_EXTRA[id] && P.own.decor.includes(id));   // only the level rewards are drawn by the old code; they stand in fixed places
