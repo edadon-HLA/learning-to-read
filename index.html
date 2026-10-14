@@ -531,7 +531,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .tut-hl.tutOpt{box-shadow:0 0 0 3px #ffd166,0 0 18px #ffd166aa}
 .rulesPow{align-items:flex-start!important}.rulesPow small{opacity:.85;font-size:.82rem;line-height:1.3;display:block;margin-top:2px}.rulesPow b{font-size:1.15rem;white-space:nowrap}
 .rulesList p{margin:0;flex:1;min-width:0}
-.stage.exam.conjure .exProf{position:absolute;right:1%;bottom:8px;width:29%;max-width:132px;z-index:2;pointer-events:none}.exProf svg{width:100%;height:auto;display:block;overflow:visible}
+.stage.exam .exProf{position:absolute;right:1%;bottom:8px;width:29%;max-width:132px;z-index:2;pointer-events:none}.exProf svg{width:100%;height:auto;display:block;overflow:visible}
 .exConjPed{width:112px;max-width:100%;margin-left:auto;margin-right:auto}.exConjPed svg{width:100%;height:auto;display:block}
 .stage.exam.conjure .side.foe{padding-top:6px}
 .stage.exam .mid{height:100%}
@@ -1981,9 +1981,12 @@ function distinctSpells(set) {
   for (const w of set) for (const f of FEEL[w.el]) { if (seen.has(f)) return false; seen.add(f); }
   return true;
 }
+function exWeak(bank, mon) {   // the weakness spells of the dummy that were not used on it yet (the test needs a different spell for each hit)
+  const e = EL[mon.el], all = bank.filter(w => e.weak.includes(w.el)), un = all.filter(w => !((mon.usedEl || []).includes(w.el))); return un.length ? un : all;
+}
 function qSpell(t) {
   const mon = G.mon, e = EL[mon.el], bank = t >= 12 ? PHRASE : SPELL;   // levels 8-11: single words, 12-13: two-word phrases
-  const eff = bank.filter(w => e.weak.includes(w.el)), heal = bank.filter(w => e.heal.includes(w.el));
+  const eff = exWeak(bank, mon), heal = bank.filter(w => e.heal.includes(w.el));
   const neu = bank.filter(w => !e.weak.includes(w.el) && !e.heal.includes(w.el));
   // Level 8: three spells (one hurts it, one heals it, one does nothing). From level 9: four (one hurts, one heals, two do nothing).
   // No two spells may be alike in meaning (e.g. fire + sun are both hot and bright), so each one is easy to tell apart.
@@ -2054,7 +2057,7 @@ function qHelp(t) {
 }
 function qWriteSpell(t) {
   const mon = G.mon, e = EL[mon.el], bank = t === 15 ? SPELL : PHRASE;
-  const eff = bank.filter(w => e.weak.includes(w.el)), first = wpick(eff, w => 'W:' + w.he, G.lastKey);
+  const eff = exWeak(bank, mon), first = wpick(eff, w => 'W:' + w.he, G.lastKey);
   return { kind: 'write', key: 'W:' + first.he, lastKey: 'W:' + first.he, accept: eff.map(w => w.he), keyOf: s => 'W:' + s,
     title: `A ${e.badge} ${e.label} monster! Write a spell in Hebrew that beats it.`, big: mon.name, bigSm: true,
     sub: `Write any one of these (no vowel marks needed):`,
@@ -2072,7 +2075,7 @@ function qWriteHelp(t) {
 // Two extra tiles are wrong on purpose. A wrong order shakes the slots and does not show the answer. In a fight the phrase is cast as the spell; in a village it is the sign.
 const tilePool = (list, skipWords) => [...new Set(list.flatMap(w => w.he.split(' ')))].filter(x => !skipWords.includes(x));
 function qTilesSpell() {
-  const mon = G.mon, e = EL[mon.el], eff = PHRASE.filter(w => e.weak.includes(w.el)), t = wpick(eff, w => 'W:' + w.he, G.lastKey), [a, b] = t.he.split(' ');
+  const mon = G.mon, e = EL[mon.el], eff = exWeak(PHRASE, mon), t = wpick(eff, w => 'W:' + w.he, G.lastKey), [a, b] = t.he.split(' ');
   const extra = shuffle(tilePool(PHRASE.filter(w => w !== t), [a, b])).slice(0, 2), spell = { el: t.el, kind: PHRASE_KIND[t.he] || 'word' };
   return { kind: 'tiles', soft: true, key: 'W:' + t.he, lastKey: 'W:' + t.he, w1: a, w2: b, tiles: shuffle([a, b, ...extra]),
     title: `A ${e.badge} ${e.label} monster! Build a spell that beats it.`, big: t.em, bigSm: true, sub: `Tap the two words in the right order: "${t.en}"`,
@@ -5246,8 +5249,8 @@ function hatDeco_p3(k, color, f, uid) {   // what a tier hat adds to the plain w
   if (k === 5) return `<path d="M33 37 L38 23 L47 32 L55 18 L63 31 L71 20 L79 32 L88 24 L88 38 Q60 47 33 38Z" fill="#ffd166" stroke="#b07d17" stroke-width="1.1"/><circle cx="55" cy="28" r="2" fill="#e5546b"/><circle cx="71" cy="29" r="2" fill="#4aa8ff"/><circle cx="46" cy="33" r="1.5" fill="#3ddc97"/><circle cx="80" cy="33.5" r="1.5" fill="#3ddc97"/><ellipse cx="72" cy="-14" rx="15" ry="3.8" fill="none" stroke="#ffe27a" stroke-width="2.4" opacity=".95"/>`;
   return '';
 }
-const examinerSVG = witch => {
-  const robe = witch ? '#2f6f5e' : '#4a3a8c', hat = witch ? '#3b2f6e' : '#2d4f8a';
+const examinerSVG = (witch, alt) => {
+  const robe = alt ? '#9a3a2f' : witch ? '#2f6f5e' : '#4a3a8c', hat = alt ? '#5a2a3e' : witch ? '#3b2f6e' : '#2d4f8a';
   const face = witch ? '<path d="M48 52 Q38 92 52 110 Q58 94 56 66Z" fill="#cfcfd8"/><path d="M92 52 Q102 92 88 110 Q82 94 84 66Z" fill="#cfcfd8"/><circle cx="70" cy="34" r="8" fill="#cfcfd8"/>' : '<path d="M50 62 Q52 100 70 110 Q88 100 90 62 Q80 78 70 74 Q60 78 50 62Z" fill="#f4f4f4"/><path d="M58 66 Q70 72 82 66 Q70 62 58 66Z" fill="#dcdcdc"/>';
   return `<svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="70" cy="144" rx="36" ry="5" fill="#000" opacity=".25"/>
   <path d="M32 144 Q34 88 70 80 Q106 88 108 144Z" fill="${robe}"/><path d="M60 84 L70 144 L80 84Z" fill="#fff" opacity=".16"/><rect x="34" y="130" width="72" height="6" fill="#e0b84a" opacity=".85"/>
@@ -5301,7 +5304,7 @@ function startExam(kind, practice) {
   $('#aura').innerHTML = ''; $('#aura').style.display = 'none'; $('#heroBox').classList.remove('hurt', 'heroGlow'); $('#foeBody').style.filter = '';
   ['#potBar', '#itemBar'].forEach(s => { $(s).style.display = 'none'; }); $('#abandonBtn').style.display = 'none'; $('#craftPic').style.display = 'none';
   $('#tierLbl').textContent = (practice ? 'Practice for the test: ' : 'Test of Proficiency: ') + WZ.TITLES[ti]; $('#xpFill').style.width = '0%';
-  $('#mid').innerHTML = `<div class="exBoard">${kind === 'fight' ? `<div class="exWho">${examinerSVG(exWitch())}</div>` : ''}<div class="exMid"><div class="exScroll" id="exScroll"></div><div class="bubble exBubble" id="bubble"></div></div><div class="exGlass" id="exGlass"></div></div><div class="exRow" id="exRow"></div>`;
+  $('#mid').innerHTML = `<div class="exBoard"><div class="exMid"><div class="exScroll" id="exScroll"></div><div class="bubble exBubble" id="bubble"></div></div><div class="exGlass" id="exGlass"></div></div><div class="exRow" id="exRow"></div>`;
   examNext(true);
 }
 function examPaint() {
@@ -5860,21 +5863,21 @@ const exFxSvg = (el, on) => {
   }[el] || '';
   return g + (on ? '<circle r="17" fill="none" stroke="#ffd166" stroke-width="2.4" class="exPulse"/>' : '');
 };
-const exSlots = n => n === 1 ? [[70, 99]] : n === 2 ? [[40, 84], [100, 84]] : [[40, 84], [70, 102], [100, 84]];
-const dummySVG = (dd, k, grand) => {   // dd = { w: [elements], ans: [booleans] }; k = the weakness being asked (or -1)
-  const pos = exSlots(dd.w.length), tint = dd.w[0] ? EX_COL[dd.w[0]] : '#999';
-  const fx = dd.w.map((el, j) => { if (dd.ans[j] === true) return ''; const bad = dd.ans[j] === false; return `<g transform="translate(${pos[j][0]} ${pos[j][1]}) scale(1.15)" opacity="${bad ? .35 : 1}">${exFxSvg(el, j === k)}${bad ? '<path d="M-9 -9 L9 9 M9 -9 L-9 9" stroke="#e5546b" stroke-width="3"/>' : ''}</g>`; }).join('');
-  return `<svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="70" cy="140" rx="${grand ? 40 : 32}" ry="5" fill="#000" opacity=".3"/>
+const exSlots = [[40, 86], [70, 102], [100, 86]];   // the dummy shows its ONE element in three places on its body
+const dummySVG = (dd, grand) => {   // dd = { el, k: hits needed, ans: [booleans], used: [spell elements already used] }
+  const col = EX_COL[dd.el] || '#999', fx = exSlots.map(([x, y]) => `<g transform="translate(${x} ${y}) scale(1.2)">${exFxSvg(dd.el, false)}</g>`).join('');
+  const pips = Array.from({ length: dd.k }, (_, j) => { const a = dd.ans[j], cx = 70 + (j - (dd.k - 1) / 2) * 16, cur = j === dd.ans.length;   // one marker for each hit that is needed
+    return a === true ? `<circle cx="${cx}" cy="154" r="6" fill="#ffd166" stroke="#a8761a" stroke-width="1.4"/>` : a === false ? `<circle cx="${cx}" cy="154" r="6" fill="#3a1a1a" stroke="#e5546b" stroke-width="1.4"/><path d="M${cx - 3} 151 L${cx + 3} 157 M${cx + 3} 151 L${cx - 3} 157" stroke="#e5546b" stroke-width="1.6"/>` : `<circle cx="${cx}" cy="154" r="6" fill="#ffffff22" stroke="${cur ? '#ffd166' : '#fff8'}" stroke-width="${cur ? 2.2 : 1.4}"${cur ? ' class="exPulse"' : ''}/>`; }).join('');
+  return `<svg viewBox="0 0 140 164" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="70" cy="95" rx="52" ry="58" fill="${col}" opacity=".22"/><ellipse cx="70" cy="140" rx="${grand ? 40 : 32}" ry="5" fill="#000" opacity=".3"/>
   <rect x="64" y="74" width="12" height="66" fill="#8a6a3a"/><rect x="26" y="78" width="88" height="11" rx="4" fill="#8a6a3a"/>
   <path d="M46 72 Q70 62 94 72 L100 116 Q70 126 40 116Z" fill="#cdb98a" stroke="#0005" stroke-width="2"/>
   <circle cx="70" cy="48" r="20" fill="#e8d28a" stroke="#a8803a" stroke-width="2"/><path d="M58 42 l7 7 M65 42 l-7 7 M75 42 l7 7 M82 42 l-7 7" stroke="#5a3c14" stroke-width="2.4" stroke-linecap="round"/><path d="M60 58 Q70 64 80 58" stroke="#5a3c14" stroke-width="2.2" fill="none"/>
-  ${grand ? '<path d="M44 34 L52 14 L62 28 L70 8 L78 28 L88 14 L96 34Z" fill="#ffd166" stroke="#b07d17" stroke-width="1.5"/>' : '<path d="M52 32 Q70 22 88 32 L84 38 Q70 30 56 38Z" fill="#8a6a3a"/>'}${fx}</svg>`;
+  ${grand ? '<path d="M44 34 L52 14 L62 28 L70 8 L78 28 L88 14 L96 34Z" fill="#ffd166" stroke="#b07d17" stroke-width="1.5"/>' : '<path d="M52 32 Q70 22 88 32 L84 38 Q70 30 56 38Z" fill="#8a6a3a"/>'}${fx}${pips}</svg>`;
 };
 function exDrawDummy() {
-  const X = G.exam, dd = X.dums[X.d]; if (!dd) return; const k = dd.ans.length < dd.w.length ? dd.ans.length : -1;
-  $('#foeBody').innerHTML = dummySVG(dd, k, X.d === X.dums.length - 1 && dd.w.length > 1);
-  const icons = X.ti <= 2 && k >= 0 ? `${EL[dd.w[k]].badge}` : '';   // the lower tests also show the element icon above the dummy; the higher ones do not
-  $('#foeName').innerHTML = `Training dummy${icons ? ' ' + icons : ''}`;
+  const X = G.exam, dd = X.dums[X.d]; if (!dd) return;
+  $('#foeBody').innerHTML = dummySVG(dd, X.d === X.dums.length - 1 && dd.k > 1);
+  $('#foeName').innerHTML = `${EL[dd.el].badge && X.ti <= 2 ? EL[dd.el].badge + ' ' : ''}Training dummy`;   // the lower tests also show the element icon; the higher ones do not
 }
 function examPaint() {
   const X = G.exam; if (!X) return;
@@ -5883,23 +5886,23 @@ function examPaint() {
   $('#exScroll').innerHTML = Array.from({ length: X.n }, (_, k) => `<i class="${k < X.i ? (X.res[k] ? 'ok' : 'bad') : k === X.i ? 'cur' : ''}"></i>`).join('');
   $('#exGlass').innerHTML = hourglassSVG(X.i / X.n);
   const row = $('#exRow');
-  if (X.kind === 'fight') { const ds = X.dums || []; row.innerHTML = ds.map((d, idx) => `<span class="exDum ${idx < X.d ? 'done' : idx === X.d ? 'cur' : ''}" style="--c:${EX_COL[d.w[0]]}" title="${d.w.length} weakness${d.w.length > 1 ? 'es' : ''}">${'●'.repeat(0)}</span>`).join(''); }
+  if (X.kind === 'fight') { const ds = X.dums || []; row.innerHTML = ds.map((d, idx) => `<span class="exDum ${idx < X.d ? 'done' : idx === X.d ? 'cur' : ''}" style="--c:${EX_COL[d.el]}" title="${d.k} hit${d.k > 1 ? 's' : ''}">${'●'.repeat(0)}</span>`).join(''); }
   else row.innerHTML = '';   // nothing piles up on the ground
 }
 const exConjSvg = item => `<div class="exConjPed">${pedestalSVG('')}${item ? `<div class="exBigItem">${item}</div>` : ''}</div>`;   // the pedestal; the big item sits on its orb
-const exProfShow = () => { if (!$('#exProf')) $('#mid').insertAdjacentHTML('beforeend', `<div class="exProf" id="exProf">${examinerSVG(exWitch())}</div>`); };   // the professor stands on the right, in full
+const exProfShow = () => { if (!$('#exProf')) $('#mid').insertAdjacentHTML('beforeend', `<div class="exProf" id="exProf">${examinerSVG(exWitch(), G.exam && G.exam.kind === 'fight')}</div>`); };   // the professor stands on the right, in full
 const exProfReact = () => { try { const p = $('#exProf'); p.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(-12px) rotate(-3deg)' }, { transform: 'translateY(0)' }], { duration: 520 }); } catch (e) {} };
 function examNext(first) {
   const X = G.exam; X.res = X.res || [];
   if (X.kind === 'fight') {
     if (!X.dums) {   // the dummies of this test: each one has its own weaknesses, and together they make up the questions
       const set = EX_W[X.ti] || [1], els = Object.keys(EL); X.dums = []; let left = X.n;
-      while (left > 0) { let w = set[Math.floor(Math.random() * set.length)]; if (w > left) w = left; X.dums.push({ w: shuffle(els.slice()).slice(0, w), ans: [] }); left -= w; }
+      while (left > 0) { let w = set[Math.floor(Math.random() * set.length)]; if (w > left) w = left; const prev = X.dums.length ? X.dums[X.dums.length - 1].el : ''; const cand = els.filter(e => e !== prev && EL[e].weak.length >= w); X.dums.push({ el: rnd(cand.length ? cand : els.filter(e => EL[e].weak.length >= w)), k: w, ans: [], used: [] }); left -= w; }   // a dummy needs as many different weakness spells as its element has (3 only for fire, shadow and stone)
       X.d = 0;
     }
-    const dd = X.dums[X.d], k = dd.ans.length, el = dd.w[k]; X.el = el;
-    G.mon = { key: 'dummy', name: 'Training dummy', el, boss: false, max: 1, hp: 1 };
-    $('#foeBody').className = 'foeBody'; exDrawDummy();
+    const dd = X.dums[X.d], el = dd.el; X.el = el;
+    G.mon = { key: 'dummy', name: 'Training dummy', el, boss: false, max: 1, hp: 1, usedEl: dd.used };   // the spells already used on this dummy are not asked again
+    $('#foeBody').className = 'foeBody'; exDrawDummy(); exProfShow();
   } else { $('#foeName').textContent = ''; $('#foeBody').className = 'foeBody'; $('#foeBody').innerHTML = exConjSvg(''); exProfShow(); }
   examPaint(); examQ();
 }
@@ -5907,9 +5910,10 @@ async function examAnswer(ok, btn, q, o) {
   const X = G.exam; X.i++; X.res.push(ok);
   if (X.kind === 'fight') {
     const dd = X.dums[X.d]; dd.ans.push(ok);
+    if (ok) { try { const sp = (o && o.spell && o.spell.el) || ((q.accept && [...SPELL, ...PHRASE].find(w => q.accept.some(a => sameTyped(a, G.typed || '')) && sameTyped(w.he, (q.accept.find(a => sameTyped(a, G.typed || '')) || ''))) || {}).el); if (sp) dd.used.push(sp); } catch (e) {} }
     if (ok) { X.ok++; sfx.ok(); if (btn && btn.classList) btn.classList.add('good'); try { await castSpell(o || { em: '✨' }); } catch (e) {} sfx.hit(); burst('✨', 8); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); }
     else { X.bad++; X.missed.push(examWord(q)); sfx.bad(); if (btn && btn.classList) btn.classList.add('bad'); $('#fb').textContent = ''; }
-    exDrawDummy(); const full = dd.ans.length >= dd.w.length;
+    exDrawDummy(); const full = dd.ans.length >= dd.k;
     if (full && dd.ans.every(Boolean)) { burst('💥', 5); $('#foeBody').classList.add('die'); }
     examPaint(); await sleep(full ? 1100 : 800); if (full) X.d++;
   } else {
@@ -5932,7 +5936,7 @@ async function examAnswer(ok, btn, q, o) {
 }
 function examQ() {   // the next question of the test: the same questions as in a fight or a village, with the wording of an exam
   const X = G.exam; G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = true; G.snap = null; G.optSound = false; const q = G.q;
-  if (X.kind === 'fight') { q.title = X.ti <= 2 ? `Hit the weakness ${EL[X.el].badge} with the right spell!` : 'Which spell hits the glowing weakness?'; q.big = q.big === G.mon.name ? '' : q.big; q.bigSm = true; q.sub = q.kind === 'choice' ? 'Read the spells and pick the one that works.' : q.sub; }
+  if (X.kind === 'fight') { const dd = X.dums[X.d], hit = dd.ans.length + 1; q.title = (X.ti <= 2 ? `The ${EL[X.el].badge} dummy! Pick a spell it is weak to.` : 'Pick a spell this dummy is weak to.') + (dd.k > 1 ? ` Hit ${hit} of ${dd.k}: a different spell each time!` : ''); q.big = q.big === G.mon.name ? '' : q.big; q.bigSm = true; q.sub = q.kind === 'choice' ? 'Read the spells and pick the one that works.' : q.sub; }
   else {
     const riddle = Math.random() < 0.35;   // some requests are a riddle (the village clue), most simply say what to conjure
     q.title = riddle ? `${exName()} has a riddle. What should you conjure?` : `${exName()} says: conjure it!`; q.sub = q.kind === 'choice' ? 'Pick the right one to conjure.' : q.sub;
