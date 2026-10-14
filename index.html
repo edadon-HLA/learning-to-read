@@ -508,6 +508,28 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 #tierLbl{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.8rem;line-height:1.15}
 @media (max-width:560px){.stage{min-height:clamp(200px,33vh,330px)}.potBar{margin:2px auto}.fb{min-height:1.8em;margin-top:4px}.qsub{margin-bottom:4px}}
 @media (max-height:700px){.side svg{height:112px}.hearts{font-size:1.1rem}.mid{font-size:.8rem}.panel{padding:8px}.opt{min-height:52px;font-size:1.75rem}.opt.w{font-size:1.35rem}}
+/* "Admin and teacher" features */
+.setHead{font-weight:700;font-size:.9rem;margin:10px 0 4px;opacity:.85}
+.warnBox{background:#ff9f1c33;border:1px solid #ff9f1c88;border-radius:10px;padding:6px 10px;margin:6px 0;font-size:.85rem}
+.bkCls{background:#ffd16622;border:1px solid #ffd16688;border-radius:10px;padding:8px 10px;margin:8px 0;font-size:.92rem}.bkCls select,.bkCls input{font:inherit;padding:6px 8px;border-radius:8px;border:2px solid #fff4;background:#0004;color:#fff}
+.bkTbl{width:100%;border-collapse:collapse;font-size:.9rem}.bkTbl th,.bkTbl td{padding:4px 8px;text-align:left;border-bottom:1px solid #fff2}
+.bkTbl tr.bad td{opacity:.6;background:#ff6a5a18}.bkTbl tr.new td{background:#ffd16618}.bkTbl tr.ok td:nth-child(4){color:#7dffb0}
+.exitDoor{position:absolute;left:50%;bottom:5px;transform:translateX(-50%);z-index:70;min-width:56px;min-height:60px;padding:2px 6px 1px;border:2px solid #ffffff55;border-radius:12px;background:#1d1547cc;color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font:700 .62rem system-ui;box-shadow:0 3px 8px #0006}
+.exitDoor svg{width:30px;height:38px}.exitDoor:active{transform:translateX(-50%) scale(.94)}.exitDoor:focus-visible{outline:3px solid #ffd166}
+#mBtns button:first-child:not(.ghost){font-size:1.15rem;padding:15px 28px;min-height:56px}
+.bolts{letter-spacing:-1px;white-space:nowrap}
+.rulesList{display:flex;flex-direction:column;gap:7px;margin:4px 0}.rulesList div{display:flex;align-items:center;gap:10px;background:#ffffff14;border-radius:10px;padding:8px 10px;font-size:.98rem}.rulesList span{font-size:1.5rem;width:1.7rem;text-align:center;flex:none}
+.exMarkI{font-style:normal;display:inline-block;width:20px;height:20px;border:2px solid #ff6a5a;border-radius:5px;text-align:center;line-height:16px;color:#ff6a5a;margin-left:3px;font-size:.8rem}
+.stage.exam .hpbar{display:none}
+.stage.exam .side.foe{padding-top:30px}
+.exPulse{animation:exPulse 1.1s ease-in-out infinite;transform-origin:center}@keyframes exPulse{50%{transform:scale(1.25);opacity:.45}}
+.fxFire{animation:fxFlick .5s ease-in-out infinite alternate;transform-origin:0 11px}@keyframes fxFlick{to{transform:scaleY(1.12) skewX(3deg)}}
+.fxIce{animation:fxShim 1.8s ease-in-out infinite}@keyframes fxShim{50%{opacity:.7}}
+.fxDark{animation:fxBob 2s ease-in-out infinite}@keyframes fxBob{50%{transform:translateY(-2px)}}
+.fxStorm{animation:fxZap .9s steps(2) infinite}@keyframes fxZap{50%{opacity:.55}}
+.exConj{position:relative;width:170px;height:135px;display:block}.exConjWho{position:absolute;left:-6%;top:-6%;width:62%}.exConjPed{position:absolute;right:-8%;bottom:-4%;width:66%}.exConjWho svg,.exConjPed svg{width:100%;height:auto;display:block}
+.tutOpt{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}.tutEn{font:600 .72rem system-ui;opacity:.85;letter-spacing:.02em}
+.tut-hl.tutOpt{box-shadow:0 0 0 3px #ffd166,0 0 18px #ffd166aa}
 </style>
 <style id="p3css">
 /* Patch 3: the level badge, the Academy, the test */
@@ -557,7 +579,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .shRoomPrev{display:grid;place-items:center;width:9rem;height:6.5rem;margin:0 auto;border-radius:12px;position:relative;overflow:hidden;background:linear-gradient(#46397f 55%,#a77649 55%)}.rpItem{font-size:3.4rem;line-height:1;position:relative;top:.6rem}
 .shRobeBig svg{width:5rem!important;height:6.8rem!important}
 /* Patch 3: the lab, the anvil and the cauldron */
-.anvilBox{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);width:27%;max-width:190px;z-index:4;pointer-events:none}
+.anvilBox{position:absolute;left:50%;bottom:3%;transform:translateX(-50%);width:34%;max-width:230px;z-index:4;pointer-events:none}
 .anvilArt svg{display:block;width:100%;height:auto}.anvilBox.thump .anvilArt{animation:thump .28s}
 @keyframes thump{0%{transform:translateY(0)}35%{transform:translateY(3px) scale(1.02,.97)}100%{transform:translateY(0)}}
 .hammer{position:absolute;left:8%;top:-62%;width:62%;transform-origin:78% 90%;transform:rotate(-34deg)}.hammer svg{display:block;width:100%;height:auto}
@@ -586,7 +608,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .prop.floaty .em{animation:starFloat 2.6s ease-in-out infinite}@keyframes starFloat{50%{transform:translateY(calc(var(--u)*-.8))}}
 </style>
 </head>
-<body><div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e63946;color:#fff;font:700 11px sans-serif;text-align:center;padding:2px;pointer-events:none">🧪 TEST VERSION - test school code TST-1, not the real game</div>
+<body><div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#e63946;color:#fff;font:700 11px sans-serif;text-align:center;padding:2px;pointer-events:none">🧪 TEST VERSION (Patch 3 + 4) - test school code TST-1, not the real game</div>
 
 <section id="gate" class="screen on">
   <h1>🔒 Learning to Read</h1>
@@ -645,6 +667,13 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div class="tblwrap"><table id="sysTable"></table></div>
     <div class="msg" id="sysMsg" style="min-height:1.2em"></div>
   </div>
+  <div class="card" id="sysDemoCard"><b>🧪 Demo run</b><p class="small" style="margin:6px 0;opacity:.85">Try the game as a pretend student: pick any level, jump to the workshop, shop or home, start a quest, give yourself items. Nothing is saved and no student is changed. It works without any school.</p><button class="btn" id="sysDemo">▶ Start a demo run</button></div>
+  <div class="card" id="sysSound">
+    <b>🎙️ Pronunciations: shared sets</b>
+    <p class="small" style="margin:6px 0;opacity:.85">Sets you record here are <b>shared with every school</b>. In each school's voice-set list they appear under “Shared sets (from SpellQuest)”. The school owner can listen and choose one for the students. If you delete a set, the schools that used it go back to the built-in voice.</p>
+    <div id="sysSets"></div>
+    <div class="row" style="justify-content:flex-start;margin-top:8px"><button class="btn" id="sysRec">🎙️ Open the recorder</button></div>
+  </div>
 </section>
 <section id="admin" class="screen" style="max-width:1000px">
   <div class="top">
@@ -660,6 +689,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="card" id="admClasses" style="display:none"></div>
   <div class="card" id="admWait" style="display:none"></div>
   <div class="card" id="admMoved" style="display:none"></div>
+  <div class="card" id="admBulk" style="display:none"></div>
   <div class="card">
     <div class="row" style="justify-content:space-between"><b>Students</b>
       <input id="admSearch" type="text" placeholder="Search name or number…" style="max-width:260px;padding:8px;font-size:1rem">
@@ -673,10 +703,10 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
   <div class="card" id="admDemoCard"><b>🧪 Demo run</b><p class="small" style="margin:6px 0;opacity:.85">Try the game as a pretend student: pick any level, jump to the workshop, shop or home, start a quest, give yourself items. Nothing is saved and no student is changed.</p><button class="btn" id="admDemo">▶ Start a demo run</button></div>
   <div class="card" id="admSound">
     <b>🎙️ Pronunciations</b>
-    <p class="small" style="margin:6px 0;opacity:.85">Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one.</p>
+    <p class="small" id="admSoundHelp" style="margin:6px 0;opacity:.85">Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one.</p>
     <div id="admSets"></div>
     <div class="row" style="justify-content:flex-start;margin-top:8px">
-      <a class="btn" id="admRec" href="recorder.html" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block">🎙️ Open the recorder</a>
+      <button class="btn" id="admRec">🎙️ Open the recorder</button>
     </div>
     <div class="small" style="opacity:.75">In the recorder: record the syllables, build the set, give it a name and press “Save set”. It appears here; nothing changes for students until you press “Use this”.</div>
   </div>
@@ -807,7 +837,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 
 <section id="home" class="screen" style="max-width:760px">
   <div class="top"><button class="ib" id="homeBack" title="Back to map">🗺️</button><div class="grow"><div class="whoRow"><div class="who">🏡 <span class="heb">בית</span> · Home</div><button class="wizBadge" data-wizlv="1" id="hWiz" title="Wizard level"></button></div><div class="small">Tap the cauldron to brew, the wardrobe to dress up, a shelf to look closer. Tap 🪑 Arrange to move, flip and put away your furniture.</div></div></div>
-  <div class="rScene" id="rmScene" aria-label="Your room"><svg class="rShell" id="rmShell" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg><div id="rmProps"></div><div class="rVig"></div></div>
+  <div class="rScene" id="rmScene" aria-label="Your room"><svg class="rShell" id="rmShell" viewBox="0 0 100 80" preserveAspectRatio="none" aria-hidden="true"></svg><div id="rmProps"></div><div class="rVig"></div><button class="exitDoor" data-exit="home" aria-label="Leave this room" title="Leave"><svg viewBox="0 0 40 52" aria-hidden="true"><rect x="3" y="2" width="34" height="48" rx="3" fill="#7a4a24" stroke="#3a210d" stroke-width="2"/><rect x="8" y="7" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><rect x="8" y="28" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><circle cx="30" cy="27" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/></svg><span>Exit</span></button></div>
   <div class="rBar"><button class="btn ghost" id="tidyBtn">🧹 Put everything back</button></div>
   <section class="rPanel" id="roomPanel" hidden aria-live="polite"></section>
   <div class="small center" style="opacity:.7;margin:10px 0">🪴 Furniture and pets are sold in the shop 🏪. When you buy one, it appears in your room.</div>
@@ -827,7 +857,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div id="shProps"></div>
     <svg class="shLayer" id="shCounter" viewBox="0 0 100 80" preserveAspectRatio="none" style="z-index:50;pointer-events:none" aria-hidden="true"></svg>
     <div id="shFront"></div>
-    <div class="rVig"></div>
+    <div class="rVig"></div><button class="exitDoor" data-exit="shop" aria-label="Leave this room" title="Leave"><svg viewBox="0 0 40 52" aria-hidden="true"><rect x="3" y="2" width="34" height="48" rx="3" fill="#7a4a24" stroke="#3a210d" stroke-width="2"/><rect x="8" y="7" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><rect x="8" y="28" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><circle cx="30" cy="27" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/></svg><span>Exit</span></button>
   </div>
   <div class="rBar" style="display:none"><button class="btn ghost" id="shBtnPots"><span class="potIco"></span> Potions</button><button class="btn ghost" id="shBtnWear">👗 Robes and accessories</button></div>
   <section class="rPanel" id="shopPanel" hidden></section>
@@ -885,7 +915,7 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
     <div id="wsProps"></div>
     <svg class="shLayer" id="wsCounter" viewBox="0 0 100 80" preserveAspectRatio="none" style="z-index:50;pointer-events:none" aria-hidden="true"></svg>
     <div id="wsFront"></div>
-    <div class="rVig"></div>
+    <div class="rVig"></div><button class="exitDoor" data-exit="ws" aria-label="Leave this room" title="Leave"><svg viewBox="0 0 40 52" aria-hidden="true"><rect x="3" y="2" width="34" height="48" rx="3" fill="#7a4a24" stroke="#3a210d" stroke-width="2"/><rect x="8" y="7" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><rect x="8" y="28" width="24" height="17" rx="2" fill="#935c30" stroke="#3a210d" stroke-width="1.2"/><circle cx="30" cy="27" r="2.2" fill="#ffd166" stroke="#7a5a10" stroke-width=".8"/></svg><span>Exit</span></button>
   </div>
   <div class="wsCards" id="wsCards"></div>
   <div class="small center" style="opacity:.7;margin:10px 0">🔮 You wear every item you make. Epic items can be upgraded to legendary.</div>
@@ -1173,7 +1203,12 @@ async function syncSounds(serverVer) {
       await idbDel('custom'); sprite = null; spritePromise = null; for (const k in clipCache) delete clipCache[k];
       await loadSprite(); return;
     }
-    const j = await (await fetch(CFG.SCRIPT_URL + '?action=getSound')).json();
+    let j = await (await fetch(CFG.SCRIPT_URL + '?action=getSound')).json();
+    if (j.ok && j.shared) {   // a shared set from SpellQuest: the school only keeps a pointer
+      let r = null; try { r = await (await fetch(CFG.REGISTRY_URL + '?action=getPublicSet&id=' + encodeURIComponent(j.shared))).json(); } catch (e2) {}
+      if (!r || !r.ok || !r.wav) { await idbDel('custom'); sprite = null; spritePromise = null; for (const k in clipCache) delete clipCache[k]; await loadSprite(); return; }   // the set was removed: back to the built-in voice
+      j = { ok: true, ver: j.ver, idx: r.idx, wav: r.wav };
+    }
     if (!j.ok || !j.ver || !j.wav) return;
     const bin = atob(j.wav), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     AC = AC || new (window.AudioContext || window.webkitAudioContext)();
@@ -1397,7 +1432,7 @@ function heroSVG(g, color, skinIn, hairIn, look) {
    <circle cx="60" cy="52" r="24" fill="${skin}"/>
    <ellipse cx="51" cy="50" rx="4.6" ry="5" fill="#fff"/><ellipse cx="69" cy="50" rx="4.6" ry="5" fill="#fff"/><circle cx="52" cy="51" r="2.6" fill="#2a2340"/><circle cx="70" cy="51" r="2.6" fill="#2a2340"/>
    <circle cx="43" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="77" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="60" cy="57" r="2.6" fill="${nose}"/>
-   <path d="M53 64 Q60 69 67 64" fill="none" stroke="${mouth}" stroke-width="2" stroke-linecap="round"/>${beard}${faceAcc}${brows}${lashes}${fringe}${hat}${look.hat ? hatDeco(look.hat, color, f, uid) : ''}${head}${pet}</svg>`;
+   <path d="M53 64 Q60 69 67 64" fill="none" stroke="${mouth}" stroke-width="2" stroke-linecap="round"/>${beard}${faceAcc}${brows}${lashes}${fringe}${look.hat >= 2 ? '' : hat}${look.hat ? hatDeco(look.hat, color, f, uid, dark) : ''}${head}${pet}</svg>`;
 }
 const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc, beard: p.beard, hat: (p.hat && p.hat <= (p.wt || 0)) ? p.hat : 0, gear: gearOf(p), pots: typeof POTION_IDS === 'undefined' ? [] : POTION_IDS.filter(id => ((p.pot || {})[id] || 0) + ((p.carry || {})[id] || 0) > 0) });
 // Villagers are people emoji: a skin-tone modifier goes right after the FIRST code point (before any zero-width joiner), e.g. 👩🏽‍🌾. Tones are dealt from a shuffled bag so they are evenly spread.
@@ -1522,7 +1557,7 @@ async function cloudSave() {
   } catch (e) { setCloud('off'); }
 }
 async function loadProfile(id) {
-  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false, movedNum = false;
+  let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false, movedNum = false, preregNum = false;
   try { const t = lsGet('tq_p_' + id); if (t) local = JSON.parse(t); } catch (e) {}
   if (CFG.SCRIPT_URL) {
     try {
@@ -1532,6 +1567,7 @@ async function loadProfile(id) {
       if (j.ok && j.deleted) deleted = true;
       if (j.ok && j.pending) pendingHero = true;
       if (j.ok && j.moved) movedNum = true;
+      if (j.ok && j.prereg) preregNum = true;
       if (j.ok && j.rejected) rejectedHero = true;
       if (j.ok && j.found && j.data) cloud = JSON.parse(j.data);
       if (j.ok) syncSounds(j.soundVer);   // in the background: pick up the teacher's custom sound set (or return to the built-in one)
@@ -1541,7 +1577,7 @@ async function loadProfile(id) {
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
   if (deleted) { try { localStorage.removeItem('tq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
-  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum };
+  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum, prereg: preregNum };
 }
 
 /* ====================== SCREENS / MODAL ====================== */
@@ -1583,6 +1619,7 @@ $('#loginBtn').onclick = async () => {   // 🏫 a school student types their nu
   if (r.profile && (r.profile.mode || 'school') === 'school') { P = r.profile; P.mode = 'school'; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
   if (r.deleted) { modal(tr('deletedH'), `<p>${tr('deletedP')}</p>`, [[tr('newBtn'), () => $('#newBtn').click()], [tr('ok'), null, true]]); return; }
   if (r.limited) { modal(tr('waitH'), `<p>${tr('waitP')}</p>`, [[tr('ok'), null]]); return; }
+  if (r.prereg) { pendingId = id; pendingReal = ''; pendingCls = ''; pendingMode = 'school'; lsSet('tq_last', id); modal(LANG === 'he' ? '🌟 ברוכים הבאים!' : '🌟 Welcome!', `<p>${LANG === 'he' ? 'המורה כבר רשמה אותך. בואו נכין את הקוסם שלך!' : 'Your teacher already put you on the list. Let\'s make your wizard!'}</p>`, [[LANG === 'he' ? 'יאללה ▶' : 'Make my wizard ▶', () => openCreator()]]); return; }
   if (r.pending) { modal('⏳ Waiting', '<p>Your teacher has not approved this number yet. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
   if (r.rejected) { modal('Not approved', '<p>This number was not approved. Please ask your teacher.</p>', [[tr('ok'), null]]); return; }
   if (r.moved) { modal('🏠 Moved to home', '<p>This number was moved to home. If your family got a hero file, tap <b>Load a hero from a file</b> on the start screen.</p>', [[tr('ok'), null]]); return; }
@@ -1772,7 +1809,7 @@ function openWizLevel() {
 }
 document.addEventListener('click', e => { if (e.target.closest('[data-wizlv]') && P) openWizLevel(); });
 function openMenu() {
-  G.quest = null; show('menu');
+  G.quest = null; show('menu'); setTimeout(() => { try { examOfferCheck(); } catch (e) {} }, 300);
   $('#menuHero').innerHTML = heroOf(P).replace('<svg ', '<svg style="height:100px" ');
   $('#menuWho').textContent = P.nick;
   $('#menuRank').innerHTML = `<button class="wizBadge" data-wizlv="1" title="Wizard level">Lv ${wizLevel()}</button> ${wzTitle()} · ${Math.round(P.exp || 0)} XP${wzReady() ? ' · 📜 Ready for the test!' : ''}` + (P.mode === 'school' ? ' · my number: ' + esc(P.id) : '');
@@ -2203,9 +2240,11 @@ function tutScreen(view) {   // dress the real fight screen for the tutorial: a 
     $('#mid').innerHTML = `<b>🥖 Bakery</b><div class="bubble" id="bubble">The festival is tomorrow and the oven is full of dough. I need bread for the table!</div>`; setMood('😟');
   }
 }
+const tutEn = t => { for (const [k, v] of Object.entries(TUT_WORD)) if (v[0] === t) return k; for (const [k, v] of Object.entries(TUT_SIGN)) if (v[0] === t) return k; return ''; };
 function tutOptions(list, title) {
   $('#qTitle').textContent = title; const o = $('#opts'); o.innerHTML = '';
-  list.forEach(x => { const b = document.createElement('button'); b.className = 'opt heb w'; b.textContent = x.t; b.onclick = () => tutResolve({ x, b }); o.appendChild(b); });
+  list.forEach(x => { const b = document.createElement('button'); b.className = 'opt heb w tutOpt'; x.en = tutEn(x.t); b.innerHTML = `<span>${x.t}</span><small class="tutEn">${x.en}</small>`; b.onclick = () => tutResolve({ x, b }); o.appendChild(b); });
+  const right = list.find(x => x.ok); $('#qSub').innerHTML = right ? `👆 Tap <b class="heb">${right.t}</b> = <b>${right.en}</b>` : '';   // Patch 4: always say what to tap
 }
 const tutBtns = () => [...document.querySelectorAll('#opts .opt')];
 async function playTutorial() {
@@ -2221,18 +2260,18 @@ async function playTutorial() {
   for (;;) { const r = await tutWait(); if (!ok()) return; if (r.x.ok) { r.b.classList.add('good'); break; } tutSay('Not that one. Look for the glowing word!', TUT_WORD.water[2]); }
   tutHl(null); tutBtns().forEach(b => { b.disabled = true; }); sfx.ok();
   tutDots(3); await flySpell('💧'); if (!ok()) return; sfx.hit(); burst('💧', 8); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); $('#hpFill').style.width = '50%'; floatText('-1', '#ffd166');
-  tutSay('Great! You read the word and your spell hit the monster.'); await sl(2200); if (!ok()) return;
-  tutDots(4); tutSay('Careful! If you pick a wrong word, the monster attacks and you lose a heart. Watch.'); await sl(1800); if (!ok()) return;
+  tutSay('Great! You read the word and your spell hit the monster.'); await tutNext('Next'); if (!ok()) return;
+  tutDots(4); tutSay('Careful! If you pick a wrong word, the monster attacks and you lose a heart. Watch.'); await tutNext('Show me'); if (!ok()) return;
   $('#foeBody').classList.add('atk'); await sl(250); sfx.hit(); flashStage(); $('#heroBox').classList.add('hurt'); setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500); $('#hearts').textContent = tutHearts(2); floatText('−1 ❤️', '#ff9aa8');
   await sl(1200); if (!ok()) return; tutSay("Don't worry: in the tutorial your heart comes back. In the real game you win hearts back as you play."); await sl(1500); $('#hearts').textContent = tutHearts(3); await tutNext('Got it'); if (!ok()) return;
-  tutDots(5); tutSay('Now you try! Which word beats fire?', TUT_WORD.ice[2]);
-  tutOptions([{ t: TUT_WORD.stone[0] }, { t: TUT_WORD.fire[0] }, { t: TUT_WORD.ice[0], ok: true }], 'Pick the spell that beats the Ember Imp');
+  tutDots(5); tutSay('Now you try! Fire monsters hate ice. Tap the word that means ice.', TUT_WORD.ice[2]);
+  tutOptions([{ t: TUT_WORD.stone[0] }, { t: TUT_WORD.fire[0] }, { t: TUT_WORD.ice[0], ok: true }], 'Pick the spell that beats the Ember Imp'); tutHl(tutBtns()[2]);
   for (;;) {
     const r = await tutWait(); if (!ok()) return; if (r.x.ok) { r.b.classList.add('good'); break; }
     r.b.classList.add('bad'); r.b.disabled = true; sfx.bad(); $('#foeBody').classList.add('atk'); await sl(300); $('#hearts').textContent = tutHearts(2); $('#heroBox').classList.add('hurt'); setTimeout(() => { $('#foeBody').classList.remove('atk'); $('#heroBox').classList.remove('hurt'); }, 500);
     tutSay('Oops! The monster attacked. That is OK, your heart comes back. Try another word.'); await sl(1500); $('#hearts').textContent = tutHearts(3);
   }
-  tutBtns().forEach(b => { b.disabled = true; }); sfx.ok(); await flySpell('🧊'); if (!ok()) return; sfx.hit(); burst('🧊', 8); $('#foeBody').classList.add('hit'); $('#hpFill').style.width = '0%'; await sl(800); $('#foeBody').classList.remove('hit'); $('#foeBody').classList.add('die'); $('#aura').style.display = 'none'; sfx.win(); await sl(800);
+  tutHl(null); tutBtns().forEach(b => { b.disabled = true; }); sfx.ok(); await flySpell('🧊'); if (!ok()) return; sfx.hit(); burst('🧊', 8); $('#foeBody').classList.add('hit'); $('#hpFill').style.width = '0%'; await sl(800); $('#foeBody').classList.remove('hit'); $('#foeBody').classList.add('die'); $('#aura').style.display = 'none'; sfx.win(); await sl(800);
   tutDots(6); tutSay('You beat the monster! Fighting is reading spells. Now let me show you the other way to play.'); await tutNext('Next'); if (!ok()) return;
   G.quest = null; G.mon = null; openMenu(); tutDots(7); TUT.allowed = ['board']; tutSay('Some days you can help the villagers instead. Tap the notice board!'); tutHl(document.querySelector('.place[data-p="board"]'));
   await tutWait(); if (!ok()) return; tutHl(null); TUT.allowed = null;
@@ -2240,7 +2279,7 @@ async function playTutorial() {
   tutOptions([{ t: TUT_SIGN.candle[0] }, { t: TUT_SIGN.bread[0], ok: true }, { t: TUT_SIGN.egg[0] }], 'Read the signs and help!'); tutHl(tutBtns()[1]);
   for (;;) { const r = await tutWait(); if (!ok()) return; if (r.x.ok) { r.b.classList.add('good'); break; } tutSay('Not that sign. Look for the glowing word!', TUT_SIGN.bread[0]); }
   tutHl(null); tutBtns().forEach(b => { b.disabled = true; }); sfx.ok(); setMood('😊'); floatText('💛', '#ffd166');
-  tutDots(8); tutSay('Thank you! You helped the baker. Helping people builds the village.'); await sl(2600); if (!ok()) return;
+  tutDots(8); tutSay('Thank you! You helped the baker. Helping people builds the village.'); await tutNext('Next'); if (!ok()) return;
   tutFinish();
 }
 function tutFinish() {   // the end screen (also what "Skip tutorial" does). Only the tutorialDone flag is saved.
@@ -2724,7 +2763,7 @@ function openJourney(q) {
   G.quest = q; J.q = q; J.busy = false; const qs = P.quest[q], fresh = ensurePath(q);
   if (!qs.act) qs.act = true;   // (a run that reaches the map is a run in progress)
   J.wizLen = null; J.fogF = null; J.revealIdx = qs.at || 0; saveSoon(true);
-  show('journey'); jDraw(); jHud();
+  show('journey'); jDraw(); jHud(); try { examOfferCheck(); } catch (e) {}
 }
 function jWalk() {
   const qs = P.quest[J.q], at = qs.at || 0, nodes = jNodes(); if (J.busy || at >= nodes.length - 1) return;
@@ -2782,10 +2821,17 @@ function startQuest(q) {   // a new quest run starts by packing potions; from th
   if (qs.act) return beginQuest(q);
   G.quest = q; openPack(() => { qs.act = true; qs.coins0 = Math.floor(P.coins || 0); saveSoon(true); beginQuest(q); });
 }
+const nextGo = () => { const q = G.quest; if (!P.quest[q].act) return nextRun(); openJourney(q); setTimeout(() => { try { if (!J.busy) jWalk(); } catch (e) {} }, 350); };   // Patch 4: "Continue" walks the hero to the next stop by itself
 const nextRun = () => P.quest[G.quest].act ? openJourney(G.quest) : startQuest(G.quest);   // after a fight the wizard is back on the map; after a chapter ends or a restart, pack potions again
 function beginQuest(q) {
   G.quest = q; G.sess = 0; G.combo = 0; G.goalShown = (P.sec[today()] || 0) >= CFG.DAILY_SEC;
   openJourney(q);
+}
+function pickMix(ar, qs) {   // Patch 4
+  const all = Object.keys(MON_DEF).filter(k => !MON_DEF[k].boss), own = ar.n, other = all.filter(k => !own.includes(k)), hist = qs.mixH = qs.mixH || [];
+  const ok = k => !(hist.length >= 2 && hist[hist.length - 1] === MON_DEF[k].el && hist[hist.length - 2] === MON_DEF[k].el);
+  let pool = Math.random() < 0.5 ? own : other, c = pool.filter(ok); if (!c.length) c = (pool === own ? other : own).filter(ok); if (!c.length) c = all;
+  const k = rnd(c); hist.push(MON_DEF[k].el); if (hist.length > 2) hist.shift(); return k;
 }
 function newEncounter() {   // the stop the wizard just walked to: a monster or a villager (or the boss / the festival hall)
   const qs = P.quest[G.quest]; ensurePath(G.quest);
@@ -2793,7 +2839,7 @@ function newEncounter() {   // the stop the wizard just walked to: a monster or 
   G.site = stop[0] === 's' ? SITES[+stop.slice(1)] : null;
   G.hearts = qs.hearts; G.helped = 0; G.lastKey = null; G.mist = 0; G.fightTier = P.tier; G.potUsed = false; G.snap = null; G.noCount = false; G.projs = (G.quest === 'peace' && P.tier >= 8) ? (boss ? finaleProjects() : [pickProject(G.site ? G.site.bg : 'bakery')]) : null; G.need = G.projs ? G.projs.length * 3 : G.quest === 'peace' ? (boss ? CFG.BIG_NEED : CFG.VILLAGE_NEED) : 0;   // mistakes in this fight (G.mist) lower the coins and the rarity of the loot
   if (G.quest === 'battle') {
-    const ar = AREA_MON[(qs.ch - 1) % 6], mk = window.__forceMon || (boss ? ar.b : rnd(ar.n)), def = { ...MON_DEF[mk], key: mk };
+    const ar = AREA_MON[(qs.ch - 1) % 6], mk = window.__forceMon || (boss ? ar.b : pickMix(ar, qs)), def = { ...MON_DEF[mk], key: mk };
     const isBoss = !!def.boss, bhp = isBoss ? (P.tier >= CFG.FINALE_FULL_FROM ? 9 : 6) : 3; G.mon = { ...def, boss: isBoss, max: bhp, hp: bhp };   // one hit per right answer
   } else { const f0 = boss ? '👵' : rnd(FOLK); G.fname = FOLK_NAMES[f0] || 'The villager'; G.folk = tonedEmoji(f0, nextTone()); G.big = boss; G.mon = null; G.vkey = boss ? 'library' : (G.site ? G.site.bg : rnd(Object.keys(VNAMES))); G.fname = VNAMES[G.vkey]; }
   drawScene(); nextQuestion();
@@ -3160,7 +3206,7 @@ async function pickOption(i, btn) {
       await castSpell(o); sfx.hit(); burst(o.em || '✨', 9); burst('💥', 3);
       const dmg = 1;   // a hot streak only makes the hero glow
       G.mon.hp = Math.max(0, G.mon.hp - dmg); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400);
-      floatText('-' + Math.round(dmg * 10 * wzMult()) + (xp ? '  +' + xp + 'xp' : ''), '#ffd166');
+      floatText('⚡'.repeat(wzMult()) + (xp ? '  +' + xp + 'xp' : ''), '#ffd166');
     } else {
       await helpMagic(q); G.helped++; renderTray(); setMood('😊'); floatText(xp ? '+' + xp + 'xp' : '💛', '#ffd166');
       if (q.reveal) { $('#foeName').textContent = G.fname + ': ' + q.reveal.replace(/<[^>]*>/g, '') + ' Thank you' + (wzTi() ? ', ' + wzTitle() : '') + '!'; }
@@ -3671,6 +3717,7 @@ $('#home').onclick = e => {
   if (jr) { const g = ING[jr.dataset.ing]; if (!findHeVoice()) toast(`${g.emt || g.em} ${g.nk} (this device has no Hebrew voice)`); else playSound({ say: g.nk }); jr.classList.remove('pop'); void jr.offsetWidth; jr.classList.add('pop'); }
 };
 $('#homeBack').onclick = () => { saveSoon(true); openMenu(); };
+document.addEventListener('click', e => { const d = e.target.closest('[data-exit]'); if (!d) return; const k = d.dataset.exit; $(k === 'home' ? '#homeBack' : k === 'shop' ? '#shopBack' : '#wsBackBtn').click(); });
 function pickIngredients(potion) {   // the student chooses which ingredients to use (one for each slot, all different)
   const r = RECIPES[potion], chosen = r.slots.map(() => null);
   const render = () => {
@@ -3704,10 +3751,11 @@ function nameQuestion(ing, universe, ctx) {
       options: shuffle([ing, ...others]).map((x, k) => ({ html: `<span style="font-size:2rem">${'①②③④'[k]}</span>`, snd: { say: x.nk }, cls: '', ok: x.id === ing.id, em: x.em, note: `That one says ${x.nk} ${x.em}` })), explain: `<span class="he">${ing.nk}</span> = ${ing.em}` };
     G.optSound = true;   // every choice has its speaker from the start
   }
-  else if (t <= 14) {   // (also levels 4-7 on a device without a Hebrew voice)
-    const others = shuffle(universe.filter(x => x.id !== ing.id && x.em !== ing.em)).slice(0, t <= 8 ? 2 : 3), txt = t <= 9 ? ing.nk : ing.he;
-    q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: ctx.read, big: txt, sub: ctx.sub, say: txt,
-      options: shuffle([ing, ...others]).map(x => ({ html: `<span style="font-size:2.4rem" class="${x.r === 4 ? 'shine' : ''}">${itemEm(x)}</span>`, cls: '', ok: x.id === ing.id, em: x.em, note: `That is ${x.em}` })), explain: `<span class="he">${txt}</span> = ${ing.em}` };
+  else if (t <= 14) {   // (also levels 4-7 on a device without a Hebrew voice)  PATCH 4: the picture is shown and the student picks the word. Round 1 with vowel signs, round 2 without.
+    const round = (G.craft && G.quest === 'craft' && G.craft.round) || 0, others = shuffle(universe.filter(x => x.id !== ing.id && x.he !== ing.he && x.em !== ing.em)).slice(0, t <= 8 ? 2 : 3), wd = x => round ? x.he : x.nk;
+    pic.style.display = '';
+    q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: round ? 'Now the same word without the vowel signs. Which one?' : ctx.pickWord || 'Which word is this?', big: '', sub: round ? 'Round 2 of 2: read it again' : (G.craft && G.quest === 'craft' ? 'Round 1 of 2: with vowel signs' : ctx.sub), say: ing.nk,
+      options: shuffle([ing, ...others]).map(x => ({ html: `<span class="heb" style="font-size:1.9rem">${wd(x)}</span>`, cls: 'w', ok: x.id === ing.id, em: x.em, note: `That word is ${x.em}` })), explain: `<span class="he">${ing.nk}</span> = ${ing.em}` };
   } else {
     q = { kind: 'write', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, accept: [ing.he], keyOf: s => 'W:' + s, title: ctx.write, big: ing.magic || (isRobeItem(ing) || ing.wtype === 'look') ? '' : ing.em + (ing.r === 4 ? '✨' : ''), sub: 'Write the name (no vowel marks needed):', ref: [`${ing.em} ${ing.en}`],
       explain: `<span class="he">${ing.he}</span> (${ing.en})`, say: ing.he };
@@ -3724,10 +3772,10 @@ function craftQuestion() {
   $('#hearts').textContent = POTIONS[C.potion].em; $('#heroBox').classList.remove('heroGlow'); $('#hpFill').style.width = (100 * C.i / C.ings.length) + '%';
   $('#tierLbl').textContent = `Hebrew level ${P.tier}: ${TIERS[P.tier]}`; $('#xpFill').style.width = (wzFrac() * 100) + '%'; $('#potBar').style.display = 'none';
   craftNote();
-  nameQuestion(ING[C.ings[C.i]], Object.values(ING), { listen: '🫕 The cauldron bubbles… Listen!', read: 'Read the ingredient and pick its picture!', sub: 'Which one goes in the cauldron?', write: 'Write the name of this ingredient in Hebrew!' });
+  nameQuestion(ING[C.ings[C.i]], Object.values(ING), { listen: '🫕 The cauldron bubbles… Listen!', read: 'Read the ingredient and pick its picture!', pickWord: 'Which word is this ingredient?', sub: 'Which one goes in the cauldron?', write: 'Write the name of this ingredient in Hebrew!' });
 }
 // A wrong answer while brewing burns one unit of the ingredient being worked on (and nothing else). If none is left for the potion, the brew fizzles.
-function craftNote() { const C = G.craft, id = C.ings[C.i], n = P.inv[id] || 0; const e = document.querySelector('#mid .runNote'); if (e) e.innerHTML = `Ingredient ${C.i + 1} of ${C.ings.length}. 🔥 A wrong answer burns ${ING[id].em} ${ING[id].nk}. You have <b>${n}</b> left.`; }
+function craftNote() { const C = G.craft, id = C.ings[C.i], n = P.inv[id] || 0; const e = document.querySelector('#mid .runNote'); if (e) e.innerHTML = `Ingredient ${C.i + 1} of ${C.ings.length}. 🔥 A wrong answer burns ${(P.tier >= 8 && P.tier <= 14) ? 'one of this ingredient' : ING[id].em + ' ' + ING[id].nk}. You have <b>${n}</b> left.`; }
 function craftBurn() {
   const C = G.craft, id = C.ings[C.i]; P.inv[id] = Math.max(0, (P.inv[id] || 0) - 1); saveSoon();
   burst('🔥', 6); cauldronPuff(); toast(`🔥 ${ING[id].emt} burned! ${P.inv[id] ? P.inv[id] + ' left' : 'none left'}`);
@@ -3751,7 +3799,9 @@ async function craftCast() {
   else { craftCount(first, false); sfx.bad(); $('#fb').innerHTML = `❌ Not quite. ${near ? 'Check the <b>final letters</b> (ך ם ן ף ץ) at the end of a word. ' : ''}Try again!`; G.typed = ''; renderTyped(); saveSoon(); if (G.quest === 'craft') craftBurn(); else if (G.quest === 'forge') forgeFizzle(); }
 }
 function craftNext() {
-  const C = G.craft; C.i++;
+  const C = G.craft;
+  if (!C.forge && G.quest === 'craft' && P.tier >= 8 && P.tier <= 14 && !C.round) { C.round = 1; craftQuestion(); return; }   // Patch 4: round 2 of the same ingredient
+  C.round = 0; C.i++;
   if (C.forge) { if (C.i <= C.ings.length) forgeQuestion(); else forgeDone(); return; }
   if (C.i < C.ings.length) { craftQuestion(); return; }
   C.ings.forEach(id => { P.inv[id] = Math.max(0, (P.inv[id] || 0) - 1); });   // the ingredients are used up only now
@@ -4190,22 +4240,22 @@ function victory() {
   
   modal(boss ? '👑 Boss defeated!' : '🎉 Victory!',
     `<p>You defeated <b>${esc(G.mon.name)}</b>! +${bonus} XP</p>` + lootHtml(loot) + (done ? `<p>🏆 Chapter complete! A new land awaits: <b>${AREAS[(P.quest.battle.ch - 1) % AREAS.length]}</b></p>` : `<p>❤️ You feel a bit stronger.</p>`),
-    [[done ? 'Next chapter ⚔️' : 'Back to the path ▶', nextRun], ['Back to map', openMenu, true]]);
+    [[done ? 'Next chapter ⚔️' : 'Continue ▶', done ? nextRun : nextGo], ['🏡 Go home', openHome, true], ['Back to map', openMenu, true]]);
 }
 function knockout() {
   sfx.bad(); restartQuest();
-  modal('😵 Knocked out!', '<p>Even great heroes fall sometimes. Take a breath, then start the quest again. You keep everything you collected, and you learn more every time!</p>', [['Start again 💪', nextRun], ['Back to map', openMenu, true]]);
+  modal('😵 Knocked out!', '<p>Even great heroes fall sometimes. Take a breath, then start the quest again. You keep everything you collected, and you learn more every time!</p>', [['Start again 💪', nextRun], ['🏡 Go home', openHome, true], ['Back to map', openMenu, true]]);
 }
 function villageFail() {
   sfx.bad(); restartQuest();
-  modal('🌧️ The villagers will try again tomorrow', '<p>That was a hard one. Let\'s start the village again and you will do great. You keep everything you collected!</p>', [['Start again 🌿', nextRun], ['Back to map', openMenu, true]]);
+  modal('🌧️ The villagers will try again tomorrow', '<p>That was a hard one. Let\'s start the village again and you will do great. You keep everything you collected!</p>', [['Start again 🌿', nextRun], ['🏡 Go home', openHome, true], ['Back to map', openMenu, true]]);
 }
 function villageDone() {
   setMood('🥰');
   sfx.win(); confetti(['💛', '🏠', '🌸', '⭐']);
   const big = G.big, bonus = big ? 10 : 5; addExp(bonus); const loot = giveLoot("folk", big, G.mist); const done = advanceQuest(); saveSoon(true);
   modal(big ? '📜 The big request is done!' : '🏠 The villagers are happy!', (big ? `<p style="text-align:center;font-size:3.2rem;margin:4px">🎪🎉</p><p>The festival can begin! You helped with ${G.projs ? G.projs.map(p => p.name.toLowerCase()).join(' and ') : 'everything'}. +${bonus} XP</p>` : `<p>You helped everyone and a house was rebuilt! +${bonus} XP</p>${wzTi() >= 4 ? `<p>🎉 The whole square cheers for the ${wzTitle()}!</p>` : ''}`) + lootHtml(loot) + (done ? `<p>🏆 The whole village is restored! Next stop: <b>${VILLAGES[(P.quest.peace.ch - 1) % VILLAGES.length]}</b></p>` : '<p>😊 You feel a bit happier.</p>'),
-    [[done ? 'Next village 🌿' : 'Back to the path ▶', nextRun], ['Back to map', openMenu, true]]);
+    [[done ? 'Next village 🌿' : 'Continue ▶', done ? nextRun : nextGo], ['🏡 Go home', openHome, true], ['Back to map', openMenu, true]]);
 }
 
 /* ----- 10-minute daily goal ----- */
@@ -4251,7 +4301,7 @@ function sysAsk() {
 }
 async function sysEnter() {
   toast('Loading…');
-  try { const j = await sysCall('listSchools'); if (!j.ok) { SYSKEY = null; modal('Admin', '<p>Could not sign in.</p>', [['OK', null]]); return; } SYS = j.schools; show('sysadmin'); sysRender(); }
+  try { const j = await sysCall('listSchools'); if (!j.ok) { SYSKEY = null; modal('Admin', '<p>Could not sign in.</p>', [['OK', null]]); return; } SYS = j.schools; show('sysadmin'); sysRender(); sysSetsLoad(); }
   catch (e) { SYSKEY = null; modal('Admin', '<p>I could not reach the registry. Please check the internet.</p>', [['OK', null]]); }
 }
 function sysRender() {
@@ -4388,7 +4438,7 @@ function adminAsk(kind) {
     try {
       const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffVerify', email: em, code }) }), j = await r.json();
       if (j.ok) {
-        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; adminEnter(); return;   // an owner sees the whole school, a teacher the teacher screen; the school's own service decides what each may really do
+        $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; ADM_CANREC = !!j.canRecord; ADM_OWN = j.classes || 'ALL'; adminEnter(); return;   // an owner sees the whole school, a teacher the teacher screen; the school's own service decides what each may really do
       }
       msg('That code is not right, or it has expired. Ask for a new one.');
     } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
@@ -4414,7 +4464,7 @@ async function adminEnter(viaPassword) {
     show('admin'); const teacher = ADM_ROLE === 'teacher';
     $('#admTitle').textContent = teacher ? '👩‍🏫 Teacher area' : '🏫 School area';
     $('#admWho').textContent = 'Signed in: ' + ADM_EMAIL + ' · ' + (teacher ? 'Teacher' : 'School owner');
-    ['admCode', 'admDemoCard', 'admSound'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; });
+    ['admCode', 'admDemoCard'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = teacher ? 'none' : ''; }); { const e = document.getElementById('admSound'); if (e) e.style.display = (!teacher || ADM_CANREC) ? '' : 'none'; } bkOpen();
     adminRender(j); if (!teacher) { adminCodeLoad(); adminStaffLoad(); } else $('#admStaff').style.display = 'none';
     adminClassesLoad(); adminWaitLoad(); if (!teacher) adminMovedLoad(); else $('#admMoved').style.display = 'none';
   } catch (e) { ADMKEY = null; ADM_ROLE = ''; modal('Teacher area', '<p>I could not reach the cloud. Please check the internet connection and try again.</p>', [['OK', null]]); }
@@ -4541,7 +4591,7 @@ async function adminStaffLoad() {   // the school owner adds and removes staff b
   if (!j.ok) { box.style.display = 'none'; return; }
   box.style.display = '';
   box.innerHTML = '<b>👩‍🏫 Staff</b><p class="small" style="margin:6px 0;opacity:.85">People who sign in with their school e-mail. Owners can do everything. Teachers can look at the students.</p>' +
-    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button>` : ''}${s.role === 'owner' ? (j.staff.filter(x => x.role === 'owner').length > 1 ? `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="teacher" data-cls="${esc(s.classes || 'ALL')}">Make teacher only</button>` : '') : `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="owner" data-cls="${esc(s.classes || 'ALL')}">Also an owner</button>`}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
+    j.staff.map(s => `<div class="setRow"><div class="setName"><b>${esc(s.email)}</b> <span class="setBadge">${s.role === 'owner' ? 'Owner' : 'Teacher'}</span><small>Classes: ${esc(s.classes || 'ALL')}</small></div><div class="setBtns">${s.role === 'teacher' ? `<button class="btn ghost" data-stfcls="${esc(s.email)}" data-cur="${esc(s.classes || 'ALL')}">Classes…</button><button class="btn ghost" data-stfrec="${esc(s.email)}" data-on="${s.canRecord ? 0 : 1}" title="Let this teacher record voice sets">${s.canRecord ? '🎙️ Can record ✓' : '🎙️ Allow recording'}</button>` : ''}${s.role === 'owner' ? (j.staff.filter(x => x.role === 'owner').length > 1 ? `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="teacher" data-cls="${esc(s.classes || 'ALL')}">Make teacher only</button>` : '') : `<button class="btn ghost" data-stfrole="${esc(s.email)}" data-to="owner" data-cls="${esc(s.classes || 'ALL')}">Also an owner</button>`}<button class="btn ghost" data-stf="${esc(s.email)}">Remove</button></div></div>`).join('') +
     `<div class="row" style="justify-content:flex-start;margin-top:10px;gap:8px;flex-wrap:wrap"><input id="stfMail" type="email" placeholder="e-mail to add" autocapitalize="none" style="max-width:260px;padding:8px;font-size:1rem"><label class="small" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="stfOwner" style="width:auto"> Also an owner</label><button class="btn" id="stfAdd" style="padding:8px 14px">+ Add</button></div><div class="msg" id="stfMsg" style="min-height:1.2em"></div>`;
 }
 document.addEventListener('click', async e => {
@@ -4598,7 +4648,7 @@ function adminRender(j) {
   const dayDiff = iso => { if (!iso) return 9999; const a = new Date(iso), n = new Date(); return Math.round((new Date(n.getFullYear(), n.getMonth(), n.getDate()) - new Date(a.getFullYear(), a.getMonth(), a.getDate())) / 864e5); };
   ADM.students.forEach(s => { s.days = dayDiff(s.last); });
   adminCardsRender();
-  if (ADM_ROLE !== 'teacher') adminSets(); adminTable(); if (!String(ADMKEY).startsWith('tk_')) adminAppUsers(); else $('#admApp').textContent = ''; $('#admDetail').style.display = 'none';
+  if (ADM_ROLE !== 'teacher' || ADM_CANREC) adminSets(); adminTable(); if (!String(ADMKEY).startsWith('tk_')) adminAppUsers(); else $('#admApp').textContent = ''; $('#admDetail').style.display = 'none';
 }
 const agoText = d => d === 0 ? 'today' : d === 1 ? 'yesterday' : d >= 9999 ? 'never' : d + ' days ago';
 function adminTable() {
@@ -4819,7 +4869,7 @@ function openPrivacy() {   // in simple words, in the language chosen on the sta
 $('#mSchool').onclick = () => loginView(lsGet('tq_school_code') || lsGet('tq_last') ? 'number' : 'code');
 $('#changeCode').onclick = e => { e.preventDefault(); try { localStorage.removeItem('tq_school_code'); } catch (x) {} loginView('code'); };
 async function checkSchoolCode(code) {   // true / false / 'rate' / 'offline' / 'suspended'. The registry says which school service the code belongs to.
-  if (CFG.REGISTRY_URL) {
+  if (CFG.REGISTRY_URL && !TEST_BUILD) {
     try {
       const j = await (await fetch(CFG.REGISTRY_URL + '?action=resolve&code=' + encodeURIComponent(code))).json();
       if (!j.ok) return j.error === 'rate' ? 'rate' : 'offline';
@@ -4962,9 +5012,209 @@ try { localStorage.removeItem('tq_gate'); } catch (e) {}   // forget the old alw
   $('#pass').addEventListener('keydown', e => { if (e.key === 'Enter') $('#gateBtn').click(); });
 })();
 
+/* ====================== "Admin and teacher" features: settings, voice sets (school, shared, teachers), recorder bridge, bulk add of students ====================== */
+let ADM_CANREC = false, ADM_OWN = 'ALL';
+const ownOk = cls => ADM_ROLE === 'owner' || ADM_OWN.trim().toUpperCase() === 'ALL' || ADM_OWN.split(',').some(x => clsKey(x) === clsKey(cls));
+const fmtDay = v => { try { return v ? new Date(v).toLocaleDateString() : ''; } catch (e) { return ''; } };
+
+/* ----- the recorder opens in its own window and asks THIS window (same address) for where to save; the key stays in memory and never goes in a link ----- */
+let REC_CTX = null;
+window.addEventListener("message", async e => {
+  if (e.origin === location.origin && e.data && e.data.t === "sq-call" && window.__sandboxRoute && e.source) { let r = null; try { r = await window.__sandboxRoute(e.data.url, e.data.body); } catch (x) { r = { ok: false, error: "failed" }; } try { e.source.postMessage({ t: "sq-result", id: e.data.id, result: r }, location.origin); } catch (x) {} return; }
+  if (e.origin !== location.origin || !e.data || e.data.t !== "sq-auth?" || !REC_CTX || !e.source) return;
+  try { e.source.postMessage(Object.assign({ t: 'sq-auth' }, REC_CTX()), location.origin); } catch (x) {}
+});
+function openRecorder(ctx) { REC_CTX = ctx; if (!window.open('recorder.html', 'sqrecorder')) toast('Please allow pop-ups for this page to open the recorder.'); }
+$('#admRec').onclick = () => openRecorder(() => ({ url: CFG.SCRIPT_URL, key: ADMKEY, action: 'putSound', who: ADM_ROLE === 'owner' ? 'Saves to your school: students hear it only when you choose it.' : 'Saves to your own sets. The school owner decides which set students hear.' }));
+$('#sysRec').onclick = () => openRecorder(() => ({ url: CFG.REGISTRY_URL, key: SYSKEY, action: 'putPublicSet', who: 'Saves a SHARED set: every school can listen to it and choose it.' }));
+
+/* ----- playing a set: the built-in voice, a set of this school, or a shared set (read from the registry, no key needed) ----- */
+const setAudio = {};
+async function loadSetAudio(id) {
+  AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') await AC.resume();
+  if (id === 'builtin') { await loadSpriteBuiltin(); return builtinSprite; }
+  if (setAudio[id]) return setAudio[id];
+  let j;
+  if (id.indexOf('pub:') === 0) j = await (await fetch(CFG.REGISTRY_URL + '?action=getPublicSet&id=' + encodeURIComponent(id.slice(4)))).json();
+  else j = await adminCall('getSoundSet', { id });   // the staff key travels in the POST body, never in a link
+  if (!j.ok) throw new Error(j.error || 'failed');
+  const bin = atob(j.wav), bytes = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return (setAudio[id] = { buf: await AC.decodeAudioData(bytes.buffer), idx: j.idx });
+}
+async function playSetSample(id) {
+  audSrcs.forEach(s => { try { s.stop(); } catch (e) {} }); audSrcs = [];
+  const { buf, idx } = await loadSetAudio(id); let T = AC.currentTime + 0.05;
+  for (const nm of ['05d1a', '05d3a', '05dca', '05e2a', '05e1a', '05d1o', '05d3i', '05dce']) {   // ba, ga, la, a, sa ... a few sample syllables
+    const e = idx[nm]; if (!e) continue;
+    const src = AC.createBufferSource(); src.buffer = buf; const g = AC.createGain(); g.gain.value = Math.max(vol, .3); src.connect(g); g.connect(AC.destination);
+    src.start(T, e[0], e[1] + 0.03); audSrcs.push(src); T += e[1] + 0.45;
+  }
+}
+const setRowHtml = (id, name, sub, on, btns) => `<div class="setRow ${on ? 'on' : ''}" data-id="${esc(id)}"><div class="setName"><b>${esc(name)}</b> ${on ? '<span class="setBadge">In the game now</span>' : ''}<small>${esc(sub)}</small></div><div class="setBtns">${btns}</div></div>`;
+const bListen = '<button class="btn ghost" data-a="listen">🔊 Listen</button>', bUse = '<button class="btn" data-a="use">✔ Use this</button>', bEdit = '<button class="btn ghost" data-a="rename">✏️</button><button class="btn ghost" data-a="del">🗑</button>';
+
+/* ----- the school's voice-set list (owner: all sets and the choice; allowed teacher: their own sets) ----- */
+async function adminSets() {
+  let j, pub = [], pubOk = false;
+  try { j = await adminCall('listSets'); } catch (e) { j = null; }
+  if (!j || !j.ok) { $('#admSets').innerHTML = '<p class="small">Could not load the voice sets.</p>'; return; }
+  SETS = j;
+  if (CFG.REGISTRY_URL) { try { const r = await (await fetch(CFG.REGISTRY_URL + '?action=listPublicSets')).json(); if (r.ok) { pub = r.sets; pubOk = true; } } catch (e) {} }
+  const owner = ADM_ROLE === 'owner', act = j.active;
+  $('#admSoundHelp').textContent = owner ? 'Your voice sets. Only the set marked “In the game now” is heard by students (they get it the next time they log in). Record new sets, listen, and choose the best one. You can also let your teachers record.' : 'Your own recordings. Only the school owner chooses which set students hear.';
+  let h = owner ? setRowHtml('builtin', 'Built-in voice', 'The original set that comes with the game', act === 'builtin', bListen + (act === 'builtin' ? '' : bUse)) : '';
+  if (owner) h += '<div class="setHead">Recorded in our school</div>';
+  h += j.sets.map(s => setRowHtml(s.id, s.name, `${s.clips} sounds · saved ${fmtDay(s.created)}${s.by ? ' · by ' + s.by : ''}`, act === s.id, bListen + (owner && act !== s.id ? bUse : '') + bEdit)).join('') || (owner ? '<p class="small" style="opacity:.75;margin:4px 0">No set of your own yet.</p>' : '<p class="small" style="opacity:.75;margin:4px 0">You have not recorded a set yet.</p>');
+  h += '<div class="setHead">Shared sets (from SpellQuest)</div>' + (pub.length ? pub.map(s => setRowHtml('pub:' + s.id, s.name, `${s.clips} sounds · shared set`, act === 'pub:' + s.id, bListen + (owner && act !== 'pub:' + s.id ? bUse : ''))).join('') : `<p class="small" style="opacity:.75;margin:4px 0">${pubOk || !CFG.REGISTRY_URL ? 'No shared sets yet.' : 'Could not load the shared sets.'}</p>`);
+  if (act.indexOf('pub:') === 0 && pubOk && !pub.some(s => 'pub:' + s.id === act)) h = (owner ? '<div class="warnBox">The shared set students were using was removed by SpellQuest. They now hear the built-in voice.</div>' : '') + h;
+  $('#admSets').innerHTML = h;
+}
+$('#admSets').onclick = async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const id = b.closest('.setRow').dataset.id, a = b.dataset.a, set = SETS.sets.find(s => s.id === id), nm = id === 'builtin' ? 'the built-in voice' : `"${set ? set.name : (b.closest('.setRow').querySelector('b') || {}).textContent || id}"`;
+  const done = async (action, extra, msg) => { try { const j = await adminCall(action, Object.assign({ id }, extra || {})); if (j.ok) { toast(msg); adminSets(); } else toast(j.error === 'name taken' ? 'That name is already used' : j.error === 'forbidden' ? 'You cannot do that.' : 'Could not do that: ' + (j.error || '')); } catch (err) { toast('Could not reach the cloud'); } };
+  if (a === 'listen') { try { await playSetSample(id); } catch (err) { toast('Could not play this set'); } }
+  else if (a === 'use') modal('Use this set in the game?', `<p>All students will hear ${esc(nm)} the next time they log in.</p>`, [['Yes, use it', () => done('setActive', {}, 'Done: students will hear ' + nm)], ['Cancel', null, true]]);
+  else if (a === 'rename') { modal('Rename the set', '<input id="admNewName" type="text" maxlength="40" value="' + esc(set ? set.name : '') + '">', [['Save', () => { const v = ($('#admNewName') || {}).value || ''; if (v.trim()) done('renameSet', { name: v }, 'Renamed'); }], ['Cancel', null, true]]); }
+  else if (a === 'del') modal('Delete this set?', `<p>${esc(nm)} will be deleted for good.${SETS.active === id ? ' Students will go back to the built-in voice.' : ''}</p>`, [['Yes, delete', () => done('deleteSet', {}, 'Deleted')], ['Cancel', null, true]]);
+};
+
+/* ----- the Admin's shared sets (kept in the registry, heard by every school that chooses one) ----- */
+let PUBS = [];
+async function sysSetsLoad() {
+  const box = $('#sysSets'); if (!box) return;
+  let j; try { j = await sysCall('listPublicSets'); } catch (e) { j = null; }
+  if (!j || !j.ok) { box.innerHTML = '<p class="small">Could not load the shared sets.</p>'; return; }
+  PUBS = j.sets;
+  box.innerHTML = PUBS.length ? PUBS.map(s => setRowHtml('pub:' + s.id, s.name, `${s.clips} sounds · saved ${fmtDay(s.created)}`, false, bListen + bEdit)).join('') : '<p class="small" style="opacity:.75;margin:4px 0">No shared set yet.</p>';
+}
+$('#sysDemo').onclick = () => startDemo();
+$('#sysSets').onclick = async e => {
+  const b = e.target.closest('button[data-a]'); if (!b) return;
+  const id = b.closest('.setRow').dataset.id, pid = id.slice(4), a = b.dataset.a, set = PUBS.find(s => s.id === pid), nm = `"${set ? set.name : pid}"`;
+  const done = async (action, extra, msg) => { try { const j = await sysCall(action, Object.assign({ id: pid }, extra || {})); if (j.ok) { toast(msg); delete setAudio[id]; sysSetsLoad(); } else toast(j.error === 'name taken' ? 'That name is already used' : 'Could not do that: ' + (j.error || '')); } catch (err) { toast('Could not reach the registry'); } };
+  if (a === 'listen') { try { await playSetSample(id); } catch (err) { toast('Could not play this set'); } }
+  else if (a === 'rename') modal('Rename the shared set', '<input id="sysNewName" type="text" maxlength="40" value="' + esc(set ? set.name : '') + '">', [['Save', () => { const v = ($('#sysNewName') || {}).value || ''; if (v.trim()) done('renamePublicSet', { name: v }, 'Renamed'); }], ['Cancel', null, true]]);
+  else if (a === 'del') modal('Delete this shared set?', `<p>${esc(nm)} will be deleted for good. Schools that use it go back to the built-in voice.</p>`, [['Yes, delete', () => done('deletePublicSet', {}, 'Deleted')], ['Cancel', null, true]]);
+};
+
+/* ----- the owner lets a teacher record ----- */
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-stfrec]'); if (!b) return;
+  try { const j = await adminCall('setStaffRecord', { email: b.dataset.stfrec, on: b.dataset.on === '1' }); if (!j.ok) toast('Could not change.'); await adminStaffLoad(); } catch (x) { toast('Could not reach the cloud.'); }
+});
+
+/* ====================== ADD MANY STUDENTS (owner and teachers) ====================== */
+const BK = { rows: [], defCls: '', stage: 'start' };
+const normStr = s => String(s == null ? '' : s).replace(/‏|‎|﻿/g, '').replace(/\s+/g, ' ').trim();
+function bkDecode(buf) {   // UTF-8 first; a file saved by Excel for Hebrew Windows is Windows-1255
+  const u = new Uint8Array(buf);
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(u).replace(/^﻿/, ''); } catch (e) {}
+  try { return new TextDecoder('windows-1255').decode(u); } catch (e) { return new TextDecoder().decode(u); }
+}
+function bkSplit(text) {   // a small CSV reader: quotes, and a comma, semicolon or tab between the columns
+  const lines = text.replace(/\r\n?/g, '\n').split('\n').filter(l => l.trim()); if (!lines.length) return [];
+  const sample = lines.slice(0, 5).join('\n'), cnt = c => (sample.match(new RegExp(c === '\t' ? '\\t' : c, 'g')) || []).length;
+  const d = [['\t', cnt('\t')], [';', cnt(';')], [',', cnt(',')]].sort((a, b) => b[1] - a[1])[0][0];
+  return lines.map(line => { const out = []; let cur = '', q = false; for (let i = 0; i < line.length; i++) { const ch = line[i]; if (q) { if (ch === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += ch; } else if (ch === '"') q = true; else if (ch === d) { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out.map(normStr); });
+}
+const RX_FIRST = /first|given|פרטי/i, RX_LAST = /last|family|surname|משפחה/i, RX_CLASS = /class|grade|כיתה|קבוצה|שכבה/i, RX_NAME = /^(full ?name|name|שם|שם מלא|תלמיד)$/i;
+function bkRows(table) {   // table = array of arrays of text -> [{first,last,cls}]
+  if (!table.length) return [];
+  let first = -1, last = -1, cls = -1, full = -1, start = 0; const h = table[0];
+  const hasHead = h.some(c => RX_FIRST.test(c) || RX_LAST.test(c) || RX_CLASS.test(c) || RX_NAME.test(c));
+  if (hasHead) { start = 1; h.forEach((c, i) => { if (first < 0 && RX_FIRST.test(c)) first = i; else if (last < 0 && RX_LAST.test(c)) last = i; else if (cls < 0 && RX_CLASS.test(c)) cls = i; else if (full < 0 && RX_NAME.test(c)) full = i; }); }
+  else { const w = Math.max(...table.map(r => r.length)); if (w >= 3) { first = 0; last = 1; cls = 2; } else if (w === 2) { first = 0; last = 1; } else full = 0; }
+  if (first < 0 && last < 0 && full < 0) { first = 0; last = 1; if (cls < 0 && h.length > 2) cls = 2; }
+  return table.slice(start).map(r => {
+    let f = first >= 0 ? normStr(r[first]) : '', l = last >= 0 ? normStr(r[last]) : '';
+    if (full >= 0 && !f && !l) { const parts = normStr(r[full]).split(' '); f = parts.shift() || ''; l = parts.join(' '); }
+    return { first: f, last: l, cls: cls >= 0 ? normStr(r[cls]) : '' };
+  }).filter(r => r.first || r.last || r.cls);
+}
+function loadXlsxLib() {   // a small public library, loaded only when an Excel file is chosen (the game stays light)
+  return new Promise(res => { if (window.XLSX) return res(true); const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload = () => res(!!window.XLSX); s.onerror = () => res(false); document.head.appendChild(s); });
+}
+async function bkReadFile(file) {
+  const name = (file.name || '').toLowerCase(), buf = await file.arrayBuffer();
+  if (/\.xlsx?$/.test(name)) {
+    if (!(await loadXlsxLib())) throw new Error('lib');
+    const wb = XLSX.read(buf, { type: 'array' }), ws = wb.Sheets[wb.SheetNames[0]];
+    return bkRows(XLSX.utils.sheet_to_json(ws, { header: 1, raw: false, defval: '' }).map(r => r.map(normStr)));
+  }
+  return bkRows(bkSplit(bkDecode(buf)));
+}
+function bkOwnClasses() { return ADM_CLASSES.filter(c => !c.archived).map(c => c.name).filter(ownOk); }
+function bkCanCreate() { return ADM_ROLE === 'owner' || ADM_OWN.trim().toUpperCase() === 'ALL'; }
+function bkStatus(r, i, seen, exist, known) {   // what will happen to this row
+  if (!r.first || !r.last) return { k: 'bad', t: 'name missing' };
+  if (!r.cls) return { k: 'bad', t: 'class missing' };
+  if (!ownOk(r.cls)) return { k: 'bad', t: 'not your class' };
+  const key = clsKey(r.first + ' ' + r.last) + '|' + clsKey(r.cls);
+  if (exist.has(key)) return { k: 'bad', t: 'already in the school' };
+  if (seen.has(key)) return { k: 'bad', t: 'repeated in the list' };
+  seen.add(key);
+  if (!known.has(clsKey(r.cls))) return bkCanCreate() ? { k: 'new', t: 'new class' } : { k: 'bad', t: 'unknown class' };
+  return { k: 'ok', t: 'ok' };
+}
+function bkRender() {
+  const box = $('#admBulk'), mine = bkOwnClasses();
+  if (BK.stage === 'start') {
+    box.innerHTML = `<b>➕ Add many students</b><p class="small" style="margin:6px 0;opacity:.85">Paste a list or choose a file (CSV, text or Excel) with three columns: <b>first name, last name, class</b>. A header row is fine. The students are added at once, each with their own number${ADM_ROLE === 'teacher' ? ', for your own classes' : ''}.</p>
+      <textarea id="bkText" rows="4" placeholder="Dana, Levi, 3A&#10;Yossi, Cohen, 3A" style="width:100%;font:inherit;padding:8px;border-radius:10px;border:2px solid #fff4;background:#0004;color:#fff"></textarea>
+      <div class="row" style="justify-content:flex-start;gap:8px;flex-wrap:wrap;margin-top:6px"><button class="btn" id="bkRead">Read the list</button><label class="btn ghost" style="cursor:pointer;margin:0">📂 Choose a file<input type="file" id="bkFile" accept=".csv,.txt,.tsv,.xlsx,.xls,text/csv,text/plain" hidden></label></div><div class="msg" id="bkMsg" style="min-height:1.2em"></div>`;
+    $('#bkRead').onclick = () => { const t = $('#bkText').value; if (!t.trim()) { $('#bkMsg').textContent = 'Paste a list first, or choose a file.'; return; } bkLoad(bkRows(bkSplit(t))); };
+    $('#bkFile').onchange = async ev => { const f = ev.target.files && ev.target.files[0]; ev.target.value = ''; if (!f) return; $('#bkMsg').textContent = 'Reading…'; try { bkLoad(await bkReadFile(f)); } catch (x) { $('#bkMsg').textContent = x.message === 'lib' ? 'I could not load the Excel reader (no internet?). Save the file as CSV and try again.' : 'I could not read this file.'; } };
+    return;
+  }
+  const known = new Set(ADM_CLASSES.filter(c => !c.archived).map(c => clsKey(c.name))), exist = new Set(ADM.students.filter(s => s.real).map(s => clsKey(s.real) + '|' + clsKey(s.cls))), seen = new Set();
+  const noCls = BK.rows.some(r => !r.cls);
+  const rows = BK.rows.map(r => Object.assign({}, r, { cls: r.cls || BK.defCls }));
+  const st = rows.map((r, i) => bkStatus(r, i, seen, exist, known)), good = rows.filter((r, i) => st[i].k !== 'bad'), newCls = [...new Set(rows.filter((r, i) => st[i].k === 'new').map(r => r.cls))];
+  let h = `<b>➕ Add many students</b>`;
+  const isNew = !!BK.defCls && !mine.includes(BK.defCls);
+  if (noCls) h += `<div class="bkCls">Some students have no class. Choose one class for all of them: <select id="bkCls"><option value="">— choose —</option>${mine.map(c => `<option ${c === BK.defCls ? 'selected' : ''}>${esc(c)}</option>`).join('')}${bkCanCreate() ? `<option value="__new" ${isNew ? 'selected' : ''}>➕ A new class…</option>` : ''}</select> <input id="bkClsNew" type="text" maxlength="20" placeholder="new class, e.g. 4C" value="${isNew ? esc(BK.defCls) : ''}" style="${isNew ? '' : 'display:none;'}max-width:140px;padding:6px"></div>`;
+  h += `<div class="small" style="margin:8px 0">${rows.length} in the list · <b>${good.length}</b> will be added${rows.length - good.length ? ` · <span style="color:#ffb4b4">${rows.length - good.length} will be skipped</span>` : ''}${newCls.length ? ` · new classes: <b>${esc(newCls.join(', '))}</b> (will be created)` : ''}</div>`;
+  h += `<div class="tblwrap" style="max-height:260px"><table class="bkTbl"><thead><tr><th>First name</th><th>Last name</th><th>Class</th><th>What happens</th><th></th></tr></thead><tbody>${rows.map((r, i) => `<tr class="${st[i].k}"><td>${esc(r.first)}</td><td>${esc(r.last)}</td><td>${esc(r.cls)}</td><td>${st[i].k === 'ok' ? '✅ add' : st[i].k === 'new' ? '🆕 add + ' + st[i].t : '⚠️ ' + st[i].t}</td><td><button class="ib" data-bkdel="${i}" aria-label="Remove this row">✕</button></td></tr>`).join('')}</tbody></table></div>`;
+  h += `<div class="row" style="justify-content:flex-start;gap:8px;margin-top:8px"><button class="btn" id="bkGo" ${good.length ? '' : 'disabled'}>Add ${good.length} student${good.length === 1 ? '' : 's'}</button><button class="btn ghost" id="bkCancel">Cancel</button></div><div class="msg" id="bkMsg" style="min-height:1.2em"></div>`;
+  box.innerHTML = h;
+  const sel = $("#bkCls"); if (sel) sel.onchange = () => { const nw = $("#bkClsNew"); if (sel.value === "__new") { nw.style.display = ""; nw.focus(); BK.defCls = clsText(nw.value); } else { nw.style.display = "none"; BK.defCls = sel.value; bkRender(); } };
+  const nw = $('#bkClsNew'); if (nw) nw.oninput = () => { BK.defCls = clsText(nw.value); };
+  if (nw) nw.onchange = () => bkRender();
+  $('#bkCancel').onclick = () => { BK.stage = 'start'; BK.rows = []; BK.defCls = ''; bkRender(); };
+  $('#bkGo').onclick = async () => {
+    const send = rows.filter((r, i) => st[i].k !== 'bad').map(r => ({ first: r.first, last: r.last, cls: r.cls })); if (!send.length) return;
+    $('#bkGo').disabled = true; $('#bkMsg').textContent = 'Adding…';
+    try {
+      const j = await adminCall('addStudents', { students: send, createClasses: bkCanCreate() });
+      if (!j.ok) { $('#bkGo').disabled = false; $('#bkMsg').textContent = j.error === 'forbidden' ? 'One of the classes is not yours, so nothing was added.' : 'Could not add: ' + (j.error || 'error'); return; }
+      bkDone(j);
+    } catch (x) { $('#bkGo').disabled = false; $('#bkMsg').textContent = 'I could not reach the cloud. Nothing was added.'; }
+  };
+}
+const clsText = s => String(s || '').replace(/\s+/g, ' ').trim().substring(0, 20);
+document.addEventListener('click', e => { const d = e.target.closest('[data-bkdel]'); if (!d) return; BK.rows.splice(+d.dataset.bkdel, 1); if (!BK.rows.length) BK.stage = 'start'; bkRender(); });
+function bkLoad(rows) {
+  if (!rows.length) { $('#bkMsg').textContent = 'I found no students in that list.'; return; }
+  if (rows.length > 300) { $('#bkMsg').textContent = 'That is more than 300 students. Please add them in smaller lists.'; return; }
+  BK.rows = rows; BK.defCls = ''; BK.stage = 'preview'; bkRender();
+}
+function bkDone(j) {
+  const box = $('#admBulk'), list = j.added.map(a => ({ id: a.id, real: a.real, cls: a.cls, nick: '' }));
+  box.innerHTML = `<b>✅ ${j.added.length} student${j.added.length === 1 ? '' : 's'} added</b>${j.skipped.length ? `<div class="small" style="margin:4px 0;color:#ffd7a0">${j.skipped.length} skipped: ${esc(j.skipped.slice(0, 5).map(s => (s.first + ' ' + s.last).trim() + ' (' + s.reason + ')').join(', '))}${j.skipped.length > 5 ? '…' : ''}</div>` : ''}${j.classesCreated && j.classesCreated.length ? `<div class="small" style="margin:4px 0">New classes: ${esc(j.classesCreated.join(', '))}</div>` : ''}
+    <p class="small" style="margin:6px 0;opacity:.85">Each student types their number to start (the school code once on a device). Print the login cards now, or find the numbers in the table below.</p>
+    <div class="row" style="justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="btn" id="bkPrint">🖨 Print login cards for these students</button><button class="btn ghost" id="bkCsv">⬇ Download the numbers (CSV)</button><button class="btn ghost" id="bkAgain">Add more</button></div>
+    <div class="tblwrap" style="max-height:200px;margin-top:8px"><table class="bkTbl"><thead><tr><th>Name</th><th>Class</th><th>Number</th></tr></thead><tbody>${list.map(a => `<tr><td>${esc(a.real)}</td><td>${esc(a.cls)}</td><td><b>${esc(a.id)}</b></td></tr>`).join('')}</tbody></table></div>`;
+  $('#bkPrint').onclick = () => printCards(list.slice().sort((a, b) => a.cls.localeCompare(b.cls) || a.real.localeCompare(b.real)));
+  $('#bkCsv').onclick = () => { const csv = [['name', 'class', 'number'], ...list.map(a => [a.real, a.cls, a.id])].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\r\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'new-students.csv'; a.click(); };
+  $('#bkAgain').onclick = () => { BK.stage = 'start'; BK.rows = []; BK.defCls = ''; bkRender(); };
+  adminClassesLoad(); adminRefreshStudents();
+}
+function bkOpen() { BK.stage = 'start'; BK.rows = []; BK.defCls = ''; $('#admBulk').style.display = ''; bkRender(); }
+
 /* ====================== PATCH 3, section 1: tier hats, the Academy and the Test of Proficiency ====================== */
 const hatStar = (x, y, s, c) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-3 L.9-.9 3-.9 1.3.5 1.9 2.8 0 1.5-1.9 2.8-1.3.5-3-.9-.9-.9Z" fill="${c}"/>`;
-function hatDeco(k, color, f, uid) {   // what a tier hat adds to the plain wizard hat (drawn over it); k = 1 to 5
+function hatDeco_p3(k, color, f, uid) {   // what a tier hat adds to the plain wizard hat (drawn over it); k = 1 to 5
   const cone = f ? 'M28 38 Q48 26 56 -6 Q62 -14 80 -2 Q72 8 80 20 Q86 30 94 38 Z' : 'M28 38 Q50 28 58 -4 Q62 -12 78 0 Q74 10 80 20 Q86 30 92 38 Z', band = 'M30 37 Q60 46 90 37 L90 32 Q60 41 30 32 Z';
   if (k === 1) return `<path d="${band}" fill="#d6deef"/>${hatStar(44, 38.6, .9, '#ffd166')}${hatStar(60, 41, 1, '#ffd166')}${hatStar(76, 38.6, .9, '#ffd166')}`;
   if (k === 2) return `<ellipse cx="60" cy="38" rx="${f ? 40 : 35}" ry="${f ? 8.5 : 8}" fill="none" stroke="#d6deef" stroke-width="1.8"/><path d="${band}" fill="#d6deef"/><circle cx="62" cy="17" r="8.5" fill="#fff3a8"/><circle cx="66" cy="14.6" r="7.6" fill="${color}"/>${hatStar(74, 24, .7, '#fff3a8')}`;
@@ -4987,7 +5237,7 @@ const examinerSVG = witch => {
   <polygon points="70,14 72,20 78,20 73,24 75,30 70,26 65,30 67,24 62,20 68,20" fill="#ffd166"/></svg>`;
 };
 const EX_COL = { fire: '#e8552e', ice: '#6cc4f0', dark: '#7a4ccf', plant: '#3fae5a', storm: '#5a6ee0', stone: '#9a9aa6' };
-const dummySVG = (el, grand) => `<svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="70" cy="140" rx="${grand ? 40 : 32}" ry="5" fill="#000" opacity=".3"/>
+const dummySVG_p3 = (el, grand) => `<svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="70" cy="140" rx="${grand ? 40 : 32}" ry="5" fill="#000" opacity=".3"/>
   <rect x="64" y="74" width="12" height="66" fill="#8a6a3a"/><rect x="26" y="78" width="88" height="11" rx="4" fill="#8a6a3a"/>
   <path d="M46 72 Q70 62 94 72 L100 116 Q70 126 40 116Z" fill="${EX_COL[el] || '#999'}" stroke="#0005" stroke-width="2"/>
   <circle cx="70" cy="96" r="12" fill="#fff" stroke="#c33" stroke-width="3"/><circle cx="70" cy="96" r="5.5" fill="#c33"/>
@@ -5027,7 +5277,7 @@ function startExam(kind, practice) {
   $('#aura').innerHTML = ''; $('#aura').style.display = 'none'; $('#heroBox').classList.remove('hurt', 'heroGlow'); $('#foeBody').style.filter = '';
   ['#potBar', '#itemBar'].forEach(s => { $(s).style.display = 'none'; }); $('#abandonBtn').style.display = 'none'; $('#craftPic').style.display = 'none';
   $('#tierLbl').textContent = (practice ? 'Practice for the test: ' : 'Test of Proficiency: ') + WZ.TITLES[ti]; $('#xpFill').style.width = '0%';
-  $('#mid').innerHTML = `<div class="exBoard"><div class="exWho">${examinerSVG(exWitch())}</div><div class="exMid"><div class="exScroll" id="exScroll"></div><div class="bubble exBubble" id="bubble"></div></div><div class="exGlass" id="exGlass"></div></div><div class="exRow" id="exRow"></div>`;
+  $('#mid').innerHTML = `<div class="exBoard">${kind === 'fight' ? `<div class="exWho">${examinerSVG(exWitch())}</div>` : ''}<div class="exMid"><div class="exScroll" id="exScroll"></div><div class="bubble exBubble" id="bubble"></div></div><div class="exGlass" id="exGlass"></div></div><div class="exRow" id="exRow"></div>`;
   examNext(true);
 }
 function examPaint() {
@@ -5093,7 +5343,7 @@ function graduation(ti, medal, X) {
   sfx.win(); confetti(['🎓', '⭐', '🏅', '✨']); const medals = { gold: '🥇 Gold', silver: '🥈 Silver', bronze: '🥉 Bronze' }, rw = WZ.TIERREW[ti].map(id => WZ.REWNAME[id]);
   modal(`🎓 ${WZ.TITLES[ti]}!`, `<div class="gradBox"><div class="gradHero">${heroOf(P)}</div><div class="gradCert">${certSVG(ti, medal)}</div></div>
     <p style="text-align:center;margin:6px 0">${exName()} reads out your result: <b>${X.ok} of ${X.n}</b>. ${medals[medal]} medal!</p><div class="gradCheer">🧒 👧 🧑 👦 🧒 🎉 👏</div>
-    <p style="margin:6px 0"><b>You are now a ${WZ.TITLES[ti]}!</b> Look what you unlock:</p><ul class="gradList"><li>🎩 ${WZ.HATS[ti]} (change it in the wardrobe)</li><li>🪄 Stronger spells (×${WZ.MULT[ti]} power)</li><li>🛍️ Shop tier ${ti + 1}</li><li>🏠 The certificate for your home wall</li>${rw.map(r => `<li>🎁 ${r[0].toUpperCase() + r.slice(1)} for your home</li>`).join('')}${ti === 1 ? '<li>📖 The choice about your book of monsters</li>' : ''}</ul>`,
+    <p style="margin:6px 0"><b>You are now a ${WZ.TITLES[ti]}!</b> Look what you unlock:</p><ul class="gradList"><li>🎩 ${WZ.HATS[ti]} (change it in the wardrobe)</li><li>🪄 Stronger spells ${bolts(WZ.MULT[ti])}</li><li>🛍️ Shop tier ${ti + 1}</li><li>🏠 The certificate for your home wall</li>${rw.map(r => `<li>🎁 ${r[0].toUpperCase() + r.slice(1)} for your home</li>`).join('')}${ti === 1 ? '<li>📖 The choice about your book of monsters</li>' : ''}</ul>`,
     [['Continue ▶', () => { openMenu(); if (typeof bookOffer === 'function') setTimeout(bookOffer, 700); }]]);
 }
 const hatTabHtml = () => `<div class="small" style="opacity:.85;margin-bottom:4px">You earn a new hat each time you pass a Test of Proficiency at the Academy. Wear any hat you have earned, or the plain one.</div><div class="wdLbl">Hat</div><div class="wdChips">` + WZ.HATS.map((n, k) => wdChip('hat', k, `<span class="wdEm">${k ? '🎩' : '🧙'}</span><small>${n}</small>`, WD.hat === k, k > wzTi(), WZ.TITLES[k])).join('') + '</div>';
@@ -5288,8 +5538,15 @@ function labClutter() {   // the room of a mad medieval inventor, drawn over the
     <g><rect x="5" y="52" width="5" height="9" rx=".6" fill="#8a5a2b"/><rect x="4.4" y="46" width="5.8" height="6" rx=".6" fill="#b8864a"/><path d="M6 60 H9 M6 57 H9" stroke="#2a1a0a" stroke-width=".3"/><rect x="6.6" y="40" width="1.6" height="6" fill="#9aa6b2"/><circle cx="7.4" cy="38" r="1.6" fill="#ddd" opacity=".7"><animate attributeName="cy" values="38;31;24" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".7;.3;0" dur="3s" repeatCount="indefinite"/></circle></g>
     <g><rect x="4" y="66" width="6" height="1.6" fill="#7a4524"/><rect x="4.4" y="64.4" width="5.2" height="1.6" fill="#3a6a9a"/><rect x="4.8" y="62.8" width="4.6" height="1.6" fill="#9a3a3a"/><rect x="95" y="68" width="5" height="1.4" fill="#4a7a4a"/><rect x="95.4" y="66.6" width="4.4" height="1.4" fill="#9a6a2a"/></g></g>`;
 }
-const anvilSVG = () => `<svg viewBox="0 0 100 70" aria-hidden="true"><ellipse cx="50" cy="66" rx="34" ry="4" fill="#000" opacity=".3"/><path d="M34 62 L38 46 H62 L66 62Z" fill="#4a4f5c"/><rect x="30" y="58" width="40" height="6" rx="1.5" fill="#363a45"/>
-  <path d="M14 30 Q14 22 24 22 H80 Q92 22 96 28 Q84 30 78 34 L66 36 L62 46 H38 L34 36 L24 34 Q14 34 14 30Z" fill="#7b8294"/><path d="M24 22 H80 Q88 22 92 25 H24Z" fill="#a8b0c2"/><path d="M34 36 L38 46 H62 L66 36Z" fill="#5d6475"/><path d="M26 24 H70" stroke="#fff" stroke-opacity=".35" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+const anvilSVG = () => `<svg viewBox="0 0 130 92" aria-hidden="true"><defs><radialGradient id="avGlow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffb347" stop-opacity=".9"/><stop offset="1" stop-color="#ff7a2e" stop-opacity="0"/></radialGradient><linearGradient id="avIron" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a93a8"/><stop offset=".35" stop-color="#5b6272"/><stop offset="1" stop-color="#2f333e"/></linearGradient><linearGradient id="avBar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff7a2e"/><stop offset=".6" stop-color="#ffd166"/><stop offset="1" stop-color="#ff7a2e"/></linearGradient></defs>
+  <ellipse cx="62" cy="86" rx="50" ry="5" fill="#000" opacity=".32"/>
+  <path d="M30 86 Q26 64 34 54 H90 Q98 64 94 86Z" fill="#8a5a2e" stroke="#4a2c12" stroke-width="1.6"/><path d="M40 84 Q38 66 42 56 M52 85 Q50 68 52 56 M66 85 Q66 68 64 56 M80 84 Q82 68 80 56" stroke="#5a3a1a" stroke-width="1.3" fill="none" opacity=".7"/>
+  <ellipse cx="62" cy="54" rx="31" ry="6.5" fill="#b3803f" stroke="#4a2c12" stroke-width="1.4"/><ellipse cx="62" cy="54" rx="20" ry="3.8" fill="none" stroke="#8a5a2e" stroke-width="1"/><ellipse cx="62" cy="54" rx="9" ry="2" fill="none" stroke="#8a5a2e" stroke-width=".9"/>
+  <path d="M42 52 L46 43 H78 L82 52Z" fill="#2f333e" stroke="#1c1f27" stroke-width="1.2"/><path d="M47 43 L51 33 H73 L77 43Z" fill="#444a58" stroke="#1c1f27" stroke-width="1.2"/>
+  <path d="M20 32 Q20 22 31 21 H92 Q104 21 110 28 Q98 30 90 35 L80 36 L72 33 H52 L44 36 L31 35 Q20 36 20 32Z" fill="url(#avIron)" stroke="#1c1f27" stroke-width="1.6"/><path d="M26 23.5 H88" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/>
+  <ellipse cx="62" cy="19" rx="28" ry="9" fill="url(#avGlow)"/><rect x="44" y="16" width="34" height="6" rx="3" fill="url(#avBar)" stroke="#a8431a" stroke-width=".8"/><path d="M52 15 q2-5 0-8 M62 14 q2-6 0-10 M70 15 q2-4 0-7" stroke="#ffd166" stroke-opacity=".6" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  <g transform="translate(8 62) rotate(-72 8 14)"><rect x="6" y="2" width="5" height="26" rx="2" fill="#8a5a2b" stroke="#4a2c12" stroke-width=".9"/><rect x="0" y="-4" width="17" height="9" rx="2" fill="#7b8294" stroke="#363a45" stroke-width="1"/></g>
+  <g transform="translate(104 58)"><path d="M0 0 L8 26 M10 0 L4 26" stroke="#4a4f5c" stroke-width="2.4" stroke-linecap="round"/><path d="M0 0 Q5 -3 10 0" stroke="#4a4f5c" stroke-width="2.4" fill="none"/><path d="M5 26 L8 26" stroke="#2f333e" stroke-width="2"/></g></svg>`;
 const hammerSVG = () => `<svg viewBox="0 0 60 60" aria-hidden="true"><rect x="27" y="22" width="5" height="36" rx="2" fill="#8a5a2b" transform="rotate(-25 30 40)"/><rect x="10" y="8" width="30" height="16" rx="3" fill="#7b8294" stroke="#363a45" stroke-width="1.5" transform="rotate(-25 25 16)"/><rect x="12" y="10" width="26" height="4" rx="2" fill="#a8b0c2" transform="rotate(-25 25 16)"/></svg>`;
 function labStageBg() {   // behind the forging scene (400 x 200)
   return `<defs><linearGradient id="lbw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f6270"/><stop offset="1" stop-color="#2d4a58"/></linearGradient><radialGradient id="lbg" cx="50%" cy="60%" r="50%"><stop offset="0" stop-color="#ffb347" stop-opacity=".5"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient></defs>
@@ -5527,6 +5784,142 @@ $('#roomPanel').addEventListener('click', e => {
   const pl = e.target.closest('[data-place]'); if (!pl || !P) return; const id = pl.dataset.place, s = rmStore(), i = s.indexOf(id); if (i >= 0) s.splice(i, 1);
   P.own.pos = P.own.pos || {}; delete P.own.pos[id]; saveSoon(true); toast('🪑 Back in your room!'); renderRoom(rmDisp);
 });
+
+/* ====================== PATCH 4, section 6: tiers and tests ====================== */
+// whole-number power (lightning bolts), shorter tests with a pass mark that grows
+WZ.MULT = [2, 3, 4, 5, 6, 7];
+WZ.TEST = [null, { n: 8, pass: 0.75 }, { n: 10, pass: 0.8 }, { n: 12, pass: 0.8 }, { n: 14, pass: 0.85 }, { n: 16, pass: 0.85 }];
+const bolts = n => '<span class="bolts" title="' + n + ' power">' + '⚡'.repeat(n) + '</span>';
+const EX_W = [null, [1], [1, 1, 2], [2], [2, 2, 3], [2, 3, 3]];   // weaknesses per dummy, by the test (1 = Spellcaster ... 5 = Grand Sage); three-weakness dummies only in the highest tests
+
+/* ----- the message when the test opens, and the rules screen before it starts ----- */
+function examOffer(fromQuest) {   // once per tier, and again from the Academy sign on the map
+  const ti = wzTi() + 1;
+  modal('📜 The Test of Proficiency', `<div style="text-align:center;width:6rem;margin:0 auto">${ACADEMY_SVG}</div><p>You can take the <b>Test of Proficiency</b> for <b>${WZ.TITLES[ti]}</b>.</p><p class="small">${fromQuest ? 'You can leave this quest now, or finish it and go to the Academy later.' : 'You can go to the Academy now, or later.'}</p>`,
+    fromQuest ? [['🏛️ Leave the quest and go to the Academy', () => { saveSoon(true); openMenu(); setTimeout(academyAsk, 300); }], ['Finish the quest first', null, true]]
+      : [['🏛️ Go to the Academy', academyAsk], ['Later', null, true]]);
+}
+function examOfferCheck() {   // called when the map or the quest map opens
+  if (!P || !wzReady() || P.offerT === wzTi() + 1) return;
+  P.offerT = wzTi() + 1; saveSoon();
+  setTimeout(() => { if (!$('#modal').classList.contains('on')) examOffer(!!(G.quest && P.quest && P.quest[G.quest] && P.quest[G.quest].act && $('#journey').classList.contains('on'))); }, 700);
+}
+function examRules(kind) {
+  const ti = wzTi() + 1, T = WZ.TEST[ti], need = Math.ceil(T.n * T.pass), miss = T.n - need, rw = WZ.TIERREW[ti].map(id => WZ.REWNAME[id]);
+  modal(`📋 Rules of the test · ${WZ.TITLES[ti]}`, `<div class="rulesList">
+    <div><span>❓</span><b>${T.n}</b> questions</div><div><span>✅</span>You need <b>${need}</b> right (${Math.round(T.pass * 100)}%)</div>
+    <div><span>✖️</span>${miss} mistake${miss === 1 ? '' : 's'} allowed: ${Array.from({ length: miss }, () => '<i class="exMarkI">✖</i>').join('')}</div><div><span>🙈</span>No hints, no potions, no hearts</div>
+    <div><span>🏆</span>You win: a new title, a hat, stronger spells ${bolts(WZ.MULT[ti])}${rw.length ? ', ' + rw.join(' and ') : ''}</div></div><p class="small" style="text-align:center">If you do not pass, nothing is lost. You can try again at once.</p>`,
+    [['Start ▶', () => startExam(kind)], ['Not yet', null, true]]);
+}
+function academyAsk() {
+  G.exam = null;
+  const ti = wzTi() + 1, T = WZ.TEST[ti], miss = T.n - Math.ceil(T.n * T.pass);
+  modal('🏛️ The Academy', `<div style="text-align:center"><div style="width:6.5rem;margin:0 auto">${examinerSVG(exWitch())}</div><p><b>You can take the Test of Proficiency.</b></p></div>
+    <p class="small">${exName()} will test you for <b>${WZ.TITLES[ti]}</b>: ${T.n} questions at your level. You may miss up to ${miss}. Nothing is lost if you do not pass.</p><p class="small">Choose your trial:</p>`,
+    [['⚔️ Fighting trial', () => examRules('fight')], ['🪄 Conjuring trial', () => examRules('conjure')], ['Not yet', null, true]]);
+}
+
+/* ----- the fighting test: a dummy shows the element it is weak to, and the student hits each weakness once with the right spell ----- */
+const exFxSvg = (el, on) => {
+  const g = {
+    fire: '<g class="fxFire"><path d="M0 11 Q-10 2 -5 -9 Q-3 -3 0 -15 Q3 -5 8 -9 Q11 2 0 11Z" fill="#ff7a2e"/><path d="M0 11 Q-5 4 -2 -3 Q0 2 1 -7 Q5 2 0 11Z" fill="#ffd166"/></g>',
+    ice: '<g class="fxIce"><path d="M0-13 L3-4 13 0 3 4 0 13 -3 4 -13 0 -3-4Z" fill="#dff4ff" stroke="#6cc4f0" stroke-width="1.4"/><path d="M-9-9 l3 3 M9-9 l-3 3 M-9 9 l3-3 M9 9 l-3-3" stroke="#9bdcff" stroke-width="1.6"/></g>',
+    dark: '<g class="fxDark"><circle r="11" fill="#7a4ccf" opacity=".55"/><path d="M-9 3 Q0 -13 9 -2 Q1 -5 -4 5Z" fill="#241046"/><circle cx="-3" cy="-2" r="1.6" fill="#e6d4ff"/><circle cx="4" cy="-1" r="1.6" fill="#e6d4ff"/></g>',
+    plant: '<g class="fxPlant"><path d="M-11 7 Q0 -9 11 -4" stroke="#2f8a3f" stroke-width="2.6" fill="none" stroke-linecap="round"/><ellipse cx="-4" cy="-3" rx="5" ry="2.8" fill="#58c45a" transform="rotate(-35 -4 -3)"/><ellipse cx="6" cy="-7" rx="5" ry="2.8" fill="#6bd16d" transform="rotate(25 6 -7)"/><ellipse cx="2" cy="4" rx="4" ry="2.4" fill="#58c45a" transform="rotate(60 2 4)"/></g>',
+    storm: '<g class="fxStorm"><path d="M3-14 L-6 2 L0 2 L-4 14 L8-4 L1-4Z" fill="#ffe14a" stroke="#c9a200" stroke-width="1.2"/><path d="M-11 -6 l-4 -2 M11 4 l5 1" stroke="#fff3a8" stroke-width="1.6"/></g>',
+    stone: '<g class="fxStone"><path d="M-11 7 L-7 -5 L3 -9 L11 -2 L8 8Z" fill="#9a9aa6" stroke="#4d4d58" stroke-width="1.4"/><path d="M-2 -5 L1 1 L-2 7 M5 -3 L3 3" stroke="#3d3d48" stroke-width="1.3" fill="none"/></g>'
+  }[el] || '';
+  return g + (on ? '<circle r="17" fill="none" stroke="#ffd166" stroke-width="2.4" class="exPulse"/>' : '');
+};
+const exSlots = n => n === 1 ? [[70, 99]] : n === 2 ? [[40, 84], [100, 84]] : [[40, 84], [70, 102], [100, 84]];
+const dummySVG = (dd, k, grand) => {   // dd = { w: [elements], ans: [booleans] }; k = the weakness being asked (or -1)
+  const pos = exSlots(dd.w.length), tint = dd.w[0] ? EX_COL[dd.w[0]] : '#999';
+  const fx = dd.w.map((el, j) => { if (dd.ans[j] === true) return ''; const bad = dd.ans[j] === false; return `<g transform="translate(${pos[j][0]} ${pos[j][1]}) scale(1.15)" opacity="${bad ? .35 : 1}">${exFxSvg(el, j === k)}${bad ? '<path d="M-9 -9 L9 9 M9 -9 L-9 9" stroke="#e5546b" stroke-width="3"/>' : ''}</g>`; }).join('');
+  return `<svg viewBox="0 0 140 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="70" cy="140" rx="${grand ? 40 : 32}" ry="5" fill="#000" opacity=".3"/>
+  <rect x="64" y="74" width="12" height="66" fill="#8a6a3a"/><rect x="26" y="78" width="88" height="11" rx="4" fill="#8a6a3a"/>
+  <path d="M46 72 Q70 62 94 72 L100 116 Q70 126 40 116Z" fill="#cdb98a" stroke="#0005" stroke-width="2"/>
+  <circle cx="70" cy="48" r="20" fill="#e8d28a" stroke="#a8803a" stroke-width="2"/><path d="M58 42 l7 7 M65 42 l-7 7 M75 42 l7 7 M82 42 l-7 7" stroke="#5a3c14" stroke-width="2.4" stroke-linecap="round"/><path d="M60 58 Q70 64 80 58" stroke="#5a3c14" stroke-width="2.2" fill="none"/>
+  ${grand ? '<path d="M44 34 L52 14 L62 28 L70 8 L78 28 L88 14 L96 34Z" fill="#ffd166" stroke="#b07d17" stroke-width="1.5"/>' : '<path d="M52 32 Q70 22 88 32 L84 38 Q70 30 56 38Z" fill="#8a6a3a"/>'}${fx}</svg>`;
+};
+function exDrawDummy() {
+  const X = G.exam, dd = X.dums[X.d]; if (!dd) return; const k = dd.ans.length < dd.w.length ? dd.ans.length : -1;
+  $('#foeBody').innerHTML = dummySVG(dd, k, X.d === X.dums.length - 1 && dd.w.length > 1);
+  const icons = X.ti <= 2 && k >= 0 ? `${EL[dd.w[k]].badge}` : '';   // the lower tests also show the element icon above the dummy; the higher ones do not
+  $('#foeName').innerHTML = `Training dummy${icons ? ' ' + icons : ''}`;
+}
+function examPaint() {
+  const X = G.exam; if (!X) return;
+  $('#hearts').innerHTML = `<span class="exMarks" title="Mistakes allowed">${X.practice ? '📚 Practice' : Array.from({ length: X.n - X.need }, (_, k) => `<i class="${k < X.bad ? 'used' : ''}">✖</i>`).join('')}</span>`;
+  $('#xpFill').style.width = (100 * X.i / X.n) + '%';
+  $('#exScroll').innerHTML = Array.from({ length: X.n }, (_, k) => `<i class="${k < X.i ? (X.res[k] ? 'ok' : 'bad') : k === X.i ? 'cur' : ''}"></i>`).join('');
+  $('#exGlass').innerHTML = hourglassSVG(X.i / X.n);
+  const row = $('#exRow');
+  if (X.kind === 'fight') { const ds = X.dums || []; row.innerHTML = ds.map((d, idx) => `<span class="exDum ${idx < X.d ? 'done' : idx === X.d ? 'cur' : ''}" style="--c:${EX_COL[d.w[0]]}" title="${d.w.length} weakness${d.w.length > 1 ? 'es' : ''}">${'●'.repeat(0)}</span>`).join(''); }
+  else row.innerHTML = X.items.map(h => `<span class="exItem">${h}</span>`).join('') || '<span class="exHint">Items you conjure appear here</span>';
+}
+const exConjSvg = item => `<div class="exConj"><div class="exConjWho">${examinerSVG(exWitch())}</div><div class="exConjPed">${pedestalSVG(item ? `<g transform="translate(70 62)"><text text-anchor="middle" dominant-baseline="central" font-size="40">${item}</text></g>` : '')}</div></div>`;
+function examNext(first) {
+  const X = G.exam; X.res = X.res || [];
+  if (X.kind === 'fight') {
+    if (!X.dums) {   // the dummies of this test: each one has its own weaknesses, and together they make up the questions
+      const set = EX_W[X.ti] || [1], els = Object.keys(EL); X.dums = []; let left = X.n;
+      while (left > 0) { let w = set[Math.floor(Math.random() * set.length)]; if (w > left) w = left; X.dums.push({ w: shuffle(els.slice()).slice(0, w), ans: [] }); left -= w; }
+      X.d = 0;
+    }
+    const dd = X.dums[X.d], k = dd.ans.length, el = dd.w[k]; X.el = el;
+    G.mon = { key: 'dummy', name: 'Training dummy', el, boss: false, max: 1, hp: 1 };
+    $('#foeBody').className = 'foeBody'; exDrawDummy();
+  } else { $('#foeName').textContent = exName(); $('#foeBody').className = 'foeBody'; $('#foeBody').innerHTML = exConjSvg(''); }
+  examPaint(); examQ();
+}
+async function examAnswer(ok, btn, q, o) {
+  const X = G.exam; X.i++; X.res.push(ok);
+  if (X.kind === 'fight') {
+    const dd = X.dums[X.d]; dd.ans.push(ok);
+    if (ok) { X.ok++; sfx.ok(); if (btn && btn.classList) btn.classList.add('good'); try { await castSpell(o || { em: '✨' }); } catch (e) {} sfx.hit(); burst('✨', 8); $('#foeBody').classList.add('hit'); setTimeout(() => $('#foeBody').classList.remove('hit'), 400); }
+    else { X.bad++; X.missed.push(examWord(q)); sfx.bad(); if (btn && btn.classList) btn.classList.add('bad'); $('#fb').textContent = ''; }
+    exDrawDummy(); const full = dd.ans.length >= dd.w.length;
+    if (full && dd.ans.every(Boolean)) { burst('💥', 5); $('#foeBody').classList.add('die'); }
+    examPaint(); await sleep(full ? 1100 : 800); if (full) X.d++;
+  } else {
+    if (ok) {
+      X.ok++; sfx.ok(); if (btn && btn.classList) btn.classList.add('good');
+      X.last = q.reveal ? String(q.reveal) : '✨'; X.items.push(X.last);
+      $('#foeBody').innerHTML = exConjSvg(X.last && X.last.startsWith('<') ? '✨' : X.last); examPaint();
+      try { await helpMagic(q, true); } catch (e) { burst('✨', 8); }   // a spell effect for every conjuring
+      await sleep(500); $('#foeBody').innerHTML = exConjSvg(''); await sleep(250);   // the item disappears before the next request
+    } else { X.bad++; X.missed.push(examWord(q)); sfx.bad(); if (btn && btn.classList) btn.classList.add('bad'); $('#fb').textContent = ''; examPaint(); await sleep(1000); }
+  }
+  if (!X.practice && X.bad > X.n - X.need) return examEnd(false, true);   // too many mistakes: it can no longer be passed
+  if (X.i >= X.n) return examEnd(X.practice || X.ok >= X.need);
+  examNext();
+}
+function examQ() {   // the next question of the test: the same questions as in a fight or a village, with the wording of an exam
+  const X = G.exam; G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = true; G.snap = null; G.optSound = false; const q = G.q;
+  if (X.kind === 'fight') { q.title = X.ti <= 2 ? `Hit the weakness ${EL[X.el].badge} with the right spell!` : 'Which spell hits the glowing weakness?'; q.big = q.big === G.mon.name ? '' : q.big; q.bigSm = true; q.sub = q.kind === 'choice' ? 'Read the spells and pick the one that works.' : q.sub; }
+  else {
+    q.title = `${exName()} says: conjure it!`; q.sub = q.kind === 'choice' ? 'Pick the right one to conjure.' : q.sub;
+    try { const okO = (q.options || []).find(o => o.ok), m = okO && /<\/span>\s*=\s*([A-Za-z' -]+)/.exec(okO.note || ''), en = m && m[1].trim(); if (en) q.speech = `Conjure ` + (/^[aeiou]/i.test(en) ? 'an ' : 'a ') + en + '!'; } catch (e) {}   // the examiner says what to conjure (no village clue)
+  }
+  showQuestion();
+}
+
+/* ====================== PATCH 4: a hat for every rank, drawn on the hero ====================== */
+// tier 2 (k=1): pointed hat with a band (Patch 3's); tier 3 (k=2): a wide brim with a star; tier 4 (k=3): a tall hat with moons; tier 5 (k=4): a feathered hat with a gem; tier 6 (k=5): a crown-hat with a glow.
+// For k >= 2 the whole hat is drawn here (the plain hat underneath is left out), so each rank has its own shape.
+function hatDeco(k, color, f, uid, dark) {
+  dark = dark || '#1d1d3a';
+  if (k <= 1) return hatDeco_p3(k, color, f, uid);
+  const rx = f ? 42 : 38, band = (c) => `<path d="M${60 - rx + 6} 37 Q60 47 ${60 + rx - 6} 37 L${60 + rx - 6} 31 Q60 41 ${60 - rx + 6} 31Z" fill="${c}"/>`;
+  if (k === 2) return `<ellipse cx="60" cy="38" rx="${rx + 8}" ry="10" fill="${dark}"/><ellipse cx="60" cy="36.5" rx="${rx + 8}" ry="9" fill="${color}"/><path d="M36 37 Q36 12 60 6 Q84 12 84 37Z" fill="${color}"/><path d="M36 36 Q60 46 84 36 L84 30 Q60 40 36 30Z" fill="#d6deef"/><path d="M42 20 Q48 10 58 8" stroke="#fff" stroke-opacity=".35" stroke-width="2.2" fill="none" stroke-linecap="round"/>${hatStar(60, 22, 3.2, '#ffd166')}<path transform="translate(60 22) scale(3.2)" d="M0-3 L.9-.9 3-.9 1.3.5 1.9 2.8 0 1.5-1.9 2.8-1.3.5-3-.9-.9-.9Z" fill="none" stroke="#a8761a" stroke-width=".25"/>`;
+  if (k === 3) return `<defs><linearGradient id="ht${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b2a8e"/><stop offset="1" stop-color="#14123f"/></linearGradient></defs><ellipse cx="60" cy="38" rx="${rx - 2}" ry="8" fill="#0e0d2e"/><path d="M34 38 Q44 12 56 -14 Q60 -17 66 -14 Q76 12 86 38Z" fill="url(#ht${uid})" stroke="#0e0d2e" stroke-width="1"/><path d="M34 37 Q60 47 86 37 L86 31 Q60 41 34 31Z" fill="#c9d3ee"/>
+    <path d="M50 14 a5 5 0 1 0 5 7 a4 4 0 1 1 -5 -7Z" fill="#fff3a8"/><path d="M66 -2 a4 4 0 1 0 4 6 a3 3 0 1 1 -4 -6Z" fill="#fff3a8"/><path d="M58 26 a3.4 3.4 0 1 0 3.4 4.8 a2.6 2.6 0 1 1 -3.4 -4.8Z" fill="#fff3a8"/>${hatStar(70, 16, .9, '#c9d3ee')}${hatStar(50, 0, .8, '#c9d3ee')}`;
+  if (k === 4) return `<ellipse cx="60" cy="38" rx="${rx + 6}" ry="9" fill="${dark}"/><path d="M30 37 Q34 8 62 4 Q90 8 92 37Z" fill="${color}"/><path d="M30 36 Q62 46 92 36 L92 30 Q62 40 30 30Z" fill="#7a2a6a"/><circle cx="62" cy="36" r="4.2" fill="#e5546b" stroke="#fff" stroke-width=".9"/><circle cx="60.8" cy="34.8" r="1.2" fill="#fff" opacity=".8"/>
+    <path d="M88 30 Q118 22 112 -6 Q100 6 96 14 Q92 22 88 30Z" fill="#2ec4b6"/><path d="M88 30 Q106 14 110 -4" stroke="#14756c" stroke-width="1.3" fill="none"/><path d="M96 20 l8 -2 M100 12 l8 -2 M104 4 l6 -1" stroke="#14756c" stroke-width="1" stroke-linecap="round"/><path d="M88 30 Q100 22 104 8 Q98 18 88 28Z" fill="#ff7ac8" opacity=".85"/>`;
+  return `<defs><radialGradient id="hc${uid}" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#ffe9a0" stop-opacity=".95"/><stop offset="1" stop-color="#ffd166" stop-opacity="0"/></radialGradient></defs><circle cx="60" cy="20" r="46" fill="url(#hc${uid})"/><ellipse cx="60" cy="38" rx="${rx - 2}" ry="8" fill="${dark}"/><path d="M34 38 Q40 16 60 12 Q80 16 86 38Z" fill="${color}"/>
+    <path d="M32 38 L35 16 L45 27 L53 8 L61 24 L67 6 L75 26 L84 14 L88 38Q60 47 32 38Z" fill="#ffd166" stroke="#b07d17" stroke-width="1.2"/><circle cx="53" cy="14" r="2.2" fill="#e5546b"/><circle cx="67" cy="12" r="2.2" fill="#4aa8ff"/><circle cx="60" cy="32" r="2.6" fill="#3ddc97"/>${hatStar(98, 4, .9, '#fff3a8')}${hatStar(22, 10, .8, '#fff3a8')}${hatStar(104, 26, .6, '#ffe9a0')}`;
+}
 
 /* init */
 setMute(muted); setCloud(CFG.SCRIPT_URL ? '' : 'none');
