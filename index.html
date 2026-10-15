@@ -4339,7 +4339,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && P) 
 window.addEventListener('pagehide', () => { if (P) saveSoon('exit'); });
 
 /* ----- Sign in with Google (adults and home players only): Google gives an ID token, we send it in a POST body and the server checks it with Google ----- */
-let gisReady = null;
+let gisReady = null, gisInit = false, gisCb = null;
 function gisLoad() {
   if (!GOOGLE_CLIENT_ID) return Promise.resolve(false);
   if (gisReady) return gisReady;
@@ -4348,10 +4348,12 @@ function gisLoad() {
 }
 function googleButton(box, onToken) {   // draws Google's own button into box; onToken(idToken) runs when the person picks an account
   if (!box || !GOOGLE_CLIENT_ID) return;
+  gisCb = onToken;
   gisLoad().then(ok => {
     if (!box.isConnected) return;
     if (!ok) { box.innerHTML = '<small style="opacity:.75">Google sign-in is not available right now. Use the e-mail code.</small>'; return; }
-    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: r => { if (r && r.credential) onToken(r.credential); }, ux_mode: 'popup', auto_select: false, cancel_on_tap_outside: true });
+    if (!gisInit) { gisInit = true; google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: r => { if (r && r.credential && gisCb) gisCb(r.credential); }, use_fedcm_for_button: true, auto_select: false, cancel_on_tap_outside: true }); }   // started once; the browser's own account chooser is used where it exists (no popup window to be blocked)
+    try { google.accounts.id.cancel(); } catch (e) {}
     google.accounts.id.renderButton(box, { theme: 'outline', size: 'large', text: 'signin_with', shape: 'pill', width: 250 });
   });
 }
