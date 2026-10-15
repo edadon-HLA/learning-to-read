@@ -562,6 +562,10 @@ body.peace .hpbar>i{background:linear-gradient(90deg,#ffd166,#3ddc97);width:0}
 .hmSwatch{display:block;width:3rem;height:2rem;border-radius:8px;border:2px solid #fff4}
 .prop .em,.prop .em *{animation:none!important}.prop.floaty .em{animation:starFloat 2.6s ease-in-out infinite!important}
 .catPic .hArt{width:2.8rem;height:2.8rem}
+.arrRow{position:absolute;left:8px;top:8px;z-index:2000;display:flex;gap:6px}.arrRow .arrBtn{position:static}.arrBtn.arrIco{padding:6px 10px}
+.arrCtl{display:none!important}
+.hmStrip{position:absolute;left:8px;right:8px;top:46px;z-index:2100;display:flex;align-items:center;gap:5px;overflow-x:auto;background:#1b1340ee;border:1px solid #fff3;border-radius:12px;padding:5px 8px;max-height:42px;-webkit-overflow-scrolling:touch}
+.hmSL{flex:none;font-size:1rem}.hmSw{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid #fff5;padding:0;cursor:pointer}.hmSw.on{border-color:#ffd166;box-shadow:0 0 0 2px #ffd16688}
 </style>
 <style id="p3css">
 /* Patch 3: the level badge, the Academy, the test */
@@ -1464,9 +1468,9 @@ function heroSVG(g, color, skinIn, hairIn, look) {
    <circle cx="60" cy="52" r="24" fill="${skin}"/>
    <ellipse cx="51" cy="50" rx="4.6" ry="5" fill="#fff"/><ellipse cx="69" cy="50" rx="4.6" ry="5" fill="#fff"/><circle cx="52" cy="51" r="2.6" fill="#2a2340"/><circle cx="70" cy="51" r="2.6" fill="#2a2340"/>
    <circle cx="43" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="77" cy="60" r="3.4" fill="${cheek}" opacity=".55"/><circle cx="60" cy="57" r="2.6" fill="${nose}"/>
-   <path d="M53 64 Q60 69 67 64" fill="none" stroke="${mouth}" stroke-width="2" stroke-linecap="round"/>${beard}${faceAcc}${brows}${lashes}${fringe}${look.hat >= 2 ? '' : hat}${look.hat ? hatDeco(look.hat, color, f, uid, dark) : ''}${head}${pet}</svg>`;
+   <path d="M53 64 Q60 69 67 64" fill="none" stroke="${mouth}" stroke-width="2" stroke-linecap="round"/>${beard}${faceAcc}${brows}${lashes}${fringe}${look.hat >= 2 || look.hat < 0 ? '' : hat}${look.hat > 0 ? hatDeco(look.hat, color, f, uid, dark) : ''}${look.hat < 0 ? `<path d="M37 47 Q36 26 60 25 Q84 26 83 47 Q78 35 60 35 Q42 35 37 47Z" fill="${hairCol}"/>` : ''}${head}${pet}</svg>`;
 }
-const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc, beard: p.beard, hat: (p.hat && p.hat <= (p.wt || 0)) ? p.hat : 0, gear: gearOf(p), pots: typeof POTION_IDS === 'undefined' ? [] : POTION_IDS.filter(id => ((p.pot || {})[id] || 0) + ((p.carry || {})[id] || 0) > 0) });
+const heroOf = p => heroSVG(p.gender, p.color, p.skin, p.hair, { style: p.style, acc: p.acc, beard: p.beard, hat: p.hat === -1 ? -1 : (p.hat && p.hat <= (p.wt || 0)) ? p.hat : 0, gear: gearOf(p), pots: typeof POTION_IDS === 'undefined' ? [] : POTION_IDS.filter(id => ((p.pot || {})[id] || 0) + ((p.carry || {})[id] || 0) > 0) });
 // Villagers are people emoji: a skin-tone modifier goes right after the FIRST code point (before any zero-width joiner), e.g. 👩🏽‍🌾. Tones are dealt from a shuffled bag so they are evenly spread.
 const TONE_MODS = ['🏻', '🏼', '🏽', '🏾', '🏿'];
 const tonedEmoji = (e, k) => { const cp = [...e]; return cp[0] + TONE_MODS[k % 5] + cp.slice(1).join(''); };
@@ -1774,7 +1778,7 @@ $('#wardrobe').onclick = e => {
     drawWardrobe(); return;
   }
 };
-$('#wdSave').onclick = () => { P.hat = WD.hat; P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.beard = WD.beard; P.acc = WD.acc; P.cos = WD.cos; P.cosShow = WD.show; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
+$('#wdSave').onclick = () => { P.hat = WD.hat; P.hatNew = 0; P.color = WD.color; P.style = WD.style; P.skin = WD.skin; P.hair = WD.hair; P.beard = WD.beard; P.acc = WD.acc; P.cos = WD.cos; P.cosShow = WD.show; saveSoon(true); toast('✨ Your new look is saved!'); openHome(); };
 $('#wdBack').onclick = () => openHome();
 /* ----- install as an app (works from Chrome on Android) and keep a saved copy for offline play ----- */
 let installEvt = null;
@@ -1823,7 +1827,7 @@ const wzFrac = () => { const lv = wizLevel(); return (lv >= 50 || wzReady()) ? 1
 const wzTitle = () => WZ.TITLES[wzTi()];
 const wzTitleOfLv = lv => WZ.TITLES[Math.max(0, WZ.FROM.filter(f => f <= lv).length - 1)];
 const wzMult = () => WZ.MULT[wzTi()];
-const wzHat = () => (P && P.hat && P.hat <= wzTi()) ? P.hat : 0;   // the tier hat the wizard wears (0 = the plain hat)
+const wzHat = () => (P && P.hat === -1) ? -1 : (P && P.hat && P.hat <= wzTi()) ? P.hat : 0;   // the tier hat the wizard wears (0 = the plain hat)
 function rankOf() { return wzTitle(); }
 function wzGrant(ids) { P.rw = P.rw || {}; ids.forEach(id => { if (!P.rw[id]) { P.rw[id] = 1; (P.rwNew = P.rwNew || []).push(id); } }); wzSync(P); }
 function addExp(n) {   // XP only ever goes up; at the top of a tier it is banked and turns into levels once the test is passed
@@ -3805,7 +3809,10 @@ function nameQuestion(ing, universe, ctx) {
       options: shuffle([ing, ...others]).map((x, k) => ({ html: `<span style="font-size:2rem">${'①②③④'[k]}</span>`, snd: { say: x.nk }, cls: '', ok: x.id === ing.id, em: x.em, note: `That one says ${x.nk} ${x.em}` })), explain: `<span class="he">${ing.nk}</span> = ${ing.em}` };
     G.optSound = true;   // every choice has its speaker from the start
   }
-  else if (t <= 14) {   // (also levels 4-7 on a device without a Hebrew voice)  PATCH 4: the picture is shown and the student picks the word. Round 1 with vowel signs, round 2 without.
+  else if (t <= 7) {   // no Hebrew voice on this device (or the voices have not loaded yet): the sound question of the student's OWN level, never the word-reading question of level 8 and up
+    q = t <= 5 ? qSyl(t, false) : qChain(t, false); q.title = ctx.listen; q.sub = 'Listen, then pick the one you hear!';
+  }
+  else if (t <= 14) {   // reading: level 8 and up  PATCH 4: the picture is shown and the student picks the word. Round 1 with vowel signs, round 2 without.
     const round = (G.craft && G.quest === 'craft' && G.craft.round) || 0, others = shuffle(universe.filter(x => x.id !== ing.id && x.he !== ing.he && x.em !== ing.em)).slice(0, t <= 8 ? 2 : 3), wd = x => round ? x.he : x.nk;
     pic.style.display = '';
     q = { kind: 'choice', key: 'W:' + ing.he, lastKey: 'W:' + ing.he, title: round ? 'Now the same word without the vowel signs. Which one?' : ctx.pickWord || 'Which word is this?', big: '', sub: round ? 'Round 2 of 2: read it again' : (G.craft && G.quest === 'craft' ? 'Round 1 of 2: with vowel signs' : ctx.sub), say: ing.nk,
@@ -4143,7 +4150,7 @@ const shCounterSVG = () => `<defs><linearGradient id="shCsh" gradientUnits="user
   <polygon points="9,69 91,69 96,75.5 4,75.5" fill="url(#shCsh)" filter="url(#shCbl)"/>
   <polygon points="14,57 86,57 90,61 10,61" fill="#c58f58"/><polygon points="10,61 90,61 90,69.5 10,69.5" fill="#6e4222"/><polygon points="10,61 90,61 90,62.2 10,62.2" fill="#8a5a2b"/>
   ${[18, 34, 50, 66, 82].map(x => `<rect x="${x - 6}" y="63.4" width="12" height="4.6" rx=".8" fill="none" stroke="#4a2a14" stroke-width=".4"/>`).join('')}`;
-const robePic = s => s.wtype === 'robe' ? heroSVG(P.gender, s.hex, P.skin, P.hair, { beard: P.beard }) : s.wtype === 'style' ? heroSVG(P.gender, P.color, P.skin, P.hair, { style: s.style, beard: P.beard }) : '';   // robes are shown on the student's own wizard
+const robePic = s => s.wtype === 'robe' ? heroSVG(P.gender, s.hex, P.skin, P.hair, { beard: P.beard, hat: wzHat() }) : s.wtype === 'style' ? heroSVG(P.gender, P.color, P.skin, P.hair, { style: s.style, beard: P.beard, hat: wzHat() }) : '';   // robes are shown on the student's own wizard
 const shPic = s => s.wtype === 'look' ? `<span class="shopGear" style="width:6rem;height:6rem">${s.em}</span>` : isRobeItem(s) ? '<span class="shopRobe big">' + robePic(s) + '</span>' : s.kind === 'potion' ? `<span class="packBottle" style="transform:scale(1.8);margin:12px">${potionSVG(s.pid)}</span>` : s.kind === 'caul' ? cauldronArt(s.lv) : s.id === 'd_rug' ? '<span class="shRug" style="width:6rem;height:2.4rem"></span>' : s.em;
 function renderShop() {
   const sh = shopShelf(), skin = SH_SKINS[sh.skin % SH_SKINS.length], c = P.own.caul || 0, next = SHOP['caul' + (c + 1)];
@@ -5392,7 +5399,7 @@ function examEnd(pass, early) {
 }
 function examPass(X) {
   const frac = X.ok / X.n, medal = frac >= 0.93 ? 'gold' : frac >= 0.87 ? 'silver' : 'bronze', l0 = wizLevel();
-  P.wt = window.__demoTi ? window.__demoTi : Math.min(5, (P.wt || 0) + 1); const ti = P.wt; P.hat = ti; (P.certs = P.certs || []).push({ t: ti, d: today(), m: medal, ok: X.ok, n: X.n }); wzGrant(WZ.TIERREW[ti].concat(['cert' + ti]));
+  P.wt = window.__demoTi ? window.__demoTi : Math.min(5, (P.wt || 0) + 1); const ti = P.wt; P.hatNew = ti; (P.certs = P.certs || []).push({ t: ti, d: today(), m: medal, ok: X.ok, n: X.n }); wzGrant(WZ.TIERREW[ti].concat(['cert' + ti]));
   const l1 = wizLevel(); if (l1 > l0) wzLevelUp(l0, l1);   // the XP that was waiting turns into levels
   saveSoon(true); graduation(ti, medal, X);
 }
@@ -5402,12 +5409,12 @@ const certSVG = (ti, medal) => `<svg viewBox="0 0 220 150" xmlns="http://www.w3.
   <circle cx="186" cy="118" r="14" fill="${{ gold: '#f2c14e', silver: '#cfd6e2', bronze: '#c98b5a' }[medal]}" stroke="#7a5a1a" stroke-width="2"/><path d="M180 128 l-4 14 8-4 4 6 3-14Z M192 128 l4 14 -8-4 -4 6 -3-14Z" fill="#c8402f"/></svg>`;
 function graduation(ti, medal, X) {
   sfx.win(); confetti(['🎓', '⭐', '🏅', '✨']); const medals = { gold: '🥇 Gold', silver: '🥈 Silver', bronze: '🥉 Bronze' }, rw = WZ.TIERREW[ti].map(id => WZ.REWNAME[id]);
-  modal(`🎓 ${WZ.TITLES[ti]}!`, `<div class="gradBox"><div class="gradHero">${heroOf(P)}</div><div class="gradCert">${certSVG(ti, medal)}</div></div>
+  modal(`🎓 ${WZ.TITLES[ti]}!`, `<div class="gradBox"><div class="gradHero">${heroOf(Object.assign({}, P, { hat: ti }))}</div><div class="gradCert">${certSVG(ti, medal)}</div></div>
     <p style="text-align:center;margin:6px 0">${exName()} reads out your result: <b>${X.ok} of ${X.n}</b>. ${medals[medal]} medal!</p><div class="gradCheer">🧒 👧 🧑 👦 🧒 🎉 👏</div>
-    <p style="margin:6px 0"><b>You are now a ${WZ.TITLES[ti]}!</b> Look what you unlock:</p><ul class="gradList"><li>🎩 ${WZ.HATS[ti]} (change it in the wardrobe)</li><li>🪄 Stronger spells ${bolts(WZ.MULT[ti])}</li><li>🛍️ Shop tier ${ti + 1}</li><li>🏠 The certificate for your home wall</li>${rw.map(r => `<li>🎁 ${r[0].toUpperCase() + r.slice(1)} for your home</li>`).join('')}${ti === 1 ? '<li>📖 The choice about your book of monsters</li>' : ''}</ul>`,
+    <p style="margin:6px 0"><b>You are now a ${WZ.TITLES[ti]}!</b> Look what you unlock:</p><ul class="gradList"><li>🎩 ${WZ.HATS[ti]} (you can put it on in the wardrobe, or keep your own hat)</li><li>🪄 Stronger spells ${bolts(WZ.MULT[ti])}</li><li>🛍️ Shop tier ${ti + 1}</li><li>🏠 The certificate for your home wall</li>${rw.map(r => `<li>🎁 ${r[0].toUpperCase() + r.slice(1)} for your home</li>`).join('')}${ti === 1 ? '<li>📖 The choice about your book of monsters</li>' : ''}</ul>`,
     [['Continue ▶', () => { openMenu(); if (typeof bookOffer === 'function') setTimeout(bookOffer, 700); }]]);
 }
-const hatTabHtml = () => `<div class="small" style="opacity:.85;margin-bottom:4px">You earn a new hat each time you pass a Test of Proficiency at the Academy. Wear any hat you have earned, or the plain one.</div><div class="wdLbl">Hat</div><div class="wdChips">` + WZ.HATS.map((n, k) => wdChip('hat', k, `<span class="wdEm">${k ? '🎩' : '🧙'}</span><small>${n}</small>`, WD.hat === k, k > wzTi(), WZ.TITLES[k])).join('') + '</div>';
+const hatTabHtml = () => `<div class="small" style="opacity:.85;margin-bottom:4px">You earn a new hat each time you pass a Test of Proficiency at the Academy. Wear any hat you have earned, the plain one, or none at all.</div><div class="wdLbl">Hat</div><div class="wdChips">` + wdChip('hat', -1, `<span class="wdEm">🚫</span><small>No hat</small>`, WD.hat === -1, false, '') + WZ.HATS.map((n, k) => wdChip('hat', k, `<span class="wdEm">${k ? '🎩' : '🧙'}</span><small>${n}${P.hatNew === k && k <= wzTi() ? ' ✨ new!' : ''}</small>`, WD.hat === k, k > wzTi(), WZ.TITLES[k])).join('') + '</div>';
 function examQ() {   // the next question of the test: the same questions as in a fight or a village, with the wording of an exam (nothing about attacks or hearts)
   const X = G.exam; G.q = makeQ(); G.lastKey = G.q.lastKey; G.noCount = true; G.snap = null; G.optSound = false; const q = G.q;
   if (X.kind === 'fight') { const e = EL[X.el]; q.title = `${G.mon.name}: ${e.badge} ${e.label}. Which spell beats it?`; q.big = q.big === G.mon.name ? '' : q.big; q.bigSm = true; q.sub = q.kind === 'choice' ? 'Read the spells and pick the one that works.' : q.sub; }
@@ -6308,7 +6315,7 @@ function rmShell() {
 }
 
 /* ----- drawing the room: the pieces that stand in the slots, the "+" marks, the fixed rewards ----- */
-let hmEdit = false, hmSlotOpen = null;
+let hmEdit = false, hmSlotOpen = null, hmStyleOpen = false;
 const hmArt = id => { const it = ROOM_ITEMS[id] || {}, s = SHOP[id]; if (id === 'd_rug') return HART.rugA({ c: '#e5546b', s: 'stripes' }); return it.draw ? it.draw() : s.em; };
 function hmItem(sl, id) {
   const d = rmDepth(sl[4]), w = sl[6] === 'floor' || sl[6] === 'rug' ? sl[5] * d : sl[5], side = sl[6] === 'wallL' ? 1 : sl[6] === 'wallR' ? -1 : 0, wall = sl[6] === 'wall' || !!side, rug = sl[6] === 'rug', art = hmArt(id), isSvg = String(art).startsWith('<svg'), z = hSlotZ(sl);
@@ -6339,14 +6346,16 @@ function roomPropsHtml() { return homeSlotsHtml() + roomPropsHtml_p3(); }
 /* ----- the decorate button, the room style, the choice window ----- */
 function arrangeUi() {
   try { $('#rmScene').classList.toggle('hmEditOn', hmEdit); } catch (e) {}
-  let h = `<button class="arrBtn ${hmEdit ? 'on' : ''}" id="hmBtn">${hmEdit ? '✓ Done' : '🪑 Decorate'}</button>`;
-  if (hmEdit) h += `<div class="arrCtl" id="hmCtl"><span class="arrName">Tap a piece or a “+” to choose</span><button data-hmstyle="wall" title="Wall colour" aria-label="Wall colour">🎨</button><button data-hmstyle="floor" title="Floor" aria-label="Floor">🪵</button></div>`;
+  // the wall/floor painting is a small 🎨 button next to "Decorate"; its strip is closed by default, sits at the TOP of the room and never covers the furniture
+  let h = `<div class="arrRow"><button class="arrBtn ${hmEdit ? 'on' : ''}" id="hmBtn">${hmEdit ? '✓ Done' : '🪑 Decorate'}</button>` + (hmEdit ? `<button class="arrBtn arrIco${hmStyleOpen ? ' on' : ''}" id="hmStyleBtn" aria-label="Wall colour and floor" aria-expanded="${hmStyleOpen}">🎨</button>` : '') + '</div>';
+  if (hmEdit && hmStyleOpen) { const cur = P.home.style, sw = (kind, set) => Object.entries(set).map(([k, v]) => `<button class="hmSw${k === cur[kind] ? ' on' : ''}" data-hmset="${kind}:${k}" aria-label="${v[0]} ${kind}" style="background:linear-gradient(${v[1]},${v[2]})"></button>`).join('');
+    h += `<div class="hmStrip" id="hmStrip"><span class="hmSL">🎨</span>${sw('wall', HWALLS)}<span class="hmSL">🪵</span>${sw('floor', HFLOORS)}</div>`; }
   return h;
 }
 function homeTap(slotId) {
   const sl = hSlot(slotId), id = P.home.slots[slotId]; if (!sl) return;
   if (id && SHOP[id] && SHOP[id].he && findHeVoice()) { try { playSound({ say: SHOP[id].nk }); } catch (e) {} }   // a tap says the word
-  rmPanel = 'slot'; hmSlotOpen = slotId; renderRoom(rmDisp); $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' });   // any piece or "+" opens the choice window
+  hmStyleOpen = false; rmPanel = 'slot'; hmSlotOpen = slotId; renderRoom(rmDisp); $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' });   // any piece or "+" opens the choice window
 }
 function hmTile(id, on, pick) { const s = SHOP[id]; return `<button class="catItem${on ? ' own' : ''}" data-hmpick="${id}" aria-label="${esc(s.en)}"><span class="catPic">${(String(s.em).startsWith('<') || !ROOM_ITEMS[id] || !ROOM_ITEMS[id].draw) ? s.em : ROOM_ITEMS[id].draw()}</span><span class="catTag">${on ? '✓ in the room' : esc(s.en)}</span></button>`; }
 function slotPanelHtml() {
@@ -6367,8 +6376,8 @@ function renderRoomPanel() {
 }
 $('#home').addEventListener('click', e => {
   if (!P) return;
-  if (e.target.closest('#hmBtn')) { hmEdit = !hmEdit; if (!hmEdit && (rmPanel === 'slot' || /^style:/.test(rmPanel || ''))) rmPanel = null; renderRoom(rmDisp); return; }
-  const st = e.target.closest('[data-hmstyle]'); if (st) { rmPanel = 'style:' + st.dataset.hmstyle; renderRoom(rmDisp); $('#roomPanel').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); return; }
+  if (e.target.closest('#hmBtn')) { hmEdit = !hmEdit; hmStyleOpen = false; if (!hmEdit && (rmPanel === 'slot' || /^style:/.test(rmPanel || ''))) rmPanel = null; renderRoom(rmDisp); return; }
+  if (e.target.closest('#hmStyleBtn')) { hmStyleOpen = !hmStyleOpen; renderRoom(rmDisp); return; }
   const set = e.target.closest('[data-hmset]'); if (set) { const [k, v] = set.dataset.hmset.split(':'); P.home.style[k] = v; saveSoon(true); $('#rmShell').innerHTML = rmShell(); renderRoom(rmDisp); return; }
   const sl = e.target.closest('.hmI, .hmPlus'); if (sl) { homeTap(sl.dataset.slot); return; }
   const pk = e.target.closest('[data-hmpick]'); if (pk) { P.home.slots[hmSlotOpen] = pk.dataset.hmpick; saveSoon(true); sfx.ok(); rmPanel = null; renderRoom(rmDisp); return; }
