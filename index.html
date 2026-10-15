@@ -1474,7 +1474,7 @@ let toneBag = []; const nextTone = () => { if (!toneBag.length) toneBag = shuffl
 
 /* ====================== PROFILE / STORAGE ====================== */
 let P = null;                // current profile
-let saveTimer = null, cloudState = '';
+let saveTimer = null, cloudState = '', lastCloudAt = 0, saveDue = 0, saveFails = 0;
 
 function newProfile(id, nick, gender, color, real, cls, skin, hair) {
   const p = migrate({ id, nick, gender, color, real: real || '', cls: cls || '', tier: 1, hist: [], xp: 0, n: 0, ok: 0, stats: {},
@@ -1561,12 +1561,20 @@ function saveSoon(now) {
   if (!P) return;
   P.updated = Date.now(); pruneSec();
   lsSet('tq_p_' + P.id, JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined })));   // the device never keeps the real name or class
-  clearTimeout(saveTimer);
   if (!CFG.SCRIPT_URL || P.mode !== 'school') { setCloud('none'); return; }   // only school heroes are saved online
   setCloud('pend');
-  saveTimer = setTimeout(cloudSave, now ? 0 : 4000);
+  // at most one cloud save every 20 seconds while playing (a whole class saving every few seconds filled the school service's queue); leaving the page saves at once
+  const t = Date.now(), gap = t - lastCloudAt, delay = now === 'exit' ? 0 : now ? Math.max(0, 6000 - gap) : Math.max(4000, 20000 - gap);
+  if (saveTimer && saveDue <= t + delay) return;   // a save is already planned, and sooner
+  clearTimeout(saveTimer); saveDue = t + delay; saveTimer = setTimeout(cloudSave, delay);
+}
+function saveRetry() {   // the school service was busy or unreachable: try again after a random wait (longer each time, never more than a minute)
+  saveFails++; setCloud('off');
+  const d = Math.min(60000, 5000 * 2 ** Math.min(saveFails, 4)) * (0.6 + Math.random() * 0.8);
+  clearTimeout(saveTimer); saveDue = Date.now() + d; saveTimer = setTimeout(cloudSave, d);
 }
 async function cloudSave() {
+  saveTimer = null; lastCloudAt = Date.now();
   if (!P || !CFG.SCRIPT_URL || P.mode !== 'school' || SCHOOL_ST.suspended) return;
   const total = Object.values(P.sec).reduce((a, b) => a + b, 0);
   const body = JSON.stringify({ id: P.id, nick: P.nick, tier: P.tier, xp: Math.round(P.exp || 0), n: P.n, acc: P.n ? Math.round(100 * P.ok / P.n) : 0,
@@ -1575,6 +1583,8 @@ async function cloudSave() {
     const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body, keepalive: body.length < 60000 });
     const j = await r.json();
     if (SCHOOL_ST.suspended) return;
+    if (j.busy) { saveRetry(); return; }   // the service had too many saves at once: the same save is tried again a little later
+    saveFails = 0;
     if (j.deleted) { removedByTeacher(); return; }   // the teacher deleted this student
     if (j.moved) { movedHero(); return; }
     if (j.error === 'code') { try { localStorage.removeItem('tq_school_code'); } catch (x) {} setCloud('off'); modal(tr('codeH'), `<p>${tr('codeWrong')}</p>`, [[tr('ok'), null]]); return; }   // the school code is no longer accepted
@@ -1586,7 +1596,7 @@ async function cloudSave() {
     if (j.ok && P.waiting) { delete P.waiting; toast('✅ Your teacher approved you!'); }
     if (j.ok && P.realPending) { delete P.realPending; lsSet('tq_p_' + P.id, JSON.stringify(Object.assign({}, P, { real: undefined, cls: undefined }))); }   // the school sheet has the name and class now
     setCloud('ok');
-  } catch (e) { setCloud('off'); }
+  } catch (e) { saveRetry(); }
 }
 async function loadProfile(id) {
   let local = null, cloud = null, offline = false, deleted = false, limited = false, pendingHero = false, rejectedHero = false, movedNum = false, preregNum = false;
@@ -1609,7 +1619,8 @@ async function loadProfile(id) {
   const newer = (a, b) => a.n !== b.n ? a.n > b.n : (a.updated || 0) >= (b.updated || 0);
   if (deleted) { try { localStorage.removeItem('tq_p_' + id); } catch (e) {} return { profile: null, offline, deleted: true }; }
   const best = migrate((cloud && local) ? (newer(cloud, local) ? cloud : local) : (cloud || local));
-  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum, prereg: preregNum };
+  const syncUp = !!(local && !offline && !limited && (!cloud || (!newer(cloud, local) && (cloud.n !== local.n || (cloud.updated || 0) !== (local.updated || 0)))));
+  return { profile: best, offline, limited, pending: pendingHero, rejected: rejectedHero, moved: movedNum, prereg: preregNum, syncUp };
 }
 
 /* ====================== SCREENS / MODAL ====================== */
@@ -1650,7 +1661,7 @@ $('#loginBtn').onclick = async () => {   // 🏫 a school student types their nu
   const r = await loadProfile(id);
   $('#loginBtn').disabled = false; msg.textContent = '';
   lsSet('tq_last', id);
-  if (r.profile && (r.profile.mode || 'school') === 'school') { P = r.profile; P.mode = 'school'; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); openMenu(); return; }
+  if (r.profile && (r.profile.mode || 'school') === 'school') { P = r.profile; P.mode = 'school'; setCloud(CFG.SCRIPT_URL ? (r.offline ? 'off' : 'ok') : 'none'); if (r.syncUp || r.offline) saveSoon(true); openMenu(); return; }
   if (r.deleted) { modal(tr('deletedH'), `<p>${tr('deletedP')}</p>`, [[tr('newBtn'), () => $('#newBtn').click()], [tr('ok'), null, true]]); return; }
   if (r.limited) { modal(tr('waitH'), `<p>${tr('waitP')}</p>`, [[tr('ok'), null]]); return; }
   if (r.prereg) { pendingId = id; pendingReal = ''; pendingCls = ''; pendingMode = 'school'; lsSet('tq_last', id); modal(LANG === 'he' ? '🌟 ברוכים הבאים!' : '🌟 Welcome!', `<p>${LANG === 'he' ? 'המורה כבר רשמה אותך. בואו נכין את הקוסם שלך!' : 'Your teacher already put you on the list. Let\'s make your wizard!'}</p>`, [[LANG === 'he' ? 'יאללה ▶' : 'Make my wizard ▶', () => openCreator()]]); return; }
@@ -4316,8 +4327,8 @@ setInterval(() => {
   }
   if (++tick % 30 === 0) saveSoon();
 }, 1000);
-document.addEventListener('visibilitychange', () => { if (document.hidden && P) saveSoon(true); });
-window.addEventListener('pagehide', () => { if (P) saveSoon(true); });
+document.addEventListener('visibilitychange', () => { if (document.hidden && P) saveSoon('exit'); });
+window.addEventListener('pagehide', () => { if (P) saveSoon('exit'); });
 
 /* ====================== ADMIN AREA (the registry: schools and player counts only) ====================== */
 let SYSKEY = null, SYS = [];
