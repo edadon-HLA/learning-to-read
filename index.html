@@ -992,7 +992,7 @@ const CFG = {
   READ_UP_ACC: 0.9, READ_MIN_WINDOW: 12, READ_MAX_WINDOW: 15, READ_FIGHTS: [8, 14], MAX_LEVEL: 16   // from level 8 (reading): up at 90% over the last 12-15 answers; quests have 8-14 normal stops
 };
 (function () { const u = (function () { try { return localStorage.getItem('tq_school_url') || ''; } catch (e) { return ''; } })(); if (u && CFG.SCRIPT_URL) CFG.SCRIPT_URL = u; })();   // a device that joined another school uses that school's service
-const TEST_BUILD = true;   // the test copy (tools/mktest.sh) sets this to true: it talks only to the TEST school service and never switches to a real school's service
+const TEST_BUILD = location.search.indexOf('real=1') < 0;   // the test copy (tools/mktest.sh) sets this to true: it talks only to the TEST school service and never switches to a real school's service
 const GOOGLE_CLIENT_ID = '640886464751-9ug0j6aks3tjfhkcj4lfhsartvm2np05.apps.googleusercontent.com';   // public id from the Google Cloud console; empty = no Google buttons
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
 // (school heroes save to the cloud; home and offline heroes never do: that is decided per hero, not per device)
