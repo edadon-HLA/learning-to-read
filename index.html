@@ -993,6 +993,8 @@ const CFG = {
 };
 (function () { const u = (function () { try { return localStorage.getItem('aq_school_url') || ''; } catch (e) { return ''; } })(); if (u && CFG.SCRIPT_URL) CFG.SCRIPT_URL = u; })();   // a device that joined another school uses that school's service
 const TEST_BUILD = false;   // the test copy (tools/mktest.sh) sets this to true: it talks only to the TEST school service and never switches to a real school's service
+const GOOGLE_CLIENT_ID = '640886464751-9ug0j6aks3tjfhkcj4lfhsartvm2np05.apps.googleusercontent.com';   // public id from the Google Cloud console; empty = no Google buttons
+if (TEST_BUILD && location.search.indexOf('resethome=1') >= 0) { try { localStorage.removeItem('aq_homeok'); } catch (e) {} }   // test copy only: ?resethome=1 forgets the remembered home sign-up so it can be tried again
 const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbzIuiBkwzq4w-qRp7npB04m6T61X2sOniQ3fP95A_amw0wuyjst3YHtJKfVGUAUL5As/exec';   // the app's OWN small service (a separate Google account): it only sends and checks the e-mail code and counts people. No game data goes there.
 // (school heroes save to the cloud; home and offline heroes never do: that is decided per hero, not per device)
 if (APP) { document.title = 'SpellQuest: AlphaBet Adventure'; const lt = document.getElementById('loginTitle'); if (lt) lt.innerHTML = '✨ SpellQuest ✨<div class="small" style="font-size:1rem;opacity:.9;margin-top:4px">AlphaBet Adventure</div><div class="heb" style="font-size:1.1rem;margin-top:2px">לחשים: הרפתקת קריאה</div>'; }   // the installed app's name
@@ -4337,6 +4339,27 @@ setInterval(() => {
 document.addEventListener('visibilitychange', () => { if (document.hidden && P) saveSoon('exit'); });
 window.addEventListener('pagehide', () => { if (P) saveSoon('exit'); });
 
+/* ----- Sign in with Google (adults and home players only): Google gives an ID token, we send it in a POST body and the server checks it with Google ----- */
+let gisReady = null, gisInit = false, gisCb = null;
+function gisLoad() {
+  if (!GOOGLE_CLIENT_ID) return Promise.resolve(false);
+  if (gisReady) return gisReady;
+  gisReady = new Promise(res => { const s = document.createElement('script'); s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.onload = () => res(!!(window.google && google.accounts && google.accounts.id)); s.onerror = () => { gisReady = null; res(false); }; document.head.appendChild(s); });
+  return gisReady;
+}
+function googleButton(box, onToken) {   // draws Google's own button into box; onToken(idToken) runs when the person picks an account
+  if (!box || !GOOGLE_CLIENT_ID) return;
+  gisCb = onToken;
+  gisLoad().then(ok => {
+    if (!box.isConnected) return;
+    if (!ok) { box.innerHTML = '<small style="opacity:.75">Google sign-in is not available right now. Use the e-mail code.</small>'; return; }
+    if (!gisInit) { gisInit = true; google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: r => { if (r && r.credential && gisCb) gisCb(r.credential); }, use_fedcm_for_button: true, auto_select: false, cancel_on_tap_outside: true }); }   // started once; the browser's own account chooser is used where it exists (no popup window to be blocked)
+    try { google.accounts.id.cancel(); } catch (e) {}
+    google.accounts.id.renderButton(box, { theme: 'outline', size: 'large', text: 'signin_with', shape: 'pill', width: 250 });
+  });
+}
+const gOrHtml = (id, hint) => GOOGLE_CLIENT_ID ? `<div style="text-align:center;margin:12px 0 4px;opacity:.7;font-size:.85rem">or</div>${hint ? `<div class="small" style="text-align:center;opacity:.85;margin:0 0 6px">${hint}</div>` : ''}<div id="${id}" style="display:flex;justify-content:center;min-height:44px"></div>` : '';
+const G_NO = 'That Google account cannot sign in here. You can use the e-mail code instead.';
 /* ====================== ADMIN AREA (the registry: schools and player counts only) ====================== */
 let SYSKEY = null, SYS = [];
 async function sysCall(action, extra) {
@@ -4346,7 +4369,7 @@ async function sysCall(action, extra) {
 function sysAsk() {
   if (!CFG.REGISTRY_URL) { modal('Admin', '<p>The registry is not set up here.</p>', [['OK', null]]); return; }
   modal('🛡 Admin sign-in', `<p class="small">Only the Admin e-mail can sign in. We send it a 6-digit code.</p><input id="syMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="admin e-mail"><button class="btn" id="sySend" style="margin-top:8px">Send me a code</button>
-    <div id="syBox" style="display:none;margin-top:10px"><input id="syCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="syGo" style="margin-top:8px">Sign in</button></div><div class="msg" id="syMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
+    <div id="syBox" style="display:none;margin-top:10px"><input id="syCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="syGo" style="margin-top:8px">Sign in</button></div><div class="msg" id="syMsg" style="min-height:1.2em;margin-top:6px"></div>${gOrHtml('syG')}`, [['Cancel', null, true]]);
   const msg = t => { $('#syMsg').textContent = t; }, post = async body => (await fetch(CFG.REGISTRY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })).json();
   $('#sySend').onclick = async () => {
     const em = $('#syMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
@@ -4361,6 +4384,10 @@ function sysAsk() {
     $('#syGo').disabled = false;
   };
   $('#syMail').onkeydown = e => { if (e.key === 'Enter') $('#sySend').click(); }; $('#syCode').onkeydown = e => { if (e.key === 'Enter') $('#syGo').click(); };
+  googleButton($('#syG'), async idToken => {
+    msg('Checking…');
+    try { const j = await post({ action: 'adminGoogle', idToken }); if (j.ok && j.signedIn && j.token) { $('#modal').classList.remove('on'); SYSKEY = j.token; sysEnter(); return; } msg(j.error === 'rate' ? 'Too many tries. Please wait a while.' : G_NO); } catch (e) { msg('I could not reach the registry.'); }
+  });
   setTimeout(() => { const i = $('#syMail'); if (i) i.focus(); }, 60);
 }
 async function sysEnter() {
@@ -4484,7 +4511,7 @@ function adminAsk(kind) {
     <input id="stSchool" type="text" autocomplete="off" autocapitalize="characters" maxlength="20" placeholder="School code" value="${esc(lsGet('aq_staff_code') || lsGet('aq_school_code') || '')}" style="margin-bottom:8px">
     <input id="stMail" type="email" autocomplete="email" autocapitalize="none" maxlength="80" placeholder="name@school.org"><button class="btn" id="stSend" style="margin-top:8px">Send me a code</button>
     <div id="stBox" style="display:none;margin-top:10px"><input id="stCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code"><button class="btn" id="stGo" style="margin-top:8px">Sign in</button></div>
-    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>`, [['Cancel', null, true]]);
+    <div class="msg" id="stMsg" style="min-height:1.2em;margin-top:6px"></div>${gOrHtml('stG', 'Type your school code above first, then choose Google.')}`, [['Cancel', null, true]]);
   const msg = t => { $('#stMsg').textContent = t; };
   $('#stSend').onclick = async () => {
     const em = $('#stMail').value.trim().toLowerCase(); if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg('Please type a correct e-mail.'); return; }
@@ -4513,6 +4540,16 @@ function adminAsk(kind) {
   };
   $('#stSchool').onkeydown = $('#stMail').onkeydown = e => { if (e.key === 'Enter') $('#stSend').click(); }; $('#stCode').onkeydown = e => { if (e.key === 'Enter') $('#stGo').click(); };
   if ($('#stPw')) $('#stPw').onclick = async e => { e.preventDefault(); const u = await useSchool($('#stSchool').value); if (u !== true) { msg(u); return; } adminPassAsk(); };
+  googleButton($('#stG'), async idToken => {
+    msg('Checking the school…');
+    const u = await useSchool($('#stSchool').value); if (u !== true) { msg(u + ' (type the school code, then use Google again)'); return; }
+    if (!CFG.SCRIPT_URL) { msg('The cloud is not set up here.'); return; }
+    try {
+      const r = await fetch(CFG.SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'staffGoogle', idToken }) }), j = await r.json();
+      if (j.ok && j.signedIn && j.token) { $('#modal').classList.remove('on'); ADMKEY = j.token; ADM_ROLE = j.role; ADM_EMAIL = j.email; ADM_CANREC = !!j.canRecord; ADM_OWN = j.classes || 'ALL'; adminEnter(); return; }
+      msg(j.error === 'rate' ? 'Too many tries. Please wait a while.' : G_NO);
+    } catch (e) { msg('I could not reach the cloud. Please check the internet.'); }
+  });
   setTimeout(() => { const i = $('#stSchool').value ? $('#stMail') : $('#stSchool'); if (i) i.focus(); }, 60);
 }
 function adminPassAsk() {
@@ -4968,7 +5005,7 @@ async function appPost(body) {
 }
 function emailSignup(done) {   // a small window: the parent's e-mail, then the 6-digit code. Only a scrambled fingerprint is kept (to count people), never the address.
   modal('📧 ' + tr('emailH'), `<p class="small">${tr('emailP')}</p><input id="suEmail" type="email" placeholder="${tr('emailPh')}" autocomplete="email" autocapitalize="none" maxlength="80"><button class="btn" id="suSend" style="margin-top:8px">${tr('sendCode')}</button>
-    <div id="suCodeBox" style="display:none;margin-top:10px"><div class="small">${tr('codeIs')}</div><input id="suCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" style="margin:6px 0"><button class="btn" id="suVerify">${tr('verify')}</button><div><a href="#" id="suResend" class="adminLink">${tr('resend')}</a></div></div><div class="msg" id="suMsg"></div>`, [[tr('cancel'), null, true]]);
+    <div id="suCodeBox" style="display:none;margin-top:10px"><div class="small">${tr('codeIs')}</div><input id="suCode" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" style="margin:6px 0"><button class="btn" id="suVerify">${tr('verify')}</button><div><a href="#" id="suResend" class="adminLink">${tr('resend')}</a></div></div><div class="msg" id="suMsg"></div>${gOrHtml('suG')}`, [[tr('cancel'), null, true]]);
   const sendCode = async () => {
     const em = $('#suEmail').value.trim().toLowerCase(), msg = $('#suMsg');
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) { msg.textContent = tr('badEmail'); return; }
@@ -4981,6 +5018,10 @@ function emailSignup(done) {   // a small window: the parent's e-mail, then the 
     $('#suSend').disabled = false;
   };
   $('#suSend').onclick = sendCode; $('#suResend').onclick = e => { e.preventDefault(); sendCode(); };
+  googleButton($('#suG'), async idToken => {
+    const msg = $('#suMsg'); msg.textContent = tr('checking');
+    try { const r = await fetch(CFG.REGISTRY_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'homeGoogle', idToken }) }), j = await r.json(); if (j.ok) { $('#modal').classList.remove('on'); done(); return; } msg.textContent = j.error === 'busy' ? tr('eBusy') : G_NO; } catch (e) { msg.textContent = tr('eNet2'); }
+  });
   $('#suVerify').onclick = async () => {
     const em = $('#suEmail').value.trim().toLowerCase(), code = $('#suCode').value.trim(), msg = $('#suMsg');
     if (!/^\d{6}$/.test(code)) { msg.textContent = tr('code6'); return; }
