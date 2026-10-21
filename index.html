@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="he"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SpellQuest AlphaBet</title>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1b1340;color:#fff;font-family:system-ui,sans-serif;text-align:center;padding:16px;box-sizing:border-box}a{color:#ffd166;font-weight:700}.b{max-width:30rem}</style></head>
+<body><div class="b"><h1>✨ SpellQuest AlphaBet ✨</h1>
+<p dir="rtl">המשחק עבר לכתובת חדשה. עוברים לשם עכשיו…</p>
+<p>The game has a new address. Taking you there…</p>
+<p><a id="go" href="https://eldar1234334.github.io/SpellQuest-AlphaBet/">https://eldar1234334.github.io/SpellQuest-AlphaBet/</a></p><p id="msg"></p></div>
+<script>
+// The game moved to a new address. Heroes saved in this browser (home and offline players) belong to the old address, so they are carried over once, in the part of the link after #.
+// School students are saved in the cloud and are not carried.
+(async () => {
+  const NEW = 'https://eldar1234334.github.io/SpellQuest-AlphaBet/', qs = location.search, go = a => location.replace(a), msg = document.getElementById('msg');
+  document.getElementById('go').href = NEW + qs;
+  const data = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i); if (!/^aq_/.test(k)) continue;
+      const v = localStorage.getItem(k);
+      if (/^aq_p_/.test(k)) { try { const p = JSON.parse(v); if (p && p.mode === 'school') continue; } catch (e) {} }
+      data[k] = v;
+    }
+  } catch (e) {}
+  if (!Object.keys(data).length) return go(NEW + qs);
+  let enc = '';
+  try {
+    const raw = new TextEncoder().encode(JSON.stringify(data));
+    let bytes = raw, tag = 'r';
+    if (typeof CompressionStream === 'function') { bytes = new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer()); tag = 'z'; }
+    let s = ''; for (let i = 0; i < bytes.length; i += 8192) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+    enc = tag + btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  } catch (e) { enc = ''; }
+  if (enc && enc.length < 120000) return go(NEW + 'import.html' + qs + '#d=' + enc);
+  msg.innerHTML = '<p dir="rtl">הגיבורים השמורים כאן גדולים מדי להעברה אוטומטית. הם נשארים שמורים כאן בינתיים. אפשר להמשיך למשחק החדש, ולבקש עזרה מהמורה להעברת הגיבורים.</p><p>The heroes saved here are too big to carry over automatically. They stay saved here for now. You can continue to the new game and ask your teacher for help moving them.</p><p><a href="' + NEW + qs + '">' + NEW + '</a></p>';
+})();
+</script></body></html>
